@@ -6,14 +6,12 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc libpq-dev supervisor curl && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip/setuptools first
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+# Install Python dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy full source (needed for pyproject.toml build)
+# Copy source code
 COPY . .
-
-# Install dependencies
-RUN pip install --no-cache-dir .
 
 # Playwright Chromium
 RUN playwright install chromium --with-deps
