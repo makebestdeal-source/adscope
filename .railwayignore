@@ -1,0 +1,12 @@
+frontend/
+.next/
+node_modules/
+__pycache__/
+*.pyc
+.git/
+.env
+.env.local
+backups/
+logs/
+*.log
+.claude/

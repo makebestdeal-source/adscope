@@ -1,0 +1,501 @@
+[
+  {
+    "method": "A_Vanilla",
+    "site": "Naver Main",
+    "ads": [
+      {
+        "url": "https://siape.veta.naver.com/fxview?eu=EU10044129&calp=-&oj=ZJlEFeSBKmLf40n3ktJ9%2FEIsLEJTSecMDfbrVrhGMbybTCKAv6zHzWx%2F",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nurl?eu=EU10043565&calp=-&oj=cQgn6aire5O6YjgAIElG%2F5iZuvyTXN1iuuOnL26PrwiUaLrtbDmm",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nurl?eu=EU10044298&calp=-&oj=Mih6QVKebQM0I3%2FQqfCjHZyVWMHsZMZoacU8n2DytkPkrF27pcxC",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxshow?su=SU10868&nrefreshx=0",
+        "status": 200,
+        "type": "text/html; charset=utf-8",
+        "size": 13160,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxshow?su=SU10869&nrefreshx=0",
+        "status": 200,
+        "type": "text/html; charset=utf-8",
+        "size": 9361,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxshow?su=SU10870&nrefreshx=0",
+        "status": 200,
+        "type": "text/html; charset=utf-8",
+        "size": 9412,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxview?eu=EU10043565&calp=-&oj=cQgn6aire5O6YjgAIElG%2F5iZuvyTXN1iuuOnL26PrwiUaLrtbDmmZdkSMn",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nbackimp?eu=EU10043564&oj=cQgn6aire5On5Mb6fZ%2FnCsdVncPVDE%2FP2dSpMWw2BO5NtCtu44S3A",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nbackimp?eu=EU10043564&oj=cQgn6aire5On5Mb6fZ%2FnCsdVncPVDE%2FP2dSpMWw2BO5NtCtu44S3A",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxview?eu=EU10044434&calp=-&oj=UDLDkoMX9MNQsbHfqBkowkIsLEJTSecMDfbrVrhGMbybTCKAv6zHzWx%2Fhc",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxview?eu=EU10043565&calp=-&oj=cQgn6aire5O6YjgAIElG%2F5iZuvyTXN1iuuOnL26PrwiUaLrtbDmmZdkSMn",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nbimp?oj=cQgn6aire5On5Mb6fZ%2FnCsdVncPVDE%2FP2dSpMWw2BO5NtCtu44S3A4BjZunIliBFeBM%2F",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nbimp?oj=cQgn6aire5On5Mb6fZ%2FnCsdVncPVDE%2FP2dSpMWw2BO5NtCtu44S3A4BjZunIliBFeBM%2F",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxview?eu=EU10044298&calp=-&oj=Mih6QVKebQM0I3%2FQqfCjHZyVWMHsZMZoacU8n2DytkPkrF27pcxC2mn5S5",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      }
+    ],
+    "blocked": false,
+    "error": null,
+    "duration_s": 6.0,
+    "ad_count": 14
+  },
+  {
+    "method": "B_Stealth",
+    "site": "Naver Main",
+    "ads": [
+      {
+        "url": "https://siape.veta.naver.com/fxview?eu=EU10044129&calp=-&oj=ZJlEFeSBKmLf40n3ktJ9%2FEIsLEJTSecMDfbrVrhGMbybTCKAv6zHzWx%2F",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nurl?eu=EU10043565&calp=-&oj=cQgn6aire5OJBu4J0e%2BqigRbrvqzg4ggENkiMKq8RiKg0kW8LHr3",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxshow?su=SU10868&nrefreshx=0",
+        "status": 200,
+        "type": "text/html; charset=utf-8",
+        "size": 13156,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxshow?su=SU10869&nrefreshx=0",
+        "status": 200,
+        "type": "text/html; charset=utf-8",
+        "size": 9357,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxshow?su=SU10870&nrefreshx=0",
+        "status": 200,
+        "type": "text/html; charset=utf-8",
+        "size": 9361,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nurl?eu=EU10044298&calp=-&oj=Mih6QVKebQNBSp9IDJ6IncZ5Aozv1648lXYW7FnTJ%2BujcU2HmKuO",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxview?eu=EU10043565&calp=-&oj=cQgn6aire5OJBu4J0e%2BqigRbrvqzg4ggENkiMKq8RiKg0kW8LHr3kq77Dh",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nbackimp?eu=EU10043564&oj=cQgn6aire5Mq2P9INgz7JN6fY9zy7iMFe5xzIk9IvyVKNUtFKM0iTkQBX",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nbackimp?eu=EU10043564&oj=cQgn6aire5Mq2P9INgz7JN6fY9zy7iMFe5xzIk9IvyVKNUtFKM0iTkQBX",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxview?eu=EU10044434&calp=-&oj=UDLDkoMX9MNQsbHfqBkowkIsLEJTSecMDfbrVrhGMbybTCKAv6zHzWx%2Fhc",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/fxview?eu=EU10043565&calp=-&oj=cQgn6aire5OJBu4J0e%2BqigRbrvqzg4ggENkiMKq8RiKg0kW8LHr3kq77Dh",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nbimp?oj=cQgn6aire5Mq2P9INgz7JN6fY9zy7iMFe5xzIk9IvyVKNUtFKM0iTkQBXSLcnJizeBM%2Fw%2F",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      },
+      {
+        "url": "https://siape.veta.naver.com/openrtb/nbimp?oj=cQgn6aire5Mq2P9INgz7JN6fY9zy7iMFe5xzIk9IvyVKNUtFKM0iTkQBXSLcnJizeBM%2Fw%2F",
+        "status": 200,
+        "type": "",
+        "size": 0,
+        "pattern": "siape.veta.naver.com"
+      }
+    ],
+    "blocked": false,
+    "error": null,
+    "duration_s": 6.0,
+    "ad_count": 13
+  },
+  {
+    "method": "C_BrightData",
+    "site": "Naver Main",
+    "ads": [],
+    "blocked": false,
+    "error": "MCP SSE OK but needs full client",
+    "duration_s": 6.4,
+    "ad_count": 0
+  },
+  {
+    "method": "A_Vanilla",
+    "site": "Daum Main",
+    "ads": [
+      {
+        "url": "https://webid.ad.daum.net/sync?v=0.0.1",
+        "status": 200,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://webid.ad.daum.net/sync?v=0.0.1",
+        "status": 200,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      }
+    ],
+    "blocked": false,
+    "error": null,
+    "duration_s": 6.5,
+    "ad_count": 2
+  },
+  {
+    "method": "B_Stealth",
+    "site": "Daum Main",
+    "ads": [
+      {
+        "url": "https://webid.ad.daum.net/sync?v=0.0.1",
+        "status": 200,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://display.ad.daum.net/sdk/native?id=DAN-28k4J8vSXB36A89Z&cnt=1&test=N&ctag=%7B%7D&sdktype=web&sdkver=4.35.1-native",
+        "status": 200,
+        "type": "application/json",
+        "size": 16042,
+        "pattern": "display.ad.daum.net"
+      },
+      {
+        "url": "https://tr.ad.daum.net/ssp/bimp?enc=Hp5hhFVxdNy5Mi35C43WBsh1Il599TdNly-GfYkU9ehdzY-g4dOQQNjN2oIPo1hZnjMpcAhNmqVgmP7wAr1l",
+        "status": 302,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://display.ad.daum.net/sdk/native?id=DAN-rZSfpNjEOKoUBlan&cnt=1&test=N&ctag=%7B%7D&sdktype=web&sdkver=4.35.1-native",
+        "status": 200,
+        "type": "application/json",
+        "size": 8313,
+        "pattern": "display.ad.daum.net"
+      },
+      {
+        "url": "https://display.ad.daum.net/sdk/native?id=DAN-uQne2FA2DumNOkji&cnt=1&test=N&ctag=%7B%7D&sdktype=web&sdkver=4.35.1-native",
+        "status": 200,
+        "type": "application/json",
+        "size": 8256,
+        "pattern": "display.ad.daum.net"
+      },
+      {
+        "url": "https://display.ad.daum.net/sdk/native?id=DAN-ZIt5rqi9vAZ8haRM&cnt=1&test=N&ctag=%7B%7D&sdktype=web&sdkver=4.35.1-native",
+        "status": 200,
+        "type": "application/json",
+        "size": 8593,
+        "pattern": "display.ad.daum.net"
+      },
+      {
+        "url": "https://tr.ad.daum.net/ssp/bimp?enc=NXull_frBgHcrT6q_B5cQYMQ2hBb8LnHxXK8K3qHDABuGR1xgqM8vaYhky-hc4hEnjMpcAhNmqVgmP7wAr1l",
+        "status": 302,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://tr.ad.daum.net/ssp/bimp?enc=ZvlmrcAusgJ5JyPXBW6nD1fR0QtgxqbHJAr6imTj1pbNCS5kE66prz83CQN7SuJLnjMpcAhNmqVgmP7wAr1l",
+        "status": 302,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://tr.ad.daum.net/ssp/bimp?enc=F-BZUOgCYzHlODldkl7_Ac7ygosPtQ0LuT6qn_-wOYyEjGI0rXxYZ7YNEiWdVl7OnjMpcAhNmqVgmP7wAr1l",
+        "status": 302,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://display.ad.daum.net/sdk/banner?id=DAN-cpuG7jBSO9iGcJe2&cnt=1&pxratio=1&pwidth=1920&pheight=1080&containerid=kaka",
+        "status": 200,
+        "type": "application/json",
+        "size": 66698,
+        "pattern": "display.ad.daum.net"
+      },
+      {
+        "url": "https://tr.ad.daum.net/ssp/bimp?enc=7YiRsAf2m-EBJ_K0_-g-PA65Hlo9DYhZmVprueXq9m-WYiLElnTxFHHxYxqqD_FinjMpcAhNmqVgmP7wAr1l",
+        "status": 302,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://display.ad.daum.net/sdk/banner?id=DAN-GRYfdlviKobSRKTv&cnt=1&pxratio=1&pwidth=1920&pheight=1080&containerid=kaka",
+        "status": 200,
+        "type": "application/json",
+        "size": 66828,
+        "pattern": "display.ad.daum.net"
+      },
+      {
+        "url": "https://display.ad.daum.net/sdk/banner?id=DAN-V0fA2NYyBDoEkbh6&cnt=1&pxratio=1&pwidth=1920&pheight=1080&containerid=kaka",
+        "status": 200,
+        "type": "application/json",
+        "size": 65841,
+        "pattern": "display.ad.daum.net"
+      },
+      {
+        "url": "https://tr.ad.daum.net/ssp/bimp?enc=4Cw5yKn25Zi8ObcTO9k77-oER1U0PiGv7NAFX8COmIEGBuVQB8NIgAkwOPE_kwrUnjMpcAhNmqVgmP7wAr1l",
+        "status": 302,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://tr.ad.daum.net/ssp/bimp?enc=b481hgPH0r1dyYFnMCMyXRkDX8uwnCNBqbEIJe64H0_7XuzGNWW0U-Fw31HofMIInjMpcAhNmqVgmP7wAr1l",
+        "status": 302,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://webid.ad.daum.net/sync?v=0.0.1",
+        "status": 302,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://display.ad.daum.net/sdk/banner?id=DAN-cEphrMj0E5dSaYSN&cnt=1&pxratio=1&pwidth=1920&pheight=1080&containerid=kaka",
+        "status": 200,
+        "type": "application/json",
+        "size": 66846,
+        "pattern": "display.ad.daum.net"
+      },
+      {
+        "url": "https://tr.ad.daum.net/ssp/bimp?enc=QW-TunEQ5TbB5ctHMUH7A32mmFx1jK3SULWhCsrMplG5g0iNfIKGb6peQqvw16JcnjMpcAhNmqVgmP7wAr1l",
+        "status": 302,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://tr.ad.daum.net/vimp?wa=03Rpjdmzs9OMz_T4JxgFUi1PBk9ZBk2XABuPg6vB7Mg&enc=LXeFchjZME3bYRyr0GwyC-fmaQOmWgjD2l9hR0kDV",
+        "status": 302,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      },
+      {
+        "url": "https://tr.ad.daum.net/vimp?wa=8cAFsvwQd7Q55jGbTep9qA&enc=LLIf5xCW4nen4_0_A4QXsxJU5maBssKC9VW7qw_nVA16BG0TOCWV9be0nJALk3",
+        "status": 302,
+        "type": "image/gif",
+        "size": 0,
+        "pattern": "ad.daum.net"
+      }
+    ],
+    "blocked": false,
+    "error": null,
+    "duration_s": 6.6,
+    "ad_count": 9
+  },
+  {
+    "method": "C_BrightData",
+    "site": "Daum Main",
+    "ads": [],
+    "blocked": false,
+    "error": "MCP SSE OK but needs full client",
+    "duration_s": 1.7,
+    "ad_count": 0
+  },
+  {
+    "method": "A_Vanilla",
+    "site": "YouTube Trending",
+    "ads": [
+      {
+        "url": "https://googleads.g.doubleclick.net/pagead/id",
+        "status": 302,
+        "type": "text/html; charset=UTF-8",
+        "size": 0,
+        "pattern": "doubleclick.net"
+      },
+      {
+        "url": "https://googleads.g.doubleclick.net/pagead/id?slf_rd=1",
+        "status": 200,
+        "type": "application/json; charset=UTF-8",
+        "size": 100,
+        "pattern": "doubleclick.net"
+      },
+      {
+        "url": "https://static.doubleclick.net/instream/ad_status.js",
+        "status": 200,
+        "type": "text/javascript",
+        "size": 29,
+        "pattern": "doubleclick.net"
+      }
+    ],
+    "blocked": false,
+    "error": null,
+    "duration_s": 7.1,
+    "ad_count": 2
+  },
+  {
+    "method": "B_Stealth",
+    "site": "YouTube Trending",
+    "ads": [
+      {
+        "url": "https://googleads.g.doubleclick.net/pagead/id",
+        "status": 302,
+        "type": "text/html; charset=UTF-8",
+        "size": 0,
+        "pattern": "doubleclick.net"
+      },
+      {
+        "url": "https://googleads.g.doubleclick.net/pagead/id?slf_rd=1",
+        "status": 200,
+        "type": "application/json; charset=UTF-8",
+        "size": 100,
+        "pattern": "doubleclick.net"
+      },
+      {
+        "url": "https://static.doubleclick.net/instream/ad_status.js",
+        "status": 200,
+        "type": "text/javascript",
+        "size": 29,
+        "pattern": "doubleclick.net"
+      }
+    ],
+    "blocked": false,
+    "error": null,
+    "duration_s": 7.1,
+    "ad_count": 2
+  },
+  {
+    "method": "C_BrightData",
+    "site": "YouTube Trending",
+    "ads": [],
+    "blocked": false,
+    "error": "MCP SSE OK but needs full client",
+    "duration_s": 1.7,
+    "ad_count": 0
+  },
+  {
+    "method": "A_Vanilla",
+    "site": "Coupang Main",
+    "ads": [],
+    "blocked": false,
+    "error": null,
+    "duration_s": 5.8,
+    "ad_count": 0
+  },
+  {
+    "method": "B_Stealth",
+    "site": "Coupang Main",
+    "ads": [],
+    "blocked": false,
+    "error": null,
+    "duration_s": 5.8,
+    "ad_count": 0
+  },
+  {
+    "method": "C_BrightData",
+    "site": "Coupang Main",
+    "ads": [],
+    "blocked": false,
+    "error": "MCP SSE OK but needs full client",
+    "duration_s": 1.7,
+    "ad_count": 0
+  }
+]

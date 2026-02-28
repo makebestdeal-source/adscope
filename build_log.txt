@@ -1,0 +1,60 @@
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/34) ...
+   Generating static pages (8/34) 
+   Generating static pages (16/34) 
+   Generating static pages (25/34) 
+ ✓ Generating static pages (34/34)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    7.59 kB         216 kB
+├ ○ /_not-found                          880 B          88.4 kB
+├ ○ /about                               2.67 kB          99 kB
+├ ○ /admin                               9.5 kB         99.6 kB
+├ ○ /advertiser-trends                   4 kB            210 kB
+├ ○ /advertisers                         3.98 kB         111 kB
+├ ƒ /advertisers/[id]                    6.76 kB         224 kB
+├ ○ /analytics/brand-channels            3.17 kB         102 kB
+├ ○ /analytics/contact-rate              3.53 kB         205 kB
+├ ○ /analytics/persona-ranking           4.04 kB         201 kB
+├ ○ /analytics/sov                       3.73 kB         205 kB
+├ ○ /competitors                         5.18 kB         202 kB
+├ ○ /faq                                 3.99 kB        91.5 kB
+├ ○ /forgot-password                     1.77 kB        98.1 kB
+├ ○ /gallery                             7.04 kB         114 kB
+├ ○ /guide                               4.03 kB         100 kB
+├ ○ /industries                          1.61 kB         109 kB
+├ ƒ /industries/[id]                     8.25 kB         221 kB
+├ ○ /login                               3.08 kB        99.4 kB
+├ ○ /manual                              5.79 kB         102 kB
+├ ○ /offline                             790 B          88.3 kB
+├ ○ /payment                             3.5 kB          102 kB
+├ ○ /pricing                             4.02 kB         100 kB
+├ ○ /privacy                             142 B          87.7 kB
+├ ○ /products                            3.8 kB          102 kB
+├ ○ /reports                             6.24 kB         215 kB
+├ ○ /settings                            3.57 kB        99.9 kB
+├ ○ /shopping-insight                    7.28 kB         209 kB
+├ ○ /signup                              3.31 kB        99.6 kB
+├ ○ /snapshots                           2.71 kB         101 kB
+├ ○ /social-channels                     7.43 kB         215 kB
+├ ○ /social-gallery                      4.71 kB         112 kB
+├ ○ /spend                               3.19 kB         200 kB
+└ ○ /terms                               3.42 kB        99.7 kB
++ First Load JS shared by all            87.5 kB
+  ├ chunks/2117-3bbad96d9ec7c971.js      31.9 kB
+  ├ chunks/fd9d1056-48d911e7fdf1ea7b.js  53.6 kB
+  └ other shared chunks (total)          2 kB
+
+
+ƒ Middleware                             26.6 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -1,0 +1,90 @@
+{
+  "persona_code": "M20",
+  "channel": "youtube_surf",
+  "updated_at": "2026-02-28T04:07:12.521445+00:00",
+  "cookie_count": 8,
+  "cookies": [
+    {
+      "name": "PREF",
+      "value": "tz=Asia.Seoul&hl=ko&gl=KR",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1806811613.249978,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "VISITOR_INFO1_LIVE",
+      "value": "noFr_pMBVg0",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1787803610.745411,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "VISITOR_PRIVACY_METADATA",
+      "value": "CgJLUhIEGgAgbg%3D%3D",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1787803610.745539,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "IDE",
+      "value": "AHWqTUnu4HmWUMxl_VYPBhVAj1B2Jmu2fDUi7z8P79UAWgpTCO8G7EeBK2RJZg8H_Ds",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1806770276.759452,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "GPS",
+      "value": "1",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1772252059.038859,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "APC",
+      "value": "AfxxVi56na-9rOShHfi3P97ETGqTZx1WdhtDK6zUeqizm8Rw0lwV3A",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1786781448.074907,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://youtube.com",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "CONSENT",
+      "value": "YES+cb.20260215-00-p0.kr+FX+999",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "YSC",
+      "value": "lJk9pOe19Go",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    }
+  ]
+}

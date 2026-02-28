@@ -1,0 +1,2276 @@
+[
+ {
+  "id": 340,
+  "name": "11번가",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 329,
+  "name": "29CM",
+  "industry_id": 7,
+  "type": "company"
+ },
+ {
+  "id": 533,
+  "name": "AEIP Pre-Arrival Services",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 201,
+  "name": "ALLWEMAKEIS CO",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 552,
+  "name": "AXA손해보험",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 515,
+  "name": "AXA손해보험  axakorea.co.kr",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 514,
+  "name": "AXA손해보험  axakorea.com",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 234,
+  "name": "Adrienne's Classic Desserts",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 531,
+  "name": "Adrienne's Classic Desserts, LLC",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 255,
+  "name": "Ali Hanan",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 243,
+  "name": "ArcfoxGlobal",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 310,
+  "name": "BBQ",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 501,
+  "name": "BERMAN",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 312,
+  "name": "BHC치킨",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 278,
+  "name": "BMW코리아",
+  "industry_id": 3,
+  "type": "company"
+ },
+ {
+  "id": 240,
+  "name": "Bold Illumination",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 468,
+  "name": "CGV",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 222,
+  "name": "CJ ENM",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 221,
+  "name": "CJ올리브영",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 298,
+  "name": "CJ제일제당",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 346,
+  "name": "CU",
+  "industry_id": 8,
+  "type": "brand"
+ },
+ {
+  "id": 245,
+  "name": "Candy Crush Saga",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 294,
+  "name": "DB손해보험",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 425,
+  "name": "DL이앤씨",
+  "industry_id": 11,
+  "type": "company"
+ },
+ {
+  "id": 534,
+  "name": "Dentzz",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 251,
+  "name": "ELDER HYUNDAI",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 238,
+  "name": "Fmx-0205-10",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 236,
+  "name": "FreePlay",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 363,
+  "name": "GS건설",
+  "industry_id": 11,
+  "type": "company"
+ },
+ {
+  "id": 345,
+  "name": "GS리테일",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 242,
+  "name": "GarageBulls America",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 339,
+  "name": "G마켓",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 513,
+  "name": "G마켓  m.gmarket.co.kr",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 256,
+  "name": "Hana Makeup",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 257,
+  "name": "Hanan Amada",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 535,
+  "name": "Healthy Hair made easy",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 567,
+  "name": "H차차차",
+  "industry_id": 3,
+  "type": null
+ },
+ {
+  "id": 527,
+  "name": "H차차차  h차차차.com",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 452,
+  "name": "JTBC",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 376,
+  "name": "JYP엔터테인먼트",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 395,
+  "name": "K2",
+  "industry_id": 16,
+  "type": "brand"
+ },
+ {
+  "id": 286,
+  "name": "KB국민은행",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 229,
+  "name": "KB국민카드",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 566,
+  "name": "KB오토카",
+  "industry_id": 3,
+  "type": null
+ },
+ {
+  "id": 595,
+  "name": "KEYWORDAD",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 439,
+  "name": "KFC코리아",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 276,
+  "name": "KG모빌리티",
+  "industry_id": 3,
+  "type": "company"
+ },
+ {
+  "id": 44,
+  "name": "KOHONJIN",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 262,
+  "name": "KT",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 237,
+  "name": "Kingdom of Peace on Earth",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 536,
+  "name": "Kripazlovebug 페이지는 Sungboon Editor US과(와) 함께합니다",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 360,
+  "name": "LG 시그니처",
+  "industry_id": 10,
+  "type": "brand"
+ },
+ {
+  "id": 320,
+  "name": "LG생활건강",
+  "industry_id": 6,
+  "type": "company"
+ },
+ {
+  "id": 263,
+  "name": "LG유플러스",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 213,
+  "name": "LG이노텍",
+  "industry_id": 10,
+  "type": "company"
+ },
+ {
+  "id": 212,
+  "name": "LG전자",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 588,
+  "name": "LOW CLASSIC",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 450,
+  "name": "MBC",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 532,
+  "name": "Meettikaa 페이지는 Sungboon Editor US과(와) 함께합니다",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 239,
+  "name": "Muslim Help",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 576,
+  "name": "My보험",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 6,
+  "name": "NCC 소상공인",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 5,
+  "name": "NDP_SF",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 446,
+  "name": "NHN",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 289,
+  "name": "NH농협은행",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 500,
+  "name": "NOONEE",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 81,
+  "name": "Ovnskorea",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 241,
+  "name": "Peter Manning Robinson",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 249,
+  "name": "Ryde Hyundai",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 451,
+  "name": "SBS",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 214,
+  "name": "SKO",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 565,
+  "name": "SKV중고차",
+  "industry_id": 3,
+  "type": null
+ },
+ {
+  "id": 526,
+  "name": "SKV중고차  skv중고차.com",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 215,
+  "name": "SK렌터카",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 216,
+  "name": "SK스토아",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 269,
+  "name": "SK이노베이션",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 261,
+  "name": "SK텔레콤",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 424,
+  "name": "SK하이닉스",
+  "industry_id": 10,
+  "type": "company"
+ },
+ {
+  "id": 499,
+  "name": "SLEEK",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 375,
+  "name": "SM엔터테인먼트",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 442,
+  "name": "SPC그룹",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 596,
+  "name": "SPRINT Program",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 338,
+  "name": "SSG닷컴",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 508,
+  "name": "Samsung Securities",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 244,
+  "name": "Seven Star Martial Arts Kids",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 227,
+  "name": "TEMU",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 250,
+  "name": "TEXAN HYUNDAI",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 233,
+  "name": "The Prem Rawat Foundation TPRF",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 258,
+  "name": "Theo And Lotte",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 465,
+  "name": "VT코스메틱",
+  "industry_id": 6,
+  "type": "company"
+ },
+ {
+  "id": 235,
+  "name": "Warpath",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 443,
+  "name": "W컨셉",
+  "industry_id": 7,
+  "type": "company"
+ },
+ {
+  "id": 377,
+  "name": "YG엔터테인먼트",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 592,
+  "name": "gtrace.mediago.io",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 594,
+  "name": "images.dable.io",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 516,
+  "name": "jehu.cancerok.com",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 591,
+  "name": "mnews.sbs.co.kr",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 593,
+  "name": "s.c.appier.net",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 586,
+  "name": "siape.veta.naver.com",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 453,
+  "name": "tvN",
+  "industry_id": 13,
+  "type": "brand"
+ },
+ {
+  "id": 512,
+  "name": "worldconto.co.kr",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 159,
+  "name": "가연",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 355,
+  "name": "광동제약",
+  "industry_id": 9,
+  "type": "company"
+ },
+ {
+  "id": 463,
+  "name": "교보생명",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 311,
+  "name": "교촌치킨",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 407,
+  "name": "국민건강보험공단",
+  "industry_id": 19,
+  "type": "company"
+ },
+ {
+  "id": 49,
+  "name": "그대의밥상",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 70,
+  "name": "그립 Grip",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 460,
+  "name": "금호타이어",
+  "industry_id": 3,
+  "type": "company"
+ },
+ {
+  "id": 274,
+  "name": "기아",
+  "industry_id": 3,
+  "type": "company"
+ },
+ {
+  "id": 462,
+  "name": "기업은행",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 580,
+  "name": "기업차차차",
+  "industry_id": 3,
+  "type": null
+ },
+ {
+  "id": 79,
+  "name": "긴급 금융 정보",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 400,
+  "name": "까사미아",
+  "industry_id": 17,
+  "type": "company"
+ },
+ {
+  "id": 326,
+  "name": "나이키코리아",
+  "industry_id": 7,
+  "type": "company"
+ },
+ {
+  "id": 436,
+  "name": "남양유업",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 454,
+  "name": "네오위즈",
+  "industry_id": 12,
+  "type": "company"
+ },
+ {
+  "id": 2,
+  "name": "네이버",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 248,
+  "name": "네이버 해피빈 가볼까",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 510,
+  "name": "네이버로그인          29CM  29cm.co.kr",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 367,
+  "name": "넥슨",
+  "industry_id": 12,
+  "type": "company"
+ },
+ {
+  "id": 369,
+  "name": "넷마블",
+  "industry_id": 12,
+  "type": "company"
+ },
+ {
+  "id": 378,
+  "name": "넷플릭스코리아",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 393,
+  "name": "노스페이스코리아",
+  "industry_id": 16,
+  "type": "company"
+ },
+ {
+  "id": 351,
+  "name": "녹십자",
+  "industry_id": 9,
+  "type": "company"
+ },
+ {
+  "id": 300,
+  "name": "농심",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 331,
+  "name": "뉴발란스코리아",
+  "industry_id": 7,
+  "type": "company"
+ },
+ {
+  "id": 270,
+  "name": "다나와",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 426,
+  "name": "다방",
+  "industry_id": 11,
+  "type": "company"
+ },
+ {
+  "id": 357,
+  "name": "다이슨코리아",
+  "industry_id": 10,
+  "type": "company"
+ },
+ {
+  "id": 325,
+  "name": "닥터자르트",
+  "industry_id": 6,
+  "type": "brand"
+ },
+ {
+  "id": 267,
+  "name": "당근마켓",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 78,
+  "name": "당일금융추천",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 441,
+  "name": "대상",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 364,
+  "name": "대우건설",
+  "industry_id": 11,
+  "type": "company"
+ },
+ {
+  "id": 352,
+  "name": "대웅제약",
+  "industry_id": 9,
+  "type": "company"
+ },
+ {
+  "id": 3,
+  "name": "대전경찰청",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 563,
+  "name": "대출24",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 520,
+  "name": "대출24  대출24.net",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 561,
+  "name": "대출나라",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 518,
+  "name": "대출나라  대출나라.com",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 578,
+  "name": "대출나무",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 562,
+  "name": "대출세상",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 519,
+  "name": "대출세상  대출세상.kr",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 577,
+  "name": "대출역",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 521,
+  "name": "대출역  대출역.com",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 383,
+  "name": "대한항공",
+  "industry_id": 14,
+  "type": "company"
+ },
+ {
+  "id": 321,
+  "name": "더페이스샵",
+  "industry_id": 6,
+  "type": "brand"
+ },
+ {
+  "id": 373,
+  "name": "데브시스터즈",
+  "industry_id": 12,
+  "type": "company"
+ },
+ {
+  "id": 458,
+  "name": "데카트론코리아",
+  "industry_id": 16,
+  "type": "company"
+ },
+ {
+  "id": 438,
+  "name": "도미노피자코리아",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 590,
+  "name": "독립생활",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 306,
+  "name": "동서식품",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 354,
+  "name": "동아제약",
+  "industry_id": 9,
+  "type": "company"
+ },
+ {
+  "id": 435,
+  "name": "동원F&B",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 564,
+  "name": "둥지대부",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 503,
+  "name": "듀베티카",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 48,
+  "name": "디스커버리 익스페디션",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 382,
+  "name": "디즈니플러스코리아",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 319,
+  "name": "라네즈",
+  "industry_id": 6,
+  "type": "brand"
+ },
+ {
+  "id": 579,
+  "name": "라로제",
+  "industry_id": 6,
+  "type": null
+ },
+ {
+  "id": 268,
+  "name": "라인",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 87,
+  "name": "려-두피관리의 시작",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 569,
+  "name": "로댄티과",
+  "industry_id": 7,
+  "type": null
+ },
+ {
+  "id": 409,
+  "name": "로얄캐닌코리아",
+  "industry_id": 20,
+  "type": "company"
+ },
+ {
+  "id": 583,
+  "name": "로이드",
+  "industry_id": 7,
+  "type": null
+ },
+ {
+  "id": 574,
+  "name": "롯데ON",
+  "industry_id": 8,
+  "type": null
+ },
+ {
+  "id": 336,
+  "name": "롯데쇼핑",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 470,
+  "name": "롯데시네마",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 313,
+  "name": "롯데제과",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 404,
+  "name": "롯데칠성 처음처럼",
+  "industry_id": 18,
+  "type": "brand"
+ },
+ {
+  "id": 301,
+  "name": "롯데칠성음료",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 72,
+  "name": "룩핀",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 277,
+  "name": "르노코리아",
+  "industry_id": 3,
+  "type": "company"
+ },
+ {
+  "id": 525,
+  "name": "르무통",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 502,
+  "name": "리더뮨",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 272,
+  "name": "리디",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 47,
+  "name": "마켓비",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 343,
+  "name": "마켓컬리",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 309,
+  "name": "매일유업",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 305,
+  "name": "맥도날드코리아",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 469,
+  "name": "메가박스",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 388,
+  "name": "메가스터디",
+  "industry_id": 15,
+  "type": "company"
+ },
+ {
+  "id": 570,
+  "name": "메디큐브",
+  "industry_id": 6,
+  "type": null
+ },
+ {
+  "id": 181,
+  "name": "메디큐브 에이지알",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 557,
+  "name": "모두의보험",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 155,
+  "name": "모자이크",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 328,
+  "name": "무신사",
+  "industry_id": 7,
+  "type": "company"
+ },
+ {
+  "id": 509,
+  "name": "무신사  store.musinsa.com",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 296,
+  "name": "미래에셋증권",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 323,
+  "name": "미샤",
+  "industry_id": 6,
+  "type": "brand"
+ },
+ {
+  "id": 392,
+  "name": "밀리의서재",
+  "industry_id": 15,
+  "type": "company"
+ },
+ {
+  "id": 411,
+  "name": "바잇미",
+  "industry_id": 20,
+  "type": "company"
+ },
+ {
+  "id": 265,
+  "name": "배달의민족",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 523,
+  "name": "버거킹",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 437,
+  "name": "버거킹코리아",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 279,
+  "name": "벤츠코리아",
+  "industry_id": 3,
+  "type": "company"
+ },
+ {
+  "id": 434,
+  "name": "보령",
+  "industry_id": 9,
+  "type": "company"
+ },
+ {
+  "id": 553,
+  "name": "보험닷컴",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 559,
+  "name": "보험비교몰",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 556,
+  "name": "보험클릭",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 517,
+  "name": "보험회사별보험료비교  insuangel.kr",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 281,
+  "name": "볼보코리아",
+  "industry_id": 3,
+  "type": "company"
+ },
+ {
+  "id": 178,
+  "name": "뷰잘알-뷰티 잘아는 언니의 뷰티팁",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 183,
+  "name": "뷰티 인사이드 랩",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 182,
+  "name": "뷰티 트렌드",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 68,
+  "name": "브랜든 - Branden",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 394,
+  "name": "블랙야크",
+  "industry_id": 16,
+  "type": "company"
+ },
+ {
+  "id": 440,
+  "name": "비타500",
+  "industry_id": 9,
+  "type": "brand"
+ },
+ {
+  "id": 302,
+  "name": "빙그레",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 448,
+  "name": "사람인",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 597,
+  "name": "산이좋은사람들",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 356,
+  "name": "삼성 갤럭시",
+  "industry_id": 10,
+  "type": "brand"
+ },
+ {
+  "id": 423,
+  "name": "삼성SDI",
+  "industry_id": 10,
+  "type": "company"
+ },
+ {
+  "id": 445,
+  "name": "삼성SDS",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 361,
+  "name": "삼성물산",
+  "industry_id": 11,
+  "type": "company"
+ },
+ {
+  "id": 283,
+  "name": "삼성생명",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 541,
+  "name": "삼성생명보험",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 542,
+  "name": "삼성생명보험(주)",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 260,
+  "name": "삼성전자",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 545,
+  "name": "삼성증권",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 546,
+  "name": "삼성증권주식회사",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 293,
+  "name": "삼성카드",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 547,
+  "name": "삼성카드주식회사",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 568,
+  "name": "삼성카즈",
+  "industry_id": 3,
+  "type": null
+ },
+ {
+  "id": 524,
+  "name": "삼성하나로",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 284,
+  "name": "삼성화재",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 543,
+  "name": "삼성화재 N잡크루",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 598,
+  "name": "삼성화재해상보험 (주)",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 544,
+  "name": "삼성화재해상보험(주)",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 307,
+  "name": "삼양식품",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 359,
+  "name": "샤오미코리아",
+  "industry_id": 10,
+  "type": "company"
+ },
+ {
+  "id": 408,
+  "name": "서울시",
+  "industry_id": 19,
+  "type": "company"
+ },
+ {
+  "id": 318,
+  "name": "설화수",
+  "industry_id": 6,
+  "type": "brand"
+ },
+ {
+  "id": 347,
+  "name": "세븐일레븐",
+  "industry_id": 8,
+  "type": "brand"
+ },
+ {
+  "id": 63,
+  "name": "세이브더칠드런",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 581,
+  "name": "수입차딜러",
+  "industry_id": 3,
+  "type": null
+ },
+ {
+  "id": 529,
+  "name": "수입차딜러.com",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 371,
+  "name": "스마일게이트",
+  "industry_id": 12,
+  "type": "company"
+ },
+ {
+  "id": 304,
+  "name": "스타벅스코리아",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 571,
+  "name": "시그널플래너",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 337,
+  "name": "신세계",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 285,
+  "name": "신한은행",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 414,
+  "name": "신한카드",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 466,
+  "name": "쏘카",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 327,
+  "name": "아디다스코리아",
+  "industry_id": 7,
+  "type": "company"
+ },
+ {
+  "id": 316,
+  "name": "아모레퍼시픽",
+  "industry_id": 6,
+  "type": "company"
+ },
+ {
+  "id": 384,
+  "name": "아시아나항공",
+  "industry_id": 14,
+  "type": "company"
+ },
+ {
+  "id": 280,
+  "name": "아우디코리아",
+  "industry_id": 3,
+  "type": "company"
+ },
+ {
+  "id": 396,
+  "name": "아이더",
+  "industry_id": 16,
+  "type": "brand"
+ },
+ {
+  "id": 539,
+  "name": "아이디스",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 109,
+  "name": "아이클타임",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 202,
+  "name": "아키클래식",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 66,
+  "name": "아티잔싱크 본사",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 432,
+  "name": "안국약품",
+  "industry_id": 9,
+  "type": "company"
+ },
+ {
+  "id": 573,
+  "name": "알뜰폰",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 358,
+  "name": "애플코리아",
+  "industry_id": 10,
+  "type": "company"
+ },
+ {
+  "id": 127,
+  "name": "앱스토리몰",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 271,
+  "name": "야나두",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 386,
+  "name": "야놀자",
+  "industry_id": 14,
+  "type": "company"
+ },
+ {
+  "id": 548,
+  "name": "양현대",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 587,
+  "name": "어댑트",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 459,
+  "name": "언더아머코리아",
+  "industry_id": 16,
+  "type": "company"
+ },
+ {
+  "id": 389,
+  "name": "에듀윌",
+  "industry_id": 15,
+  "type": "company"
+ },
+ {
+  "id": 322,
+  "name": "에뛰드",
+  "industry_id": 6,
+  "type": "brand"
+ },
+ {
+  "id": 156,
+  "name": "에스테리브",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 417,
+  "name": "에어서울",
+  "industry_id": 14,
+  "type": "company"
+ },
+ {
+  "id": 368,
+  "name": "엔씨소프트",
+  "industry_id": 12,
+  "type": "company"
+ },
+ {
+  "id": 585,
+  "name": "엘로이드",
+  "industry_id": 7,
+  "type": null
+ },
+ {
+  "id": 457,
+  "name": "엘리시안",
+  "industry_id": 16,
+  "type": "brand"
+ },
+ {
+  "id": 387,
+  "name": "여기어때",
+  "industry_id": 14,
+  "type": "company"
+ },
+ {
+  "id": 401,
+  "name": "오늘의집",
+  "industry_id": 17,
+  "type": "company"
+ },
+ {
+  "id": 299,
+  "name": "오뚜기",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 540,
+  "name": "오렌지씨",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 315,
+  "name": "오리온",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 403,
+  "name": "오비맥주",
+  "industry_id": 18,
+  "type": "company"
+ },
+ {
+  "id": 528,
+  "name": "오토카  kb오토카.com",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 379,
+  "name": "왓챠",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 53,
+  "name": "요트다타자",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 575,
+  "name": "우리보험",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 288,
+  "name": "우리은행",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 46,
+  "name": "워킹보감",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 422,
+  "name": "원티드",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 551,
+  "name": "월컨투",
+  "industry_id": 14,
+  "type": null
+ },
+ {
+  "id": 380,
+  "name": "웨이브",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 427,
+  "name": "위닉스",
+  "industry_id": 10,
+  "type": "company"
+ },
+ {
+  "id": 342,
+  "name": "위메프",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 572,
+  "name": "유니클로",
+  "industry_id": 7,
+  "type": null
+ },
+ {
+  "id": 330,
+  "name": "유니클로코리아",
+  "industry_id": 7,
+  "type": "company"
+ },
+ {
+  "id": 350,
+  "name": "유한양행",
+  "industry_id": 9,
+  "type": "company"
+ },
+ {
+  "id": 317,
+  "name": "이니스프리",
+  "industry_id": 6,
+  "type": "brand"
+ },
+ {
+  "id": 348,
+  "name": "이마트",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 82,
+  "name": "이엠씨영어학원",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 398,
+  "name": "이케아코리아",
+  "industry_id": 17,
+  "type": "company"
+ },
+ {
+  "id": 83,
+  "name": "익스트림 Extreme",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 582,
+  "name": "인수엔젤",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 560,
+  "name": "인슈엔젤",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 555,
+  "name": "인스밸리",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 433,
+  "name": "일동제약",
+  "industry_id": 9,
+  "type": "company"
+ },
+ {
+  "id": 333,
+  "name": "자라코리아",
+  "industry_id": 7,
+  "type": "company"
+ },
+ {
+  "id": 447,
+  "name": "잡코리아",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 76,
+  "name": "전담 꿀팁 모음",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 80,
+  "name": "전담정보공유",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 431,
+  "name": "정관장",
+  "industry_id": 9,
+  "type": "brand"
+ },
+ {
+  "id": 275,
+  "name": "제네시스",
+  "industry_id": 3,
+  "type": "brand"
+ },
+ {
+  "id": 157,
+  "name": "제부도해상케이블카 서해랑",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 385,
+  "name": "제주항공",
+  "industry_id": 14,
+  "type": "company"
+ },
+ {
+  "id": 353,
+  "name": "종근당",
+  "industry_id": 9,
+  "type": "company"
+ },
+ {
+  "id": 366,
+  "name": "직방",
+  "industry_id": 11,
+  "type": "company"
+ },
+ {
+  "id": 228,
+  "name": "직폰",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 416,
+  "name": "진에어",
+  "industry_id": 14,
+  "type": "company"
+ },
+ {
+  "id": 158,
+  "name": "철구PC망미점",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 1,
+  "name": "초록우산",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 133,
+  "name": "최대 20시간 오픈형 무선 이어폰",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 554,
+  "name": "친절보험닷컴",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 264,
+  "name": "카카오",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 467,
+  "name": "카카오T",
+  "industry_id": 2,
+  "type": "brand"
+ },
+ {
+  "id": 456,
+  "name": "카카오게임즈",
+  "industry_id": 12,
+  "type": "company"
+ },
+ {
+  "id": 290,
+  "name": "카카오뱅크",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 372,
+  "name": "컴투스",
+  "industry_id": 12,
+  "type": "company"
+ },
+ {
+  "id": 291,
+  "name": "케이뱅크",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 558,
+  "name": "케이에스자산관리",
+  "industry_id": 4,
+  "type": null
+ },
+ {
+  "id": 429,
+  "name": "코웨이",
+  "industry_id": 10,
+  "type": "company"
+ },
+ {
+  "id": 303,
+  "name": "코카콜라코리아",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 428,
+  "name": "쿠쿠",
+  "industry_id": 10,
+  "type": "company"
+ },
+ {
+  "id": 335,
+  "name": "쿠팡",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 511,
+  "name": "쿠팡  m.coupang.com",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 370,
+  "name": "크래프톤",
+  "industry_id": 12,
+  "type": "company"
+ },
+ {
+  "id": 421,
+  "name": "크몽",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 390,
+  "name": "클래스101",
+  "industry_id": 15,
+  "type": "company"
+ },
+ {
+  "id": 324,
+  "name": "클리오",
+  "industry_id": 6,
+  "type": "company"
+ },
+ {
+  "id": 282,
+  "name": "테슬라코리아",
+  "industry_id": 3,
+  "type": "company"
+ },
+ {
+  "id": 266,
+  "name": "토스",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 418,
+  "name": "투어비스",
+  "industry_id": 14,
+  "type": "company"
+ },
+ {
+  "id": 65,
+  "name": "트렌딜Trendeal",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 419,
+  "name": "트립닷컴",
+  "industry_id": 14,
+  "type": "company"
+ },
+ {
+  "id": 341,
+  "name": "티몬",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 381,
+  "name": "티빙",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 51,
+  "name": "파라타항공",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 64,
+  "name": "패션 trend",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 391,
+  "name": "패스트캠퍼스",
+  "industry_id": 15,
+  "type": "company"
+ },
+ {
+  "id": 455,
+  "name": "펄어비스",
+  "industry_id": 12,
+  "type": "company"
+ },
+ {
+  "id": 412,
+  "name": "펫프렌즈",
+  "industry_id": 20,
+  "type": "company"
+ },
+ {
+  "id": 365,
+  "name": "포스코건설",
+  "industry_id": 11,
+  "type": "company"
+ },
+ {
+  "id": 75,
+  "name": "폰뿌",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 334,
+  "name": "푸마코리아",
+  "industry_id": 7,
+  "type": "company"
+ },
+ {
+  "id": 308,
+  "name": "풀무원",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 589,
+  "name": "풀무원디자인밀",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 410,
+  "name": "퓨리나",
+  "industry_id": 20,
+  "type": "brand"
+ },
+ {
+  "id": 287,
+  "name": "하나은행",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 415,
+  "name": "하나투어",
+  "industry_id": 14,
+  "type": "company"
+ },
+ {
+  "id": 374,
+  "name": "하이브",
+  "industry_id": 13,
+  "type": "company"
+ },
+ {
+  "id": 402,
+  "name": "하이트진로",
+  "industry_id": 18,
+  "type": "company"
+ },
+ {
+  "id": 538,
+  "name": "한결같이",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 405,
+  "name": "한국관광공사",
+  "industry_id": 19,
+  "type": "company"
+ },
+ {
+  "id": 449,
+  "name": "한국방송공사",
+  "industry_id": 19,
+  "type": "company"
+ },
+ {
+  "id": 430,
+  "name": "한국야쿠르트",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 406,
+  "name": "한국전력공사",
+  "industry_id": 19,
+  "type": "company"
+ },
+ {
+  "id": 461,
+  "name": "한국타이어",
+  "industry_id": 3,
+  "type": "company"
+ },
+ {
+  "id": 297,
+  "name": "한국투자증권",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 420,
+  "name": "한글과컴퓨터",
+  "industry_id": 2,
+  "type": "company"
+ },
+ {
+  "id": 397,
+  "name": "한샘",
+  "industry_id": 17,
+  "type": "company"
+ },
+ {
+  "id": 444,
+  "name": "한섬",
+  "industry_id": 7,
+  "type": "company"
+ },
+ {
+  "id": 52,
+  "name": "한일공식몰",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 413,
+  "name": "한화생명",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 295,
+  "name": "한화손해보험",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 314,
+  "name": "해태제과",
+  "industry_id": 5,
+  "type": "company"
+ },
+ {
+  "id": 464,
+  "name": "헤라",
+  "industry_id": 6,
+  "type": "brand"
+ },
+ {
+  "id": 50,
+  "name": "헤임타",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 362,
+  "name": "현대건설",
+  "industry_id": 11,
+  "type": "company"
+ },
+ {
+  "id": 399,
+  "name": "현대리바트",
+  "industry_id": 17,
+  "type": "company"
+ },
+ {
+  "id": 176,
+  "name": "현대면세점",
+  "industry_id": 1,
+  "type": null
+ },
+ {
+  "id": 550,
+  "name": "현대모비스 (주)",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 273,
+  "name": "현대자동차",
+  "industry_id": 3,
+  "type": "company"
+ },
+ {
+  "id": 292,
+  "name": "현대카드",
+  "industry_id": 4,
+  "type": "company"
+ },
+ {
+  "id": 584,
+  "name": "현대캐피탈",
+  "industry_id": 3,
+  "type": null
+ },
+ {
+  "id": 549,
+  "name": "현대화",
+  "industry_id": null,
+  "type": null
+ },
+ {
+  "id": 349,
+  "name": "홈플러스",
+  "industry_id": 8,
+  "type": "company"
+ },
+ {
+  "id": 332,
+  "name": "휠라코리아",
+  "industry_id": 7,
+  "type": "company"
+ }
+]

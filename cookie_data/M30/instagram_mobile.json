@@ -1,0 +1,348 @@
+{
+  "persona_code": "M30",
+  "channel": "instagram_mobile",
+  "updated_at": "2026-02-14T20:48:54.341956+00:00",
+  "cookie_count": 34,
+  "cookies": [
+    {
+      "name": "SHOW_FIN_BADGE",
+      "value": "Y",
+      "domain": ".land.naver.com",
+      "path": "/",
+      "expires": 1802614185.143541,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "HT",
+      "value": "HM",
+      "domain": "m.land.naver.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "NAC",
+      "value": "xcUDB8gmqona",
+      "domain": ".naver.com",
+      "path": "/",
+      "expires": 1805638185.28783,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "NACT",
+      "value": "1",
+      "domain": ".naver.com",
+      "path": "/",
+      "expires": 1771164585.301216,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "PROP_TEST_KEY",
+      "value": "1771078184527.03575845bdf8a8399146ca020d58ee517fa20a26a30d196a5067745770f658aa",
+      "domain": ".land.naver.com",
+      "path": "/",
+      "expires": 1805638185.402809,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "PROP_TEST_ID",
+      "value": "324b37e1cf2283d76cf1759fd9834e5fdf8a69cef6f2595aecdc410e63870595",
+      "domain": ".land.naver.com",
+      "path": "/",
+      "expires": 1805638185.402874,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "bnb_tooltip_shown_finance_v1",
+      "value": "true",
+      "domain": ".naver.com",
+      "path": "/",
+      "expires": 1805638186.720892,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "NNB",
+      "value": "NVQRCEZKQKIGS",
+      "domain": ".naver.com",
+      "path": "/",
+      "expires": 1805651400.599409,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.541950923.1771078213",
+      "domain": ".toss.im",
+      "path": "/",
+      "expires": 1805651309.462704,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gcl_au",
+      "value": "1.1.452443036.1771078213",
+      "domain": ".toss.im",
+      "path": "/",
+      "expires": 1778854213,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "BA_DEVICE",
+      "value": "ea23a919-28db-4f5f-ae52-47879451e99b",
+      "domain": ".blog.naver.com",
+      "path": "/",
+      "expires": 1805638242,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "VISIT_LOG_CLEAN",
+      "value": "1",
+      "domain": "news.naver.com",
+      "path": "/",
+      "expires": 1771164680,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ig_did",
+      "value": "59724BBC-2DCC-4A9F-874B-FE7C7F2E53B7",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1802614300.757582,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "datr",
+      "value": "nIKQafIhWDT-LJ-izR-2Oi3z",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1805638300.942558,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "wd",
+      "value": "360x780",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1771688752,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "mid",
+      "value": "aZCCnAABAAE_qPfjnsJK5xChv0Rp",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1805638301,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_hjSessionUser_1949956",
+      "value": "eyJpZCI6IjUzNjJkNjFkLTNjN2YtNTU4ZS1hMGViLTQzNmM4OWM4OWZjMCIsImNyZWF0ZWQiOjE3NzEwNzgyMTM1MjksImV4aXN0aW5nIjp0cnVlfQ==",
+      "domain": ".toss.im",
+      "path": "/",
+      "expires": 1802627309,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "REALESTATE",
+      "value": "1771090104496",
+      "domain": "m.land.naver.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "15210709B897636E22F5CDDF6568B29E.jvm1",
+      "domain": "m.blog.naver.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "rd_challenge",
+      "value": "Q_6hBQPh6KKGOtJnp-EOv0RiVUK5zD3dVgWU0oXnlbpQp2t5kJN42Z2sMo7DYfPlCfJy_78t5LkEyThuYG7XkhlLs-Tw4ZMrFskzcRnkqRCFt4bLV3yxWhDul5AWHw",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1771176619.625125,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "datr",
+      "value": "KrGQaW1mTBfvTXYIEk_HrOXT",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1805650219.80288,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "nhn.realestate.article.rlet_type_cd",
+      "value": "A01",
+      "domain": ".land.naver.com",
+      "path": "/",
+      "expires": 1771696071.994612,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "nhn.realestate.article.trade_type_cd",
+      "value": "\"\"",
+      "domain": ".land.naver.com",
+      "path": "/",
+      "expires": 1771696071.9947,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "nhn.realestate.article.ipaddress_city",
+      "value": "4100000000",
+      "domain": ".land.naver.com",
+      "path": "/",
+      "expires": 1771696071.994746,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "B584426533FAEA026235EF4C4A5A82DD",
+      "domain": "land.naver.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_fwb",
+      "value": "138VeGbkHt4nkkOCBKT0jOY.1771091272084",
+      "domain": ".land.naver.com",
+      "path": "/",
+      "expires": 1805651272.084599,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "wcs_bt",
+      "value": "60717a12f2b3c8:1771091272",
+      "domain": "land.naver.com",
+      "path": "/",
+      "expires": 1805651272.086891,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "NWB",
+      "value": "bbe9422db843b3bb7ddfb3e855affb8a.1771091271407",
+      "domain": ".wcs.naver.com",
+      "path": "/",
+      "expires": 1805651272.121943,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "NWB_LEGACY",
+      "value": "bbe9422db843b3bb7ddfb3e855affb8a.1771091271407",
+      "domain": ".wcs.naver.com",
+      "path": "/",
+      "expires": 1805651272.122003,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "landHomeFlashUseYn",
+      "value": "Y",
+      "domain": ".land.naver.com",
+      "path": "/",
+      "expires": 1776275272,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_LSGYQHG119",
+      "value": "GS2.1.s1771090124$o4$g1$t1771091342$j27$l0$h0",
+      "domain": ".toss.im",
+      "path": "/",
+      "expires": 1805651342.725827,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "4095EEAE07AD7C7427C159AFFCB15A99.jvm1",
+      "domain": "blog.naver.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "BUC",
+      "value": "D1yxVaH9W1isxK-uJOluSmuo33ft1b6N6oqsFDwNGuA=",
+      "domain": ".naver.com",
+      "path": "/",
+      "expires": 1805651400.599563,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "wd",
+      "value": "360x780",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1771706874,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ]
+}

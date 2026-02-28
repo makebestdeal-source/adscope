@@ -1,0 +1,88 @@
+{
+  "persona_code": "M30",
+  "channel": "youtube_surf",
+  "updated_at": "2026-02-28T04:22:31.106852+00:00",
+  "cookie_count": 8,
+  "cookies": [
+    {
+      "name": "CONSENT",
+      "value": "YES+cb.20260215-00-p0.kr+FX+999",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "PREF",
+      "value": "tz=Asia.Seoul&hl=ko&gl=KR",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1806812531.266316,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "GPS",
+      "value": "1",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1772254070.800062,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "YSC",
+      "value": "IhbwFoQ3qVU",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "VISITOR_INFO1_LIVE",
+      "value": "g9AxvSsBRAA",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1787804528.628228,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "VISITOR_PRIVACY_METADATA",
+      "value": "CgJLUhIEGgAgQQ%3D%3D",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1787804528.628372,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "IDE",
+      "value": "AHWqTUm1YPJRO68Rx2wJghrwBAJ_d4F7u17bVB32gB3aYlowDDaFsK_pOBup-IhV",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1806812417.603811,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "CONSISTENCY",
+      "value": "AG2Tqf_-1fZlCtI_2naUSkynJwFtxi7NHp7We7GiZp9EMiLmUTVE9nCXzTIuUoDOKP8POV78Ddsl1GkAFmxvOJXElY6hXifAE2fY-zY1g0UTCJyIfHOWePZ5ZoLolXTp8kGNmDqDdWTFVLFT9Nc5N7c",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1772253131,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ]
+}

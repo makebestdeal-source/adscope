@@ -1,0 +1,146 @@
+{
+  "top20": [
+    {
+      "name": "CJ올리브영",
+      "channel": "youtube_ads",
+      "count": 80,
+      "first": "2026-02-16 07:06:01.633648",
+      "last": "2026-02-16 07:23:20.545125"
+    },
+    {
+      "name": "LG전자",
+      "channel": "youtube_ads",
+      "count": 80,
+      "first": "2026-02-16 07:04:11.963302",
+      "last": "2026-02-16 07:21:54.409377"
+    },
+    {
+      "name": "SK렌터카",
+      "channel": "youtube_ads",
+      "count": 80,
+      "first": "2026-02-16 07:05:07.033351",
+      "last": "2026-02-16 07:22:48.106531"
+    },
+    {
+      "name": "Shinhan Card",
+      "channel": "youtube_ads",
+      "count": 80,
+      "first": "2026-02-16 07:03:05.309776",
+      "last": "2026-02-16 07:20:29.217841"
+    },
+    {
+      "name": "Lotte Card",
+      "channel": "youtube_ads",
+      "count": 78,
+      "first": "2026-02-16 07:05:07.706271",
+      "last": "2026-02-16 07:22:29.389806"
+    },
+    {
+      "name": "Samsung card",
+      "channel": "youtube_ads",
+      "count": 40,
+      "first": "2026-02-16 07:19:39.587131",
+      "last": "2026-02-16 07:19:39.587131"
+    },
+    {
+      "name": "LG이노텍",
+      "channel": "youtube_ads",
+      "count": 20,
+      "first": "2026-02-16 07:04:11.963302",
+      "last": "2026-02-16 07:21:54.409377"
+    },
+    {
+      "name": "CJCGV",
+      "channel": "youtube_ads",
+      "count": 16,
+      "first": "2026-02-16 07:06:01.633648",
+      "last": "2026-02-16 07:23:20.545125"
+    },
+    {
+      "name": "Kakao Games",
+      "channel": "youtube_ads",
+      "count": 16,
+      "first": "2026-02-16 07:19:20.582987",
+      "last": "2026-02-16 07:19:20.582987"
+    },
+    {
+      "name": "SK스토아",
+      "channel": "youtube_ads",
+      "count": 10,
+      "first": "2026-02-16 07:05:07.033351",
+      "last": "2026-02-16 07:22:48.106531"
+    },
+    {
+      "name": "KEYWORDAD",
+      "channel": "kakao_da",
+      "count": 9,
+      "first": "2026-02-15 15:34:22.458101",
+      "last": "2026-02-16 07:20:35.476534"
+    },
+    {
+      "name": "Samsung Electronics America",
+      "channel": "youtube_ads",
+      "count": 8,
+      "first": "2026-02-16 07:19:39.587131",
+      "last": "2026-02-16 07:19:39.587131"
+    },
+    {
+      "name": "kakao_ad_0Qb49",
+      "channel": "kakao_da",
+      "count": 8,
+      "first": "2026-02-15 15:34:22.458101",
+      "last": "2026-02-16 07:20:35.476534"
+    },
+    {
+      "name": "kakao_ad_DAN-1ib3qn9g",
+      "channel": "kakao_da",
+      "count": 8,
+      "first": "2026-02-15 15:34:22.458101",
+      "last": "2026-02-16 07:20:35.476534"
+    },
+    {
+      "name": "kakao_ad_DAN-6a9ogViD",
+      "channel": "kakao_da",
+      "count": 8,
+      "first": "2026-02-15 15:34:22.458101",
+      "last": "2026-02-16 07:20:35.476534"
+    },
+    {
+      "name": "kakao_ad_DAN-MneMXVyQ",
+      "channel": "kakao_da",
+      "count": 8,
+      "first": "2026-02-15 15:34:22.458101",
+      "last": "2026-02-16 07:20:35.476534"
+    },
+    {
+      "name": "kakao_ad_DAN-RzZyqNeV",
+      "channel": "kakao_da",
+      "count": 8,
+      "first": "2026-02-15 15:34:22.458101",
+      "last": "2026-02-16 07:20:35.476534"
+    },
+    {
+      "name": "kakao_ad_DAN-Y86N7lRX",
+      "channel": "kakao_da",
+      "count": 8,
+      "first": "2026-02-15 15:34:22.458101",
+      "last": "2026-02-16 07:20:35.476534"
+    },
+    {
+      "name": "kakao_ad_DAN-kZ32W08B",
+      "channel": "kakao_da",
+      "count": 8,
+      "first": "2026-02-15 15:34:22.458101",
+      "last": "2026-02-16 07:20:35.476534"
+    },
+    {
+      "name": "kakao_ad_DAN-pGPqAasp",
+      "channel": "kakao_da",
+      "count": 8,
+      "first": "2026-02-15 15:34:22.458101",
+      "last": "2026-02-16 07:20:35.476534"
+    }
+  ],
+  "total_unique": 180,
+  "matched": 180
+}

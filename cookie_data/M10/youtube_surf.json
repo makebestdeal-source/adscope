@@ -1,0 +1,100 @@
+{
+  "persona_code": "M10",
+  "channel": "youtube_surf",
+  "updated_at": "2026-02-27T16:45:28.827434+00:00",
+  "cookie_count": 9,
+  "cookies": [
+    {
+      "name": "CONSENT",
+      "value": "YES+cb.20260215-00-p0.kr+FX+999",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "PREF",
+      "value": "tz=Asia.Seoul&hl=ko&gl=KR",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1806770710.246869,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "GPS",
+      "value": "1",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1772212172.745203,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "YSC",
+      "value": "FVIdaFxQcKY",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "VISITOR_INFO1_LIVE",
+      "value": "wp_lVSVD2vA",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1787762704.762563,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "VISITOR_PRIVACY_METADATA",
+      "value": "CgJLUhIEGgAgHQ%3D%3D",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1787762704.762699,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "APC",
+      "value": "AfxxVi4VAajVCaEtLZlT4-1nsDA5mKHdz4IZjGc7y-RdUj3bUfGF_w",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1787762405.505145,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://youtube.com",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "IDE",
+      "value": "AHWqTUmb2cvw7Dsq7io3lfu1zz8cAVTZWOgz1S2xTS--RVFA_3861CNcyTpfMk8f",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1806770466.563732,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "CONSISTENCY",
+      "value": "AAsGu9lCXiE3gBl3UR3-AMePhTyFdvpnWyP-XDaYWU3l2xheReT6HsikaRd5Xv-ugFDM1JN-yAEod23kcwiLMZcl39V1yot5vezsbv5R9lHGB8sPrdXYAGTr1l85LR371X0bV499ThRcysDRNUxC4w",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1772211269,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ]
+}

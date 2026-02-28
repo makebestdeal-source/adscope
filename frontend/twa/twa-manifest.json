@@ -1,0 +1,51 @@
+{
+  "packageId": "kr.adscope.app",
+  "host": "adscope.kr",
+  "name": "AdScope - 광고 인텔리전스",
+  "launcherName": "AdScope",
+  "display": "standalone",
+  "themeColor": "#0f172a",
+  "navigationColor": "#0f172a",
+  "navigationColorDark": "#0f172a",
+  "navigationDividerColor": "#0f172a",
+  "navigationDividerColorDark": "#0f172a",
+  "backgroundColor": "#0f172a",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://adscope.kr/icons/icon-512x512.png",
+  "maskableIconUrl": "https://adscope.kr/icons/icon-maskable-512x512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./adscope-keystore.jks",
+    "alias": "adscope"
+  },
+  "appVersionCode": 1,
+  "appVersionName": "1.0.0",
+  "shortcuts": [
+    {
+      "name": "광고 소재",
+      "shortName": "소재",
+      "url": "/gallery",
+      "iconUrl": "https://adscope.kr/icons/icon-192x192.png"
+    },
+    {
+      "name": "광고주 리포트",
+      "shortName": "리포트",
+      "url": "/advertisers",
+      "iconUrl": "https://adscope.kr/icons/icon-192x192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://adscope.kr/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://adscope.kr/",
+  "minSdkVersion": 23,
+  "orientation": "portrait"
+}

@@ -1,0 +1,264 @@
+[
+    {
+        "group_name": "삼성그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 356, "name": "삼성 갤럭시", "type": "brand"},
+            {"id": 423, "name": "삼성SDI", "type": "company"},
+            {"id": 445, "name": "삼성SDS", "type": "company"},
+            {"id": 361, "name": "삼성물산", "type": "company"},
+            {"id": 283, "name": "삼성생명", "type": "company"},
+            {"id": 541, "name": "삼성생명보험", "type": "brand"},
+            {"id": 542, "name": "삼성생명보험(주)", "type": "company"},
+            {"id": 260, "name": "삼성전자", "type": "company"},
+            {"id": 545, "name": "삼성증권", "type": "company"},
+            {"id": 546, "name": "삼성증권주식회사", "type": "company"},
+            {"id": 293, "name": "삼성카드", "type": "company"},
+            {"id": 547, "name": "삼성카드주식회사", "type": "company"},
+            {"id": 568, "name": "삼성카즈", "type": "brand"},
+            {"id": 524, "name": "삼성하나로", "type": "brand"},
+            {"id": 284, "name": "삼성화재", "type": "company"},
+            {"id": 543, "name": "삼성화재 N잡크루", "type": "brand"},
+            {"id": 598, "name": "삼성화재해상보험 (주)", "type": "company"},
+            {"id": 544, "name": "삼성화재해상보험(주)", "type": "company"},
+            {"id": 508, "name": "Samsung Securities", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "LG그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 360, "name": "LG 시그니처", "type": "brand"},
+            {"id": 320, "name": "LG생활건강", "type": "company"},
+            {"id": 263, "name": "LG유플러스", "type": "company"},
+            {"id": 213, "name": "LG이노텍", "type": "company"},
+            {"id": 212, "name": "LG전자", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "SK그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 214, "name": "SKO", "type": "company"},
+            {"id": 565, "name": "SKV중고차", "type": "brand"},
+            {"id": 526, "name": "SKV중고차  skv중고차.com", "type": "brand"},
+            {"id": 215, "name": "SK렌터카", "type": "company"},
+            {"id": 216, "name": "SK스토아", "type": "company"},
+            {"id": 269, "name": "SK이노베이션", "type": "company"},
+            {"id": 261, "name": "SK텔레콤", "type": "company"},
+            {"id": 424, "name": "SK하이닉스", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "CJ그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 222, "name": "CJ ENM", "type": "company"},
+            {"id": 221, "name": "CJ올리브영", "type": "company"},
+            {"id": 298, "name": "CJ제일제당", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "현대자동차그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 251, "name": "ELDER HYUNDAI", "type": "brand"},
+            {"id": 249, "name": "Ryde Hyundai", "type": "brand"},
+            {"id": 250, "name": "TEXAN HYUNDAI", "type": "brand"},
+            {"id": 274, "name": "기아", "type": "company"},
+            {"id": 275, "name": "제네시스", "type": "brand"},
+            {"id": 548, "name": "양현대", "type": "brand"},
+            {"id": 550, "name": "현대모비스 (주)", "type": "company"},
+            {"id": 273, "name": "현대자동차", "type": "company"},
+            {"id": 292, "name": "현대카드", "type": "company"},
+            {"id": 584, "name": "현대캐피탈", "type": "company"},
+            {"id": 549, "name": "현대화", "type": "brand"}
+        ]
+    },
+    {
+        "group_name": "롯데그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 574, "name": "롯데ON", "type": "brand"},
+            {"id": 336, "name": "롯데쇼핑", "type": "company"},
+            {"id": 470, "name": "롯데시네마", "type": "company"},
+            {"id": 313, "name": "롯데제과", "type": "company"},
+            {"id": 404, "name": "롯데칠성 처음처럼", "type": "brand"},
+            {"id": 301, "name": "롯데칠성음료", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "카카오",
+        "group_type": "company",
+        "members": [
+            {"id": 264, "name": "카카오", "type": "company"},
+            {"id": 467, "name": "카카오T", "type": "brand"},
+            {"id": 456, "name": "카카오게임즈", "type": "company"},
+            {"id": 290, "name": "카카오뱅크", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "네이버",
+        "group_type": "company",
+        "members": [
+            {"id": 2, "name": "네이버", "type": "company"},
+            {"id": 248, "name": "네이버 해피빈 가볼까", "type": "brand"},
+            {"id": 510, "name": "네이버로그인          29CM  29cm.co.kr", "type": "brand"}
+        ]
+    },
+    {
+        "group_name": "GS그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 363, "name": "GS건설", "type": "company"},
+            {"id": 345, "name": "GS리테일", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "신세계그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 337, "name": "신세계", "type": "company"},
+            {"id": 348, "name": "이마트", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "현대백화점그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 176, "name": "현대면세점", "type": "company"},
+            {"id": 444, "name": "한섬", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "한화그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 413, "name": "한화생명", "type": "company"},
+            {"id": 295, "name": "한화손해보험", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "KB금융그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 286, "name": "KB국민은행", "type": "company"},
+            {"id": 229, "name": "KB국민카드", "type": "company"},
+            {"id": 566, "name": "KB오토카", "type": "brand"},
+            {"id": 528, "name": "오토카  kb오토카.com", "type": "brand"}
+        ]
+    },
+    {
+        "group_name": "NH농협금융그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 289, "name": "NH농협은행", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "신한금융그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 285, "name": "신한은행", "type": "company"},
+            {"id": 414, "name": "신한카드", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "하나금융그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 287, "name": "하나은행", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "우리금융그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 288, "name": "우리은행", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "기업은행",
+        "group_type": "company",
+        "members": [
+            {"id": 462, "name": "기업은행", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "아모레퍼시픽",
+        "group_type": "company",
+        "members": [
+            {"id": 316, "name": "아모레퍼시픽", "type": "company"},
+            {"id": 318, "name": "설화수", "type": "brand"},
+            {"id": 321, "name": "더페이스샵", "type": "brand"},
+            {"id": 319, "name": "라네즈", "type": "brand"},
+            {"id": 323, "name": "미샤", "type": "brand"},
+            {"id": 317, "name": "이니스프리", "type": "brand"},
+            {"id": 324, "name": "클리오", "type": "brand"},
+            {"id": 464, "name": "헤라", "type": "brand"}
+        ]
+    },
+    {
+        "group_name": "SPC그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 442, "name": "SPC그룹", "type": "group"},
+            {"id": 304, "name": "스타벅스코리아", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "동원그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 435, "name": "동원F&B", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "대상그룹",
+        "group_type": "group",
+        "members": [
+            {"id": 441, "name": "대상", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "풀무원",
+        "group_type": "company",
+        "members": [
+            {"id": 308, "name": "풀무원", "type": "company"},
+            {"id": 589, "name": "풀무원디자인밀", "type": "brand"}
+        ]
+    },
+    {
+        "group_name": "하이트진로",
+        "group_type": "company",
+        "members": [
+            {"id": 402, "name": "하이트진로", "type": "company"},
+            {"id": 403, "name": "오비맥주", "type": "company"}
+        ]
+    },
+    {
+        "group_name": "중복정리",
+        "group_type": "duplicates",
+        "duplicates": [
+            {"keep_id": 552, "keep_name": "AXA손해보험", "dup_ids": [515, 514]},
+            {"keep_id": 339, "keep_name": "G마켓", "dup_ids": [513]},
+            {"keep_id": 567, "keep_name": "H차차차", "dup_ids": [527]},
+            {"keep_id": 329, "keep_name": "29CM", "dup_ids": [510]},
+            {"keep_id": 565, "keep_name": "SKV중고차", "dup_ids": [526]},
+            {"keep_id": 283, "keep_name": "삼성생명", "dup_ids": [541, 542]},
+            {"keep_id": 545, "keep_name": "삼성증권", "dup_ids": [546]},
+            {"keep_id": 293, "keep_name": "삼성카드", "dup_ids": [547]},
+            {"keep_id": 284, "keep_name": "삼성화재", "dup_ids": [543, 598, 544]},
+            {"keep_id": 328, "keep_name": "무신사", "dup_ids": [509]},
+            {"keep_id": 563, "keep_name": "대출24", "dup_ids": [520]},
+            {"keep_id": 561, "keep_name": "대출나라", "dup_ids": [518]},
+            {"keep_id": 562, "keep_name": "대출세상", "dup_ids": [519]},
+            {"keep_id": 577, "keep_name": "대출역", "dup_ids": [521]},
+            {"keep_id": 335, "keep_name": "쿠팡", "dup_ids": [511]},
+            {"keep_id": 566, "keep_name": "KB오토카", "dup_ids": [528]},
+            {"keep_id": 581, "keep_name": "수입차딜러", "dup_ids": [529]},
+            {"keep_id": 234, "keep_name": "Adrienne's Classic Desserts", "dup_ids": [531]},
+            {"keep_id": 536, "keep_name": "Kripazlovebug 페이지는 Sungboon Editor US과(와) 함께합니다", "dup_ids": [532]}
+        ]
+    }
+]

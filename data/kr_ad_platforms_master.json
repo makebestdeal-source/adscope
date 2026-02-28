@@ -1,0 +1,1241 @@
+{
+  "metadata": {
+    "title": "한국 디지털 광고 매체 마스터 DB",
+    "created": "2026-02-27",
+    "version": "1.0",
+    "total_platforms": 120,
+    "categories": [
+      "search", "display", "video", "social", "commerce",
+      "programmatic_dsp", "programmatic_ssp", "ad_exchange",
+      "ad_network", "media_rep", "reward", "affiliate",
+      "influencer", "ott", "audio", "dooh", "messaging",
+      "map_local", "mobile_game", "retail_media", "adtech"
+    ]
+  },
+  "platforms": [
+    {
+      "id": 1,
+      "operator": "네이버(주)",
+      "platform": "네이버 검색광고",
+      "service": "네이버 SA (Search Ad)",
+      "url": "https://searchad.naver.com",
+      "type": ["search"],
+      "tier": "major",
+      "description": "네이버 검색결과 상단/하단 파워링크, 쇼핑검색, 브랜드검색 등 CPC 기반 검색광고"
+    },
+    {
+      "id": 2,
+      "operator": "네이버(주)",
+      "platform": "네이버 성과형 디스플레이 광고",
+      "service": "네이버 GFA (Glad for Advertiser)",
+      "url": "https://gfa.naver.com",
+      "type": ["display"],
+      "tier": "major",
+      "description": "네이버 메인, 뉴스, 서브 지면 등에 실시간 입찰 기반 배너/네이티브 광고. 스마트채널, 피드, 밴드, 카페 등 노출"
+    },
+    {
+      "id": 3,
+      "operator": "네이버(주)",
+      "platform": "네이버 보장형 디스플레이 광고",
+      "service": "네이버 DA (타임보드, 롤링보드 등)",
+      "url": "https://displayad.naver.com",
+      "type": ["display"],
+      "tier": "major",
+      "description": "네이버 메인 페이지 고정 지면 보장형 배너 광고 (타임보드, 롤링보드, 브랜딩DA 등). 높은 최소 단가"
+    },
+    {
+      "id": 4,
+      "operator": "네이버(주)",
+      "platform": "네이버 쇼핑광고",
+      "service": "네이버 쇼핑 검색광고 / 쇼핑 프로모션",
+      "url": "https://shopping.naver.com",
+      "type": ["commerce", "search"],
+      "tier": "major",
+      "description": "네이버 쇼핑탭 파워링크, 쇼핑검색광고, 쇼핑 프로모션 캠페인. 스마트스토어 셀러 대상"
+    },
+    {
+      "id": 5,
+      "operator": "네이버(주)",
+      "platform": "네이버 스마트플레이스 광고",
+      "service": "네이버 지역소상공인 광고",
+      "url": "https://new.smartplace.naver.com",
+      "type": ["map_local", "search"],
+      "tier": "major",
+      "description": "네이버 지도 내 업체 광고, 지역 타겟 검색광고"
+    },
+    {
+      "id": 6,
+      "operator": "네이버웹툰(주)",
+      "platform": "네이버 웹툰 광고",
+      "service": "웹툰 DA / PPL 스폰서십",
+      "url": "https://webtoonad.naver.com",
+      "type": ["display", "video"],
+      "tier": "major",
+      "description": "웹툰/웹소설 서비스 내 배너, 인스트림 동영상 광고 및 PPL 스폰서십 광고"
+    },
+    {
+      "id": 7,
+      "operator": "네이버(주)",
+      "platform": "네이버 블로그/카페 광고",
+      "service": "네이버 GFA (블로그/카페 지면)",
+      "url": "https://gfa.naver.com",
+      "type": ["display", "social"],
+      "tier": "major",
+      "description": "네이버 블로그, 카페 피드 내 성과형 디스플레이 광고 지면"
+    },
+    {
+      "id": 8,
+      "operator": "네이버(주)",
+      "platform": "네이버 밴드 광고",
+      "service": "밴드 피드 광고",
+      "url": "https://band.us",
+      "type": ["social", "display"],
+      "tier": "major",
+      "description": "밴드 피드 내 네이티브 광고, GFA 연동 지면"
+    },
+    {
+      "id": 9,
+      "operator": "Google LLC",
+      "platform": "구글 검색광고",
+      "service": "Google Ads - Search",
+      "url": "https://ads.google.com",
+      "type": ["search"],
+      "tier": "major",
+      "description": "구글 검색결과 텍스트 광고 (CPC). 한국 검색 점유율 약 30%"
+    },
+    {
+      "id": 10,
+      "operator": "Google LLC",
+      "platform": "구글 디스플레이 네트워크",
+      "service": "Google Ads - GDN (Google Display Network)",
+      "url": "https://ads.google.com",
+      "type": ["display", "ad_network"],
+      "tier": "major",
+      "description": "구글 GDN 배너/반응형 광고. 국내 언론사, 커뮤니티 등 제휴 매체 200만+에 노출"
+    },
+    {
+      "id": 11,
+      "operator": "Google LLC",
+      "platform": "유튜브 광고",
+      "service": "Google Ads - YouTube Ads",
+      "url": "https://ads.google.com",
+      "type": ["video", "display"],
+      "tier": "major",
+      "description": "유튜브 인스트림(TrueView), 범퍼, 디스커버리, 숏츠 광고. 한국 MAU 4,600만+"
+    },
+    {
+      "id": 12,
+      "operator": "Google LLC",
+      "platform": "구글 쇼핑 광고",
+      "service": "Google Ads - Shopping",
+      "url": "https://ads.google.com",
+      "type": ["commerce", "search"],
+      "tier": "major",
+      "description": "구글 쇼핑탭 상품 리스팅 광고 (PLA). Merchant Center 연동"
+    },
+    {
+      "id": 13,
+      "operator": "Google LLC",
+      "platform": "구글 애드몹",
+      "service": "Google AdMob",
+      "url": "https://admob.google.com",
+      "type": ["mobile_game", "ad_network"],
+      "tier": "major",
+      "description": "모바일 앱 내 배너, 전면, 리워드 동영상 광고 네트워크. 국내 대다수 앱에서 사용"
+    },
+    {
+      "id": 14,
+      "operator": "Google LLC",
+      "platform": "구글 애드 매니저",
+      "service": "Google Ad Manager (GAM / DFP)",
+      "url": "https://admanager.google.com",
+      "type": ["ad_exchange", "programmatic_ssp"],
+      "tier": "major",
+      "description": "퍼블리셔용 광고 서버 + AdX(Ad Exchange). 국내 주요 언론사 대부분 사용"
+    },
+    {
+      "id": 15,
+      "operator": "Meta Platforms, Inc.",
+      "platform": "페이스북 광고",
+      "service": "Meta Ads Manager - Facebook",
+      "url": "https://business.facebook.com",
+      "type": ["social", "display", "video"],
+      "tier": "major",
+      "description": "페이스북 피드, 스토리, 릴스 광고. 한국 MAU 약 1,100만"
+    },
+    {
+      "id": 16,
+      "operator": "Meta Platforms, Inc.",
+      "platform": "인스타그램 광고",
+      "service": "Meta Ads Manager - Instagram",
+      "url": "https://business.facebook.com",
+      "type": ["social", "display", "video"],
+      "tier": "major",
+      "description": "인스타그램 피드, 스토리, 릴스, 탐색 광고. 한국 MAU 약 2,200만"
+    },
+    {
+      "id": 17,
+      "operator": "Meta Platforms, Inc.",
+      "platform": "메타 오디언스 네트워크",
+      "service": "Meta Audience Network",
+      "url": "https://www.facebook.com/audiencenetwork",
+      "type": ["ad_network", "mobile_game"],
+      "tier": "major",
+      "description": "메타 데이터 기반 외부 앱/사이트 광고 네트워크"
+    },
+    {
+      "id": 18,
+      "operator": "카카오(주)",
+      "platform": "카카오모먼트",
+      "service": "카카오 비즈보드 / 디스플레이 / 동영상",
+      "url": "https://moment.kakao.com",
+      "type": ["display", "social", "video", "messaging"],
+      "tier": "major",
+      "description": "카카오톡 비즈보드(채팅탭 상단), 다음 포털, 카카오서비스 전체에 노출되는 통합 광고 플랫폼"
+    },
+    {
+      "id": 19,
+      "operator": "카카오(주)",
+      "platform": "카카오톡 채널 메시지 광고",
+      "service": "카카오 비즈메시지",
+      "url": "https://business.kakao.com",
+      "type": ["messaging"],
+      "tier": "major",
+      "description": "카카오톡 채널 친구 대상 메시지형 광고 (알림톡, 친구톡). 카카오모먼트에서 집행"
+    },
+    {
+      "id": 20,
+      "operator": "카카오(주)",
+      "platform": "다음 디스플레이 광고",
+      "service": "Daum DA (카카오모먼트 연동)",
+      "url": "https://moment.kakao.com",
+      "type": ["display"],
+      "tier": "major",
+      "description": "다음 메인, 뉴스, 카페 등 보장형/성과형 디스플레이 광고"
+    },
+    {
+      "id": 21,
+      "operator": "카카오(주)",
+      "platform": "카카오 키워드 광고",
+      "service": "다음 검색광고",
+      "url": "https://keywordad.kakao.com",
+      "type": ["search"],
+      "tier": "major",
+      "description": "다음 검색결과 텍스트 키워드 광고 (CPC)"
+    },
+    {
+      "id": 22,
+      "operator": "카카오(주)",
+      "platform": "카카오 상품 카탈로그 광고",
+      "service": "카카오 다이나믹 리타겟팅",
+      "url": "https://moment.kakao.com",
+      "type": ["commerce", "display"],
+      "tier": "major",
+      "description": "상품 피드 기반 리타겟팅 광고. 카카오모먼트에서 설정"
+    },
+    {
+      "id": 23,
+      "operator": "카카오(주)",
+      "platform": "카카오맵 광고",
+      "service": "카카오맵 매장 노출 / 검색광고",
+      "url": "https://business.kakao.com",
+      "type": ["map_local"],
+      "tier": "major",
+      "description": "카카오맵 내 매장 정보 노출 및 비즈니스 프로필 기반 지역 광고"
+    },
+    {
+      "id": 24,
+      "operator": "ByteDance Ltd.",
+      "platform": "틱톡 광고",
+      "service": "TikTok Ads Manager",
+      "url": "https://business.tiktok.com",
+      "type": ["video", "social"],
+      "tier": "major",
+      "description": "틱톡 인피드, 탑뷰, 브랜디드 해시태그 챌린지 등. 한국 MAU 약 1,000만"
+    },
+    {
+      "id": 25,
+      "operator": "(주)비바리퍼블리카",
+      "platform": "토스애즈",
+      "service": "Toss Ads",
+      "url": "https://tossads.toss.im",
+      "type": ["display", "retail_media"],
+      "tier": "mid",
+      "description": "토스 앱 혜택탭 배너, 브랜드 광고, 숏폼 광고. 결제 데이터 기반 타겟팅. 가입자 3,000만"
+    },
+    {
+      "id": 26,
+      "operator": "(주)당근",
+      "platform": "당근 광고",
+      "service": "당근비즈니스 (전문가모드)",
+      "url": "https://business.daangn.com",
+      "type": ["display", "map_local", "social"],
+      "tier": "mid",
+      "description": "하이퍼로컬 타겟 광고. 지역 피드 네이티브 광고, 브랜드프로필. MAU 1,800만"
+    },
+    {
+      "id": 27,
+      "operator": "쿠팡(주)",
+      "platform": "쿠팡애즈",
+      "service": "Coupang Ads",
+      "url": "https://ads.coupang.com",
+      "type": ["commerce", "search", "retail_media"],
+      "tier": "major",
+      "description": "쿠팡 검색결과/추천 영역 CPC 상품 광고, 브랜드존, 디스플레이 광고. 리테일 미디어 1위"
+    },
+    {
+      "id": 28,
+      "operator": "쿠팡(주)",
+      "platform": "쿠팡이츠 광고",
+      "service": "Coupang Eats Ads",
+      "url": "https://ads.coupangeats.com",
+      "type": ["commerce", "map_local"],
+      "tier": "mid",
+      "description": "쿠팡이츠 앱 내 음식점 노출 광고"
+    },
+    {
+      "id": 29,
+      "operator": "쿠팡(주)",
+      "platform": "쿠팡플레이 광고",
+      "service": "Coupang Play Ads",
+      "url": "https://ads.coupang.com",
+      "type": ["video", "ott"],
+      "tier": "mid",
+      "description": "쿠팡플레이 OTT 동영상 프리롤/미드롤 광고, 브랜디드 콘텐츠"
+    },
+    {
+      "id": 30,
+      "operator": "(주)우아한형제들",
+      "platform": "배달의민족 광고",
+      "service": "배민 셀프서비스 광고 / 배민 DA",
+      "url": "https://ceo.baemin.com",
+      "type": ["commerce", "display", "retail_media"],
+      "tier": "mid",
+      "description": "배민 앱 울트라콜, 오픈리스트 점주 광고 + 기업 대상 DA 배너/팝업 광고"
+    },
+    {
+      "id": 31,
+      "operator": "딜리버리히어로 코리아(주)",
+      "platform": "요기요 광고",
+      "service": "요기요 광고",
+      "url": "https://ceo.yogiyo.co.kr",
+      "type": ["commerce", "retail_media"],
+      "tier": "mid",
+      "description": "요기요 앱 내 음식점 상위 노출 광고 (1개동 월 39,900원 고정가)"
+    },
+    {
+      "id": 32,
+      "operator": "(주)야놀자",
+      "platform": "야놀자 광고",
+      "service": "야놀자 숙박 AD",
+      "url": "https://www.yanolja.com",
+      "type": ["commerce", "retail_media"],
+      "tier": "mid",
+      "description": "야놀자 앱 내 숙박 상위 노출 광고 (AD 표시)"
+    },
+    {
+      "id": 33,
+      "operator": "(주)위드이노베이션",
+      "platform": "여기어때 광고",
+      "service": "여기어때 AD",
+      "url": "https://www.goodchoice.kr",
+      "type": ["commerce", "retail_media"],
+      "tier": "mid",
+      "description": "여기어때 앱 내 숙박/레저 상위 노출 광고"
+    },
+    {
+      "id": 34,
+      "operator": "(주)지마켓",
+      "platform": "지마켓/옥션 광고",
+      "service": "G마켓 통합 커머스 광고",
+      "url": "https://doc.gmarket.co.kr",
+      "type": ["commerce", "search", "display"],
+      "tier": "mid",
+      "description": "지마켓/옥션 키워드 검색광고, DA 배너, 기획전 광고"
+    },
+    {
+      "id": 35,
+      "operator": "(주)11번가",
+      "platform": "11번가 광고",
+      "service": "11번가 AI캠페인 / 키워드 광고",
+      "url": "https://ads.11st.co.kr",
+      "type": ["commerce", "search"],
+      "tier": "mid",
+      "description": "11번가 검색 키워드광고, 추천상품/파워상품 노출, AI 자동 캠페인"
+    },
+    {
+      "id": 36,
+      "operator": "(주)무신사",
+      "platform": "무신사 광고",
+      "service": "무신사 브랜드 광고 / AI 광고서비스",
+      "url": "https://www.musinsa.com",
+      "type": ["commerce", "retail_media", "display"],
+      "tier": "mid",
+      "description": "무신사 앱 내 브랜드 배너, 검색광고, AI 기반 자동 광고. 8,000+입점 브랜드. MAU 818만"
+    },
+    {
+      "id": 37,
+      "operator": "(주)에이블리코퍼레이션",
+      "platform": "에이블리 광고",
+      "service": "에이블리 메타 협력광고 / 셀러 광고",
+      "url": "https://www.a-bly.com",
+      "type": ["commerce", "retail_media"],
+      "tier": "mid",
+      "description": "에이블리 앱 내 셀러 광고, 메타 협력광고(Collaborative Ads). MAU 918만"
+    },
+    {
+      "id": 38,
+      "operator": "(주)카카오스타일",
+      "platform": "지그재그 광고",
+      "service": "지그재그 셀러 광고",
+      "url": "https://zigzag.kr",
+      "type": ["commerce", "retail_media"],
+      "tier": "mid",
+      "description": "지그재그 앱 내 상품 검색/추천 광고. MAU 480만"
+    },
+    {
+      "id": 39,
+      "operator": "(주)CJ올리브영",
+      "platform": "올리브영 광고",
+      "service": "올리브영 리테일 미디어",
+      "url": "https://www.oliveyoung.co.kr",
+      "type": ["commerce", "retail_media"],
+      "tier": "mid",
+      "description": "올리브영 앱/웹 내 브랜드 검색광고, 배너, 상품 추천 광고. MAU 905만"
+    },
+    {
+      "id": 40,
+      "operator": "(주)컬리",
+      "platform": "컬리 광고",
+      "service": "컬리 브랜드 광고",
+      "url": "https://www.kurly.com",
+      "type": ["commerce", "retail_media"],
+      "tier": "mid",
+      "description": "마켓컬리 앱 내 브랜드관, 배너, 기획전 광고"
+    },
+    {
+      "id": 41,
+      "operator": "(주)오늘의집",
+      "platform": "오늘의집 광고",
+      "service": "오늘의집 브랜드 광고",
+      "url": "https://ohou.se",
+      "type": ["commerce", "retail_media", "social"],
+      "tier": "mid",
+      "description": "오늘의집 앱 내 인테리어/가구 브랜드 광고, 검색광고, 콘텐츠 광고"
+    },
+    {
+      "id": 42,
+      "operator": "쿠팡(주)",
+      "platform": "쿠팡파트너스",
+      "service": "Coupang Partners (어필리에이트)",
+      "url": "https://partners.coupang.com",
+      "type": ["affiliate", "commerce"],
+      "tier": "mid",
+      "description": "쿠팡 제휴마케팅. 블로거/크리에이터가 상품 링크 공유 후 판매 수수료 수령"
+    },
+    {
+      "id": 43,
+      "operator": "KT그룹 나스미디어(주)",
+      "platform": "나스미디어 NAP",
+      "service": "NAS Ad Platform (DSP/SSP/ADX)",
+      "url": "https://nasadplatform.com",
+      "type": ["programmatic_dsp", "programmatic_ssp", "ad_exchange", "media_rep"],
+      "tier": "mid",
+      "description": "국내 미디어렙 1위. DSP, DSP Video, AdX, SSP, CPS, 리워드, NCPI 통합 플랫폼. 점유율 44%"
+    },
+    {
+      "id": 44,
+      "operator": "CJ ENM(주) / 메조미디어",
+      "platform": "메조미디어",
+      "service": "메조미디어 미디어렙 / 광고 대행",
+      "url": "https://www.mezzomedia.co.kr",
+      "type": ["media_rep", "display"],
+      "tier": "mid",
+      "description": "CJ 계열 미디어렙. 네이버/카카오/메타 공식 파트너. 시장점유율 27%"
+    },
+    {
+      "id": 45,
+      "operator": "SK스퀘어(주) / 인크로스",
+      "platform": "인크로스",
+      "service": "인크로스 미디어렙 / 스텔라이즈 AI PPL",
+      "url": "https://www.incross.com",
+      "type": ["media_rep", "display", "video"],
+      "tier": "mid",
+      "description": "SK 계열 미디어렙. 퍼포먼스 마케팅, 커머스 운영, AI PPL 플랫폼 스텔라이즈. 점유율 18%"
+    },
+    {
+      "id": 46,
+      "operator": "SBS미디어홀딩스 / DMC미디어",
+      "platform": "DMC미디어",
+      "service": "DMC리포트 / 미디어렙",
+      "url": "https://www.dmcreport.co.kr",
+      "type": ["media_rep"],
+      "tier": "mid",
+      "description": "SBS 계열 미디어렙. 디지털 광고 시장 보고서(DMC리포트) 발행. 점유율 11%"
+    },
+    {
+      "id": 47,
+      "operator": "(주)모비데이즈",
+      "platform": "모비데이즈",
+      "service": "모비데이즈 미디어렙 / 퍼포먼스",
+      "url": "https://www.mobidays.com",
+      "type": ["media_rep", "adtech"],
+      "tier": "mid",
+      "description": "모바일 전문 애드테크 기업. 구글/네이버/카카오/메타/틱톡 공식 파트너. 코스닥 상장"
+    },
+    {
+      "id": 48,
+      "operator": "KT그룹 / (주)플레이디",
+      "platform": "플레이디",
+      "service": "플레이디 / 메이블",
+      "url": "https://www.playd.com",
+      "type": ["media_rep", "adtech"],
+      "tier": "mid",
+      "description": "KT 온라인 광고 대행사. 틱톡 공식 리셀러. 메이블(MABL) 퍼포먼스 플랫폼"
+    },
+    {
+      "id": 49,
+      "operator": "NHN(주)",
+      "platform": "NHN ACE / 에이스트레이더",
+      "service": "ACE Trader (DSP)",
+      "url": "https://acetrader.co.kr",
+      "type": ["programmatic_dsp", "ad_network", "display"],
+      "tier": "mid",
+      "description": "NHN 그룹 통합 DSP. DMP 기반 리타겟팅, 네트워크 배너. NHN 계열 사이트 + 외부 매체 노출"
+    },
+    {
+      "id": 50,
+      "operator": "(주)모비온",
+      "platform": "모비온",
+      "service": "Mobon DSP / 모비센스",
+      "url": "https://www.mobon.net",
+      "type": ["programmatic_dsp", "ad_network", "display"],
+      "tier": "mid",
+      "description": "빅데이터 기반 리타겟팅 DSP. 200여개 제휴 네트워크. 고정 CPC 운영. 모비센스(타겟팅 솔루션)"
+    },
+    {
+      "id": 51,
+      "operator": "(주)와이더플래닛",
+      "platform": "타겟팅게이츠",
+      "service": "Targeting Gates (DMP/DSP)",
+      "url": "https://www.targetinggates.com",
+      "type": ["programmatic_dsp", "display"],
+      "tier": "mid",
+      "description": "DMP 기반 DSP. 카드사 오프라인 결제 데이터 결합 타겟팅. 국내 최대 규모 비식별 데이터"
+    },
+    {
+      "id": 52,
+      "operator": "Criteo SA",
+      "platform": "크리테오",
+      "service": "Criteo Commerce Media Platform",
+      "url": "https://www.criteo.com/kr",
+      "type": ["programmatic_dsp", "commerce", "display"],
+      "tier": "mid",
+      "description": "글로벌 커머스 미디어 DSP. AI 기반 리타겟팅, 쇼핑 여정 전환 최적화. 한국 시장 활발"
+    },
+    {
+      "id": 53,
+      "operator": "(주)클릭몬",
+      "platform": "클릭몬",
+      "service": "ClickMon 네트워크 배너",
+      "url": "https://www.clickmon.co.kr",
+      "type": ["ad_network", "display"],
+      "tier": "mid",
+      "description": "국내 최대 네트워크 배너 광고 플랫폼. 블로그/개인 매체 대상 CPC 배너 광고"
+    },
+    {
+      "id": 54,
+      "operator": "(주)리얼클릭",
+      "platform": "리얼클릭",
+      "service": "RealClick SSP / Real SSP",
+      "url": "https://realclick.co.kr",
+      "type": ["programmatic_ssp", "ad_network"],
+      "tier": "mid",
+      "description": "SSP 플랫폼. RTB 기반 고단가 광고 우선 노출. 다수 네트워크사 연동"
+    },
+    {
+      "id": 55,
+      "operator": "(주)ADOP",
+      "platform": "ADOP",
+      "service": "COMPASS (SSP)",
+      "url": "https://www.adop.cc",
+      "type": ["programmatic_ssp"],
+      "tier": "niche",
+      "description": "Google Certified Publishing Partner. SSP 플랫폼 COMPASS. 퍼블리셔 광고 수익 최적화"
+    },
+    {
+      "id": 56,
+      "operator": "(주)TPMN",
+      "platform": "TPMN",
+      "service": "TPMN 프로그래매틱 광고 수익화",
+      "url": "https://tpmn.co.kr",
+      "type": ["programmatic_ssp", "ad_network"],
+      "tier": "niche",
+      "description": "AI 기반 모바일 광고 수익화 SSP. 데이터 드리븐 광고 최적화"
+    },
+    {
+      "id": 57,
+      "operator": "(주)애드팝콘",
+      "platform": "애드팝콘",
+      "service": "AdPopcorn SSP / 오퍼월",
+      "url": "https://www.adpopcorn.com",
+      "type": ["programmatic_ssp", "reward", "mobile_game"],
+      "tier": "mid",
+      "description": "모바일 앱 광고 수익화 SSP + 오퍼월. 12,000+ 파트너. 리워드 비디오, 클릭형 광고"
+    },
+    {
+      "id": 58,
+      "operator": "엔비티(주)",
+      "platform": "캐시슬라이드",
+      "service": "Cashslide (잠금화면 리워드)",
+      "url": "https://www.cashslide.co",
+      "type": ["reward", "display"],
+      "tier": "mid",
+      "description": "잠금화면 리워드 광고 미디어. 2,700만 누적 사용자. 1등 첫화면 미디어"
+    },
+    {
+      "id": 59,
+      "operator": "엔비티(주)",
+      "platform": "NBT ADS / 애디슨 오퍼월",
+      "service": "AdiSON Offerwall",
+      "url": "https://adison.co",
+      "type": ["reward", "ad_network"],
+      "tier": "mid",
+      "description": "국내 No.1 오퍼월 네트워크. 네이버 웹툰/시리즈, 네이버페이, 캐시슬라이드 등 프리미엄 매체 제휴"
+    },
+    {
+      "id": 60,
+      "operator": "(주)버즈빌",
+      "platform": "버즈빌",
+      "service": "BuzzVille 리워드 광고 플랫폼",
+      "url": "https://www.buzzvil.com",
+      "type": ["reward", "display", "ad_network"],
+      "tier": "mid",
+      "description": "리워드 모바일 광고 플랫폼. 잠금화면/인앱 리워드 광고. IPO 추진 기업"
+    },
+    {
+      "id": 61,
+      "operator": "(주)링크프라이스",
+      "platform": "링크프라이스",
+      "service": "LinkPrice 어필리에이트",
+      "url": "https://www.linkprice.com",
+      "type": ["affiliate"],
+      "tier": "mid",
+      "description": "국내 제휴마케팅 선두. 광고주(머천트)와 어필리에이트 연결. CPA/CPS 과금"
+    },
+    {
+      "id": 62,
+      "operator": "(주)오드엠",
+      "platform": "애드픽",
+      "service": "Adpick 제휴마케팅",
+      "url": "https://www.adpick.co.kr",
+      "type": ["affiliate", "influencer"],
+      "tier": "niche",
+      "description": "CPC/CPA/CPI 기반 제휴마케팅. 인플루언서/블로거 대상 광고 수익 플랫폼"
+    },
+    {
+      "id": 63,
+      "operator": "(주)텐핑",
+      "platform": "텐핑",
+      "service": "Tenping 제휴마케팅",
+      "url": "https://www.tenping.kr",
+      "type": ["affiliate"],
+      "tier": "niche",
+      "description": "CPC/CPA/CPI 제휴마케팅 플랫폼. 클릭/설치/구매 기반 보상"
+    },
+    {
+      "id": 64,
+      "operator": "레뷰코퍼레이션(주)",
+      "platform": "레뷰",
+      "service": "REVU 인플루언서 마케팅",
+      "url": "https://www.revu.net",
+      "type": ["influencer", "social"],
+      "tier": "mid",
+      "description": "국내 최대 인플루언서 마케팅 플랫폼. 110만 인플루언서. 월 1.8만 캠페인. 블로그/인스타/유튜브/숏폼"
+    },
+    {
+      "id": 65,
+      "operator": "(주)아이지에이웍스",
+      "platform": "아이지에이웍스",
+      "service": "IGAWorks (트레이딩웍스/애드브릭스)",
+      "url": "https://www.igaworks.com",
+      "type": ["adtech", "programmatic_dsp", "mobile_game"],
+      "tier": "mid",
+      "description": "마케팅 자동화/데이터 분석 SaaS. 애드브릭스(앱 분석), 트레이딩웍스(DSP). 모바일 광고 전문"
+    },
+    {
+      "id": 66,
+      "operator": "(주)매드업",
+      "platform": "매드업 레버",
+      "service": "Lever by MADUP",
+      "url": "https://www.madup.com",
+      "type": ["adtech", "programmatic_dsp"],
+      "tier": "niche",
+      "description": "AI 기반 광고 자동화 플랫폼. 멀티채널 광고 통합 관리 SaaS"
+    },
+    {
+      "id": 67,
+      "operator": "(주)에코마케팅",
+      "platform": "에코마케팅",
+      "service": "에코마케팅 퍼포먼스",
+      "url": "https://www.ecmk.co.kr",
+      "type": ["adtech"],
+      "tier": "mid",
+      "description": "D2C 퍼포먼스 마케팅 전문. 자체 브랜드 육성 + 광고 대행. 코스닥 상장"
+    },
+    {
+      "id": 68,
+      "operator": "(주)와이즈버즈",
+      "platform": "와이즈버즈",
+      "service": "Wisebirds (AAM 등)",
+      "url": "https://www.wisebirds.com",
+      "type": ["adtech", "programmatic_dsp"],
+      "tier": "niche",
+      "description": "퍼포먼스 마케팅 전문. 아프리카TV AAM 광고 플랫폼 운영. 멀티채널 자동화"
+    },
+    {
+      "id": 69,
+      "operator": "(주)이엠넷",
+      "platform": "이엠넷",
+      "service": "EMNET 퍼포먼스",
+      "url": "https://www.emnet.co.kr",
+      "type": ["adtech", "media_rep"],
+      "tier": "niche",
+      "description": "검색광고/디스플레이 최적화 전문. 네이버/카카오/구글 공식 파트너"
+    },
+    {
+      "id": 70,
+      "operator": "숲(SOOP, 구 아프리카TV)",
+      "platform": "SOOP 광고",
+      "service": "SOOP/아프리카TV DA / AAM",
+      "url": "https://adv.afreecatv.com",
+      "type": ["video", "display"],
+      "tier": "mid",
+      "description": "라이브 스트리밍 인스트림/배너 광고. BJ 카테고리/연령/성별 타겟팅. MZ세대 특화"
+    },
+    {
+      "id": 71,
+      "operator": "CJ ENM(주) / (주)티빙",
+      "platform": "티빙 광고",
+      "service": "TVING 광고형 요금제 / 통합 OTT 광고 플랫폼",
+      "url": "https://www.tving.com",
+      "type": ["ott", "video"],
+      "tier": "mid",
+      "description": "티빙+웨이브 통합 OTT 광고 플랫폼(2025.10 출범). MAU 1,000만+. 프리롤/미드롤 동영상 광고"
+    },
+    {
+      "id": 72,
+      "operator": "(주)콘텐츠웨이브",
+      "platform": "웨이브 광고",
+      "service": "Wavve 광고형 스탠다드",
+      "url": "https://www.wavve.com",
+      "type": ["ott", "video"],
+      "tier": "mid",
+      "description": "지상파(KBS/MBC/SBS) 합작 OTT. 광고형 월 5,500원. 티빙과 통합 광고 플랫폼 운영"
+    },
+    {
+      "id": 73,
+      "operator": "넷플릭스 서비시즈 코리아(유)",
+      "platform": "넷플릭스 광고",
+      "service": "Netflix 광고 지원 요금제",
+      "url": "https://www.netflix.com",
+      "type": ["ott", "video"],
+      "tier": "major",
+      "description": "넷플릭스 광고 요금제(월 5,500원). 한국 MAU 1,200만+. 프리미엄 동영상 광고"
+    },
+    {
+      "id": 74,
+      "operator": "Spotify AB",
+      "platform": "스포티파이 광고",
+      "service": "Spotify Ad Studio",
+      "url": "https://ads.spotify.com",
+      "type": ["audio", "display"],
+      "tier": "niche",
+      "description": "오디오/비디오/디스플레이 광고. 팟캐스트 광고. 한국 서비스 중"
+    },
+    {
+      "id": 75,
+      "operator": "(주)카카오엔터테인먼트",
+      "platform": "멜론 광고",
+      "service": "Melon DA / 오디오 광고",
+      "url": "https://www.melon.com",
+      "type": ["audio", "display"],
+      "tier": "mid",
+      "description": "국내 음원 스트리밍 1위. 배너 디스플레이 + 오디오 프리롤 광고"
+    },
+    {
+      "id": 76,
+      "operator": "SK텔레콤(주)",
+      "platform": "플로 광고",
+      "service": "FLO 오디오/배너 광고",
+      "url": "https://www.music-flo.com",
+      "type": ["audio", "display"],
+      "tier": "niche",
+      "description": "SK 계열 음원 스트리밍. 배너 및 오디오 광고 상품"
+    },
+    {
+      "id": 77,
+      "operator": "(주)팟빵",
+      "platform": "팟빵 광고",
+      "service": "팟빵 오디오/이미지/후토크 광고",
+      "url": "https://www.podbbang.com",
+      "type": ["audio"],
+      "tier": "niche",
+      "description": "국내 1위 팟캐스트 플랫폼. 오디오 프리롤(CPL 20원), 이미지 배너, 후토크PPL 광고"
+    },
+    {
+      "id": 78,
+      "operator": "FSN(주)",
+      "platform": "딜로",
+      "service": "DILO 디지털 오디오 광고",
+      "url": "https://www.dilo.co.kr",
+      "type": ["audio"],
+      "tier": "niche",
+      "description": "디지털 오디오 광고 플랫폼. 팟캐스트/음악 앱 대상 프로그래매틱 오디오 광고"
+    },
+    {
+      "id": 79,
+      "operator": "LG유플러스(주)",
+      "platform": "U+AD",
+      "service": "LG U+ 광고 플랫폼",
+      "url": "https://www.lguplus.com",
+      "type": ["display", "video"],
+      "tier": "niche",
+      "description": "TV(IPTV)/모바일 통합 광고 운영 플랫폼. 어드레서블 TV 광고"
+    },
+    {
+      "id": 80,
+      "operator": "SK브로드밴드(주)",
+      "platform": "Btv 광고",
+      "service": "SK Btv 어드레서블 광고",
+      "url": "https://www.skbroadband.com",
+      "type": ["video", "display"],
+      "tier": "niche",
+      "description": "SK Btv IPTV 타겟 광고. 데이터 기반 어드레서블 TV 광고 상품"
+    },
+    {
+      "id": 81,
+      "operator": "KT(주)",
+      "platform": "올레TV 광고",
+      "service": "KT 올레tv 광고",
+      "url": "https://tv.kt.com",
+      "type": ["video", "display"],
+      "tier": "niche",
+      "description": "KT 올레tv IPTV 광고. VOD 프리롤/포스트롤, 어드레서블 광고"
+    },
+    {
+      "id": 82,
+      "operator": "삼성전자(주)",
+      "platform": "삼성 광고",
+      "service": "Samsung Ads / 삼성TV Plus",
+      "url": "https://www.samsung.com/us/business/samsung-ads/",
+      "type": ["video", "display"],
+      "tier": "niche",
+      "description": "삼성 스마트TV, 갤럭시 기기 내 광고. Samsung TV Plus FAST 채널 광고"
+    },
+    {
+      "id": 83,
+      "operator": "원스토어(주)",
+      "platform": "원스토어 광고",
+      "service": "ONE store Ads",
+      "url": "https://www.onestore.co.kr",
+      "type": ["mobile_game", "display"],
+      "tier": "niche",
+      "description": "통신3사 합작 앱스토어. 앱 추천/배너 광고. 갤럭시 스토어 연동"
+    },
+    {
+      "id": 84,
+      "operator": "Unity Technologies",
+      "platform": "유니티 애드",
+      "service": "Unity Ads",
+      "url": "https://unity.com/products/unity-ads",
+      "type": ["mobile_game", "ad_network", "video"],
+      "tier": "mid",
+      "description": "모바일 게임 동영상/리워드 광고 네트워크. 유니티 엔진 게임에 특화"
+    },
+    {
+      "id": 85,
+      "operator": "AppLovin Corporation",
+      "platform": "앱러빈",
+      "service": "AppLovin MAX / AppDiscovery",
+      "url": "https://www.applovin.com/ko",
+      "type": ["mobile_game", "ad_network", "programmatic_dsp"],
+      "tier": "mid",
+      "description": "모바일 앱 성장/수익화 플랫폼. MAX 미디에이션, AppDiscovery UA. 글로벌 top 3"
+    },
+    {
+      "id": 86,
+      "operator": "ironSource (Unity)",
+      "platform": "아이언소스",
+      "service": "ironSource (Unity LevelPlay)",
+      "url": "https://www.is.com",
+      "type": ["mobile_game", "ad_network"],
+      "tier": "mid",
+      "description": "모바일 게임 광고 미디에이션/네트워크. 유니티에 합병. LevelPlay 미디에이션"
+    },
+    {
+      "id": 87,
+      "operator": "Microsoft Corporation",
+      "platform": "마이크로소프트 광고",
+      "service": "Microsoft Advertising (Bing Ads)",
+      "url": "https://ads.microsoft.com",
+      "type": ["search", "display"],
+      "tier": "niche",
+      "description": "빙 검색광고, MSAN(Microsoft Audience Network). 한국 시장 소규모"
+    },
+    {
+      "id": 88,
+      "operator": "LinkedIn Corporation",
+      "platform": "링크드인 광고",
+      "service": "LinkedIn Campaign Manager",
+      "url": "https://www.linkedin.com/campaignmanager",
+      "type": ["social", "display"],
+      "tier": "niche",
+      "description": "B2B 소셜 광고. 직무/업종/회사 기반 타겟팅. 한국 사용자 500만+"
+    },
+    {
+      "id": 89,
+      "operator": "Pinterest, Inc.",
+      "platform": "핀터레스트 광고",
+      "service": "Pinterest Ads Manager",
+      "url": "https://ads.pinterest.com",
+      "type": ["social", "display", "commerce"],
+      "tier": "niche",
+      "description": "비주얼 검색/쇼핑 광고. 한국 MAU 550만. Z세대 40%. 쇼핑 연동 강화"
+    },
+    {
+      "id": 90,
+      "operator": "X Corp.",
+      "platform": "X(트위터) 광고",
+      "service": "X Ads (구 Twitter Ads)",
+      "url": "https://ads.x.com",
+      "type": ["social", "display"],
+      "tier": "niche",
+      "description": "실시간 이슈 연계 프로모션 트윗, 팔로워 광고. 한국 사용자 약 600만"
+    },
+    {
+      "id": 91,
+      "operator": "Amazon.com, Inc.",
+      "platform": "아마존 DSP",
+      "service": "Amazon DSP",
+      "url": "https://advertising.amazon.com",
+      "type": ["programmatic_dsp", "display"],
+      "tier": "niche",
+      "description": "아마존 데이터 기반 프로그래매틱 DSP. 한국에서는 주로 크로스보더 광고주 사용"
+    },
+    {
+      "id": 92,
+      "operator": "The Trade Desk, Inc.",
+      "platform": "더 트레이드 데스크",
+      "service": "The Trade Desk DSP",
+      "url": "https://www.thetradedesk.com",
+      "type": ["programmatic_dsp"],
+      "tier": "niche",
+      "description": "글로벌 독립 DSP. 한국 언론사 인벤토리 접근 가능. 오픈 인터넷 프로그래매틱 광고"
+    },
+    {
+      "id": 93,
+      "operator": "PubMatic, Inc.",
+      "platform": "퍼브매틱",
+      "service": "PubMatic SSP",
+      "url": "https://pubmatic.com",
+      "type": ["programmatic_ssp", "ad_exchange"],
+      "tier": "niche",
+      "description": "글로벌 SSP/Ad Exchange. 한국 주요 언론사 19개 사이트에 연동 (ads.txt 기준)"
+    },
+    {
+      "id": 94,
+      "operator": "Magnite, Inc. (구 Rubicon Project)",
+      "platform": "매그나이트",
+      "service": "Magnite SSP (구 Rubicon)",
+      "url": "https://www.magnite.com",
+      "type": ["programmatic_ssp", "ad_exchange"],
+      "tier": "niche",
+      "description": "글로벌 SSP. CTV/동영상 광고 강점. 한국 19개 언론사 연동"
+    },
+    {
+      "id": 95,
+      "operator": "Index Exchange, Inc.",
+      "platform": "인덱스 익스체인지",
+      "service": "Index Exchange SSP",
+      "url": "https://www.indexexchange.com",
+      "type": ["programmatic_ssp", "ad_exchange"],
+      "tier": "niche",
+      "description": "글로벌 Ad Exchange. 한국 프리미엄 퍼블리셔 인벤토리 거래"
+    },
+    {
+      "id": 96,
+      "operator": "OpenX Technologies, Inc.",
+      "platform": "오픈엑스",
+      "service": "OpenX SSP/Exchange",
+      "url": "https://www.openx.com",
+      "type": ["programmatic_ssp", "ad_exchange"],
+      "tier": "niche",
+      "description": "글로벌 SSP/Exchange. 한국 퍼블리셔 일부 연동"
+    },
+    {
+      "id": 97,
+      "operator": "Teads SA",
+      "platform": "티즈",
+      "service": "Teads (인리드 비디오 SSP)",
+      "url": "https://www.teads.com",
+      "type": ["programmatic_ssp", "video", "display"],
+      "tier": "niche",
+      "description": "인리드(outstream) 비디오 광고 SSP. 기사 내 동영상 광고. 한국 언론사 제휴"
+    },
+    {
+      "id": 98,
+      "operator": "SK플래닛(주) / T맵모빌리티",
+      "platform": "T맵 광고",
+      "service": "T맵 모빌리티 광고",
+      "url": "https://www.tmap.co.kr",
+      "type": ["map_local", "display"],
+      "tier": "mid",
+      "description": "T맵 내비게이션 앱 내 배너/스플래시 광고. 점유율 35%. 주유소/편의점 등 POI 연계"
+    },
+    {
+      "id": 99,
+      "operator": "네이버(주)",
+      "platform": "네이버 지도 광고",
+      "service": "네이버 지도 스플래시 / 네이버 NOSP",
+      "url": "https://new.smartplace.naver.com",
+      "type": ["map_local", "display"],
+      "tier": "major",
+      "description": "네이버 지도 앱 스플래시 전면 광고, 지도 내 업체 노출 강화. 점유율 46%"
+    },
+    {
+      "id": 100,
+      "operator": "이노션(주)",
+      "platform": "이노션 DOOH",
+      "service": "이노션 디지털 옥외광고",
+      "url": "https://www.innocean.com",
+      "type": ["dooh"],
+      "tier": "mid",
+      "description": "현대차그룹 계열 광고대행사. 코엑스 K-POP 스퀘어 등 초대형 DOOH 운영"
+    },
+    {
+      "id": 101,
+      "operator": "(주)제일기획",
+      "platform": "제일기획 DOOH",
+      "service": "제일기획 디지털 옥외광고",
+      "url": "https://www.cheil.com",
+      "type": ["dooh"],
+      "tier": "mid",
+      "description": "삼성그룹 계열 광고대행사. 글로벌 OOH/DOOH 매체 바잉 + 크리에이티브"
+    },
+    {
+      "id": 102,
+      "operator": "(주)옥쇼",
+      "platform": "옥쇼",
+      "service": "OKShow 옥외광고 플랫폼",
+      "url": "https://www.okshow.co.kr",
+      "type": ["dooh"],
+      "tier": "niche",
+      "description": "지도 기반 옥외광고 검색/구매 플랫폼. 소상공인 대상 셀프서비스 OOH 매체 거래"
+    },
+    {
+      "id": 103,
+      "operator": "(주)디지털퍼스트",
+      "platform": "디지털퍼스트",
+      "service": "디지털퍼스트 미디어렙",
+      "url": "https://www.digitalfirst.co.kr",
+      "type": ["media_rep"],
+      "tier": "niche",
+      "description": "네이버 보장형 DA 공식 파트너. 디지털 미디어렙/광고 대행"
+    },
+    {
+      "id": 104,
+      "operator": "(주)다트미디어",
+      "platform": "다트미디어",
+      "service": "다트미디어 미디어렙",
+      "url": "https://www.dartmedia.co.kr",
+      "type": ["media_rep"],
+      "tier": "niche",
+      "description": "네이버 보장형 DA 공식 파트너. 디지털 미디어 바잉/플래닝"
+    },
+    {
+      "id": 105,
+      "operator": "(주)크로스미디어",
+      "platform": "크로스미디어",
+      "service": "크로스미디어 미디어렙",
+      "url": "https://www.crossmedia.co.kr",
+      "type": ["media_rep"],
+      "tier": "niche",
+      "description": "네이버 보장형 DA 공식 파트너사"
+    },
+    {
+      "id": 106,
+      "operator": "(주)엠투디지털",
+      "platform": "엠투디지털",
+      "service": "M2Digital 미디어렙",
+      "url": "https://www.m2digital.co.kr",
+      "type": ["media_rep"],
+      "tier": "niche",
+      "description": "네이버 보장형 DA 공식 파트너사. 디지털 광고 미디어렙"
+    },
+    {
+      "id": 107,
+      "operator": "(주)디베이스앤",
+      "platform": "디베이스앤",
+      "service": "DBase& 미디어렙",
+      "url": "https://www.dbaseand.co.kr",
+      "type": ["media_rep"],
+      "tier": "niche",
+      "description": "네이버 보장형 DA 공식 파트너사"
+    },
+    {
+      "id": 108,
+      "operator": "NHN(주)",
+      "platform": "NHN AD",
+      "service": "NHN AD 네트워크 배너",
+      "url": "https://nhn-ad.com",
+      "type": ["ad_network", "display"],
+      "tier": "mid",
+      "description": "NHN그룹 네트워크 배너. 네이버, 다음, 조선일보 등 프리미엄 매체 노출. ACE 연계"
+    },
+    {
+      "id": 109,
+      "operator": "(주)카울리 (FSN그룹)",
+      "platform": "카울리",
+      "service": "Cauly 모바일 광고 네트워크",
+      "url": "https://www.cauly.net",
+      "type": ["ad_network", "mobile_game", "display"],
+      "tier": "niche",
+      "description": "국내 모바일 광고 네트워크. 인앱 배너/전면/네이티브/동영상 광고"
+    },
+    {
+      "id": 110,
+      "operator": "Nativex (Mobvista)",
+      "platform": "네이티브엑스",
+      "service": "Nativex 글로벌 모바일 광고",
+      "url": "https://www.nativex.com",
+      "type": ["ad_network", "mobile_game"],
+      "tier": "niche",
+      "description": "글로벌 모바일 광고 에이전시/네트워크. 틱톡 공식 파트너. 한국 시장 활동"
+    },
+    {
+      "id": 111,
+      "operator": "(주)데이터마케팅코리아",
+      "platform": "데이터마케팅코리아",
+      "service": "DMK 데이터 기반 마케팅",
+      "url": "https://www.datamarketing.co.kr",
+      "type": ["adtech"],
+      "tier": "niche",
+      "description": "데이터 기반 디지털 마케팅 솔루션. DMP 구축/운영 컨설팅"
+    },
+    {
+      "id": 112,
+      "operator": "(주)포인트클릭",
+      "platform": "포인트클릭",
+      "service": "PointClick 오퍼월",
+      "url": "https://www.pointclick.co.kr",
+      "type": ["reward"],
+      "tier": "niche",
+      "description": "오퍼월 기반 리워드 광고 플랫폼"
+    },
+    {
+      "id": 113,
+      "operator": "(주)옐로스토리",
+      "platform": "위블",
+      "service": "Weeble 인플루언서 마케팅",
+      "url": "https://www.yellowstory.co.kr",
+      "type": ["influencer", "social"],
+      "tier": "niche",
+      "description": "옐로스토리의 인플루언서 마케팅 플랫폼. 콘텐츠 마케팅 테크 기업"
+    },
+    {
+      "id": 114,
+      "operator": "(주)애드릭스",
+      "platform": "애드릭스",
+      "service": "Adrix 제휴마케팅",
+      "url": "https://www.adrix.io",
+      "type": ["affiliate"],
+      "tier": "niche",
+      "description": "제휴마케팅 플랫폼. CPA/CPS 기반. 블로거/인플루언서 대상"
+    },
+    {
+      "id": 115,
+      "operator": "(주)리더스CPA",
+      "platform": "리더스CPA",
+      "service": "Leaders CPA 제휴마케팅",
+      "url": "https://www.leaderscpa.com",
+      "type": ["affiliate"],
+      "tier": "niche",
+      "description": "CPA 전문 제휴마케팅 플랫폼"
+    },
+    {
+      "id": 116,
+      "operator": "Snap Inc.",
+      "platform": "스냅챗 광고",
+      "service": "Snapchat Ads Manager",
+      "url": "https://ads.snapchat.com",
+      "type": ["social", "video"],
+      "tier": "niche",
+      "description": "스냅챗 스토리/디스커버 광고. 한국 시장은 소규모이나 글로벌 캠페인 집행 시 사용"
+    },
+    {
+      "id": 117,
+      "operator": "지니뮤직(주)",
+      "platform": "지니뮤직 광고",
+      "service": "Genie Music 오디오/배너 광고",
+      "url": "https://www.genie.co.kr",
+      "type": ["audio", "display"],
+      "tier": "niche",
+      "description": "KT 계열 음원 스트리밍. 배너 및 오디오 광고"
+    },
+    {
+      "id": 118,
+      "operator": "SBS미디어넷(주)",
+      "platform": "SBS 콘텐츠허브 광고",
+      "service": "SBS 디지털 광고",
+      "url": "https://www.sbs.co.kr",
+      "type": ["video", "display"],
+      "tier": "niche",
+      "description": "SBS 웹/앱 동영상 프리롤, 디스플레이 광고"
+    },
+    {
+      "id": 119,
+      "operator": "CJ ENM(주)",
+      "platform": "다이아TV / CJ 디지털 광고",
+      "service": "DIA TV MCN 광고 / tvN 디지털",
+      "url": "https://www.cjenm.com",
+      "type": ["video", "influencer"],
+      "tier": "mid",
+      "description": "CJ ENM MCN 다이아TV 크리에이터 브랜디드 콘텐츠 + tvN/OCN 디지털 광고"
+    },
+    {
+      "id": 120,
+      "operator": "SK텔레콤(주) / T맵모빌리티",
+      "platform": "SKT 지오비전",
+      "service": "GeoVision 위치 데이터",
+      "url": "https://www.sktelecom.com",
+      "type": ["adtech", "map_local"],
+      "tier": "niche",
+      "description": "SK텔레콤 위치 데이터 플랫폼. 50m 단위 실시간 유동인구 분석 API. DOOH/지역 광고 타겟팅 활용"
+    }
+  ],
+  "summary": {
+    "by_tier": {
+      "major": 14,
+      "mid": 52,
+      "niche": 54
+    },
+    "by_type": {
+      "search": "네이버SA, 구글Search, 카카오키워드, 빙Ads + 쇼핑검색(네이버/구글/쿠팡/11번가/G마켓)",
+      "display": "네이버GFA/보장형, 구글GDN, 카카오비즈보드, 다음DA, 토스, 당근 + 네트워크(NHN/모비온/클릭몬 등)",
+      "video": "유튜브, 틱톡, 아프리카TV/SOOP, OTT(넷플릭스/티빙/웨이브/쿠팡플레이), IPTV(U+/Btv/올레), 삼성TV+",
+      "social": "메타(FB/IG), 틱톡, 밴드, 링크드인, 핀터레스트, X, 스냅챗, 당근",
+      "commerce": "쿠팡애즈, 네이버쇼핑, 11번가, G마켓, 배민, 요기요, 야놀자, 여기어때, 무신사, 에이블리, 지그재그, 올리브영, 컬리, 오늘의집",
+      "programmatic_dsp": "나스미디어NAP, NHN ACE, 모비온, 타겟팅게이츠, 크리테오, 아이지에이웍스, 아마존DSP, The Trade Desk, 앱러빈",
+      "programmatic_ssp": "나스미디어NAP, ADOP, TPMN, 리얼클릭, 애드팝콘, 퍼브매틱, 매그나이트, 인덱스익스체인지, 오픈엑스, 티즈",
+      "reward": "캐시슬라이드, 애디슨오퍼월, 애드팝콘, 버즈빌, 포인트클릭",
+      "affiliate": "링크프라이스, 쿠팡파트너스, 텐핑, 애드픽, 애드릭스, 리더스CPA",
+      "influencer": "레뷰, 위블(옐로스토리), 다이아TV(CJ)",
+      "audio": "스포티파이, 멜론, 플로, 팟빵, 딜로, 지니뮤직",
+      "ott": "넷플릭스, 티빙, 웨이브, 쿠팡플레이",
+      "dooh": "이노션, 제일기획, 옥쇼, SKT지오비전(데이터)",
+      "map_local": "네이버지도, 카카오맵, T맵, 당근, 네이버스마트플레이스",
+      "media_rep": "나스미디어(44%), 메조미디어(27%), 인크로스(18%), DMC미디어(11%), 모비데이즈, 플레이디, 디지털퍼스트, 다트미디어, 크로스미디어, 엠투디지털, 디베이스앤"
+    }
+  }
+}

@@ -1,0 +1,75 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: adscope
+      POSTGRES_USER: adscope
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-adscope_dev}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U adscope"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://adscope:${DB_PASSWORD:-adscope_dev}@db:5432/adscope
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-}
+      ALLOWED_ORIGINS: http://localhost:3000,http://frontend:3000
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@adscope.kr}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin1234}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./stored_images:/app/stored_images
+      - ./logs:/app/logs
+      - ./backups:/app/backups
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  scheduler:
+    build: .
+    command: python scripts/run_scheduler.py
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://adscope:${POSTGRES_PASSWORD}@db:5432/adscope
+      - CRAWL_CHANNELS=naver_search,google_gdn,kakao_da,naver_da,meta_library,youtube_ads,instagram
+      - ENABLE_CAMPAIGN_REBUILD=true
+      - ENABLE_AI_ENRICH=true
+      - ENABLE_BRAND_MONITOR=true
+    volumes:
+      - stored_images:/app/stored_images
+      - ./backups:/app/backups
+      - ./logs:/app/logs
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      API_URL: http://api:8000
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  stored_images:

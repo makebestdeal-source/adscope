@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+.venv
+venv
+
+# Node
+frontend/node_modules
+frontend/.next
+
+# IDE
+.vscode
+.idea
+
+# Environment
+.env
+
+# Database (dev)
+adscope.db
+
+# Docker
+docker-compose.yml
+Dockerfile
+
+# Docs
+*.md
+*.docx
