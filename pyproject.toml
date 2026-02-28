@@ -15,6 +15,7 @@ dependencies = [
     "fastapi>=0.115",
     "uvicorn[standard]>=0.32",
     "sqlalchemy[asyncio]>=2.0",
+    "aiosqlite>=0.20",
     "asyncpg>=0.30",
     "alembic>=1.14",
     "pydantic>=2.10",
@@ -58,4 +59,4 @@ testpaths = ["tests"]
 
 [build-system]
 requires = ["setuptools>=75.0"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
