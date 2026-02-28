@@ -1,0 +1,3533 @@
+{
+  "industries": [
+    {
+      "name": "IT/통신",
+      "avg_cpc_min": 500,
+      "avg_cpc_max": 3000
+    },
+    {
+      "name": "자동차",
+      "avg_cpc_min": 800,
+      "avg_cpc_max": 5000
+    },
+    {
+      "name": "금융/보험",
+      "avg_cpc_min": 1000,
+      "avg_cpc_max": 8000
+    },
+    {
+      "name": "식품/음료",
+      "avg_cpc_min": 300,
+      "avg_cpc_max": 2000
+    },
+    {
+      "name": "뷰티/화장품",
+      "avg_cpc_min": 400,
+      "avg_cpc_max": 3000
+    },
+    {
+      "name": "패션/의류",
+      "avg_cpc_min": 300,
+      "avg_cpc_max": 2500
+    },
+    {
+      "name": "유통/이커머스",
+      "avg_cpc_min": 400,
+      "avg_cpc_max": 3000
+    },
+    {
+      "name": "제약/헬스케어",
+      "avg_cpc_min": 600,
+      "avg_cpc_max": 4000
+    },
+    {
+      "name": "가전/전자",
+      "avg_cpc_min": 500,
+      "avg_cpc_max": 3500
+    },
+    {
+      "name": "건설/부동산",
+      "avg_cpc_min": 800,
+      "avg_cpc_max": 6000
+    },
+    {
+      "name": "게임",
+      "avg_cpc_min": 300,
+      "avg_cpc_max": 2000
+    },
+    {
+      "name": "엔터테인먼트",
+      "avg_cpc_min": 200,
+      "avg_cpc_max": 1500
+    },
+    {
+      "name": "여행/항공",
+      "avg_cpc_min": 500,
+      "avg_cpc_max": 4000
+    },
+    {
+      "name": "교육",
+      "avg_cpc_min": 600,
+      "avg_cpc_max": 5000
+    },
+    {
+      "name": "스포츠/아웃도어",
+      "avg_cpc_min": 300,
+      "avg_cpc_max": 2000
+    },
+    {
+      "name": "가구/인테리어",
+      "avg_cpc_min": 400,
+      "avg_cpc_max": 3000
+    },
+    {
+      "name": "주류",
+      "avg_cpc_min": 300,
+      "avg_cpc_max": 2000
+    },
+    {
+      "name": "공공기관",
+      "avg_cpc_min": 200,
+      "avg_cpc_max": 1000
+    },
+    {
+      "name": "반려동물",
+      "avg_cpc_min": 300,
+      "avg_cpc_max": 2000
+    },
+    {
+      "name": "기타",
+      "avg_cpc_min": 200,
+      "avg_cpc_max": 1500
+    }
+  ],
+  "advertisers": [
+    {
+      "name": "삼성전자",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Samsung",
+      "website": "samsung.com",
+      "aliases": [
+        "samsung",
+        "Samsung Electronics",
+        "삼성"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SamsungKorea",
+        "instagram": "samsungkorea",
+        "facebook": "SamsungKorea"
+      }
+    },
+    {
+      "name": "LG전자",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "LG",
+      "website": "lg.com",
+      "aliases": [
+        "lg",
+        "LG Electronics",
+        "엘지전자"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@LGKorea",
+        "instagram": "lgkorea",
+        "facebook": "LGKorea"
+      }
+    },
+    {
+      "name": "SK텔레콤",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "SKT",
+      "website": "sktelecom.com",
+      "aliases": [
+        "skt",
+        "SK Telecom",
+        "에스케이텔레콤"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SKtelecom",
+        "instagram": "sktelecom",
+        "facebook": "SKtelecom"
+      }
+    },
+    {
+      "name": "KT",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "KT",
+      "website": "kt.com",
+      "aliases": [
+        "케이티",
+        "kt olleh"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@kt_olleh",
+        "instagram": "kt_olleh",
+        "facebook": "ktolleh"
+      }
+    },
+    {
+      "name": "LG유플러스",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "LG U+",
+      "website": "lguplus.com",
+      "aliases": [
+        "lg uplus",
+        "LG U+",
+        "유플러스"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@LGUplus",
+        "instagram": "lguplus_official",
+        "facebook": "LGUplus"
+      }
+    },
+    {
+      "name": "네이버",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "NAVER",
+      "website": "naver.com",
+      "aliases": [
+        "naver",
+        "NHN"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@NAVER_official",
+        "instagram": "naver.official",
+        "facebook": "naborofficial"
+      }
+    },
+    {
+      "name": "카카오",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Kakao",
+      "website": "kakaocorp.com",
+      "aliases": [
+        "kakao",
+        "Kakao Corp"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@kakao_official",
+        "instagram": "kakao.official",
+        "facebook": "kakaocorp"
+      }
+    },
+    {
+      "name": "배달의민족",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Baemin",
+      "website": "baemin.com",
+      "aliases": [
+        "배민",
+        "baemin",
+        "우아한형제들"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@baemin_official",
+        "instagram": "baemin_official",
+        "facebook": "smartbaedal"
+      }
+    },
+    {
+      "name": "토스",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Toss",
+      "website": "toss.im",
+      "aliases": [
+        "toss",
+        "비바리퍼블리카"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@toss_official",
+        "instagram": "toss.im",
+        "facebook": "toss.im"
+      }
+    },
+    {
+      "name": "당근마켓",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Danggeun Market",
+      "website": "daangn.com",
+      "aliases": [
+        "당근",
+        "daangn",
+        "karrot"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@daangn",
+        "instagram": "daangn_official",
+        "facebook": "daangn"
+      }
+    },
+    {
+      "name": "라인",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "LINE",
+      "website": "linecorp.com",
+      "aliases": [
+        "line",
+        "LINE Corporation"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@LINEofficial",
+        "instagram": "line_official",
+        "facebook": "line"
+      }
+    },
+    {
+      "name": "SK이노베이션",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "SK Innovation",
+      "website": "skinnovation.com",
+      "aliases": [
+        "sk innovation",
+        "SK이노"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SKInnovation",
+        "instagram": "skinnovation_kr",
+        "facebook": "SKInnovation"
+      }
+    },
+    {
+      "name": "다나와",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Danawa",
+      "website": "danawa.com",
+      "aliases": [
+        "danawa"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@danawa",
+        "instagram": "danawa_official",
+        "facebook": "danawa.com.page"
+      }
+    },
+    {
+      "name": "야나두",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Yanadoo",
+      "website": "yanadoo.co.kr",
+      "aliases": [
+        "yanadoo"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@yanadoo",
+        "instagram": "yanadoo_official",
+        "facebook": "yanadoo"
+      }
+    },
+    {
+      "name": "리디",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "RIDI",
+      "website": "ridibooks.com",
+      "aliases": [
+        "ridi",
+        "리디북스",
+        "ridibooks"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@ridi_official",
+        "instagram": "ridi.official",
+        "facebook": "ridibooks"
+      }
+    },
+    {
+      "name": "현대자동차",
+      "industry": "자동차",
+      "type": "company",
+      "brand": "Hyundai",
+      "website": "hyundai.com",
+      "aliases": [
+        "hyundai",
+        "현대차",
+        "Hyundai Motor"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HyundaiWorldwide",
+        "instagram": "hyundai_kr",
+        "facebook": "HyundaiKorea"
+      }
+    },
+    {
+      "name": "기아",
+      "industry": "자동차",
+      "type": "company",
+      "brand": "KIA",
+      "website": "kia.com",
+      "aliases": [
+        "kia",
+        "기아자동차",
+        "Kia Motors"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Kia_Worldwide",
+        "instagram": "kia_kr",
+        "facebook": "KiaKorea"
+      }
+    },
+    {
+      "name": "제네시스",
+      "industry": "자동차",
+      "type": "brand",
+      "brand": "Genesis",
+      "website": "genesis.com",
+      "aliases": [
+        "genesis"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@genesis_official",
+        "instagram": "genesis_kr",
+        "facebook": "GenesisKR"
+      }
+    },
+    {
+      "name": "KG모빌리티",
+      "industry": "자동차",
+      "type": "company",
+      "brand": "KG Mobility",
+      "website": "kg-mobility.com",
+      "aliases": [
+        "kgm",
+        "쌍용자동차",
+        "ssangyong"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KGMobility",
+        "instagram": "kgmobility_official",
+        "facebook": "KGMobility"
+      }
+    },
+    {
+      "name": "르노코리아",
+      "industry": "자동차",
+      "type": "company",
+      "brand": "Renault Korea",
+      "website": "renaultkorea.com",
+      "aliases": [
+        "renault korea",
+        "르노삼성"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@RenaultKorea",
+        "instagram": "renaultkorea",
+        "facebook": "RenaultKorea"
+      }
+    },
+    {
+      "name": "BMW코리아",
+      "industry": "자동차",
+      "type": "company",
+      "brand": "BMW",
+      "website": "bmw.co.kr",
+      "aliases": [
+        "bmw",
+        "bmw korea"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@BMWKorea",
+        "instagram": "bmwkorea",
+        "facebook": "BMWKorea"
+      }
+    },
+    {
+      "name": "벤츠코리아",
+      "industry": "자동차",
+      "type": "company",
+      "brand": "Mercedes-Benz",
+      "website": "mercedes-benz.co.kr",
+      "aliases": [
+        "mercedes-benz",
+        "메르세데스-벤츠",
+        "벤츠"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@MercedesBenzKR",
+        "instagram": "mercedesbenzkorea",
+        "facebook": "MercedesBenzKorea"
+      }
+    },
+    {
+      "name": "아우디코리아",
+      "industry": "자동차",
+      "type": "company",
+      "brand": "Audi",
+      "website": "audi.co.kr",
+      "aliases": [
+        "audi",
+        "아우디"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@AudiKorea",
+        "instagram": "audikorea",
+        "facebook": "AudiKorea"
+      }
+    },
+    {
+      "name": "볼보코리아",
+      "industry": "자동차",
+      "type": "company",
+      "brand": "Volvo",
+      "website": "volvocars.com/kr",
+      "aliases": [
+        "volvo",
+        "볼보"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@VolvoCarKorea",
+        "instagram": "volvocarskr",
+        "facebook": "VolvoCarKorea"
+      }
+    },
+    {
+      "name": "테슬라코리아",
+      "industry": "자동차",
+      "type": "company",
+      "brand": "Tesla",
+      "website": "tesla.com/ko_kr",
+      "aliases": [
+        "tesla",
+        "테슬라"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Tesla",
+        "instagram": "teslamotors",
+        "facebook": "TeslaMotorCorp"
+      }
+    },
+    {
+      "name": "삼성생명",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Samsung Life",
+      "website": "samsunglife.com",
+      "aliases": [
+        "samsung life",
+        "Samsung Life Insurance"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@samsunglife",
+        "instagram": "samsunglife_official",
+        "facebook": "samsunglife"
+      }
+    },
+    {
+      "name": "삼성화재",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Samsung Fire",
+      "website": "samsungfire.com",
+      "aliases": [
+        "samsung fire",
+        "삼성화재해상보험"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@samsungfire",
+        "instagram": "samsungfire_official",
+        "facebook": "samsungfire"
+      }
+    },
+    {
+      "name": "신한은행",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Shinhan Bank",
+      "website": "shinhan.com",
+      "aliases": [
+        "shinhan",
+        "shinhan bank"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@ShinhanBank",
+        "instagram": "shinhan_bank",
+        "facebook": "ShinhanBank"
+      }
+    },
+    {
+      "name": "KB국민은행",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "KB Bank",
+      "website": "kbstar.com",
+      "aliases": [
+        "kb bank",
+        "국민은행",
+        "kookmin bank"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@kaborstar",
+        "instagram": "kbstar.official",
+        "facebook": "kbkookminbank"
+      }
+    },
+    {
+      "name": "하나은행",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Hana Bank",
+      "website": "hanabank.com",
+      "aliases": [
+        "hana bank",
+        "하나금융"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HanaBank",
+        "instagram": "hanabank_official",
+        "facebook": "HanaBank"
+      }
+    },
+    {
+      "name": "우리은행",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Woori Bank",
+      "website": "wooribank.com",
+      "aliases": [
+        "woori bank"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@WooriBank",
+        "instagram": "wooribank_official",
+        "facebook": "WooriBank"
+      }
+    },
+    {
+      "name": "NH농협은행",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "NH Bank",
+      "website": "nhbank.com",
+      "aliases": [
+        "nh bank",
+        "농협은행",
+        "nonghyup"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@NHBank",
+        "instagram": "nhbank_official",
+        "facebook": "NHBankOfficial"
+      }
+    },
+    {
+      "name": "카카오뱅크",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "KakaoBank",
+      "website": "kakaobank.com",
+      "aliases": [
+        "kakaobank",
+        "카뱅"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@kakaobank",
+        "instagram": "kakaobank_official",
+        "facebook": "kakaobank"
+      }
+    },
+    {
+      "name": "케이뱅크",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "K bank",
+      "website": "kbanknow.com",
+      "aliases": [
+        "k bank",
+        "kbank"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@kaboranknow",
+        "instagram": "kbanknow",
+        "facebook": "kbanknow"
+      }
+    },
+    {
+      "name": "현대카드",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Hyundai Card",
+      "website": "hyundaicard.com",
+      "aliases": [
+        "hyundai card"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HyundaiCard",
+        "instagram": "hyundaicard",
+        "facebook": "hyundaicard"
+      }
+    },
+    {
+      "name": "삼성카드",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Samsung Card",
+      "website": "samsungcard.com",
+      "aliases": [
+        "samsung card"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@samsungcard",
+        "instagram": "samsungcard_official",
+        "facebook": "samsungcard"
+      }
+    },
+    {
+      "name": "DB손해보험",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "DB Insurance",
+      "website": "dbinsure.co.kr",
+      "aliases": [
+        "db insurance",
+        "동부화재"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@DBInsurance",
+        "instagram": "db_insurance",
+        "facebook": "DBInsurance"
+      }
+    },
+    {
+      "name": "한화손해보험",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Hanwha General Insurance",
+      "website": "hanwhageneralinsurance.com",
+      "aliases": [
+        "hanwha insurance",
+        "한화손보"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HanwhaInsurance",
+        "instagram": "hanwha_insurance",
+        "facebook": "HanwhaInsurance"
+      }
+    },
+    {
+      "name": "미래에셋증권",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Mirae Asset",
+      "website": "miraeasset.com",
+      "aliases": [
+        "mirae asset",
+        "미래에셋대우"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@MiraeAsset",
+        "instagram": "maboraeasset_official",
+        "facebook": "MiraeAsset"
+      }
+    },
+    {
+      "name": "한국투자증권",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Korea Investment",
+      "website": "truefriend.com",
+      "aliases": [
+        "korea investment",
+        "한투"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KoreaInvestment",
+        "instagram": "koreainvestment_official",
+        "facebook": "KoreaInvestment"
+      }
+    },
+    {
+      "name": "CJ제일제당",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "CJ CheilJedang",
+      "website": "cj.co.kr",
+      "aliases": [
+        "cj",
+        "CJ CheilJedang",
+        "씨제이제일제당"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@CJCheilJedang",
+        "instagram": "cj_cheiljedang",
+        "facebook": "CJCheilJedang"
+      }
+    },
+    {
+      "name": "오뚜기",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Ottogi",
+      "website": "ottogi.co.kr",
+      "aliases": [
+        "ottogi"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Ottogi",
+        "instagram": "ottogi_official",
+        "facebook": "OttogiCorp"
+      }
+    },
+    {
+      "name": "농심",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Nongshim",
+      "website": "nongshim.com",
+      "aliases": [
+        "nongshim"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Nongshim",
+        "instagram": "nongshim_official",
+        "facebook": "Nongshim"
+      }
+    },
+    {
+      "name": "롯데칠성음료",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Lotte Chilsung",
+      "website": "lottechilsung.co.kr",
+      "aliases": [
+        "lotte chilsung",
+        "롯데칠성"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@LotteChilsung",
+        "instagram": "lottechilsung_official",
+        "facebook": "LotteChilsung"
+      }
+    },
+    {
+      "name": "빙그레",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Binggrae",
+      "website": "bing.co.kr",
+      "aliases": [
+        "binggrae"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Binggrae",
+        "instagram": "binggrae_official",
+        "facebook": "Binggrae"
+      }
+    },
+    {
+      "name": "코카콜라코리아",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Coca-Cola Korea",
+      "website": "cocacola.co.kr",
+      "aliases": [
+        "coca-cola",
+        "코카콜라"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@CocaColaKorea",
+        "instagram": "cocacola_kr",
+        "facebook": "CocaColaKorea"
+      }
+    },
+    {
+      "name": "스타벅스코리아",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Starbucks Korea",
+      "website": "starbucks.co.kr",
+      "aliases": [
+        "starbucks",
+        "스타벅스"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@StarbucksKorea",
+        "instagram": "starbuckskorea",
+        "facebook": "StarbucksKorea"
+      }
+    },
+    {
+      "name": "맥도날드코리아",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "McDonald's Korea",
+      "website": "mcdonalds.co.kr",
+      "aliases": [
+        "mcdonalds",
+        "맥도날드"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@McDonaldsKorea",
+        "instagram": "mcdonalds_kr",
+        "facebook": "McDonaldsKorea"
+      }
+    },
+    {
+      "name": "동서식품",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Dongsuh",
+      "website": "dongsuh.co.kr",
+      "aliases": [
+        "dongsuh",
+        "동서"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Dongsuh",
+        "instagram": "dongsuh_official",
+        "facebook": "DongsuhFood"
+      }
+    },
+    {
+      "name": "삼양식품",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Samyang Foods",
+      "website": "samyangfoods.com",
+      "aliases": [
+        "samyang",
+        "삼양"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SamyangFoods",
+        "instagram": "samyangfoods",
+        "facebook": "SamyangFoods"
+      }
+    },
+    {
+      "name": "풀무원",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Pulmuone",
+      "website": "pulmuone.co.kr",
+      "aliases": [
+        "pulmuone"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Pulmuone",
+        "instagram": "pulmuone_official",
+        "facebook": "Pulmuone"
+      }
+    },
+    {
+      "name": "매일유업",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Maeil Dairies",
+      "website": "maeil.com",
+      "aliases": [
+        "maeil",
+        "매일우유"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@MaeilDairies",
+        "instagram": "maeil_official",
+        "facebook": "MaeilDairies"
+      }
+    },
+    {
+      "name": "BBQ",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "BBQ Chicken",
+      "website": "bbq.co.kr",
+      "aliases": [
+        "bbq chicken",
+        "비비큐"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@BBQChicken",
+        "instagram": "bbq_official",
+        "facebook": "BBQChicken"
+      }
+    },
+    {
+      "name": "교촌치킨",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Kyochon",
+      "website": "kyochon.com",
+      "aliases": [
+        "kyochon",
+        "교촌"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Kyochon",
+        "instagram": "kyochon_official",
+        "facebook": "KyochonChicken"
+      }
+    },
+    {
+      "name": "BHC치킨",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "BHC",
+      "website": "bhc.co.kr",
+      "aliases": [
+        "bhc"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@BHCChicken",
+        "instagram": "bhc_official",
+        "facebook": "BHCChicken"
+      }
+    },
+    {
+      "name": "롯데제과",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Lotte Confectionery",
+      "website": "lotteconf.co.kr",
+      "aliases": [
+        "lotte confectionery",
+        "롯데웰푸드"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@LotteConf",
+        "instagram": "lotteconf_official",
+        "facebook": "LotteConf"
+      }
+    },
+    {
+      "name": "해태제과",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Haitai",
+      "website": "ht.co.kr",
+      "aliases": [
+        "haitai",
+        "해태"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Haitai",
+        "instagram": "haitai_official",
+        "facebook": "HaitaiConf"
+      }
+    },
+    {
+      "name": "오리온",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Orion",
+      "website": "orionworld.com",
+      "aliases": [
+        "orion"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@OrionWorld",
+        "instagram": "orion_official",
+        "facebook": "OrionWorld"
+      }
+    },
+    {
+      "name": "아모레퍼시픽",
+      "industry": "뷰티/화장품",
+      "type": "company",
+      "brand": "Amorepacific",
+      "website": "apgroup.com",
+      "aliases": [
+        "amorepacific",
+        "아모레"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@AmorePacific",
+        "instagram": "amorepacific_official",
+        "facebook": "AmorePacific"
+      }
+    },
+    {
+      "name": "이니스프리",
+      "industry": "뷰티/화장품",
+      "type": "brand",
+      "brand": "Innisfree",
+      "website": "innisfree.com",
+      "aliases": [
+        "innisfree"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@innisfree",
+        "instagram": "innisfreeofficial",
+        "facebook": "innisfree"
+      }
+    },
+    {
+      "name": "설화수",
+      "industry": "뷰티/화장품",
+      "type": "brand",
+      "brand": "Sulwhasoo",
+      "website": "sulwhasoo.com",
+      "aliases": [
+        "sulwhasoo"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Sulwhasoo",
+        "instagram": "sulwhasoo.official",
+        "facebook": "Sulwhasoo"
+      }
+    },
+    {
+      "name": "라네즈",
+      "industry": "뷰티/화장품",
+      "type": "brand",
+      "brand": "Laneige",
+      "website": "laneige.com",
+      "aliases": [
+        "laneige"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Laneige",
+        "instagram": "laneige_kr",
+        "facebook": "Laneige"
+      }
+    },
+    {
+      "name": "LG생활건강",
+      "industry": "뷰티/화장품",
+      "type": "company",
+      "brand": "LG H&H",
+      "website": "lgcare.com",
+      "aliases": [
+        "lg h&h",
+        "LG Household & Healthcare"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@LGcare",
+        "instagram": "lgcare_official",
+        "facebook": "LGcare"
+      }
+    },
+    {
+      "name": "더페이스샵",
+      "industry": "뷰티/화장품",
+      "type": "brand",
+      "brand": "The Face Shop",
+      "website": "thefaceshop.com",
+      "aliases": [
+        "the face shop",
+        "페이스샵"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@TheFaceShop",
+        "instagram": "thefaceshop.official",
+        "facebook": "TheFaceShop"
+      }
+    },
+    {
+      "name": "에뛰드",
+      "industry": "뷰티/화장품",
+      "type": "brand",
+      "brand": "Etude",
+      "website": "etude.com",
+      "aliases": [
+        "etude",
+        "에뛰드하우스"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Etude",
+        "instagram": "etude_official",
+        "facebook": "EtudeOfficial"
+      }
+    },
+    {
+      "name": "미샤",
+      "industry": "뷰티/화장품",
+      "type": "brand",
+      "brand": "MISSHA",
+      "website": "missha.com",
+      "aliases": [
+        "missha"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@MISSHA",
+        "instagram": "missha_official",
+        "facebook": "MISSHAOfficial"
+      }
+    },
+    {
+      "name": "클리오",
+      "industry": "뷰티/화장품",
+      "type": "company",
+      "brand": "CLIO",
+      "website": "cliocosmetic.com",
+      "aliases": [
+        "clio"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@CLIO",
+        "instagram": "clio_official",
+        "facebook": "CLIOCosmetic"
+      }
+    },
+    {
+      "name": "닥터자르트",
+      "industry": "뷰티/화장품",
+      "type": "brand",
+      "brand": "Dr.Jart+",
+      "website": "drjart.com",
+      "aliases": [
+        "dr.jart+",
+        "dr jart"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@DrJart",
+        "instagram": "drjart",
+        "facebook": "DrJart"
+      }
+    },
+    {
+      "name": "나이키코리아",
+      "industry": "패션/의류",
+      "type": "company",
+      "brand": "Nike",
+      "website": "nike.com/kr",
+      "aliases": [
+        "nike",
+        "나이키"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@NikeKorea",
+        "instagram": "nikekorea",
+        "facebook": "NikeKorea"
+      }
+    },
+    {
+      "name": "아디다스코리아",
+      "industry": "패션/의류",
+      "type": "company",
+      "brand": "Adidas",
+      "website": "adidas.co.kr",
+      "aliases": [
+        "adidas",
+        "아디다스"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@adidasKR",
+        "instagram": "adidaskorea",
+        "facebook": "adidasKR"
+      }
+    },
+    {
+      "name": "무신사",
+      "industry": "패션/의류",
+      "type": "company",
+      "brand": "MUSINSA",
+      "website": "musinsa.com",
+      "aliases": [
+        "musinsa"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@MUSINSA",
+        "instagram": "musinsa_official",
+        "facebook": "MUSINSA"
+      }
+    },
+    {
+      "name": "29CM",
+      "industry": "패션/의류",
+      "type": "company",
+      "brand": "29CM",
+      "website": "29cm.co.kr",
+      "aliases": [
+        "29cm",
+        "이구공구"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@29CM",
+        "instagram": "29cm_official",
+        "facebook": "29CM"
+      }
+    },
+    {
+      "name": "유니클로코리아",
+      "industry": "패션/의류",
+      "type": "company",
+      "brand": "UNIQLO",
+      "website": "uniqlo.kr",
+      "aliases": [
+        "uniqlo",
+        "유니클로"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@UNIQLOKorea",
+        "instagram": "uniqlo_kr",
+        "facebook": "UNIQLOKorea"
+      }
+    },
+    {
+      "name": "뉴발란스코리아",
+      "industry": "패션/의류",
+      "type": "company",
+      "brand": "New Balance",
+      "website": "newbalance.co.kr",
+      "aliases": [
+        "new balance",
+        "뉴발란스"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@NewBalanceKorea",
+        "instagram": "newbalance_kr",
+        "facebook": "NewBalanceKorea"
+      }
+    },
+    {
+      "name": "휠라코리아",
+      "industry": "패션/의류",
+      "type": "company",
+      "brand": "FILA",
+      "website": "fila.co.kr",
+      "aliases": [
+        "fila",
+        "휠라"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@FILAKorea",
+        "instagram": "fila_korea",
+        "facebook": "FILAKorea"
+      }
+    },
+    {
+      "name": "자라코리아",
+      "industry": "패션/의류",
+      "type": "company",
+      "brand": "ZARA",
+      "website": "zara.com/kr",
+      "aliases": [
+        "zara",
+        "자라"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@ZARA",
+        "instagram": "zara",
+        "facebook": "Zara"
+      }
+    },
+    {
+      "name": "푸마코리아",
+      "industry": "패션/의류",
+      "type": "company",
+      "brand": "PUMA",
+      "website": "puma.com/kr",
+      "aliases": [
+        "puma",
+        "푸마"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@PUMAKorea",
+        "instagram": "puma_kr",
+        "facebook": "PUMAKorea"
+      }
+    },
+    {
+      "name": "쿠팡",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "Coupang",
+      "website": "coupang.com",
+      "aliases": [
+        "coupang"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@coupang",
+        "instagram": "coupang_official",
+        "facebook": "Coupang"
+      }
+    },
+    {
+      "name": "롯데쇼핑",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "Lotte Shopping",
+      "website": "lotteshopping.com",
+      "aliases": [
+        "lotte shopping",
+        "롯데백화점",
+        "롯데마트"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@LotteShopping",
+        "instagram": "lotteshopping_official",
+        "facebook": "LotteShopping"
+      }
+    },
+    {
+      "name": "신세계",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "Shinsegae",
+      "website": "shinsegae.com",
+      "aliases": [
+        "shinsegae",
+        "신세계백화점"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Shinsegae",
+        "instagram": "shinsegae_official",
+        "facebook": "Shinsegae"
+      }
+    },
+    {
+      "name": "SSG닷컴",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "SSG",
+      "website": "ssg.com",
+      "aliases": [
+        "ssg",
+        "쓱"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SSGcom",
+        "instagram": "ssg.com_official",
+        "facebook": "SSGcom"
+      }
+    },
+    {
+      "name": "G마켓",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "Gmarket",
+      "website": "gmarket.co.kr",
+      "aliases": [
+        "gmarket",
+        "지마켓"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Gmarket",
+        "instagram": "gmarket_official",
+        "facebook": "Gmarket"
+      }
+    },
+    {
+      "name": "11번가",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "11st",
+      "website": "11st.co.kr",
+      "aliases": [
+        "11st",
+        "십일번가"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@11st",
+        "instagram": "11st_official",
+        "facebook": "11st"
+      }
+    },
+    {
+      "name": "티몬",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "TMON",
+      "website": "tmon.co.kr",
+      "aliases": [
+        "tmon",
+        "티켓몬스터"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@TMON",
+        "instagram": "tmon_official",
+        "facebook": "TMON"
+      }
+    },
+    {
+      "name": "위메프",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "WeMakePrice",
+      "website": "wemakeprice.com",
+      "aliases": [
+        "wemakeprice"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@WeMakePrice",
+        "instagram": "wemakeprice_official",
+        "facebook": "WeMakePrice"
+      }
+    },
+    {
+      "name": "마켓컬리",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "Kurly",
+      "website": "kurly.com",
+      "aliases": [
+        "kurly",
+        "컬리"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@MarketKurly",
+        "instagram": "marketkurly",
+        "facebook": "MarketKurly"
+      }
+    },
+    {
+      "name": "올리브영",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "Olive Young",
+      "website": "oliveyoung.co.kr",
+      "aliases": [
+        "olive young",
+        "CJ올리브영"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@oliveyoung",
+        "instagram": "oliveyoung_official",
+        "facebook": "oliveyoung"
+      }
+    },
+    {
+      "name": "GS리테일",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "GS25",
+      "website": "gsretail.com",
+      "aliases": [
+        "gs25",
+        "gs retail",
+        "GS25"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@GS25",
+        "instagram": "gs25_official",
+        "facebook": "GS25"
+      }
+    },
+    {
+      "name": "CU",
+      "industry": "유통/이커머스",
+      "type": "brand",
+      "brand": "CU",
+      "website": "cu.bgfretail.com",
+      "aliases": [
+        "cu",
+        "BGF리테일"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@CU_official",
+        "instagram": "cu_official",
+        "facebook": "CUofficial"
+      }
+    },
+    {
+      "name": "세븐일레븐",
+      "industry": "유통/이커머스",
+      "type": "brand",
+      "brand": "7-Eleven",
+      "website": "7-eleven.co.kr",
+      "aliases": [
+        "7-eleven",
+        "세븐일레번"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@7ELEVENKorea",
+        "instagram": "7eleven_kr",
+        "facebook": "7ELEVENKorea"
+      }
+    },
+    {
+      "name": "이마트",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "E-MART",
+      "website": "emart.com",
+      "aliases": [
+        "e-mart",
+        "이마트"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@EMART",
+        "instagram": "emart_official",
+        "facebook": "EMART"
+      }
+    },
+    {
+      "name": "홈플러스",
+      "industry": "유통/이커머스",
+      "type": "company",
+      "brand": "Homeplus",
+      "website": "homeplus.co.kr",
+      "aliases": [
+        "homeplus"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Homeplus",
+        "instagram": "homeplus_official",
+        "facebook": "Homeplus"
+      }
+    },
+    {
+      "name": "유한양행",
+      "industry": "제약/헬스케어",
+      "type": "company",
+      "brand": "Yuhan",
+      "website": "yuhan.co.kr",
+      "aliases": [
+        "yuhan",
+        "유한"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Yuhan",
+        "instagram": "yuhan_official",
+        "facebook": "YuhanCorp"
+      }
+    },
+    {
+      "name": "녹십자",
+      "industry": "제약/헬스케어",
+      "type": "company",
+      "brand": "GC Biopharma",
+      "website": "greencross.com",
+      "aliases": [
+        "gc biopharma",
+        "green cross"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@GCBiopharma",
+        "instagram": "gcbiopharma",
+        "facebook": "GCBiopharma"
+      }
+    },
+    {
+      "name": "대웅제약",
+      "industry": "제약/헬스케어",
+      "type": "company",
+      "brand": "Daewoong",
+      "website": "daewoong.co.kr",
+      "aliases": [
+        "daewoong"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@DaewoongPharm",
+        "instagram": "daewoong_official",
+        "facebook": "DaewoongPharm"
+      }
+    },
+    {
+      "name": "종근당",
+      "industry": "제약/헬스케어",
+      "type": "company",
+      "brand": "Chong Kun Dang",
+      "website": "ckdpharm.com",
+      "aliases": [
+        "ckd",
+        "chong kun dang"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@CKDPharm",
+        "instagram": "ckd_official",
+        "facebook": "CKDPharm"
+      }
+    },
+    {
+      "name": "동아제약",
+      "industry": "제약/헬스케어",
+      "type": "company",
+      "brand": "Dong-A",
+      "website": "donga.co.kr",
+      "aliases": [
+        "dong-a",
+        "동아"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@DongAPharm",
+        "instagram": "donga_pharm",
+        "facebook": "DongAPharm"
+      }
+    },
+    {
+      "name": "광동제약",
+      "industry": "제약/헬스케어",
+      "type": "company",
+      "brand": "Kwangdong",
+      "website": "ekwangdong.com",
+      "aliases": [
+        "kwangdong",
+        "광동"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Kwangdong",
+        "instagram": "kwangdong_official",
+        "facebook": "KwangdongPharm"
+      }
+    },
+    {
+      "name": "삼성 갤럭시",
+      "industry": "가전/전자",
+      "type": "brand",
+      "brand": "Samsung Galaxy",
+      "website": "samsung.com/galaxy",
+      "aliases": [
+        "galaxy",
+        "갤럭시",
+        "samsung mobile"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SamsungMobile",
+        "instagram": "samsungmobile",
+        "facebook": "SamsungMobile"
+      }
+    },
+    {
+      "name": "다이슨코리아",
+      "industry": "가전/전자",
+      "type": "company",
+      "brand": "Dyson",
+      "website": "dyson.co.kr",
+      "aliases": [
+        "dyson",
+        "다이슨"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@DysonKR",
+        "instagram": "dyson_kr",
+        "facebook": "DysonKR"
+      }
+    },
+    {
+      "name": "애플코리아",
+      "industry": "가전/전자",
+      "type": "company",
+      "brand": "Apple",
+      "website": "apple.com/kr",
+      "aliases": [
+        "apple",
+        "애플"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Apple",
+        "instagram": "apple",
+        "facebook": "Apple"
+      }
+    },
+    {
+      "name": "샤오미코리아",
+      "industry": "가전/전자",
+      "type": "company",
+      "brand": "Xiaomi",
+      "website": "mi.com/kr",
+      "aliases": [
+        "xiaomi",
+        "샤오미"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@XiaomiKorea",
+        "instagram": "xiaomi_korea",
+        "facebook": "XiaomiKorea"
+      }
+    },
+    {
+      "name": "LG 시그니처",
+      "industry": "가전/전자",
+      "type": "brand",
+      "brand": "LG SIGNATURE",
+      "website": "lg.com/signature",
+      "aliases": [
+        "lg signature"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@LGSIGNATURE",
+        "instagram": "lgsignature",
+        "facebook": "LGSIGNATURE"
+      }
+    },
+    {
+      "name": "삼성물산",
+      "industry": "건설/부동산",
+      "type": "company",
+      "brand": "Raemian",
+      "website": "raemian.co.kr",
+      "aliases": [
+        "raemian",
+        "래미안",
+        "samsung c&t"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Raemian",
+        "instagram": "raemian_official",
+        "facebook": "Raemian"
+      }
+    },
+    {
+      "name": "현대건설",
+      "industry": "건설/부동산",
+      "type": "company",
+      "brand": "Hillstate",
+      "website": "hillstate.co.kr",
+      "aliases": [
+        "hillstate",
+        "힐스테이트"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Hillstate",
+        "instagram": "hillstate_official",
+        "facebook": "Hillstate"
+      }
+    },
+    {
+      "name": "GS건설",
+      "industry": "건설/부동산",
+      "type": "company",
+      "brand": "Xi",
+      "website": "xi.co.kr",
+      "aliases": [
+        "xi",
+        "자이",
+        "gs e&c"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Xi_apt",
+        "instagram": "xi_official",
+        "facebook": "XiApt"
+      }
+    },
+    {
+      "name": "대우건설",
+      "industry": "건설/부동산",
+      "type": "company",
+      "brand": "Prugio",
+      "website": "prugio.com",
+      "aliases": [
+        "prugio",
+        "푸르지오"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Prugio",
+        "instagram": "prugio_official",
+        "facebook": "Prugio"
+      }
+    },
+    {
+      "name": "포스코건설",
+      "industry": "건설/부동산",
+      "type": "company",
+      "brand": "The Sharp",
+      "website": "thesharp.co.kr",
+      "aliases": [
+        "the sharp",
+        "더샵"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@TheSharp",
+        "instagram": "thesharp_official",
+        "facebook": "TheSharp"
+      }
+    },
+    {
+      "name": "직방",
+      "industry": "건설/부동산",
+      "type": "company",
+      "brand": "Zigbang",
+      "website": "zigbang.com",
+      "aliases": [
+        "zigbang"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Zigbang",
+        "instagram": "zigbang_official",
+        "facebook": "Zigbang"
+      }
+    },
+    {
+      "name": "넥슨",
+      "industry": "게임",
+      "type": "company",
+      "brand": "Nexon",
+      "website": "nexon.com",
+      "aliases": [
+        "nexon"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@NEXON",
+        "instagram": "nexon_kr",
+        "facebook": "NEXON"
+      }
+    },
+    {
+      "name": "엔씨소프트",
+      "industry": "게임",
+      "type": "company",
+      "brand": "NCSoft",
+      "website": "ncsoft.com",
+      "aliases": [
+        "ncsoft",
+        "nc"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@NCSoft",
+        "instagram": "ncsoft_official",
+        "facebook": "NCSoft"
+      }
+    },
+    {
+      "name": "넷마블",
+      "industry": "게임",
+      "type": "company",
+      "brand": "Netmarble",
+      "website": "netmarble.com",
+      "aliases": [
+        "netmarble"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Netmarble",
+        "instagram": "netmarble_official",
+        "facebook": "Netmarble"
+      }
+    },
+    {
+      "name": "크래프톤",
+      "industry": "게임",
+      "type": "company",
+      "brand": "Krafton",
+      "website": "krafton.com",
+      "aliases": [
+        "krafton",
+        "블루홀"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KRAFTON",
+        "instagram": "krafton_official",
+        "facebook": "KRAFTON"
+      }
+    },
+    {
+      "name": "스마일게이트",
+      "industry": "게임",
+      "type": "company",
+      "brand": "Smilegate",
+      "website": "smilegate.com",
+      "aliases": [
+        "smilegate"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Smilegate",
+        "instagram": "smilegate_official",
+        "facebook": "Smilegate"
+      }
+    },
+    {
+      "name": "컴투스",
+      "industry": "게임",
+      "type": "company",
+      "brand": "Com2uS",
+      "website": "com2us.com",
+      "aliases": [
+        "com2us"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Com2uS",
+        "instagram": "com2us_official",
+        "facebook": "Com2uS"
+      }
+    },
+    {
+      "name": "데브시스터즈",
+      "industry": "게임",
+      "type": "company",
+      "brand": "Devsisters",
+      "website": "devsisters.com",
+      "aliases": [
+        "devsisters",
+        "쿠키런"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Devsisters",
+        "instagram": "devsisters_official",
+        "facebook": "Devsisters"
+      }
+    },
+    {
+      "name": "하이브",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "HYBE",
+      "website": "hybecorp.com",
+      "aliases": [
+        "hybe",
+        "빅히트",
+        "Big Hit"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HYBELABELS",
+        "instagram": "hybecorp",
+        "facebook": "HYBE"
+      }
+    },
+    {
+      "name": "SM엔터테인먼트",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "SM Entertainment",
+      "website": "smentertainment.com",
+      "aliases": [
+        "sm",
+        "SM Entertainment"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SMTOWN",
+        "instagram": "smtown",
+        "facebook": "SMTOWN"
+      }
+    },
+    {
+      "name": "JYP엔터테인먼트",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "JYP Entertainment",
+      "website": "jype.com",
+      "aliases": [
+        "jyp",
+        "JYP Entertainment"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@JYPEntertainment",
+        "instagram": "jypentertainment",
+        "facebook": "JYPEntertainment"
+      }
+    },
+    {
+      "name": "YG엔터테인먼트",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "YG Entertainment",
+      "website": "ygentertainment.com",
+      "aliases": [
+        "yg",
+        "YG Entertainment"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@YG_Entertainment",
+        "instagram": "ygent_official",
+        "facebook": "YGEntertainment"
+      }
+    },
+    {
+      "name": "CJ ENM",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "CJ ENM",
+      "website": "cjenm.com",
+      "aliases": [
+        "cj enm",
+        "CJ E&M"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@CJENM",
+        "instagram": "cjenm.official",
+        "facebook": "CJENM"
+      }
+    },
+    {
+      "name": "넷플릭스코리아",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "Netflix Korea",
+      "website": "netflix.com/kr",
+      "aliases": [
+        "netflix",
+        "넷플릭스"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@NetflixKorea",
+        "instagram": "netflixkr",
+        "facebook": "NetflixKR"
+      }
+    },
+    {
+      "name": "왓챠",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "WATCHA",
+      "website": "watcha.com",
+      "aliases": [
+        "watcha"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@WATCHA",
+        "instagram": "watcha_official",
+        "facebook": "WATCHA"
+      }
+    },
+    {
+      "name": "웨이브",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "Wavve",
+      "website": "wavve.com",
+      "aliases": [
+        "wavve"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Wavve",
+        "instagram": "wavve_official",
+        "facebook": "Wavve"
+      }
+    },
+    {
+      "name": "티빙",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "TVING",
+      "website": "tving.com",
+      "aliases": [
+        "tving"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@TVING",
+        "instagram": "tving_official",
+        "facebook": "TVING"
+      }
+    },
+    {
+      "name": "디즈니플러스코리아",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "Disney+",
+      "website": "disneyplus.com/ko-kr",
+      "aliases": [
+        "disney+",
+        "디즈니플러스",
+        "Disney Plus"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@DisneyPlusKR",
+        "instagram": "disneypluskr",
+        "facebook": "DisneyPlusKR"
+      }
+    },
+    {
+      "name": "대한항공",
+      "industry": "여행/항공",
+      "type": "company",
+      "brand": "Korean Air",
+      "website": "koreanair.com",
+      "aliases": [
+        "korean air",
+        "KAL"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KoreanAir",
+        "instagram": "koreanairworld",
+        "facebook": "KoreanAir"
+      }
+    },
+    {
+      "name": "아시아나항공",
+      "industry": "여행/항공",
+      "type": "company",
+      "brand": "Asiana Airlines",
+      "website": "flyasiana.com",
+      "aliases": [
+        "asiana",
+        "아시아나"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@AsianaAirlines",
+        "instagram": "asiana_airlines",
+        "facebook": "AsianaAirlines"
+      }
+    },
+    {
+      "name": "제주항공",
+      "industry": "여행/항공",
+      "type": "company",
+      "brand": "Jeju Air",
+      "website": "jejuair.net",
+      "aliases": [
+        "jeju air",
+        "제주에어"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@JejuAir",
+        "instagram": "jejuair_official",
+        "facebook": "JejuAir"
+      }
+    },
+    {
+      "name": "야놀자",
+      "industry": "여행/항공",
+      "type": "company",
+      "brand": "Yanolja",
+      "website": "yanolja.com",
+      "aliases": [
+        "yanolja"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Yanolja",
+        "instagram": "yanolja_official",
+        "facebook": "Yanolja"
+      }
+    },
+    {
+      "name": "여기어때",
+      "industry": "여행/항공",
+      "type": "company",
+      "brand": "Goodchoice",
+      "website": "goodchoice.kr",
+      "aliases": [
+        "goodchoice"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Goodchoice",
+        "instagram": "goodchoice_official",
+        "facebook": "Goodchoice"
+      }
+    },
+    {
+      "name": "메가스터디",
+      "industry": "교육",
+      "type": "company",
+      "brand": "Megastudy",
+      "website": "megastudy.net",
+      "aliases": [
+        "megastudy",
+        "메가스터디교육"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Megastudy",
+        "instagram": "megastudy_official",
+        "facebook": "Megastudy"
+      }
+    },
+    {
+      "name": "에듀윌",
+      "industry": "교육",
+      "type": "company",
+      "brand": "Eduwill",
+      "website": "eduwill.net",
+      "aliases": [
+        "eduwill"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Eduwill",
+        "instagram": "eduwill_official",
+        "facebook": "Eduwill"
+      }
+    },
+    {
+      "name": "클래스101",
+      "industry": "교육",
+      "type": "company",
+      "brand": "Class101",
+      "website": "class101.net",
+      "aliases": [
+        "class101"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Class101",
+        "instagram": "class101_official",
+        "facebook": "Class101"
+      }
+    },
+    {
+      "name": "패스트캠퍼스",
+      "industry": "교육",
+      "type": "company",
+      "brand": "Fast Campus",
+      "website": "fastcampus.co.kr",
+      "aliases": [
+        "fast campus",
+        "fastcampus"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@FastCampus",
+        "instagram": "fastcampus_official",
+        "facebook": "FastCampus"
+      }
+    },
+    {
+      "name": "밀리의서재",
+      "industry": "교육",
+      "type": "company",
+      "brand": "Millie",
+      "website": "millie.co.kr",
+      "aliases": [
+        "millie",
+        "밀리"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Millie",
+        "instagram": "millie_official",
+        "facebook": "Millie"
+      }
+    },
+    {
+      "name": "노스페이스코리아",
+      "industry": "스포츠/아웃도어",
+      "type": "company",
+      "brand": "The North Face",
+      "website": "thenorthfacekorea.co.kr",
+      "aliases": [
+        "the north face",
+        "노스페이스"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@TheNorthFaceKR",
+        "instagram": "thenorthfacekr",
+        "facebook": "TheNorthFaceKR"
+      }
+    },
+    {
+      "name": "블랙야크",
+      "industry": "스포츠/아웃도어",
+      "type": "company",
+      "brand": "BLACKYAK",
+      "website": "blackyak.com",
+      "aliases": [
+        "blackyak"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@BLACKYAK",
+        "instagram": "blackyak_official",
+        "facebook": "BLACKYAK"
+      }
+    },
+    {
+      "name": "K2",
+      "industry": "스포츠/아웃도어",
+      "type": "brand",
+      "brand": "K2",
+      "website": "k2outdoor.com",
+      "aliases": [
+        "k2 outdoor",
+        "케이투"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@K2outdoor",
+        "instagram": "k2_outdoor",
+        "facebook": "K2outdoor"
+      }
+    },
+    {
+      "name": "아이더",
+      "industry": "스포츠/아웃도어",
+      "type": "brand",
+      "brand": "Eider",
+      "website": "eider.co.kr",
+      "aliases": [
+        "eider"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Eider",
+        "instagram": "eider_official",
+        "facebook": "Eider"
+      }
+    },
+    {
+      "name": "한샘",
+      "industry": "가구/인테리어",
+      "type": "company",
+      "brand": "Hanssem",
+      "website": "hanssem.com",
+      "aliases": [
+        "hanssem"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Hanssem",
+        "instagram": "hanssem_official",
+        "facebook": "Hanssem"
+      }
+    },
+    {
+      "name": "이케아코리아",
+      "industry": "가구/인테리어",
+      "type": "company",
+      "brand": "IKEA",
+      "website": "ikea.co.kr",
+      "aliases": [
+        "ikea",
+        "이케아"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@IKEAKorea",
+        "instagram": "ikeakr",
+        "facebook": "IKEAKorea"
+      }
+    },
+    {
+      "name": "현대리바트",
+      "industry": "가구/인테리어",
+      "type": "company",
+      "brand": "Hyundai Livart",
+      "website": "hyundailivart.co.kr",
+      "aliases": [
+        "hyundai livart",
+        "리바트"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HyundaiLivart",
+        "instagram": "hyundailivart_official",
+        "facebook": "HyundaiLivart"
+      }
+    },
+    {
+      "name": "까사미아",
+      "industry": "가구/인테리어",
+      "type": "company",
+      "brand": "Casamia",
+      "website": "casamia.co.kr",
+      "aliases": [
+        "casamia"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Casamia",
+        "instagram": "casamia_official",
+        "facebook": "Casamia"
+      }
+    },
+    {
+      "name": "오늘의집",
+      "industry": "가구/인테리어",
+      "type": "company",
+      "brand": "oHouse",
+      "website": "ohou.se",
+      "aliases": [
+        "ohouse",
+        "오늘의집",
+        "bucketplace"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@ohouse",
+        "instagram": "ohouse_official",
+        "facebook": "oHouse"
+      }
+    },
+    {
+      "name": "하이트진로",
+      "industry": "주류",
+      "type": "company",
+      "brand": "Hite Jinro",
+      "website": "hitejinro.com",
+      "aliases": [
+        "hite jinro",
+        "하이트",
+        "진로"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HiteJinro",
+        "instagram": "hitejinro_official",
+        "facebook": "HiteJinro"
+      }
+    },
+    {
+      "name": "오비맥주",
+      "industry": "주류",
+      "type": "company",
+      "brand": "OB Beer",
+      "website": "obbeer.co.kr",
+      "aliases": [
+        "ob beer",
+        "카스",
+        "cass"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@OBBeer",
+        "instagram": "obbeer_official",
+        "facebook": "OBBeer"
+      }
+    },
+    {
+      "name": "롯데칠성 처음처럼",
+      "industry": "주류",
+      "type": "brand",
+      "brand": "Cheoeum Cheoreom",
+      "website": "lottechilsung.co.kr",
+      "aliases": [
+        "처음처럼",
+        "chum churum"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@CheoumCheoreom",
+        "instagram": "cheoreom_official",
+        "facebook": "CheoumCheoreom"
+      }
+    },
+    {
+      "name": "한국관광공사",
+      "industry": "공공기관",
+      "type": "company",
+      "brand": "Korea Tourism Organization",
+      "website": "visitkorea.or.kr",
+      "aliases": [
+        "kto",
+        "Korea Tourism Organization"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KoreaTravel",
+        "instagram": "visitkorea",
+        "facebook": "VisitKorea"
+      }
+    },
+    {
+      "name": "한국전력공사",
+      "industry": "공공기관",
+      "type": "company",
+      "brand": "KEPCO",
+      "website": "kepco.co.kr",
+      "aliases": [
+        "kepco",
+        "한전"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KEPCO",
+        "instagram": "kepco_official",
+        "facebook": "KEPCO"
+      }
+    },
+    {
+      "name": "국민건강보험공단",
+      "industry": "공공기관",
+      "type": "company",
+      "brand": "NHIS",
+      "website": "nhis.or.kr",
+      "aliases": [
+        "nhis",
+        "건보공단"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@NHIS",
+        "instagram": "nhis_official",
+        "facebook": "NHIS"
+      }
+    },
+    {
+      "name": "서울시",
+      "industry": "공공기관",
+      "type": "company",
+      "brand": "Seoul Metropolitan Government",
+      "website": "seoul.go.kr",
+      "aliases": [
+        "seoul",
+        "서울특별시"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Seoul",
+        "instagram": "seoul_official",
+        "facebook": "Seoul"
+      }
+    },
+    {
+      "name": "로얄캐닌코리아",
+      "industry": "반려동물",
+      "type": "company",
+      "brand": "Royal Canin",
+      "website": "royalcanin.com/kr",
+      "aliases": [
+        "royal canin",
+        "로얄캐닌"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@RoyalCaninKR",
+        "instagram": "royalcanin_kr",
+        "facebook": "RoyalCaninKR"
+      }
+    },
+    {
+      "name": "퓨리나",
+      "industry": "반려동물",
+      "type": "brand",
+      "brand": "Purina",
+      "website": "purina.co.kr",
+      "aliases": [
+        "purina",
+        "퓨리나"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Purina",
+        "instagram": "purina_official",
+        "facebook": "Purina"
+      }
+    },
+    {
+      "name": "바잇미",
+      "industry": "반려동물",
+      "type": "company",
+      "brand": "Bite Me",
+      "website": "biteme.co.kr",
+      "aliases": [
+        "bite me",
+        "바잇미"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@BiteMe",
+        "instagram": "biteme_official",
+        "facebook": "BiteMe"
+      }
+    },
+    {
+      "name": "펫프렌즈",
+      "industry": "반려동물",
+      "type": "company",
+      "brand": "Pet Friends",
+      "website": "petfriends.co.kr",
+      "aliases": [
+        "pet friends"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@PetFriends",
+        "instagram": "petfriends_official",
+        "facebook": "PetFriends"
+      }
+    },
+    {
+      "name": "한화생명",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Hanwha Life",
+      "website": "hanwhalife.com",
+      "aliases": [
+        "hanwha life"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HanwhaLife",
+        "instagram": "hanwhalife_official",
+        "facebook": "HanwhaLife"
+      }
+    },
+    {
+      "name": "신한카드",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Shinhan Card",
+      "website": "shinhancard.com",
+      "aliases": [
+        "shinhan card"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@ShinhanCard",
+        "instagram": "shinhancard_official",
+        "facebook": "ShinhanCard"
+      }
+    },
+    {
+      "name": "KB국민카드",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "KB Card",
+      "website": "kbcard.com",
+      "aliases": [
+        "kb card",
+        "국민카드"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KBCard",
+        "instagram": "kbcard_official",
+        "facebook": "KBCard"
+      }
+    },
+    {
+      "name": "하나투어",
+      "industry": "여행/항공",
+      "type": "company",
+      "brand": "Hana Tour",
+      "website": "hanatour.com",
+      "aliases": [
+        "hana tour"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HanaTour",
+        "instagram": "hanatour_official",
+        "facebook": "HanaTour"
+      }
+    },
+    {
+      "name": "진에어",
+      "industry": "여행/항공",
+      "type": "company",
+      "brand": "Jin Air",
+      "website": "jinair.com",
+      "aliases": [
+        "jin air"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@JinAir",
+        "instagram": "jinair_official",
+        "facebook": "JinAir"
+      }
+    },
+    {
+      "name": "에어서울",
+      "industry": "여행/항공",
+      "type": "company",
+      "brand": "Air Seoul",
+      "website": "airseoul.com",
+      "aliases": [
+        "air seoul"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@AirSeoul",
+        "instagram": "airseoul_official",
+        "facebook": "AirSeoul"
+      }
+    },
+    {
+      "name": "투어비스",
+      "industry": "여행/항공",
+      "type": "company",
+      "brand": "Tourvis",
+      "website": "tourvis.com",
+      "aliases": [
+        "tourvis"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Tourvis",
+        "instagram": "tourvis_official",
+        "facebook": "Tourvis"
+      }
+    },
+    {
+      "name": "트립닷컴",
+      "industry": "여행/항공",
+      "type": "company",
+      "brand": "Trip.com",
+      "website": "trip.com",
+      "aliases": [
+        "trip.com"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@TripDotCom",
+        "instagram": "tripdotcom",
+        "facebook": "TripDotCom"
+      }
+    },
+    {
+      "name": "한글과컴퓨터",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Hancom",
+      "website": "hancom.com",
+      "aliases": [
+        "hancom",
+        "한컴"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Hancom",
+        "instagram": "hancom_official",
+        "facebook": "Hancom"
+      }
+    },
+    {
+      "name": "크몽",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Kmong",
+      "website": "kmong.com",
+      "aliases": [
+        "kmong"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Kmong",
+        "instagram": "kmong_official",
+        "facebook": "Kmong"
+      }
+    },
+    {
+      "name": "원티드",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Wanted",
+      "website": "wanted.co.kr",
+      "aliases": [
+        "wanted"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Wanted",
+        "instagram": "wanted_official",
+        "facebook": "Wanted"
+      }
+    },
+    {
+      "name": "삼성SDI",
+      "industry": "가전/전자",
+      "type": "company",
+      "brand": "Samsung SDI",
+      "website": "samsungsdi.co.kr",
+      "aliases": [
+        "samsung sdi"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SamsungSDI",
+        "instagram": "samsungsdi_official",
+        "facebook": "SamsungSDI"
+      }
+    },
+    {
+      "name": "LG이노텍",
+      "industry": "가전/전자",
+      "type": "company",
+      "brand": "LG Innotek",
+      "website": "lginnotek.com",
+      "aliases": [
+        "lg innotek"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@LGInnotek",
+        "instagram": "lginnotek_official",
+        "facebook": "LGInnotek"
+      }
+    },
+    {
+      "name": "SK하이닉스",
+      "industry": "가전/전자",
+      "type": "company",
+      "brand": "SK hynix",
+      "website": "skhynix.com",
+      "aliases": [
+        "sk hynix",
+        "하이닉스"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SKhynix",
+        "instagram": "skhynix_official",
+        "facebook": "SKhynix"
+      }
+    },
+    {
+      "name": "한화손해보험",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Hanwha General Insurance",
+      "website": "hwgeneralins.com",
+      "aliases": [
+        "한화손보"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HanwhaGeneralIns",
+        "instagram": "hanwhageneralins",
+        "facebook": "HanwhaGeneralIns"
+      }
+    },
+    {
+      "name": "DL이앤씨",
+      "industry": "건설/부동산",
+      "type": "company",
+      "brand": "DL E&C",
+      "website": "dlenc.co.kr",
+      "aliases": [
+        "dl e&c",
+        "대림건설",
+        "아크로"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@DLEnC",
+        "instagram": "dlenc_official",
+        "facebook": "DLEnC"
+      }
+    },
+    {
+      "name": "다방",
+      "industry": "건설/부동산",
+      "type": "company",
+      "brand": "Dabang",
+      "website": "dabangapp.com",
+      "aliases": [
+        "dabang"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Dabang",
+        "instagram": "dabang_official",
+        "facebook": "Dabang"
+      }
+    },
+    {
+      "name": "위닉스",
+      "industry": "가전/전자",
+      "type": "company",
+      "brand": "Winix",
+      "website": "winix.co.kr",
+      "aliases": [
+        "winix"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Winix",
+        "instagram": "winix_official",
+        "facebook": "Winix"
+      }
+    },
+    {
+      "name": "쿠쿠",
+      "industry": "가전/전자",
+      "type": "company",
+      "brand": "Cuckoo",
+      "website": "cuckoo.co.kr",
+      "aliases": [
+        "cuckoo"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Cuckoo",
+        "instagram": "cuckoo_official",
+        "facebook": "Cuckoo"
+      }
+    },
+    {
+      "name": "코웨이",
+      "industry": "가전/전자",
+      "type": "company",
+      "brand": "Coway",
+      "website": "coway.co.kr",
+      "aliases": [
+        "coway"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Coway",
+        "instagram": "coway_official",
+        "facebook": "Coway"
+      }
+    },
+    {
+      "name": "한국야쿠르트",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Hy",
+      "website": "hy.co.kr",
+      "aliases": [
+        "hy",
+        "한국야쿠르트",
+        "야쿠르트"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Hy_Official",
+        "instagram": "hy_official",
+        "facebook": "HyOfficial"
+      }
+    },
+    {
+      "name": "정관장",
+      "industry": "제약/헬스케어",
+      "type": "brand",
+      "brand": "CheongKwanJang",
+      "website": "kgc.co.kr",
+      "aliases": [
+        "cheongkwanjang",
+        "KGC인삼공사"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@CheongKwanJang",
+        "instagram": "cheongkwanjang_official",
+        "facebook": "CheongKwanJang"
+      }
+    },
+    {
+      "name": "안국약품",
+      "industry": "제약/헬스케어",
+      "type": "company",
+      "brand": "Ankook",
+      "website": "ankook.com",
+      "aliases": [
+        "ankook"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Ankook",
+        "instagram": "ankook_official",
+        "facebook": "Ankook"
+      }
+    },
+    {
+      "name": "일동제약",
+      "industry": "제약/헬스케어",
+      "type": "company",
+      "brand": "Ildong",
+      "website": "ildong.com",
+      "aliases": [
+        "ildong"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Ildong",
+        "instagram": "ildong_official",
+        "facebook": "Ildong"
+      }
+    },
+    {
+      "name": "보령",
+      "industry": "제약/헬스케어",
+      "type": "company",
+      "brand": "Boryung",
+      "website": "boryung.co.kr",
+      "aliases": [
+        "boryung",
+        "보령제약"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Boryung",
+        "instagram": "boryung_official",
+        "facebook": "Boryung"
+      }
+    },
+    {
+      "name": "동원F&B",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Dongwon",
+      "website": "dongwonfnb.com",
+      "aliases": [
+        "dongwon",
+        "동원"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@DongwonFnB",
+        "instagram": "dongwon_fnb",
+        "facebook": "DongwonFnB"
+      }
+    },
+    {
+      "name": "남양유업",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Namyang",
+      "website": "namyangi.com",
+      "aliases": [
+        "namyang",
+        "남양"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Namyang",
+        "instagram": "namyang_official",
+        "facebook": "Namyang"
+      }
+    },
+    {
+      "name": "버거킹코리아",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Burger King",
+      "website": "burgerking.co.kr",
+      "aliases": [
+        "burger king",
+        "버거킹"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@BurgerKingKR",
+        "instagram": "burgerkingkorea",
+        "facebook": "BurgerKingKorea"
+      }
+    },
+    {
+      "name": "도미노피자코리아",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Domino's Pizza",
+      "website": "dominos.co.kr",
+      "aliases": [
+        "dominos",
+        "도미노피자"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@DominosPizzaKR",
+        "instagram": "dominoskr",
+        "facebook": "DominosPizzaKR"
+      }
+    },
+    {
+      "name": "KFC코리아",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "KFC",
+      "website": "kfckorea.com",
+      "aliases": [
+        "kfc"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KFCKorea",
+        "instagram": "kfc_korea",
+        "facebook": "KFCKorea"
+      }
+    },
+    {
+      "name": "비타500",
+      "industry": "제약/헬스케어",
+      "type": "brand",
+      "brand": "Vita500",
+      "website": "ekwangdong.com",
+      "aliases": [
+        "vita500",
+        "비타오백"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Vita500",
+        "instagram": "vita500_official",
+        "facebook": "Vita500"
+      }
+    },
+    {
+      "name": "대상",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "Daesang",
+      "website": "daesang.com",
+      "aliases": [
+        "daesang",
+        "청정원",
+        "종가"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Daesang",
+        "instagram": "daesang_official",
+        "facebook": "Daesang"
+      }
+    },
+    {
+      "name": "SPC그룹",
+      "industry": "식품/음료",
+      "type": "company",
+      "brand": "SPC Group",
+      "website": "spc.co.kr",
+      "aliases": [
+        "spc",
+        "파리바게뜨",
+        "배스킨라빈스",
+        "던킨"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SPCGroup",
+        "instagram": "spc_official",
+        "facebook": "SPCGroup"
+      }
+    },
+    {
+      "name": "W컨셉",
+      "industry": "패션/의류",
+      "type": "company",
+      "brand": "W Concept",
+      "website": "wconcept.co.kr",
+      "aliases": [
+        "w concept",
+        "더블유컨셉"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@WConcept",
+        "instagram": "wconcept_kr",
+        "facebook": "WConcept"
+      }
+    },
+    {
+      "name": "한섬",
+      "industry": "패션/의류",
+      "type": "company",
+      "brand": "Handsome",
+      "website": "thehandsome.com",
+      "aliases": [
+        "handsome",
+        "타임",
+        "시스템"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Handsome",
+        "instagram": "handsome_official",
+        "facebook": "Handsome"
+      }
+    },
+    {
+      "name": "삼성SDS",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Samsung SDS",
+      "website": "samsungsds.com",
+      "aliases": [
+        "samsung sds"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SamsungSDS",
+        "instagram": "samsungsds_official",
+        "facebook": "SamsungSDS"
+      }
+    },
+    {
+      "name": "NHN",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "NHN",
+      "website": "nhn.com",
+      "aliases": [
+        "nhn"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@NHN",
+        "instagram": "nhn_official",
+        "facebook": "NHN"
+      }
+    },
+    {
+      "name": "잡코리아",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "JobKorea",
+      "website": "jobkorea.co.kr",
+      "aliases": [
+        "jobkorea"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@JobKorea",
+        "instagram": "jobkorea_official",
+        "facebook": "JobKorea"
+      }
+    },
+    {
+      "name": "사람인",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "Saramin",
+      "website": "saramin.co.kr",
+      "aliases": [
+        "saramin"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Saramin",
+        "instagram": "saramin_official",
+        "facebook": "Saramin"
+      }
+    },
+    {
+      "name": "한국방송공사",
+      "industry": "공공기관",
+      "type": "company",
+      "brand": "KBS",
+      "website": "kbs.co.kr",
+      "aliases": [
+        "kbs"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KBS",
+        "instagram": "kbs_official",
+        "facebook": "KBS"
+      }
+    },
+    {
+      "name": "MBC",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "MBC",
+      "website": "imbc.com",
+      "aliases": [
+        "mbc",
+        "문화방송"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@MBC",
+        "instagram": "mbc_official",
+        "facebook": "MBC"
+      }
+    },
+    {
+      "name": "SBS",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "SBS",
+      "website": "sbs.co.kr",
+      "aliases": [
+        "sbs"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SBS",
+        "instagram": "sbsnow",
+        "facebook": "SBS"
+      }
+    },
+    {
+      "name": "JTBC",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "JTBC",
+      "website": "jtbc.co.kr",
+      "aliases": [
+        "jtbc"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@JTBC",
+        "instagram": "jtbc_official",
+        "facebook": "JTBC"
+      }
+    },
+    {
+      "name": "tvN",
+      "industry": "엔터테인먼트",
+      "type": "brand",
+      "brand": "tvN",
+      "website": "tvn.cjenm.com",
+      "aliases": [
+        "tvn"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@tvN",
+        "instagram": "tvn_drama",
+        "facebook": "tvN"
+      }
+    },
+    {
+      "name": "네오위즈",
+      "industry": "게임",
+      "type": "company",
+      "brand": "Neowiz",
+      "website": "neowiz.com",
+      "aliases": [
+        "neowiz"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Neowiz",
+        "instagram": "neowiz_official",
+        "facebook": "Neowiz"
+      }
+    },
+    {
+      "name": "펄어비스",
+      "industry": "게임",
+      "type": "company",
+      "brand": "Pearl Abyss",
+      "website": "pearlabyss.com",
+      "aliases": [
+        "pearl abyss"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@PearlAbyss",
+        "instagram": "pearlabyss_official",
+        "facebook": "PearlAbyss"
+      }
+    },
+    {
+      "name": "카카오게임즈",
+      "industry": "게임",
+      "type": "company",
+      "brand": "Kakao Games",
+      "website": "kakaogames.com",
+      "aliases": [
+        "kakao games"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KakaoGames",
+        "instagram": "kakaogames_official",
+        "facebook": "KakaoGames"
+      }
+    },
+    {
+      "name": "엘리시안",
+      "industry": "스포츠/아웃도어",
+      "type": "brand",
+      "brand": "Elysian",
+      "website": "elysian.co.kr",
+      "aliases": [
+        "elysian"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@Elysian",
+        "instagram": "elysian_resort",
+        "facebook": "Elysian"
+      }
+    },
+    {
+      "name": "데카트론코리아",
+      "industry": "스포츠/아웃도어",
+      "type": "company",
+      "brand": "Decathlon",
+      "website": "decathlon.co.kr",
+      "aliases": [
+        "decathlon",
+        "데카트론"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@DecathlonKR",
+        "instagram": "decathlon_kr",
+        "facebook": "DecathlonKR"
+      }
+    },
+    {
+      "name": "언더아머코리아",
+      "industry": "스포츠/아웃도어",
+      "type": "company",
+      "brand": "Under Armour",
+      "website": "underarmour.co.kr",
+      "aliases": [
+        "under armour",
+        "언더아머"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@UnderArmourKR",
+        "instagram": "underarmourkr",
+        "facebook": "UnderArmourKR"
+      }
+    },
+    {
+      "name": "금호타이어",
+      "industry": "자동차",
+      "type": "company",
+      "brand": "Kumho Tire",
+      "website": "kumhotire.com",
+      "aliases": [
+        "kumho tire",
+        "금호"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KumhoTire",
+        "instagram": "kumhotire_official",
+        "facebook": "KumhoTire"
+      }
+    },
+    {
+      "name": "한국타이어",
+      "industry": "자동차",
+      "type": "company",
+      "brand": "Hankook Tire",
+      "website": "hankooktire.com",
+      "aliases": [
+        "hankook tire",
+        "한국타이어앤테크놀로지"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HankookTire",
+        "instagram": "hankooktire_official",
+        "facebook": "HankookTire"
+      }
+    },
+    {
+      "name": "기업은행",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "IBK",
+      "website": "ibk.co.kr",
+      "aliases": [
+        "ibk",
+        "기은"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@IBK",
+        "instagram": "ibk_official",
+        "facebook": "IBK"
+      }
+    },
+    {
+      "name": "교보생명",
+      "industry": "금융/보험",
+      "type": "company",
+      "brand": "Kyobo Life",
+      "website": "kyobo.co.kr",
+      "aliases": [
+        "kyobo",
+        "교보"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KyoboLife",
+        "instagram": "kyobolife_official",
+        "facebook": "KyoboLife"
+      }
+    },
+    {
+      "name": "헤라",
+      "industry": "뷰티/화장품",
+      "type": "brand",
+      "brand": "HERA",
+      "website": "hera.com",
+      "aliases": [
+        "hera"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@HERA",
+        "instagram": "hera_seoulista",
+        "facebook": "HERA"
+      }
+    },
+    {
+      "name": "VT코스메틱",
+      "industry": "뷰티/화장품",
+      "type": "company",
+      "brand": "VT Cosmetics",
+      "website": "vtcosmetics.com",
+      "aliases": [
+        "vt cosmetics",
+        "브이티"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@VTCosmetics",
+        "instagram": "vtcosmetics_official",
+        "facebook": "VTCosmetics"
+      }
+    },
+    {
+      "name": "쏘카",
+      "industry": "IT/통신",
+      "type": "company",
+      "brand": "SOCAR",
+      "website": "socar.kr",
+      "aliases": [
+        "socar"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@SOCAR",
+        "instagram": "socar_kr",
+        "facebook": "SOCAR"
+      }
+    },
+    {
+      "name": "카카오T",
+      "industry": "IT/통신",
+      "type": "brand",
+      "brand": "Kakao T",
+      "website": "kakaomobility.com",
+      "aliases": [
+        "kakao t",
+        "카카오모빌리티"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@KakaoMobility",
+        "instagram": "kakaomobility_official",
+        "facebook": "KakaoMobility"
+      }
+    },
+    {
+      "name": "CGV",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "CGV",
+      "website": "cgv.co.kr",
+      "aliases": [
+        "cgv",
+        "씨지브이"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@CGV",
+        "instagram": "cgv_korea",
+        "facebook": "CGV"
+      }
+    },
+    {
+      "name": "메가박스",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "MEGABOX",
+      "website": "megabox.co.kr",
+      "aliases": [
+        "megabox"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@MEGABOX",
+        "instagram": "megabox_official",
+        "facebook": "MEGABOX"
+      }
+    },
+    {
+      "name": "롯데시네마",
+      "industry": "엔터테인먼트",
+      "type": "company",
+      "brand": "Lotte Cinema",
+      "website": "lottecinema.co.kr",
+      "aliases": [
+        "lotte cinema"
+      ],
+      "channels": {
+        "youtube": "https://www.youtube.com/@LotteCinema",
+        "instagram": "lottecinema_official",
+        "facebook": "LotteCinema"
+      }
+    }
+  ]
+}

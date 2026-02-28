@@ -1,0 +1,256 @@
+{
+  "pc": {
+    "keyword": "대출",
+    "persona_code": "P4",
+    "device": "pc",
+    "channel": "naver_search",
+    "captured_at": "2026-02-07 09:41:51.595881",
+    "page_url": "https://search.naver.com/search.naver?query=%EB%8C%80%EC%B6%9C",
+    "screenshot_path": "screenshots\\naver_search\\20260207\\P4_대출_184148.png",
+    "ads": [
+      {
+        "advertiser_name": "",
+        "ad_text": "대출대출 퍼스트론과 함께! 무방문/무서류 믿을수 있는! 소득 없어도 신용이낮아도OK",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/WYOSk8XsHJrQltD41e-8W0vBg8QQIdMNNZ9onflq_GC3sg0WL1fUNusftV-FkKqF4unvLmkT5A9xkWZez2K4fX7L9UAcFodnSmOZTI9sZKeXy-83oAPHtu17n8D8PG33uP6LmH6hn_iI1hbvJDp3uEpJQM-5rfYLupKQrqubzY0dE9Yur1Ho6_8LtH8k-nonMyatkNQ4RZDA3zZe7kGnZ1cXpoWGb5gSRDErJQ0FV_U=?c=naver.search.pc.plsearch&t=0",
+        "display_url": "퍼스트론\nfirstloan24.com",
+        "position": 1,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "",
+        "ad_text": "대출OK 대출24 오늘 대출 바로가능한곳!",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/_CsMkr9MxJxh-NlMgn7myIwUHYrXAwnekOv_uH_rNNjlHGH1kB8hCrQdA6ZeEydZohWQiC_m-yBHbOCgXifYSyq_EpIU_hwOmosMyWaJAiPbN0SvOFgysjOPQSl5-5OmxXEHzPai-em2QkcMnS1pikjQpVWiKjpw9xySLbYAarZGm7R7JWN1FyQeVtnNu4Oj4URJhxdRCdz3hKD8tcDqeCdjiaMEM2ToaCGC9tusuFrAvXpBefzYXCiZty0D1btdBD8Wo76Irw7RxNZKhLno0PWtrl_-nTOfiu3r1I4rq04Fj97UvP-HQQfHcRFNH2W0V4x9spcjmJblPb77KfC4FV7zqvgnWga4Bk4kcctmHDqBU-ojIpHMoovhFeglA4xqeosHJ-XTWsHYErKs5vRdlfI_yFQV1OLcJk_1EThPPME=?c=naver.search.pc.plsearch&t=0",
+        "display_url": "대출24\n대출24.net",
+        "position": 2,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "",
+        "ad_text": "대출 대출당일 이자율부터 상환까지 투명하게 지금 한도확인 1분이면OK",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/GdokvJ6PTZMM25yEfPxAskxNWlf0kMnqr0gL9tk7_wgkQQrfkBLyz17I7gQctmFhMZsz_6I3WLNmTtqrGcgwroB7ZKXQaviheqOnRCJMB16ljmynWf7WE_fITgVrrwAG3pAMMkczcKLSqkdXgS3nxiLnOXPg91hioDKOnQKHtSIib5HyHqgBcwnZEbtRjeWVUThBT4AqulCwBt0SPLbnIDVrUYuFgAgdn-c8vWcw2CTaPHlEz2xCq_1nCSOssEiQaaauwL9XwL9W5fg6B4hEjxrO7hndrLp9DFQNX4kYndQfLYOYG5MzArI-aw2yRZEaszO7tXgfSEE6RBfQC94eSnTExfAC5hkxTk3i5Re57uOXor7TXQ6e0--ETS6U0wqQSLXuX118cf3uZRWFmZehIkB7yF8jel28xcGid7QSE10=?c=naver.search.pc.plsearch&t=0",
+        "display_url": "대출당일\n대출당일.com",
+        "position": 3,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "",
+        "ad_text": "주말, 휴일에도 OK저축은행 나의 맞춤 한도와 금리 확인",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/VRKoYtfg2gSrlMgNHB2673_QC6Q3iqvWQwIAJFnghQt_Kl093ZTDm0lPuB74kREmLRtKfbUlAFqpOOf08OiFN5-ZYhMRXpSeQ0u_ZcGveyYxQ3c5P-WM2Ksw5CgKLGPicZ6eh3WEanaHk1kVAu1c1j69R-tIX7TIX9dCt6UFke-U3EVvzxCfPbl4E2l1UbdPtEOEz0XCEY5IjsihjUTZh5zNuz1qWTNYMqpkjA2qEsZa7n2q6VYHW4l8F2gjNwvld8xP_c-AnQ_SWvjPZMdlVEInNgmixprY_z4PBY-6D2vqE7hjQV31tKMan0XQ0UyBVS3gouLG4xPUn6FCCbT4_s6mG5WxDfckkBzczmqoAUr5igylBGpdEOHrtVOn1ZyFIkosY1AZtyYe1kQ0sBv0QOr5Re5vwX-0i4NszUs21M4AvjrOKmmkK60qisLgHkoReks_9Rsnp_nH6WrC9cYFbDe7N4JosCgKwwE60Nvqsm4=?c=naver.search.pc.plsearch&t=0",
+        "display_url": "OK저축은행\noksavingsbank.com/",
+        "position": 4,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "",
+        "ad_text": "SBI저축은행 사업자담보대출 사업자용 최대 50억 한도 스트레스DSR 고민 그만",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/0lJwkXakyTbNIfmeXO72n77HHtk8aXQCo0yKv1XGhdRanYswX2xYW4uSNA0q6MMtbbuQYXEzgbj23rHr49GKMltnoy9ClqeMJQMhY8reZBIPpOOdbBRKcC8FiDJzpLZ4JOvZpDK4VKKidb6cpGRflB5bVaZUUDZlCKxIprO6B8NLCv_sbO1LyMn6_Aw1VKXKq1Dy4BvzbjvrLQgBiTNWrc8llt72O6UkjxPhju4uqTLOMpjr9fuWXRCmWt-43Kw_1GLulLUQDY4SVoq8yj7HParmTFRl6JWBbmN0t3Td1t4SwoTt4odj9A_glHcRf9I4SAQNvf3aoCaHd--yHUiv4GBQ_0vMH9VnAG1VCSGrraHxQ93z5PVm2P0mqIMf_xGo96xCFyceZBflT2xNmfKdIQEKjoiEOdmg4f3N2dXik9NBqa0loPwh_YUoisIecFWPWpQMDJdAlALyucvgcgDvLQr1PDdhg33EqXiRTCXn3V4Qyd1EmE1nBbAVwCejhhyE?c=naver.search.pc.plsearch&t=0",
+        "display_url": "SBI저축은행\nsbiapt.com/bridge",
+        "position": 5,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "",
+        "ad_text": "새마을금고 대출상담사 이은재 DSR 제한없는 사업자대출",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/WYOSk8XsHJrQltD41e-8W0vBg8QQIdMNNZ9onflq_GAK70_XJ0S-fpL7DbTfqNF6iq8rb7Ltrt6_JUZctBvG6WYVU22_4vfH69hxa40BbViw2YXnew02nkzJ1rcTc7pf5tjkfKVhLQ1Sd5IkcdPZrcCAsl6-x_p3MvEXY9rsN07DqtmK3NzpKU088g_8KlXLDQFw71K2cwCRsvW4GK0xMQ==?c=naver.search.pc.plsearch&t=0",
+        "display_url": "새마을금고대출\nmg-jcapital.kr/",
+        "position": 6,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "",
+        "ad_text": "SBI저축은행 사업자담보대출 조회부터 신청까지 간편하게 DSR 제한없는 사업자대출!",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/x-IZsMXDS6hJpyqeRDlW6g_hBjgLc1yJkl3OO2ZfnIa8l2x3c5KXNnb0ZTo_0ROH23Hrh8PdsZY0tqnQMHMf4BVl-YTh1rk_o-EVNs5lUj4XdRlKwBOFWU48mDIlouvHQohlUSODJjnDZdeKvl82AhbsYiA3W0JoTjmbN3AoeeHzSZ2ANfajSlOQv1JwmNpaXr5q9z5m1phU9fR1xFMO7EvksohM8u1joQ2CMcpdJ54KfbRZhsb878epedkJMmQJfPUs-4wcitlJtxTMhgkjZAf9NxC_XidPUSro00b9tUVwlN3Aw3zTw92QbnJ4fAro-yQ_l8WsHSydtSgWFxJNmqf8YfGclVJyjL4jm6Oh-b73c8kSLf6AGq8Hh_d7PTBXduUpevZQvE3p-89ybhHlTFferCeoRrWAclwB3Cmo7DeBWKO2Ymorhhfq9HQ0c9yu4IMMENQLhL_ooZEFNexObrE7ZtIKzwkVN6oYKmPTFGA6JClPtqUCNZf5dP_hPxGO?c=naver.search.pc.plsearch&t=0",
+        "display_url": "SBI저축은행\nsbiapt.com/",
+        "position": 7,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "",
+        "ad_text": "대출 대출 거절 됐다면 대출돼지",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/WYOSk8XsHJrQltD41e-8W0vBg8QQIdMNNZ9onflq_GDA00EahHyxkI0Z5mUUva2AvqD5JZxgBZdYmJ38bHtCkgHGcjU_eh6J1z6InHQ73Mai4HwqHh9U5XQh9HAqL-MdHwHl48zL9W3Zvl56SuMHYrAAnSPEYrYD0iJFshFBR716PduaOM6dVqYX37LT1UnLeGuMww6m2kHK415X4U7DqgEwq7pYj0-pry0TPY924KxessFw69D6yjCzCI3jPf-py9Gla3HFPNsCsIMaoSodcMca9p4-qBY8h09OHYBCmwZM_3obpVczMPAN2ZaPxtzsGvB0YEjkD5W06Zfx5xXpXZHw2bowQ0VPchOz4OqBxGeQViMd44lmgw831qJjA9ybxZNlvENjy_F2MwV6oCgc2w==?c=naver.search.pc.plsearch&t=0",
+        "display_url": "대출돼지\n대출돼지.com",
+        "position": 8,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "",
+        "ad_text": "대출 연체중OK 비대면OK 전국 대출업체 대출돼지",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/WYOSk8XsHJrQltD41e-8W0vBg8QQIdMNNZ9onflq_GAiNPWK6umavY-WlqTl82pONrJRLBB-YKD_qUBQbi4RvRAmd-VS6lEcWYieQ6k1uawyJfziZT80DxMESSXPDzrSW1YPaIoRw7wFf-LaE-VuIXMdUjNuhuAk9K3rxIUVko0bKeiciY4dSSX7xcef0Qcq3eXCTVICxzmbkYBguG7XYHe3q1KGT8gUmf_0yCfQ37-3OLBo1GKHwtRZM9O1LoJVoM9Xm6qLQSTv6jxwGJmreIOHfHTx8trreASwFwvfFrW2kiUUfvEToZUpB3dLKprAOapZAsNLR0Ps16emg5E97EIb20qZghlDWebiGbDpwBpBsft0I0TEyF02cwIyAqt6udNfGweOL5KBrFflntkkGg==?c=naver.search.pc.plsearch&t=0",
+        "display_url": "대출돼지\n대출돼지.kr",
+        "position": 9,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "",
+        "ad_text": "현대캐피탈 대출상담사 서영상 수석대출상담사",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/WYOSk8XsHJrQltD41e-8W0vBg8QQIdMNNZ9onflq_GBVX1xfUxa3CsPAp9bOEwyiwz3p6J4La1rmWDd3BwT55KjgU2obQo_VvmqDyZ1ZYeqRGPBhCzALeiAF67H2PZKoqwvKuTp4wVU9FcsJTt-Nk8aRT3ou61SbcLVRiicIp0r5EcGKlEEGBwpjcbWKWlrc2l0DtncZ2xa0JYvcVt10ATFt5YovxsuNuqzwXTt96fY-WVU9GokKpWxJgX1k9D7Z?c=naver.search.pc.plsearch&t=0",
+        "display_url": "현대캐피탈\nhyundaicapital.com/lp",
+        "position": 10,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "퍼스트론",
+        "ad_text": "대출대출 퍼스트론과 함께! 무방문/무서류 믿을수 있는! 소득 없어도 신용이낮아도OK",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/WYOSk8XsHJrQltD41e-8W0vBg8QQIdMNNZ9onflq_GC3sg0WL1fUNusftV-FkKqF4unvLmkT5A9xkWZez2K4fX7L9UAcFodnSmOZTI9sZKeXy-83oAPHtu17n8D8PG33uP6LmH6hn_iI1hbvJDp3uEpJQM-5rfYLupKQrqubzY0dE9Yur1Ho6_8LtH8k-nonMyatkNQ4RZDA3zZe7kGnZ1cXpoWGb5gSRDErJQ0FV_U=?c=naver.search.pc.plsearch&t=0",
+        "display_url": null,
+        "position": 1,
+        "ad_type": "bizsite",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "대출24",
+        "ad_text": "대출OK 대출24 오늘 대출 바로가능한곳!",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/_CsMkr9MxJxh-NlMgn7myIwUHYrXAwnekOv_uH_rNNjlHGH1kB8hCrQdA6ZeEydZohWQiC_m-yBHbOCgXifYSyq_EpIU_hwOmosMyWaJAiPbN0SvOFgysjOPQSl5-5OmxXEHzPai-em2QkcMnS1pikjQpVWiKjpw9xySLbYAarZGm7R7JWN1FyQeVtnNu4Oj4URJhxdRCdz3hKD8tcDqeCdjiaMEM2ToaCGC9tusuFrAvXpBefzYXCiZty0D1btdBD8Wo76Irw7RxNZKhLno0PWtrl_-nTOfiu3r1I4rq04Fj97UvP-HQQfHcRFNH2W0V4x9spcjmJblPb77KfC4FV7zqvgnWga4Bk4kcctmHDqBU-ojIpHMoovhFeglA4xqeosHJ-XTWsHYErKs5vRdlfI_yFQV1OLcJk_1EThPPME=?c=naver.search.pc.plsearch&t=0",
+        "display_url": null,
+        "position": 2,
+        "ad_type": "bizsite",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "대출당일",
+        "ad_text": "대출 대출당일 이자율부터 상환까지 투명하게 지금 한도확인 1분이면OK",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/GdokvJ6PTZMM25yEfPxAskxNWlf0kMnqr0gL9tk7_wgkQQrfkBLyz17I7gQctmFhMZsz_6I3WLNmTtqrGcgwroB7ZKXQaviheqOnRCJMB16ljmynWf7WE_fITgVrrwAG3pAMMkczcKLSqkdXgS3nxiLnOXPg91hioDKOnQKHtSIib5HyHqgBcwnZEbtRjeWVUThBT4AqulCwBt0SPLbnIDVrUYuFgAgdn-c8vWcw2CTaPHlEz2xCq_1nCSOssEiQaaauwL9XwL9W5fg6B4hEjxrO7hndrLp9DFQNX4kYndQfLYOYG5MzArI-aw2yRZEaszO7tXgfSEE6RBfQC94eSnTExfAC5hkxTk3i5Re57uOXor7TXQ6e0--ETS6U0wqQSLXuX118cf3uZRWFmZehIkB7yF8jel28xcGid7QSE10=?c=naver.search.pc.plsearch&t=0",
+        "display_url": null,
+        "position": 3,
+        "ad_type": "bizsite",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "OK저축은행",
+        "ad_text": "주말, 휴일에도 OK저축은행 나의 맞춤 한도와 금리 확인",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/VRKoYtfg2gSrlMgNHB2673_QC6Q3iqvWQwIAJFnghQt_Kl093ZTDm0lPuB74kREmLRtKfbUlAFqpOOf08OiFN5-ZYhMRXpSeQ0u_ZcGveyYxQ3c5P-WM2Ksw5CgKLGPicZ6eh3WEanaHk1kVAu1c1j69R-tIX7TIX9dCt6UFke-U3EVvzxCfPbl4E2l1UbdPtEOEz0XCEY5IjsihjUTZh5zNuz1qWTNYMqpkjA2qEsZa7n2q6VYHW4l8F2gjNwvld8xP_c-AnQ_SWvjPZMdlVEInNgmixprY_z4PBY-6D2vqE7hjQV31tKMan0XQ0UyBVS3gouLG4xPUn6FCCbT4_s6mG5WxDfckkBzczmqoAUr5igylBGpdEOHrtVOn1ZyFIkosY1AZtyYe1kQ0sBv0QOr5Re5vwX-0i4NszUs21M4AvjrOKmmkK60qisLgHkoReks_9Rsnp_nH6WrC9cYFbDe7N4JosCgKwwE60Nvqsm4=?c=naver.search.pc.plsearch&t=0",
+        "display_url": null,
+        "position": 4,
+        "ad_type": "bizsite",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "SBI저축은행",
+        "ad_text": "SBI저축은행 사업자담보대출 사업자용 최대 50억 한도 스트레스DSR 고민 그만",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/0lJwkXakyTbNIfmeXO72n77HHtk8aXQCo0yKv1XGhdRanYswX2xYW4uSNA0q6MMtbbuQYXEzgbj23rHr49GKMltnoy9ClqeMJQMhY8reZBIPpOOdbBRKcC8FiDJzpLZ4JOvZpDK4VKKidb6cpGRflB5bVaZUUDZlCKxIprO6B8NLCv_sbO1LyMn6_Aw1VKXKq1Dy4BvzbjvrLQgBiTNWrc8llt72O6UkjxPhju4uqTLOMpjr9fuWXRCmWt-43Kw_1GLulLUQDY4SVoq8yj7HParmTFRl6JWBbmN0t3Td1t4SwoTt4odj9A_glHcRf9I4SAQNvf3aoCaHd--yHUiv4GBQ_0vMH9VnAG1VCSGrraHxQ93z5PVm2P0mqIMf_xGo96xCFyceZBflT2xNmfKdIQEKjoiEOdmg4f3N2dXik9NBqa0loPwh_YUoisIecFWPWpQMDJdAlALyucvgcgDvLQr1PDdhg33EqXiRTCXn3V4Qyd1EmE1nBbAVwCejhhyE?c=naver.search.pc.plsearch&t=0",
+        "display_url": null,
+        "position": 5,
+        "ad_type": "bizsite",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "새마을금고대출",
+        "ad_text": "새마을금고 대출상담사 이은재 DSR 제한없는 사업자대출",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/WYOSk8XsHJrQltD41e-8W0vBg8QQIdMNNZ9onflq_GAK70_XJ0S-fpL7DbTfqNF6iq8rb7Ltrt6_JUZctBvG6WYVU22_4vfH69hxa40BbViw2YXnew02nkzJ1rcTc7pf5tjkfKVhLQ1Sd5IkcdPZrcCAsl6-x_p3MvEXY9rsN07DqtmK3NzpKU088g_8KlXLDQFw71K2cwCRsvW4GK0xMQ==?c=naver.search.pc.plsearch&t=0",
+        "display_url": null,
+        "position": 6,
+        "ad_type": "bizsite",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "SBI저축은행",
+        "ad_text": "SBI저축은행 사업자담보대출 조회부터 신청까지 간편하게 DSR 제한없는 사업자대출!",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/x-IZsMXDS6hJpyqeRDlW6g_hBjgLc1yJkl3OO2ZfnIa8l2x3c5KXNnb0ZTo_0ROH23Hrh8PdsZY0tqnQMHMf4BVl-YTh1rk_o-EVNs5lUj4XdRlKwBOFWU48mDIlouvHQohlUSODJjnDZdeKvl82AhbsYiA3W0JoTjmbN3AoeeHzSZ2ANfajSlOQv1JwmNpaXr5q9z5m1phU9fR1xFMO7EvksohM8u1joQ2CMcpdJ54KfbRZhsb878epedkJMmQJfPUs-4wcitlJtxTMhgkjZAf9NxC_XidPUSro00b9tUVwlN3Aw3zTw92QbnJ4fAro-yQ_l8WsHSydtSgWFxJNmqf8YfGclVJyjL4jm6Oh-b73c8kSLf6AGq8Hh_d7PTBXduUpevZQvE3p-89ybhHlTFferCeoRrWAclwB3Cmo7DeBWKO2Ymorhhfq9HQ0c9yu4IMMENQLhL_ooZEFNexObrE7ZtIKzwkVN6oYKmPTFGA6JClPtqUCNZf5dP_hPxGO?c=naver.search.pc.plsearch&t=0",
+        "display_url": null,
+        "position": 7,
+        "ad_type": "bizsite",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "대출돼지",
+        "ad_text": "대출 대출 거절 됐다면 대출돼지",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/WYOSk8XsHJrQltD41e-8W0vBg8QQIdMNNZ9onflq_GDA00EahHyxkI0Z5mUUva2AvqD5JZxgBZdYmJ38bHtCkgHGcjU_eh6J1z6InHQ73Mai4HwqHh9U5XQh9HAqL-MdHwHl48zL9W3Zvl56SuMHYrAAnSPEYrYD0iJFshFBR716PduaOM6dVqYX37LT1UnLeGuMww6m2kHK415X4U7DqgEwq7pYj0-pry0TPY924KxessFw69D6yjCzCI3jPf-py9Gla3HFPNsCsIMaoSodcMca9p4-qBY8h09OHYBCmwZM_3obpVczMPAN2ZaPxtzsGvB0YEjkD5W06Zfx5xXpXZHw2bowQ0VPchOz4OqBxGeQViMd44lmgw831qJjA9ybxZNlvENjy_F2MwV6oCgc2w==?c=naver.search.pc.plsearch&t=0",
+        "display_url": null,
+        "position": 8,
+        "ad_type": "bizsite",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "대출돼지",
+        "ad_text": "대출 연체중OK 비대면OK 전국 대출업체 대출돼지",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/WYOSk8XsHJrQltD41e-8W0vBg8QQIdMNNZ9onflq_GAiNPWK6umavY-WlqTl82pONrJRLBB-YKD_qUBQbi4RvRAmd-VS6lEcWYieQ6k1uawyJfziZT80DxMESSXPDzrSW1YPaIoRw7wFf-LaE-VuIXMdUjNuhuAk9K3rxIUVko0bKeiciY4dSSX7xcef0Qcq3eXCTVICxzmbkYBguG7XYHe3q1KGT8gUmf_0yCfQ37-3OLBo1GKHwtRZM9O1LoJVoM9Xm6qLQSTv6jxwGJmreIOHfHTx8trreASwFwvfFrW2kiUUfvEToZUpB3dLKprAOapZAsNLR0Ps16emg5E97EIb20qZghlDWebiGbDpwBpBsft0I0TEyF02cwIyAqt6udNfGweOL5KBrFflntkkGg==?c=naver.search.pc.plsearch&t=0",
+        "display_url": null,
+        "position": 9,
+        "ad_type": "bizsite",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "현대캐피탈",
+        "ad_text": "현대캐피탈 대출상담사 서영상 수석대출상담사",
+        "ad_description": null,
+        "url": "https://ader.naver.com/v1/WYOSk8XsHJrQltD41e-8W0vBg8QQIdMNNZ9onflq_GBVX1xfUxa3CsPAp9bOEwyiwz3p6J4La1rmWDd3BwT55KjgU2obQo_VvmqDyZ1ZYeqRGPBhCzALeiAF67H2PZKoqwvKuTp4wVU9FcsJTt-Nk8aRT3ou61SbcLVRiicIp0r5EcGKlEEGBwpjcbWKWlrc2l0DtncZ2xa0JYvcVt10ATFt5YovxsuNuqzwXTt96fY-WVU9GokKpWxJgX1k9D7Z?c=naver.search.pc.plsearch&t=0",
+        "display_url": null,
+        "position": 10,
+        "ad_type": "bizsite",
+        "extra_data": {}
+      }
+    ],
+    "crawl_duration_ms": 11759
+  },
+  "mobile": {
+    "keyword": "대출",
+    "persona_code": "P4",
+    "device": "mobile",
+    "channel": "naver_search",
+    "captured_at": "2026-02-07 09:42:03.598168",
+    "page_url": "https://m.search.naver.com/search.naver?query=%EB%8C%80%EC%B6%9C",
+    "screenshot_path": "screenshots\\naver_search\\20260207\\P4_대출_184156.png",
+    "ads": [
+      {
+        "advertiser_name": "",
+        "ad_text": "직장인 대출? 정부지원 대출은 모르면 손해",
+        "ad_description": "정부지원 근로자, 소상공인 서민금융, 4대보험 가입자는 1억까지 당일 송금, 소득이 불규칙한 사업자, 프리랜서 신청 가능, 정부지원 정책자금이 왜 좋은가요?...",
+        "url": "https://ader.naver.com/v1/0N3bfdInypdWTvHFI1oFQHa7qs0qx_KQFTMyqCbqbY6CmMzC6LjKEs77tjGCujTxqnyBG_yAUUZDGXs_tQRxOtahXtzLDF39mhY9OEpCRis9y9kLeyYJtPcTOXnniw6NRhXrqH0kSQbf40pkLxXX8A==",
+        "display_url": null,
+        "position": 1,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "",
+        "ad_text": "개인회생대출 자격 조건은? ( 장점과 사례 )",
+        "ad_description": "개인회생 절차를 진행하는 동안에도 대출이 가능하므로 긴급한 자금 필요를 충족할 수 있습니다. 예를들어, A씨는 개인회생 절차를 통해 채무를 조정 받는 동안 갑작스러운 의료비가 필요해졌습니다....",
+        "url": "https://ader.naver.com/v1/0N3bfdInypdWTvHFI1oFQHa7qs0qx_KQFTMyqCbqbY6CmMzC6LjKEs77tjGCujTxqnyBG_yAUUZDGXs_tQRxOtahXtzLDF39mhY9OEpCRis9y9kLeyYJtPcTOXnniw6NRhXrqH0kSQbf40pkLxXX8A==",
+        "display_url": null,
+        "position": 2,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      },
+      {
+        "advertiser_name": "",
+        "ad_text": "직장인 채무통합 대환대출 성공사례",
+        "ad_description": "대출이 7건이나 되니 관리하는 것도 너무 힘들었고..매달 빠져나가는 이자도 점점 부담으로 느껴졌어요.은행 대출 1건으로정리할 수만 있다면 꼭 바꾸고 싶다는생각이 계속 들었어요....",
+        "url": "https://ader.naver.com/v1/0N3bfdInypdWTvHFI1oFQHa7qs0qx_KQFTMyqCbqbY6CmMzC6LjKEs77tjGCujTxqnyBG_yAUUZDGXs_tQRxOtahXtzLDF39mhY9OEpCRis9y9kLeyYJtPcTOXnniw6NRhXrqH0kSQbf40pkLxXX8A==",
+        "display_url": null,
+        "position": 3,
+        "ad_type": "powerlink",
+        "extra_data": {}
+      }
+    ],
+    "crawl_duration_ms": 11956
+  }
+}

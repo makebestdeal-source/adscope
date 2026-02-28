@@ -1,0 +1,12 @@
+{
+  "data": {
+    "experiments": []
+  },
+  "extensions": {
+    "server_metadata": {
+      "request_start_time_ms": 1771248347955,
+      "time_at_flush_ms": 1771248347966
+    },
+    "is_final": true
+  }
+}

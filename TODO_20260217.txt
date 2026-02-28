@@ -1,0 +1,36 @@
+AdScope TODO List (2026-02-17)
+================================
+
+[완료]
+- 소셜 채널 분석 페이지 구현 (/social-channels)
+- 갤러리 광고/소셜 완전 분리 (/gallery, /social-gallery)
+- 소셜 채널 API 프론트 타입 불일치 수정
+- 제품 카테고리 시드 (86개)
+- 브랜드 모니터 크롤링 1회 (YouTube 100건, 5개 광고주)
+- 썸네일 100건 로컬 저장 (stored_images/youtube/social/)
+
+[다음 작업]
+1. 데이터 수집 확대
+   - Google 계정 2~3개 생성 -> YouTube Surf 멀티패스 (프리롤 광고 접촉)
+   - Meta App Token -> .env META_ACCESS_TOKEN 설정 (코드 완성됨)
+   - Instagram 쿠키 수동 추출 -> 접촉 측정
+   - 브랜드 모니터 반복 실행 -> 일별 데이터 축적
+
+2. AI 보강
+   - 미식별 광고 206건 AI 분류 배치 실행
+   - product_category 자동 분류 검증
+
+3. 소셜 채널 고도화
+   - ChannelStats 테이블에 구독자/팔로워 수집 크롤러 구현
+     - YouTube: /youtubei/v1/browse 채널 페이지 subscriberCount
+     - Instagram: GraphQL edge_followed_by count
+   - 인게이지먼트율 계산 로직 구현 (likes+comments / followers)
+   - 소셜 채널 분석 페이지 KPI에 실제 데이터 반영
+
+4. 프론트엔드 안정화
+   - 시장분석 메뉴 (산업별/제품서비스별/경쟁사비교) 동작 확인
+   - .next 캐시 에러 재발 모니터링
+
+5. 운영
+   - 스케줄러 cron 설정 (브랜드 모니터 일 1회)
+   - AI 보강 배치 일 1회 03:00 KST 자동화

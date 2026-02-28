@@ -1,0 +1,1778 @@
+{
+  "persona_code": "F20",
+  "channel": "instagram_mobile",
+  "updated_at": "2026-02-14T18:28:02.504696+00:00",
+  "cookie_count": 175,
+  "cookies": [
+    {
+      "name": "cee",
+      "value": "IJNw6Ysp37Yp0VcWtbY00WAPwQbGuoiVvkruWwfSeoI%3D.%7B%7D",
+      "domain": ".meta-capig.29cm.co.kr",
+      "path": "/events/d9a6a146f46ddf47945a6bcbd13f601579caacb2b32a0dcefbd1f4bba0f19a06",
+      "expires": 1778869480.921318,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_lastau",
+      "value": "eQaQ",
+      "domain": ".s.c.appier.net",
+      "path": "/gcm2",
+      "expires": 1772302288.212088,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_lastau",
+      "value": "eQaQ",
+      "domain": ".s.c.appier.net",
+      "path": "/gcm",
+      "expires": 1772302287.915623,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_csts",
+      "value": "1771092687",
+      "domain": ".c.appier.net",
+      "path": "/r2",
+      "expires": 1802628687.752346,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_csv",
+      "value": "kr-18:WeQaQ",
+      "domain": ".c.appier.net",
+      "path": "/r2",
+      "expires": 1802629527.693734,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_csidx",
+      "value": "11",
+      "domain": ".c.appier.net",
+      "path": "/r2",
+      "expires": 1802629527.693642,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_cfuvid",
+      "value": "9YxThMt453vzgI_RiZq0U.70fMNNb7P3tqzlkHXsSmg-1771071179.6599355-1.0.1.1-t.CyjqZfvTk.Ja6h90WrpH8zSBKfVoRyDpBBBlf.R8o",
+      "domain": ".www.oliveyoung.co.kr",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "SCOUTER",
+      "value": "z1pdmoe0jcrflr",
+      "domain": "www.oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805631179.7019,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_cfuvid",
+      "value": "g2Q9ZYgPoTe1YHPXyV_tgPRFpIPAxff5e5IXQiemo80-1771071179.7779276-1.0.1.1-uLHfreqCbb7gIOwVGJvz3IWV.t6g5jnIGbvH6KQH4yY",
+      "domain": ".m.oliveyoung.co.kr",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_hackle_hid",
+      "value": "4ad64ede-2439-4d4f-99f3-4a1e0e001e17",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805631180.034076,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_hackle_mkt_g4Zz62g3",
+      "value": "%7B%7D",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805631180.036731,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AMP_MKTG_7fbb263808",
+      "value": "JTdCJTdE",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1802607180,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "RB_PCID",
+      "value": "1771071180366213774",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805631180.36632,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "EG_GUID",
+      "value": "09f79fd9-b119-4033-9fea-17a5fd14d75e",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805631180.42372,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gcl_au",
+      "value": "1.1.303142606.1771071181",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1778847181,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "BID",
+      "value": "X6S3SM2KPKWGI69428WDKSEFA",
+      "domain": ".toast.com",
+      "path": "/",
+      "expires": 1786645419.953976,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_fwb",
+      "value": "59nEtZR9zVMaFVQFzT92m1.1771071181359",
+      "domain": ".m.oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805653419.952195,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "oliveyoung_CID",
+      "value": "a04665b1c89d40d9842808198a64dada",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805631181.376996,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "NWB",
+      "value": "be2b7213046c6213df1ee4cb2106380c.1771071181442",
+      "domain": ".wcs.naver.com",
+      "path": "/",
+      "expires": 1805653527.141606,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_trs_id",
+      "value": "eY7724720%3F75710%3E5",
+      "domain": "m.oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805631181.469773,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "NAC",
+      "value": "6daTB8Qmf1z5B",
+      "domain": ".naver.com",
+      "path": "/",
+      "expires": 1805653527.586677,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_ttp",
+      "value": "39ezAZHuWhfLHlIfE39turMRpek",
+      "domain": ".tiktok.com",
+      "path": "/",
+      "expires": 1804789420.077202,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_fbp",
+      "value": "fb.2.1771071181692.602918500793610075",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1778869420,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gid",
+      "value": "GA1.3.1674066476.1771071182",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1771179820,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "IDE",
+      "value": "AHWqTUk8dV1gXhFZeviY6mMIoYRd7-23_OOIqAR7IRja6MAG0dU_Pgi-K0pHqoG3",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1805631181.980666,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_tt_enable_cookie",
+      "value": "1",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1804789420,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ttp",
+      "value": "01KHE1355J792S2HRC5TA74SXH_.tt.2",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1804789420,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "PHPSESSID",
+      "value": "5gbh6lq1eb5oef44kle9mv8d2gb3blg52b3pm6dnboc11ie51j11",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "krt",
+      "value": "AUeNRDwCxmNMdJk_xbibBzw5WiEJ4t1dciKXkYFIoBDMorVnEOU",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1771115064.749593,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "kdi",
+      "value": "-73haTLxSciUjY1dt38ysg",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1805653464.74966,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "CLID",
+      "value": "7a591f40ca10467eac122b065255f7d4.20260214.20270214",
+      "domain": "www.clarity.ms",
+      "path": "/",
+      "expires": 1802607206.984727,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_s",
+      "value": "zobPRQ8pEw1ppRytMw9dwhJAb0Lgfe%2FzI%2FTa1oOfBlRRtmCo%2Bnlx2ZtWxhcWXlKw",
+      "domain": ".app.link",
+      "path": "/",
+      "expires": 1786818245.556811,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_fbp",
+      "value": "fb.1.1771071207531.682008780890670817",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1778869446,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_clck",
+      "value": "10qmvxy%5E2%5Eg3k%5E0%5E2236",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1802607207,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "guest_id_marketing",
+      "value": "v1%3A177107120764946731",
+      "domain": ".twitter.com",
+      "path": "/",
+      "expires": 1805631207.685929,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "guest_id_ads",
+      "value": "v1%3A177107120764946731",
+      "domain": ".twitter.com",
+      "path": "/",
+      "expires": 1805631207.685979,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "personalization_id",
+      "value": "\"v1_9oXEwLGqR8KAgXRADmG7sQ==\"",
+      "domain": ".twitter.com",
+      "path": "/",
+      "expires": 1805631207.686006,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "guest_id",
+      "value": "v1%3A177107120764946731",
+      "domain": ".twitter.com",
+      "path": "/",
+      "expires": 1805631207.686032,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "muc_ads",
+      "value": "18e6e43d-c63c-4dde-adfd-db39201da914",
+      "domain": ".t.co",
+      "path": "/",
+      "expires": 1805631207.686468,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "af_id",
+      "value": "28513608-e678-40f7-94eb-2dbc00c0e74f-p",
+      "domain": ".appsflyer.com",
+      "path": "/",
+      "expires": 1805221527.753093,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "afUserId",
+      "value": "28513608-e678-40f7-94eb-2dbc00c0e74f-p",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1805653446.211687,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "af_id",
+      "value": "28513608-e678-40f7-94eb-2dbc00c0e74f-p",
+      "domain": ".onelink.me",
+      "path": "/",
+      "expires": 1805199265.403941,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "AF_SYNC",
+      "value": "1771071208019",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1771676008,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "MUID",
+      "value": "2CFB0C6BB9EA652636431B6BB8C364C6",
+      "domain": ".bing.com",
+      "path": "/",
+      "expires": 1804767209.238339,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MR",
+      "value": "0",
+      "domain": ".c.bing.com",
+      "path": "/",
+      "expires": 1771676009.238412,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "SRM_B",
+      "value": "2CFB0C6BB9EA652636431B6BB8C364C6",
+      "domain": ".c.bing.com",
+      "path": "/",
+      "expires": 1804767209.238454,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "SM",
+      "value": "C",
+      "domain": ".c.clarity.ms",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MUID",
+      "value": "2CFB0C6BB9EA652636431B6BB8C364C6",
+      "domain": ".clarity.ms",
+      "path": "/",
+      "expires": 1804767208.257766,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MR",
+      "value": "0",
+      "domain": ".c.clarity.ms",
+      "path": "/",
+      "expires": 1771676008.257804,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_fwb",
+      "value": "157NKiLtmorhmKkK5thBg0k.1771071237686",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1805653480.603069,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_BS_GUUID",
+      "value": "rcUVnmX0WxtAzViCnR2c1agLKDFlcVGE7BzvXwvU",
+      "domain": "gu.bizspring.net",
+      "path": "/",
+      "expires": 1805631237.797942,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_BS_GUUID",
+      "value": "rcUVnmX0WxtAzViCnR2c1agLKDFlcVGE7BzvXwvU",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1805631237.800784,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "Start_Time",
+      "value": "\"2026021421\"",
+      "domain": ".mediacategory.com",
+      "path": "/",
+      "expires": 1805631237.83549,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "s_IP_info",
+      "value": "\"61.43.120.144.985507\"",
+      "domain": ".mediacategory.com",
+      "path": "/",
+      "expires": 1805653480.76532,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "s_au_id",
+      "value": "\"41a84ac0a7283110-3d26203819c5c096a5f7d0b\"",
+      "domain": ".mediacategory.com",
+      "path": "/",
+      "expires": 1805631237.835539,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "iDev",
+      "value": "\"(1771071236936)IP_info^61.43.120.144.985507#\"",
+      "domain": ".mediacategory.com",
+      "path": "/",
+      "expires": 1805631237.835601,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "sp",
+      "value": "2489c892-e1f5-4a85-b31e-72ecae7ec769",
+      "domain": "dataplatform-collector.29cm.co.kr",
+      "path": "/",
+      "expires": 1802629504.021303,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_fbp",
+      "value": "fb.2.1771071237963.649001483954415823",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1778869480,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "YSC",
+      "value": "IniUQ4oZa_0",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://29cm.co.kr",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "VISITOR_INFO1_LIVE",
+      "value": "CUNDlitrtvo",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1786623237.965752,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://29cm.co.kr",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "VISITOR_PRIVACY_METADATA",
+      "value": "CgJLUhIEGgAgVA%3D%3D",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1786623237.965795,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://29cm.co.kr",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "_gid",
+      "value": "GA1.3.979765362.1771071238",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1771179880,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "CMID",
+      "value": "aZBnBm4sB8sANaiaAImP5QAA",
+      "domain": ".casalemedia.com",
+      "path": "/",
+      "expires": 1802607238.111071,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "CMPS",
+      "value": "5927",
+      "domain": ".casalemedia.com",
+      "path": "/",
+      "expires": 1778847238.058229,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "CMPRO",
+      "value": "5927",
+      "domain": ".casalemedia.com",
+      "path": "/",
+      "expires": 1778847238.111131,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "t_gid",
+      "value": "2fd9a81c-72a6-4ade-b7bf-b58023ce9ed6-tuct1089ec86",
+      "domain": ".taboola.com",
+      "path": "/",
+      "expires": 1802607238.19542,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "t_pt_gid",
+      "value": "2fd9a81c-72a6-4ade-b7bf-b58023ce9ed6-tuct1089ec86",
+      "domain": ".taboola.com",
+      "path": "/",
+      "expires": 1802607238.19549,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://29cm.co.kr",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "KRTBCOOKIE_1208",
+      "value": "23454-a-2pVBqxSRO6rcXgax8Abw",
+      "domain": ".pubmatic.com",
+      "path": "/",
+      "expires": 1772280838.234273,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "audit_p",
+      "value": "1|5TwT6rHLjc3R6XuTUF4iLoNwsQu4n97No9iqdlLpjROXcIC479rncxZxvBxcUIL3fP4EcnW+n6yM1KxoLazIt2xIiXiby+wJ8gji8D/BCN8NEptDTbq173R0JQKg36P2bah/sqib9mznOlVP214crUQTK1y63CI00A+VO7RH1E0=",
+      "domain": ".rubiconproject.com",
+      "path": "/",
+      "expires": 1802607238.486245,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://29cm.co.kr",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "khaos",
+      "value": "MLMA35N1-V-BTJ5",
+      "domain": ".rubiconproject.com",
+      "path": "/",
+      "expires": 1802628688.281156,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "khaos_p",
+      "value": "MLMA35N1-V-BTJ5",
+      "domain": ".rubiconproject.com",
+      "path": "/",
+      "expires": 1802607238.486331,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://29cm.co.kr",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "receive-cookie-deprecation",
+      "value": "1",
+      "domain": ".rubiconproject.com",
+      "path": "/",
+      "expires": 1778847238.486371,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://29cm.co.kr",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "_fwb",
+      "value": "244nLubmrgftQCQ2zkQQYtZ.1771071264779",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1805653527.106863,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ZIGZAGUUID",
+      "value": "485024bd-4eba-4f62-ad40-b7bf9c7a1215.HgQbOiIblBy9mAcUw5OqUZwnL84V4VFsQbiAzlYQ7m4",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1805653565.793593,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ZIGZAG_FINGERPRINT",
+      "value": "c67ce9c519df337bd40365bd60527c01",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1772885665,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.1562479798.1771071265",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1805653527.637413,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "appier_utmz",
+      "value": "%7B%7D",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1771698327,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_atrk_siteuid",
+      "value": "pg_1O8HxPrKBG4U7",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1802629527,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_fbp",
+      "value": "fb.1.1771071265554.533827448350287016",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1778869527,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "afUserId",
+      "value": "28513608-e678-40f7-94eb-2dbc00c0e74f-p",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1805653527.771643,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AF_SYNC",
+      "value": "1771071265670",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1771676065,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_auid",
+      "value": "JLrbkG6bCPmJdsh1IWeQaQ",
+      "domain": ".c.appier.net",
+      "path": "/",
+      "expires": 1802629527.919802,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_clck",
+      "value": "148id1n%5E2%5Eg3k%5E0%5E2236",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1802607265,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ab180ClientId",
+      "value": "329f5621-23df-40aa-aa5b-2de2b0ad09db",
+      "domain": ".abr.ge",
+      "path": "/",
+      "expires": 1805653528.908409,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "datr",
+      "value": "WmeQaQqLmVl491T3zqf-WOpg",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1805631322.672169,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ig_did",
+      "value": "1EF769C0-ABB6-443A-9F3E-43F9611E2A25",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1802607322.672191,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "wd",
+      "value": "360x780",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1771676231,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "mid",
+      "value": "aZBnWgABAAHrZJC-UhugkRPDaPC1",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1805631329,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ps_l",
+      "value": "1",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1805631430.941756,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ps_n",
+      "value": "1",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1805631430.941846,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "OYSESSIONID",
+      "value": "49ab30fc-6592-453f-bfc2-90100d5510d5",
+      "domain": "www.oliveyoung.co.kr",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "OYSESSIONID",
+      "value": "49ab30fc-6592-453f-bfc2-90100d5510d5",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ab.storage.deviceId.a288b8d5-d6ca-4ffb-87ec-92b04ab45e8a",
+      "value": "%7B%22g%22%3A%2231a0d185-964a-0b56-580e-169ed094e5e2%22%2C%22c%22%3A1771071180330%2C%22l%22%3A1771092589416%7D",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805652589,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_trs_sid",
+      "value": "G%5B64624651474%3D%5Bg%5B5506502%3D57532%3C7",
+      "domain": "m.oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1771095220,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_trs_flow",
+      "value": "",
+      "domain": "m.oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1771095220,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ksi",
+      "value": "AUfUxjN67Y5OopwdoRDwrFfIAAABnF5rZUo",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1771111464.749439,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ab.storage.deviceId.86d1a36a-3f7c-44cb-8812-27a36d84045d",
+      "value": "g%3Afe04057b-be99-48fb-89be-de5dbacfdcb6%7Ce%3Aundefined%7Cc%3A1771071206971%7Cl%3A1771092624229",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1805653445,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_sp_ses.6f04",
+      "value": "*",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1771095302,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ab.storage.deviceId.b9a58994-a795-4f4d-b145-1023fd6a1e11",
+      "value": "g%3A2d2e019d-214e-e919-8ad6-c052e49ec2f9%7Ce%3Aundefined%7Cc%3A1771071237533%7Cl%3A1771092649384",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1805653480,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_TRK_AUIDA_13926",
+      "value": "e8cb9d66037506580cf69c1e5de5b0e4:2",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1805653480.702311,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_TRK_ASID_13926",
+      "value": "7f0718de60b5b3ad9bb15f6fa29e1e47",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1771095280,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "abTestType",
+      "value": "\"(1771073016282)SG_BI^BI98#SG_BH^BH51#SG_BG^BG75#SG_BD^BD79#SG_AZ^AZ112#SG_BA^BA81#SG_AW^AW72#SG_AT^AT048#SG_AL^AL41#SG_AE^AE06#SG_AI^AI44#SG_AF^AF01#SG_AD^AD02#SG_AC^AC06#SG_AA^AA02#SG_Y^Y20#SG_R^R20#SG_P^P32#SG_N^N37#SG_K^K91#SG_H^H59#SG_D^D58#SG_C^C78#SG_B^B04#SG_A^A22#\"",
+      "domain": ".mediacategory.com",
+      "path": "/",
+      "expires": 1776277480.765451,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ab.storage.deviceId.103ec90c-cf52-4ad7-b6e9-12957ab2c361",
+      "value": "g%3A92c0d219-77e7-eecf-d14a-5de711ff3cf1%7Ce%3Aundefined%7Cc%3A1771071265128%7Cl%3A1771092687388",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1805653527,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_atrk_ssid",
+      "value": "HD0QiIYNni2vF8rqumNrX6",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1771095327,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "appier_page_isView_PageView_9e66",
+      "value": "fffd61df1116c931980f665310cec199897339ca29b0258cdbbb1a1ec3cd2c6b",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1771097127,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "appier_pv_counterViewTwoPages_1a5e",
+      "value": "0",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1771096287,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "appier_page_isView_ViewTwoPages_1a5e",
+      "value": "fffd61df1116c931980f665310cec199897339ca29b0258cdbbb1a1ec3cd2c6b",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1771096287,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "DSPR",
+      "value": "%7B%22mcr%22%3A%7B%22t%22%3A%2220260214%22%2C%22u%22%3A%22a-2pVBqxSRO6rcXgax8Abw%22%7D%2C%22v%22%3A1%2C%22ap%22%3A%7B%22t%22%3A%2220260215%22%2C%22u%22%3A%22JLrbkG6bCPmJdsh1IWeQaQ%22%7D%7D",
+      "domain": ".ds.kakao.com",
+      "path": "/",
+      "expires": 1778868687.950791,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "audit_p",
+      "value": "1|5TwT6rHLjc3R6XuTUF4iLoNwsQu4n97No9iqdlLpjROXcIC479rnc3VmQjhSBGEjV4UEEGwhg5eM1KxoLazIt2xIiXiby+wJ8gji8D/BCN8NEptDTbq173R0JQKg36P2bah/sqib9mznOlVP214crUQTK1y63CI00A+VO7RH1E0=",
+      "domain": ".rubiconproject.com",
+      "path": "/",
+      "expires": 1802628688.281089,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://zigzag.kr",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "khaos_p",
+      "value": "MLMA35N1-V-BTJ5",
+      "domain": ".rubiconproject.com",
+      "path": "/",
+      "expires": 1802628688.28119,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://zigzag.kr",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "audit",
+      "value": "1|5TwT6rHLjc3R6XuTUF4iLoNwsQu4n97No9iqdlLpjROXcIC479rnc3VmQjhSBGEjV4UEEGwhg5eM1KxoLazIt2xIiXiby+wJ8gji8D/BCN8NEptDTbq173R0JQKg36P2bah/sqib9mznOlVP214crUQTK1y63CI00A+VO7RH1E0=",
+      "domain": ".rubiconproject.com",
+      "path": "/",
+      "expires": 1802628688.281215,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "receive-cookie-deprecation",
+      "value": "1",
+      "domain": ".rubiconproject.com",
+      "path": "/",
+      "expires": 1778868688.281246,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://zigzag.kr",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "rd_challenge",
+      "value": "Q_6hBQPJGAAA-qbV8ZRiY490_8Zo2MsFkj27ed0KXqoxWoCgtdPtUQp_ZbwJw1yLdVJVK2wkCxrJCnx-ANJH2nzTrjihivo9tj6MLxrM8Ivf6JrbLxwVqrUPIlHM1Q",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1771179162.882478,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "datr",
+      "value": "GruQaUVyNeEhsbv-_UoDStDd",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1805652763.054247,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "wd",
+      "value": "360x780",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1771698393,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "RB_SSID",
+      "value": "EsEymFBTT5",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1771115018,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_hackle_session_id_yqdVqhACxs98irm6YREHlv5K",
+      "value": "1771093418866.f8da23ec",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805653418.867337,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_cfuvid",
+      "value": "mdtMJU971.4MFSFWAk3I2nnM6.8CZC8ajIZQzvQFmxA-1771093418767-0.0.1.1-604800000",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "AMP_7fbb263808",
+      "value": "JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjI0MDc2N2NjOS01YzJlLTQxNWUtOWMyNy03YzFmNDhmNmZmY2IlMjIlMkMlMjJ1c2VySWQlMjIlM0ElMjIlMjIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNzcxMDkyNTg5MzI1JTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJsYXN0RXZlbnRUaW1lJTIyJTNBMTc3MTA5MzQxOTgwNSUyQyUyMmxhc3RFdmVudElkJTIyJTNBMTUlN0Q=",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1802629419,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "wcs_bt",
+      "value": "s_256d3763a721:1771093419",
+      "domain": "m.oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805653419.955929,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_TTX3Z62VLN",
+      "value": "GS2.1.s1771092590$o2$g1$t1771093420$j60$l0$h0",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805653420.21639,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_P9V7281JHW",
+      "value": "GS2.1.s1771092590$o2$g0$t1771093420$j60$l0$h0",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805653420.255303,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_GMKKBJ29S2",
+      "value": "GS2.1.s1771092590$o2$g1$t1771093420$j60$l0$h0",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805653420.313744,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ab.storage.sessionId.a288b8d5-d6ca-4ffb-87ec-92b04ab45e8a",
+      "value": "%7B%22g%22%3A%222cddd117-051e-e9ff-cabf-e8760c27dcb4%22%2C%22e%22%3A1771095220331%2C%22c%22%3A1771092589416%2C%22l%22%3A1771093420331%7D",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805653420,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__cf_bm",
+      "value": "UxBH5DxZ_hUDY.CUjzn0kac5MrCmFOef.JCOMimOpos-1771093419.6298168-1.0.1.1-JdaSKmjsPUmgR5TiDLF95XFTWDtXHkzwuHmhHlme.T5FTL9Pvbazfb27TOpO4WX4z8uR8MFTGtMajsbsiqIONIhdn5kDzFuH74GgQJ1ofFcNA0W8yJhy4PU_cn3sRFc0",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1771095220.354418,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.3.1977239057.1771071182",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805653420.36484,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ttcsid",
+      "value": "1771092591238::UEVKhgloZAQKftFQvUsW.2.1771093420758.0",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1804789420,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ttcsid_CMJ3CKJC77UBB48CH0CG",
+      "value": "1771092591237::VDdUR47qBQTNpHld7THN.2.1771093420758.1",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1804789420,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_D4CXJXVDV8",
+      "value": "GS2.3.s1771092591$o2$g1$t1771093420$j60$l0$h0",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805653420.914889,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_dd_s",
+      "value": "rum=0&expire=1771094318622&logs=0",
+      "domain": "m.oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1771094343,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "gd_user_enamooPass",
+      "value": "Y3RveEV0a2JJTl10TGRNd0RkZytIZEcsWGRFMkZ0QXBLTkcrTj5NaEdxOTY%3D",
+      "domain": "www.kurly.com",
+      "path": "/",
+      "expires": 1771097044.375965,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "cookie_check",
+      "value": "0",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_hackle_last_event_ts_yqdVqhACxs98irm6YREHlv5K",
+      "value": "1771093444506",
+      "domain": ".oliveyoung.co.kr",
+      "path": "/",
+      "expires": 1805653444.507019,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ab.storage.sessionId.86d1a36a-3f7c-44cb-8812-27a36d84045d",
+      "value": "g%3A0ca1fb83-27aa-4676-bd99-0d4f709ac6ae%7Ce%3A1771095245483%7Cc%3A1771092624228%7Cl%3A1771093445483",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1805653445,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "amplitudeBucket",
+      "value": "%7B%22browse_id%22%3A%22QTRZJmWvSB-nX-T319lXj%22%2C%22screen_name%22%3A%22announce%22%2C%22previous_screen_name%22%3A%22recommendation%22%2C%22browse_screen_name%22%3A%22recommendation%22%2C%22event_name%22%3A%22impression_app_install_banner%22%2C%22browse_site_name%22%3A%22market%22%2C%22sign_up_source_screen_name%22%3A%22announce%22%2C%22is_release_build%22%3Atrue%2C%22referrer_event%22%3A%22undefined%22%2C%22referrer_event_name%22%3A%22undefined%22%7D",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "amp_5533c0",
+      "value": "mwLnEGom_MvK0upADQv6SK.bnVsbA==..1jhelhgj8.1jhemaisb.6.3.9",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1802629445,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_clsk",
+      "value": "iz77bc%5E1771093446847%5E2%5E0%5Ei.clarity.ms%2Fcollect",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1771179846,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_dd_s",
+      "value": "aid=27eb09f6-5658-49b7-aeda-14636da7ce3a&rum=0&expire=1771094366198",
+      "domain": ".kurly.com",
+      "path": "/",
+      "expires": 1771094379,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "AMP_9591d6dba2",
+      "value": "JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjIzMDExYjczMy02MDIxLTQ0ZGMtYjVjNS03YzVlNWUxY2I3OWUlMjIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNzcxMDcxMjM3MjI2JTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJwYWdlQ291bnRlciUyMiUzQTAlN0Q=",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1802629480,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ab.storage.sessionId.b9a58994-a795-4f4d-b145-1023fd6a1e11",
+      "value": "g%3Ae03dd437-11f6-2911-7c9c-0572ff6c68b2%7Ce%3A1771095280398%7Cc%3A1771092649384%7Cl%3A1771093480398",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1805653480,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "wcs_bt",
+      "value": "unknown:1771093480",
+      "domain": "www.29cm.co.kr",
+      "path": "/",
+      "expires": 1805653480.605542,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "reffer_domain",
+      "value": "\"(1771093479826)none(20260215032439)|none(20260215031048)|none(20260214214336)|none(20260214211356)|\"",
+      "domain": ".mediacategory.com",
+      "path": "/",
+      "expires": 1786645480.765369,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "iUm",
+      "value": "\"(1771093479826)29cm.co.kr^20260215032439^20260214211356#\"",
+      "domain": ".mediacategory.com",
+      "path": "/",
+      "expires": 1786645480.765421,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "isCoverInflow",
+      "value": "\"(1771093479826)N#\"",
+      "domain": ".mediacategory.com",
+      "path": "/",
+      "expires": 1786645480.765501,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "iHu",
+      "value": "\"(1771093479826)4^29cm.co.kr^20260215032439^20260214211356#\"",
+      "domain": ".mediacategory.com",
+      "path": "/",
+      "expires": 1805653480.765528,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "mlcwc",
+      "value": "eyJ2ZXJzaW9uIjoxLCJwYXlsb2FkIjoiUHkzWUhQQWx0MmxWM2FISWUzbktWdmEvYTJnN05FOWdnTy90RENObk0yYmZXVk9GaWE5aEtRZE5DZU8yejVrMFlXTmZXVURxZEUxNEI4bjd0Q2J4b3VhR1YrTjVmN1F4TEQxbDVhRTFLQU5YcWp5Q29ycHZoREtVdkQ2aTJxamg5VVlyNG9QaXJTYndDL2VwVFVaaS9hdVo4Y2lYemE3cXNCOThyVmp6QXN5d1ZtdmEwSnk2TjJ4T1FlTWg3VmxMK3NOWEVXaVIxT2JhdFQxQWVsaGliZlRta2tKSjR0OXhBUFFUaEphdzBZbmFNZlZ5b29STTJ0SWtJbjRPbWRoeCszMD0iLCJub25jZSI6Ik42QjhUeExLbHZRSHpIcHoifQ",
+      "domain": ".moloco.com",
+      "path": "/",
+      "expires": 1802629480.861034,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.27214998.1771071238",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1805653480.935561,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_BYBE8G8C34",
+      "value": "GS2.3.s1771092650$o2$g1$t1771093481$j60$l0$h0",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1805653481.252832,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_sp_id.6f04",
+      "value": "18e0650b-a3bd-4718-8d47-c9a659641436.1771071237.2.1771093503.1771071254.7b16c0d1-09d7-4e12-8c10-1beb0f6bae66.d7c7743d-69db-407d-b3ef-a77cf69ba5a0.4bacf5ed-4c92-4444-90f8-3c85d51c1f15.1771092649321.24",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1805653502.838147,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_dd_s",
+      "value": "aid=af7c445f-ae35-45a4-bfa8-bff0928d60d2&rum=0&expire=1771094416165",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1802629516,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "connect.sid",
+      "value": "s%3A0lr4ts2_VZnO5_TbbB5I4ymSJ6OFVDla.Uh8rsb1Ko4blckdMoqhYdZhsknTFTS1KqldVWuuWQlk",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1771094128.072943,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "wcs_bt",
+      "value": "s_57739c3166db:1771093527",
+      "domain": "zigzag.kr",
+      "path": "/",
+      "expires": 1805653527.124637,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_TZEE8GDKJ6",
+      "value": "GS2.1.s1771092650$o2$g1$t1771093527$j13$l0$h0",
+      "domain": ".29cm.co.kr",
+      "path": "/",
+      "expires": 1805653527.148047,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ab.storage.sessionId.103ec90c-cf52-4ad7-b6e9-12957ab2c361",
+      "value": "g%3Ae0e477f3-7abb-1f82-d139-f1917986584a%7Ce%3A1771095327469%7Cc%3A1771092687387%7Cl%3A1771093527469",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1805653527,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "amp_b31370",
+      "value": "uaah9Gr0lAOswp8nhQFQIT...1jheljek5.1jhemd315.0.0.0",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1802629527,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "appier_pv_counterPageView_9e66",
+      "value": "1",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1771097127,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_atrk_sessidx",
+      "value": "4",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1771095327,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "appier",
+      "value": "JLrbkG6bCPmJdsh1IWeQaQ",
+      "domain": ".tpmn.co.kr",
+      "path": "/",
+      "expires": 1802629527.990263,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "appier",
+      "value": "JLrbkG6bCPmJdsh1IWeQaQ",
+      "domain": ".tpmn.io",
+      "path": "/",
+      "expires": 1802629528.035962,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "gid",
+      "value": "7d39c18e25856cb896da3f399da73a0d",
+      "domain": ".gssprt.jp",
+      "path": "/",
+      "expires": 1805653528.065249,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "appier",
+      "value": "JLrbkG6bCPmJdsh1IWeQaQ",
+      "domain": ".gssprt.jp",
+      "path": "/",
+      "expires": 1773685528.06532,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "tuuid",
+      "value": "a7cec3a1-00ba-4afe-ae41-3e2f178c21ec",
+      "domain": ".bidswitch.net",
+      "path": "/",
+      "expires": 1802629528.231789,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "c",
+      "value": "1771093527",
+      "domain": ".bidswitch.net",
+      "path": "/",
+      "expires": 1802629528.162436,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "tuuid_lu",
+      "value": "1771093527",
+      "domain": ".bidswitch.net",
+      "path": "/",
+      "expires": 1802629528.231873,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "KRTBCOOKIE_904",
+      "value": "23554-JLrbkG6bCPmJdsh1IWeQaQ&KRTB&23586-JLrbkG6bCPmJdsh1IWeQaQ&KRTB&23702-JLrbkG6bCPmJdsh1IWeQaQ",
+      "domain": ".pubmatic.com",
+      "path": "/",
+      "expires": 1773685528.185669,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "PugT",
+      "value": "1771093527",
+      "domain": ".pubmatic.com",
+      "path": "/",
+      "expires": 1773685528.185733,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "tuuid",
+      "value": "62777fec-18d5-4233-9e78-480358a2a1ef",
+      "domain": ".impact-ad.jp",
+      "path": "/",
+      "expires": 1802629528.545027,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "c",
+      "value": "1771093527",
+      "domain": ".impact-ad.jp",
+      "path": "/",
+      "expires": 1802629528.4763,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "tuuid_lu",
+      "value": "1771093527",
+      "domain": ".impact-ad.jp",
+      "path": "/",
+      "expires": 1802629528.545116,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "cmt",
+      "value": "!105=a7cec3a1-00ba-4afe-ae41-3e2f178c21ec=1=542928327=540336327",
+      "domain": "y.one.impact-ad.jp",
+      "path": "/",
+      "expires": 1802629528.545146,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "psm",
+      "value": "0",
+      "domain": ".impact-ad.jp",
+      "path": "/",
+      "expires": 1772303128.701993,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_clsk",
+      "value": "qdllpk%5E1771093528793%5E2%5E0%5Ei.clarity.ms%2Fcollect",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1771179928,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_3JHT92YZJ8",
+      "value": "GS2.1.s1771092687$o2$g1$t1771093565$j22$l0$h0",
+      "domain": ".zigzag.kr",
+      "path": "/",
+      "expires": 1805653565.877076,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ps_l",
+      "value": "1",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1805653591.354273,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ps_n",
+      "value": "1",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1805653591.354378,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    }
+  ]
+}

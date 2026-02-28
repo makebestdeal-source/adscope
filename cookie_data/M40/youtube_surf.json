@@ -1,0 +1,88 @@
+{
+  "persona_code": "M40",
+  "channel": "youtube_surf",
+  "updated_at": "2026-02-28T03:49:13.836134+00:00",
+  "cookie_count": 8,
+  "cookies": [
+    {
+      "name": "CONSENT",
+      "value": "YES+cb.20260215-00-p0.kr+FX+999",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "PREF",
+      "value": "tz=Asia.Seoul&hl=ko&gl=KR",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1806810547.927567,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "GPS",
+      "value": "1",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1772252059.024639,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "YSC",
+      "value": "U2sCGIweRV0",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "VISITOR_INFO1_LIVE",
+      "value": "XrFqQ93n6cU",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1787802542.469243,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "VISITOR_PRIVACY_METADATA",
+      "value": "CgJLUhIEGgAgUQ%3D%3D",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1787802542.469359,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "CONSISTENCY",
+      "value": "AAsGu9l2TgGP-QcNmY4Gf6n5TuwYQJ3AlafNM88g-_zzXfCVy0QI_t_qFBDBI3FW2ARsWLyhpRrzH1HsiQC7NAOkQYl5oq4oCNQci6hndjI9VJE2hn8R9mqWFLnqLglPISsOc_jjJRSbOrqx2xSl_6U",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1772250899,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "IDE",
+      "value": "AHWqTUndWLnW8YZoI0H1uGbjx_vj3UCkqNGoYsMpCDVhr6AakSLJUgT6HCg-3zzI",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1806810373.60843,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    }
+  ]
+}

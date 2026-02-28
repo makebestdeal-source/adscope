@@ -1,0 +1,22 @@
+[
+  {"id": 1, "name": "금융", "avg_cpc_min": 3000, "avg_cpc_max": 10000},
+  {"id": 2, "name": "의료/뷰티", "avg_cpc_min": 2000, "avg_cpc_max": 8000},
+  {"id": 3, "name": "교육", "avg_cpc_min": 1500, "avg_cpc_max": 5000},
+  {"id": 4, "name": "부동산", "avg_cpc_min": 2000, "avg_cpc_max": 6000},
+  {"id": 5, "name": "법률", "avg_cpc_min": 3000, "avg_cpc_max": 10000},
+  {"id": 6, "name": "쇼핑/커머스", "avg_cpc_min": 500, "avg_cpc_max": 2000},
+  {"id": 7, "name": "IT/테크", "avg_cpc_min": 1000, "avg_cpc_max": 4000},
+  {"id": 8, "name": "여행", "avg_cpc_min": 800, "avg_cpc_max": 3000},
+  {"id": 9, "name": "음식/외식", "avg_cpc_min": 300, "avg_cpc_max": 1500},
+  {"id": 10, "name": "자동차", "avg_cpc_min": 2000, "avg_cpc_max": 7000},
+  {"id": 11, "name": "패션/의류", "avg_cpc_min": 500, "avg_cpc_max": 3000},
+  {"id": 12, "name": "가전/전자", "avg_cpc_min": 800, "avg_cpc_max": 3500},
+  {"id": 13, "name": "게임", "avg_cpc_min": 1000, "avg_cpc_max": 5000},
+  {"id": 14, "name": "엔터테인먼트", "avg_cpc_min": 500, "avg_cpc_max": 2500},
+  {"id": 15, "name": "스포츠/아웃도어", "avg_cpc_min": 600, "avg_cpc_max": 2500},
+  {"id": 16, "name": "가구/인테리어", "avg_cpc_min": 800, "avg_cpc_max": 3000},
+  {"id": 17, "name": "주류", "avg_cpc_min": 400, "avg_cpc_max": 2000},
+  {"id": 18, "name": "공공기관", "avg_cpc_min": 300, "avg_cpc_max": 1500},
+  {"id": 19, "name": "반려동물", "avg_cpc_min": 600, "avg_cpc_max": 2500},
+  {"id": 20, "name": "제약/헬스케어", "avg_cpc_min": 1500, "avg_cpc_max": 6000}
+]
