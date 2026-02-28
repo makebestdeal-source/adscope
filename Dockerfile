@@ -16,12 +16,10 @@ COPY . .
 # Playwright Chromium
 RUN playwright install chromium --with-deps
 
-# Data directory (Railway Volume mount point)
-RUN mkdir -p /data/stored_images /data/logs
-
 # Supervisord config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 8000
 
-CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Create dirs on volume mount (runs after volume is mounted)
+CMD mkdir -p /data/stored_images /data/logs && supervisord -c /etc/supervisor/conf.d/supervisord.conf
