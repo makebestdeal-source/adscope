@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -6,13 +6,17 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc libpq-dev supervisor curl && rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml ./
-RUN pip install --no-cache-dir -e ".[dev]" 2>/dev/null || pip install --no-cache-dir .
+# Upgrade pip/setuptools first
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
+# Copy full source (needed for pyproject.toml build)
+COPY . .
+
+# Install dependencies
+RUN pip install --no-cache-dir .
 
 # Playwright Chromium
 RUN playwright install chromium --with-deps
-
-COPY . .
 
 # Data directory (Railway Volume mount point)
 RUN mkdir -p /data/stored_images /data/logs

@@ -10,19 +10,30 @@ __pycache__
 .venv
 venv
 
-# Node
-frontend/node_modules
-frontend/.next
+# Node / Frontend (separate service)
+frontend/
+node_modules/
+.next/
 
 # IDE
 .vscode
 .idea
+.claude/
 
 # Environment
 .env
+.env.local
 
-# Database (dev)
+# Database (will use volume)
 adscope.db
+
+# Large files
+cloudflared.exe
+stored_images/
+backups/
+logs/
+*.log
+nul
 
 # Docker
 docker-compose.yml
