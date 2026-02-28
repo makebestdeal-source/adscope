@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -359,3 +359,47 @@ async def health():
 
     health_status["python"] = platform.python_version()
     return health_status
+
+
+# ---------------------------------------------------------------------------
+# TEMPORARY: Data upload endpoint for Railway migration
+# Remove after initial data is transferred
+# ---------------------------------------------------------------------------
+@app.post("/api/_upload_data", include_in_schema=False)
+async def upload_data(file: UploadFile = File(...), secret: str = ""):
+    """Upload gzipped DB or tar.gz images to /data volume."""
+    import gzip
+    import shutil
+
+    if secret != "adscope-migrate-2026":
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    filename = file.filename or "unknown"
+    data_dir = Path("/data")
+    data_dir.mkdir(parents=True, exist_ok=True)
+
+    if filename.endswith(".db.gz"):
+        # Gzipped SQLite DB
+        target = data_dir / "adscope.db"
+        with open("/tmp/upload.db.gz", "wb") as f:
+            shutil.copyfileobj(file.file, f)
+        with gzip.open("/tmp/upload.db.gz", "rb") as gz:
+            with open(target, "wb") as out:
+                shutil.copyfileobj(gz, out)
+        os.remove("/tmp/upload.db.gz")
+        size_mb = round(target.stat().st_size / (1024 * 1024), 2)
+        return {"status": "ok", "file": str(target), "size_mb": size_mb}
+
+    elif filename.endswith(".tar.gz"):
+        # Images archive
+        import tarfile
+        tmp_path = "/tmp/upload.tar.gz"
+        with open(tmp_path, "wb") as f:
+            shutil.copyfileobj(file.file, f)
+        with tarfile.open(tmp_path, "r:gz") as tar:
+            tar.extractall(path=str(data_dir))
+        os.remove(tmp_path)
+        return {"status": "ok", "extracted_to": str(data_dir)}
+
+    else:
+        raise HTTPException(status_code=400, detail="Only .db.gz or .tar.gz")
