@@ -379,8 +379,20 @@ async def upload_data(file: UploadFile = File(...), secret: str = ""):
     data_dir.mkdir(parents=True, exist_ok=True)
 
     if filename.endswith(".db.gz"):
-        # Gzipped SQLite DB
+        # Gzipped SQLite DB — must close engine, remove WAL/SHM, then replace
+        from database import engine
         target = data_dir / "adscope.db"
+        wal = data_dir / "adscope.db-wal"
+        shm = data_dir / "adscope.db-shm"
+
+        # Dispose all connections so SQLite releases the file
+        await engine.dispose()
+
+        # Remove WAL/SHM journal files from the old (empty) DB
+        for f_path in [wal, shm]:
+            if f_path.exists():
+                f_path.unlink()
+
         with open("/tmp/upload.db.gz", "wb") as f:
             shutil.copyfileobj(file.file, f)
         with gzip.open("/tmp/upload.db.gz", "rb") as gz:
@@ -388,7 +400,7 @@ async def upload_data(file: UploadFile = File(...), secret: str = ""):
                 shutil.copyfileobj(gz, out)
         os.remove("/tmp/upload.db.gz")
         size_mb = round(target.stat().st_size / (1024 * 1024), 2)
-        return {"status": "ok", "file": str(target), "size_mb": size_mb}
+        return {"status": "ok", "file": str(target), "size_mb": size_mb, "note": "Restart service to use new DB"}
 
     elif filename.endswith(".tar.gz"):
         # Images archive
