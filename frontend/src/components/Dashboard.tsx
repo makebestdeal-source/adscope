@@ -16,9 +16,7 @@ const CHANNEL_COLORS: Record<string, string> = {
   youtube_surf: "bg-red-400",
   google_gdn: "bg-sky-500",
   kakao_da: "bg-yellow-500",
-  facebook: "bg-blue-500",
-  facebook_contact: "bg-blue-400",
-  instagram: "bg-pink-500",
+  meta: "bg-blue-500",
 };
 
 /** KST ISO 문자열 -> "N분 전" / "N시간 전" / "N일 전" 형식 */

@@ -15,9 +15,7 @@ const CHANNEL_LABELS: Record<string, string> = {
   youtube_surf: "유튜브 서핑",
   google_gdn: "Google GDN",
   kakao_da: "카카오 DA",
-  facebook: "페이스북",
-  facebook_contact: "페이스북 접촉",
-  instagram: "인스타그램",
+  meta: "Meta",
 };
 
 const STATUS_COLORS: Record<string, { bg: string; text: string; dot: string }> = {

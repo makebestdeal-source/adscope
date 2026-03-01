@@ -14,7 +14,7 @@ interface TopAdvertiser { rank: number; advertiser_id: number; name: string; bra
 interface PromotionType { type: string; count: number; }
 interface ShoppingInsightData { summary: ShoppingSummary; top_categories: CategoryItem[]; channel_distribution: ChannelDist[]; top_advertisers: TopAdvertiser[]; promotion_types: PromotionType[]; }
 
-const CHANNEL_LABELS: Record<string, string> = { naver_search: "네이버 검색", naver_da: "네이버 DA", youtube_ads: "유튜브", google_gdn: "GDN", kakao_da: "카카오", facebook: "페이스북", instagram: "인스타그램" };
+const CHANNEL_LABELS: Record<string, string> = { naver_search: "네이버 검색", naver_da: "네이버 DA", youtube_ads: "유튜브", google_gdn: "GDN", kakao_da: "카카오", meta: "Meta", naver_shopping: "네이버 쇼핑", tiktok_ads: "TikTok" };
 const ACTIVITY_LABELS: Record<string, { label: string; color: string }> = { test: { label: "테스트", color: "bg-gray-100 text-gray-600" }, scale: { label: "확장", color: "bg-blue-100 text-blue-700" }, push: { label: "푸시", color: "bg-orange-100 text-orange-700" }, peak: { label: "피크", color: "bg-red-100 text-red-700" }, cooldown: { label: "쿨다운", color: "bg-green-100 text-green-700" } };
 const METHOD_LABELS: Record<string, string> = { stock: "재고 추적", purchase_cnt: "구매수 델타", review: "리뷰 속도", composite: "복합" };
 

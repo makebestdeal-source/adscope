@@ -19,11 +19,11 @@ import os
 from sqlalchemy import delete, func, select
 
 from database import async_session
-from database.models import AdDetail, AdSnapshot, Advertiser, Campaign, ChannelStats, Keyword, MetaSignalComposite, SpendEstimate
+from database.models import AdDetail, AdSnapshot, Advertiser, Campaign, Keyword, SpendEstimate
 from processor.advertiser_name_cleaner import clean_name_for_pipeline
 from processor.advertiser_verifier import NameQuality, verify_advertiser_name
 from processor.advertiser_link_collector import extract_website_from_url
-from processor.spend_estimator import SpendEstimatorV1, SpendEstimatorV2
+from processor.spend_estimator import SpendEstimatorV2
 
 DEFAULT_EXCLUDED_CHANNELS: set[str] = set()  # youtube_ads 포함 (2,372건 활용)
 
@@ -39,8 +39,7 @@ _CHANNEL_SPEND_CATEGORY: dict[str, str] = {
     "youtube_ads": "video",
     "youtube_surf": "video",
     "tiktok_ads": "video",
-    "facebook": "social",
-    "instagram": "social",
+    "meta": "social",
 }
 
 
@@ -596,125 +595,24 @@ async def _upsert_campaigns_and_spend(
 
         await session.flush()
 
-        # -- Meta-signal spend multipliers (per advertiser) --
-        meta_multipliers: dict[int, float] = {}
-        adv_ids_for_meta = list({c.advertiser_id for c in touched_campaigns})
-        if adv_ids_for_meta:
-            from datetime import UTC as _utc
-            _today = datetime.now(_utc).replace(tzinfo=None).date()
-            _today_dt = datetime.combine(_today, time.min)
-            meta_rows = (
-                await session.execute(
-                    select(
-                        MetaSignalComposite.advertiser_id,
-                        MetaSignalComposite.spend_multiplier,
-                    ).where(
-                        MetaSignalComposite.advertiser_id.in_(adv_ids_for_meta),
-                        MetaSignalComposite.date == _today_dt,
-                    )
-                )
-            ).fetchall()
-            for row in meta_rows:
-                meta_multipliers[row[0]] = float(row[1])
-
-        # -- Benchmark calibration factors (per advertiser) --
-        benchmark_factors: dict[int, float] = {}
-        try:
-            from processor.spend_calibrator import get_benchmark_calibration
-            for adv_id in adv_ids_for_meta:
-                bf = await get_benchmark_calibration(session, adv_id)
-                if bf != 1.0:
-                    benchmark_factors[adv_id] = bf
-        except Exception:
-            pass  # graceful fallback if no benchmarks
-
-        # -- Stealth contact rate multipliers (per channel) --
-        # 페르소나 서프에서 수집한 네트워크별 접촉률로 채널별 광고비 보정
-        stealth_channel_multipliers: dict[str, float] = {}
-        try:
-            stealth_channel_multipliers = await _load_stealth_contact_multipliers(session)
-        except Exception:
-            pass  # graceful fallback
-
-        # -- YouTube 공식채널 avg_views 로드 (CPV 기반 광고비 역산용) --
-        yt_avg_views: dict[int, float] = {}  # advertiser_id -> avg_views
-        yt_adv_ids = [c.advertiser_id for c in touched_campaigns
-                      if c.channel in ("youtube_ads", "youtube_surf")]
-        if yt_adv_ids:
-            yt_rows = (await session.execute(
-                select(ChannelStats.advertiser_id, ChannelStats.avg_views)
-                .where(
-                    ChannelStats.advertiser_id.in_(yt_adv_ids),
-                    ChannelStats.platform == "youtube",
-                    ChannelStats.avg_views > 0,
-                )
-            )).fetchall()
-            for row in yt_rows:
-                yt_avg_views[row[0]] = float(row[1])
-
         total_estimate_rows = 0
         for campaign in touched_campaigns:
             key = (campaign.advertiser_id, campaign.channel)
             agg = aggregates[key]
-            keyword = keyword_map.get(campaign.keyword_id) if campaign.keyword_id else None
 
             await session.execute(delete(SpendEstimate).where(SpendEstimate.campaign_id == campaign.id))
 
-            # campaign_total: 이 캠페인의 모든 일자별 est_daily_spend 합계 (KRW, 매체비 기준)
+            # campaign_total: 이 캠페인의 모든 일자별 est_daily_spend 합계 (KRW)
             campaign_total = 0.0
             for day, day_agg in agg.by_day.items():
-                avg_position = round(sum(day_agg.positions) / len(day_agg.positions)) if day_agg.positions else 10
-
-                cpc = int(keyword.naver_cpc) if keyword and keyword.naver_cpc else 0
-                monthly_vol = int(keyword.monthly_search_vol) if keyword and keyword.monthly_search_vol else 0
-                keyword_name = keyword.keyword if keyword else "unknown"
-                industry_id = int(keyword.industry_id) if keyword and keyword.industry_id else None
-
-                # 대표 위치 영역 결정
-                dominant_zone = "unknown"
-                if day_agg.position_zones:
-                    zone_counts: dict[str, int] = {}
-                    for z in day_agg.position_zones:
-                        zone_counts[z] = zone_counts.get(z, 0) + 1
-                    dominant_zone = max(zone_counts.items(), key=lambda kv: kv[1])[0]
-
-                # 인하우스 여부 (해당 일의 모든 히트가 인하우스면 인하우스)
+                # 인하우스 여부
                 is_day_inhouse = day_agg.inhouse_count > 0 and day_agg.inhouse_count >= day_agg.ad_hits
 
-                # 대표 placement
-                placement = next(iter(agg.placements), None)
-
-                # Catalog channel enrichment (creative count, active days)
-                active_days_observed = len(agg.by_day)
-                creative_count = agg.ad_occurrences  # proxy: occurrences ~ creative variations
-
-                # V2 멀티채널 추정기 사용
                 ad_data = {
-                    "keyword": keyword_name,
-                    "cpc": cpc,
-                    "monthly_search_vol": monthly_vol,
-                    "position": max(1, avg_position),
-                    "position_zone": dominant_zone,
-                    "industry_id": industry_id,
-                    "advertiser_id": campaign.advertiser_id,
-                    "advertiser_name": None,
-                    "ad_type": None,
-                    "ad_placement": placement,
+                    "keyword": "unknown",
                     "is_inhouse": is_day_inhouse or agg.has_inhouse,
-                    "is_contact": agg.has_contact,
-                    "view_count": _yt_compute_daily_views(agg, yt_avg_views.get(campaign.advertiser_id, 0)),
-                    "creative_count": creative_count,
-                    "ad_count": agg.ad_occurrences,
-                    "active_days": active_days_observed,
-                    "creative_format": "default",
-                    "has_multiple_formats": len(agg.placements) > 1,
                 }
-                frequency_data = {
-                    "ad_hits": day_agg.ad_hits,
-                    "persona_frequency": day_agg.ad_hits,
-                    "exposure_share": min(1.0, day_agg.ad_hits / 10),
-                    "position_share": 0.001,
-                }
+                frequency_data = {"ad_hits": day_agg.ad_hits}
 
                 est = estimator_v2.estimate(
                     channel=campaign.channel,
@@ -722,75 +620,18 @@ async def _upsert_campaigns_and_spend(
                     frequency_data=frequency_data,
                 )
 
-                # -- est_daily_spend 산출 (일일 매체비, KRW/day, 세금/마진 미포함) --
+                est_daily_spend = est.est_daily_spend
+                confidence = est.confidence
 
-                # 노출 빈도 가중치 보정 (접촉 채널만)
-                is_catalog = est.calculation_method == "catalog_creative_reverse"
-                if is_catalog:
-                    exposure_weight = 1.0
-                else:
-                    exposure_weight = min(1.35, max(0.7, day_agg.ad_hits / 3))
-                # est_daily_spend: 일일 매체비 추정 (KRW/day, 세금/마진 미포함)
-                est_daily_spend = round(est.est_daily_spend * exposure_weight, 2)
-
-                # 메타신호 multiplier 적용 (0.7 ~ 1.5)
-                meta_mult = meta_multipliers.get(campaign.advertiser_id, 1.0)
-                est_daily_spend = round(est_daily_spend * meta_mult, 2)
-
-                # 벤치마크 보정 (사례 기반 캘리브레이션)
-                bench_cal = benchmark_factors.get(campaign.advertiser_id, 1.0)
-                if bench_cal != 1.0:
-                    est_daily_spend = round(est_daily_spend * bench_cal, 2)
-
-                # 스텔스 접촉률 보정 (페르소나 서프 데이터 기반)
-                stealth_mult = stealth_channel_multipliers.get(campaign.channel, 1.0)
-                if stealth_mult != 1.0:
-                    est_daily_spend = round(est_daily_spend * stealth_mult, 2)
-
-                # total_spend_multiplier: 매체비 -> 총수주액 환산 계수 (채널별 상이)
-                from processor.spend_reverse_estimator import get_total_spend_multiplier
-                total_mult = get_total_spend_multiplier(campaign.channel)
-
-                confidence = min(0.9, round(est.confidence + min(0.15, day_agg.ad_hits * 0.01), 2))
-                # 메타신호 있으면 confidence 소폭 상향
-                if meta_mult != 1.0:
-                    confidence = min(0.9, round(confidence + 0.05, 2))
-                # 벤치마크 있으면 confidence 추가 상향
-                if bench_cal != 1.0:
-                    confidence = min(0.95, round(confidence + 0.1, 2))
-                # 스텔스 접촉률 있으면 confidence 소폭 상향
-                if stealth_mult != 1.0:
-                    confidence = min(0.95, round(confidence + 0.03, 2))
-
-                method = est.calculation_method
-                factors = {
-                    **est.factors,
-                    "ad_hits": day_agg.ad_hits,
-                    "avg_position": avg_position,
-                    "exposure_weight": exposure_weight,
-                    "position_zone": dominant_zone,
-                    "meta_signal_multiplier": meta_mult,       # 메타신호 보정 계수 (0.7~1.5)
-                    "benchmark_calibration": bench_cal,         # 벤치마크 보정 계수
-                    "stealth_contact_multiplier": stealth_mult, # 접촉률 보정 계수
-                    "total_spend_multiplier": total_mult,       # 매체비 -> 총수주액 환산 계수
-                    # est_daily_total_cost: 일일 총비용 = est_daily_spend * total_spend_multiplier (KRW/day)
-                    # 주의: 이전 키명 "est_total_spend"에서 변경됨 (의미 명확화)
-                    "est_daily_total_cost": round(est_daily_spend * total_mult, 0),
-                }
-
-                # SpendEstimate 레코드: 특정 일자의 매체비 추정치를 저장
-                # - est_daily_spend: 일일 매체비 (KRW/day, 세금/마진 미포함)
-                # - confidence: 추정 신뢰도 (0.0 ~ 0.95)
-                # - factors: 추정에 사용된 파라미터 (JSON, 디버깅/분석용)
                 session.add(
                     SpendEstimate(
                         campaign_id=campaign.id,
                         date=datetime.combine(day, time.min),
                         channel=campaign.channel,
-                        est_daily_spend=est_daily_spend,  # KRW/day, 매체비 기준
+                        est_daily_spend=est_daily_spend,
                         confidence=confidence,
-                        calculation_method=method,
-                        factors=factors,
+                        calculation_method=est.calculation_method,
+                        factors=est.factors,
                     )
                 )
                 total_estimate_rows += 1

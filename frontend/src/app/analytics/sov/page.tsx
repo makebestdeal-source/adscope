@@ -10,7 +10,7 @@ import {
   LineChart, Line, Legend, Cell,
 } from "recharts";
 
-const CHANNELS = ["", "naver_search", "naver_da", "google_gdn", "youtube_ads", "youtube_surf", "kakao_da", "facebook", "facebook_contact", "instagram"];
+const CHANNELS = ["", "naver_search", "naver_da", "google_gdn", "youtube_ads", "youtube_surf", "kakao_da", "meta", "naver_shopping", "tiktok_ads"];
 const BAR_COLORS = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#f97316", "#ec4899", "#14b8a6", "#a855f7"];
 
 export default function SOVPage() {

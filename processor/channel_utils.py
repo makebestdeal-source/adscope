@@ -27,8 +27,7 @@ CONTACT_CHANNELS: set[str] = {
 CATALOG_CHANNELS: set[str] = {
     "youtube_ads",
     "google_search_ads",
-    "facebook",
-    "instagram",
+    "meta",
     "tiktok_ads",
     "naver_shopping",
     "naver_search",
@@ -38,7 +37,6 @@ CATALOG_CHANNELS: set[str] = {
 ALL_CHANNELS: set[str] = CONTACT_CHANNELS | CATALOG_CHANNELS
 
 # ── Dual collection mapping (platform -> catalog + contact channels) ──
-# 같은 플랫폼에서 카탈로그와 접촉이 모두 수집되는 경우
 DUAL_PLATFORM_MAP: dict[str, dict[str, str | list[str]]] = {
     "youtube": {"catalog": "youtube_ads", "contact": "youtube_surf"},
     "google": {"catalog": "google_search_ads", "contact": "google_gdn"},
@@ -48,7 +46,7 @@ DUAL_PLATFORM_MAP: dict[str, dict[str, str | list[str]]] = {
 # ── Media category mapping (channel -> category key) ──
 MEDIA_CATEGORIES: dict[str, list[str]] = {
     "video": ["youtube_ads", "youtube_surf"],
-    "social": ["facebook", "instagram"],
+    "social": ["meta"],
     "portal": ["naver_search", "naver_da"],
     "search": ["google_search_ads"],
     "network": ["google_gdn", "kakao_da"],
@@ -71,8 +69,7 @@ CHANNEL_DISPLAY_NAMES: dict[str, str] = {
     "google_gdn": "구글 GDN",
     "youtube_ads": "유튜브 광고",
     "youtube_surf": "유튜브 광고",
-    "facebook": "Meta 광고",
-    "instagram": "Meta 광고",
+    "meta": "Meta",
     "tiktok_ads": "틱톡 광고",
     "naver_shopping": "네이버 쇼핑",
     "google_search_ads": "구글 검색광고",
@@ -83,8 +80,7 @@ SEARCH_CHANNELS: set[str] = {"naver_search", "google_search_ads"}
 
 # ── Channel -> benchmark key (for spend_reverse_estimator) ──
 CHANNEL_TO_BENCHMARK_KEY: dict[str, str] = {
-    "facebook": "meta",
-    "instagram": "meta",
+    "meta": "meta",
     "naver_search": "naver_sa",
     "naver_da": "naver_gfa",
     "kakao_da": "kakao",
@@ -105,10 +101,7 @@ for _cat, _channels in MEDIA_CATEGORIES.items():
 
 
 def get_media_category(channel: str) -> str:
-    """Return the media category key for a channel.
-
-    Falls back to 'network' for unknown channels.
-    """
+    """Return the media category key for a channel."""
     return _CHANNEL_TO_CATEGORY.get(channel, "network")
 
 
@@ -119,49 +112,27 @@ def get_media_category_ko(channel: str) -> str:
 
 
 def get_display_name(channel: str) -> str:
-    """Return the Korean display name for a channel.
-
-    Falls back to the channel key itself if not mapped.
-    """
+    """Return the Korean display name for a channel."""
     return CHANNEL_DISPLAY_NAMES.get(channel, channel)
 
 
 def get_benchmark_key(channel: str) -> str:
-    """Return the benchmark key used for spend estimation.
-
-    Falls back to 'meta' for unknown channels.
-    """
+    """Return the benchmark key used for spend estimation."""
     return CHANNEL_TO_BENCHMARK_KEY.get(channel, "meta")
 
 
 def is_catalog_channel(channel: str) -> bool:
-    """True if the channel is a catalog/library source (not real exposure).
-
-    광고 소재 → /gallery 에 표시.
-    """
+    """True if the channel is a catalog/library source (not real exposure)."""
     return channel in CATALOG_CHANNELS
 
 
 def is_contact_channel(channel: str) -> bool:
-    """True if the channel is a contact source (real browsing exposure).
-
-    소셜 소재 → /social-gallery 에 표시.
-    """
+    """True if the channel is a contact source (real browsing exposure)."""
     return channel in CONTACT_CHANNELS
 
 
 def is_contact(channel_name: str, ad: dict | None = None) -> bool:
-    """Determine if an ad is contact (소셜 소재) or catalog (광고 소재).
-
-    판정 기준:
-      1. 채널이 CONTACT_CHANNELS에 있으면 → True (소셜 소재)
-      2. 채널이 CATALOG_CHANNELS에 있으면 → False (광고 소재)
-      3. 미등록 채널은 True (접촉 기본)
-
-    듀얼 수집 주의:
-      같은 광고주/소재가 카탈로그와 접촉 양쪽에 나타날 수 있음.
-      creative_hash 중복제거 시 is_contact 값이 다르면 별도 레코드로 유지.
-    """
+    """Determine if an ad is contact (소셜 소재) or catalog (광고 소재)."""
     if channel_name in CONTACT_CHANNELS:
         return True
     if channel_name in CATALOG_CHANNELS:
@@ -170,21 +141,17 @@ def is_contact(channel_name: str, ad: dict | None = None) -> bool:
 
 
 def get_dual_channels(platform: str) -> dict | None:
-    """Return catalog + contact channels for a dual-collection platform.
-
-    Returns None if the platform doesn't have dual collection.
-    """
+    """Return catalog + contact channels for a dual-collection platform."""
     return DUAL_PLATFORM_MAP.get(platform)
 
 
-# ── Meta family channels (FB/IG/Messenger/AudienceNetwork → all Meta) ──
+# ── Meta family channels (all → meta) ──
 META_CHANNELS: set[str] = {
-    "facebook", "instagram", "facebook_contact",
-    "messenger", "audience_network", "meta",
+    "meta", "facebook", "instagram", "facebook_contact",
+    "messenger", "audience_network",
 }
 
 # ── Display channel normalization ──
-# 크롤러 내부 채널명 → 프론트엔드 통합 표시명
 CHANNEL_DISPLAY_NORMALIZE: dict[str, str] = {
     "youtube_surf": "youtube_ads",
     "facebook": "meta",
@@ -196,8 +163,5 @@ CHANNEL_DISPLAY_NORMALIZE: dict[str, str] = {
 
 
 def normalize_channel_for_display(channel: str) -> str:
-    """Normalize channel name for frontend display (merge variants).
-
-    e.g. youtube_surf -> youtube_ads
-    """
+    """Normalize channel name for frontend display (merge variants)."""
     return CHANNEL_DISPLAY_NORMALIZE.get(channel, channel)
