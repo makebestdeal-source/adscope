@@ -161,8 +161,8 @@ class SpendEstimatorV2:
         "naver_shopping":    300,   # 쇼핑 파워링크 CPC
     }
 
-    # -- YouTube CPV (won) -- 실제 시장 평균 CPV 20원 (보정됨 2/24)
-    _YOUTUBE_CPV = 20
+    # -- YouTube CPV (won) -- 한국 시장 평균 CPV 35원 (TrueView 기준)
+    _YOUTUBE_CPV = 35
 
     # -- 실집행 데이터 기반 채널별 시장 보정 계수 --
     # 미디어광고결과 CSV 164건 기준 (월 평균 매체비/캠페인수):
@@ -176,17 +176,21 @@ class SpendEstimatorV2:
     # 시장규모 기반 (2025 리서치애드 + 업계추산):
     #   네이버SA 1.9조 | 유튜브 1.9조 | 카카오 1.5조 | 네이버쇼핑 1.1조
     #   메타 1조 | 구글검색 0.7조 | GDN 0.4조 | 틱톡 0.3조
+    # -- 시장규모 기반 재캘리브레이션 (2026-03-01) --
+    # 1,900 광고주 샘플 = 전체 시장의 ~5-8% 추정
+    # 이전 계수는 대형 에이전시 실집행 데이터 기반 → 소규모 광고주에 과대적용
+    # 각 채널별 30일 합계가 시장 비율에 맞도록 보정
     _MARKET_CALIBRATION = {
-        "naver_search":      3.7,   # 7.4→3.7 하향 (소재수 5,124건으로 과대추정 보정)
-        "naver_da":          3.2,   # 6.3→3.2 하향 (소재수 2,905건으로 과대추정 보정)
-        "kakao_da":          1.0,   # 10.3→1.0 하향 (수집 부족, 소규모 과대추정 방지)
-        "facebook":         10.1,   # 283K / 28K (시장 1조)
-        "instagram":        10.1,   # META 동일 적용
-        "google_gdn":       13.9,   # 111K / 8K (시장 0.4조)
-        "google_search_ads": 9.0,   # 구글검색 (시장 0.7조, CPC 높음)
-        "youtube_ads":       8.5,   # 유튜브 (시장 1.9조, CPV 50원)
+        "naver_search":      0.5,   # 시장 1.9조/년, 타겟 ~5억 (3.7→0.5)
+        "naver_da":          0.6,   # GFA 시장, DA 감쇠 적용, 타겟 ~3억 (3.2→0.6)
+        "kakao_da":          1.5,   # 수집 53건 소규모, 타겟 ~0.5억 (1.0→1.5)
+        "facebook":          3.0,   # 메타 시장 1조/년, 타겟 ~3억 (10.1→3.0)
+        "instagram":         4.0,   # 릴스 성장 반영, 타겟 ~1.5억 (10.1→4.0)
+        "google_gdn":        0.7,   # 시장 0.4조/년, DA 감쇠 적용, 타겟 ~2억 (13.9→0.7)
+        "google_search_ads": 1.0,   # 시장 0.7조/년, 타겟 ~3-4억 (9.0→1.0)
+        "youtube_ads":       8.5,   # 유튜브 (시장 1.9조, youtube_surf만 사용)
         "tiktok_ads":        5.0,   # 틱톡 (시장 0.3조)
-        "naver_shopping":    5.5,   # 쇼핑검색 (시장 1.1조, CPC 높음)
+        "naver_shopping":    1.5,   # 시장 1.1조/년, 타겟 ~1억 (5.5→1.5)
     }
 
     # -- 인벤토리 가중치 (트래픽 지표 기반) --
@@ -213,26 +217,36 @@ class SpendEstimatorV2:
     }
 
     # -- ad_hits -> estimated daily clicks (midpoint of range) --
-    # 1 hit -> 30~50 (mid 40), 2 -> 80~120 (mid 100),
-    # 3 -> 150~250 (mid 200), 4 -> 300~500 (mid 400),
-    # 5+ -> 500~1000 (mid 750)
-    # 실집행 보정은 _MARKET_CALIBRATION × _INVENTORY_WEIGHT 계수로 별도 적용
+    # 1~4 hits: discrete mapping, 5+ hits: logarithmic scaling
+    # DA 채널은 노출 빈도가 높지만 클릭률이 낮으므로 별도 감쇠 적용
     _HITS_TO_CLICKS = {
         1: 40,
         2: 100,
         3: 200,
         4: 400,
     }
-    _HITS_5PLUS_CLICKS = 750
+
+    # DA(디스플레이) 채널: 노출 빈도가 높아도 클릭 전환이 낮음
+    _DA_CHANNELS = {"naver_da", "kakao_da", "google_gdn"}
 
     @classmethod
-    def _estimated_daily_clicks(cls, ad_hits: int) -> int:
-        """Map observation frequency to estimated daily clicks/views."""
+    def _estimated_daily_clicks(cls, ad_hits: int, channel: str = "") -> int:
+        """Map observation frequency to estimated daily clicks/views.
+
+        Search channels: discrete 1-4 mapping + flat 750 cap for 5+.
+        DA channels: 1/5 dampening (high impressions != high clicks).
+        """
         if ad_hits <= 0:
             return 0
-        if ad_hits >= 5:
-            return cls._HITS_5PLUS_CLICKS
-        return cls._HITS_TO_CLICKS.get(ad_hits, 40)
+        is_da = channel in cls._DA_CHANNELS
+        if ad_hits < 5:
+            base = cls._HITS_TO_CLICKS.get(ad_hits, 40)
+        else:
+            base = 750  # 검색 채널 기존 캡 유지
+        if is_da:
+            # DA는 노출 위주, 클릭률 0.1~0.3% → 검색 대비 1/5
+            base = max(int(base * 0.2), 1)
+        return base
 
     @classmethod
     def _confidence_from_hits(cls, ad_hits: int) -> float:
@@ -258,7 +272,7 @@ class SpendEstimatorV2:
         different spend per advertiser.  ad_count scales linearly (more ads = more spend).
         """
         cpc = self._CHANNEL_CPC.get(channel, 500)
-        clicks = self._estimated_daily_clicks(ad_hits)
+        clicks = self._estimated_daily_clicks(ad_hits, channel)
         calibration = self._MARKET_CALIBRATION.get(channel, 1.0)
         inv_weight = self._INVENTORY_WEIGHT.get(channel, 1.0)
 
@@ -269,14 +283,15 @@ class SpendEstimatorV2:
         else:
             variance = 1.0
 
-        # Ad count scaling: sqrt to dampen (1→1, 4→2, 9→3, 25→5)
-        count_factor = max(1.0, ad_count ** 0.5) if ad_count > 1 else 1.0
+        # ad_count (ad_occurrences)는 관측 횟수이지 고유 소재 수가 아님
+        # → 스펜드 배수로 사용하면 과대추정의 원인이 됨
+        # CPC × clicks × calibration × inv_weight × variance 자체로 충분
 
-        return round(cpc * clicks * calibration * inv_weight * variance * count_factor, 2)
+        return round(cpc * clicks * calibration * inv_weight * variance, 2)
 
     def _cpv_frequency_spend(self, channel: str, ad_hits: int) -> float:
         """Calculate daily spend for YouTube: CPV * views * inventory_weight."""
-        views = self._estimated_daily_clicks(ad_hits)
+        views = self._estimated_daily_clicks(ad_hits, channel)
         inv_weight = self._INVENTORY_WEIGHT.get(channel, 1.0)
         return round(self._YOUTUBE_CPV * views * inv_weight, 2)
 
@@ -406,7 +421,7 @@ class SpendEstimatorV2:
                 "cpc": self._CHANNEL_CPC["naver_da"],
                 "placement": placement,
                 "ad_hits": ad_hits,
-                "estimated_daily_clicks": self._estimated_daily_clicks(ad_hits),
+                "estimated_daily_clicks": self._estimated_daily_clicks(ad_hits, "naver_da"),
                 "market_calibration": self._MARKET_CALIBRATION.get("naver_da", 1.0),
                 "inventory_weight": self._INVENTORY_WEIGHT.get("naver_da", 1.0),
                 "base_spend": base_spend,
@@ -440,7 +455,7 @@ class SpendEstimatorV2:
                 "cpc": self._CHANNEL_CPC["kakao_da"],
                 "placement": placement,
                 "ad_hits": ad_hits,
-                "estimated_daily_clicks": self._estimated_daily_clicks(ad_hits),
+                "estimated_daily_clicks": self._estimated_daily_clicks(ad_hits, "kakao_da"),
                 "market_calibration": self._MARKET_CALIBRATION.get("kakao_da", 1.0),
                 "inventory_weight": self._INVENTORY_WEIGHT.get("kakao_da", 1.0),
                 "base_spend": base_spend,
@@ -478,7 +493,7 @@ class SpendEstimatorV2:
                 "industry_cpc": industry_cpc,
                 "industry_ratio": industry_ratio,
                 "ad_hits": ad_hits,
-                "estimated_daily_clicks": self._estimated_daily_clicks(ad_hits),
+                "estimated_daily_clicks": self._estimated_daily_clicks(ad_hits, "google_gdn"),
                 "market_calibration": self._MARKET_CALIBRATION.get("google_gdn", 1.0),
                 "inventory_weight": self._INVENTORY_WEIGHT.get("google_gdn", 1.0),
                 "base_spend": base_spend,
@@ -565,7 +580,7 @@ class SpendEstimatorV2:
             factors={
                 "cpc": self._CHANNEL_CPC.get(channel, 700),
                 "ad_hits": ad_hits,
-                "estimated_daily_clicks": self._estimated_daily_clicks(ad_hits),
+                "estimated_daily_clicks": self._estimated_daily_clicks(ad_hits, channel),
                 "market_calibration": self._MARKET_CALIBRATION.get(channel, 1.0),
                 "inventory_weight": self._INVENTORY_WEIGHT.get(channel, 1.0),
                 "base_spend": base_spend,
@@ -660,6 +675,6 @@ class SpendEstimatorV2:
             factors={
                 "cpc": self._CHANNEL_CPC.get(channel, 500),
                 "ad_hits": ad_hits,
-                "estimated_daily_clicks": self._estimated_daily_clicks(ad_hits),
+                "estimated_daily_clicks": self._estimated_daily_clicks(ad_hits, channel),
             },
         )
