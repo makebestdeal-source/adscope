@@ -2,11 +2,16 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API = "";  // Use relative path so Next.js rewrites proxy to backend
 
 function headers() {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  return { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+  const token = typeof window !== "undefined" ? localStorage.getItem("adscope_token") : null;
+  const fp = typeof window !== "undefined" ? localStorage.getItem("adscope_device_fp") : null;
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(fp ? { "X-Device-Fingerprint": fp } : {}),
+  };
 }
 
 // ── Platform type labels ──
