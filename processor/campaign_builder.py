@@ -544,11 +544,18 @@ async def _upsert_campaigns_and_spend(
 
             campaign = campaign_by_key.get(key)
             if campaign is None:
+                # 캠페인명 자동 생성
+                adv = await session.get(Advertiser, advertiser_id)
+                first = agg.first_seen or now
+                adv_name = adv.name if adv else "Unknown"
+                auto_name = f"{adv_name} {first.month}월캠페인"
+
                 campaign = Campaign(
                     advertiser_id=advertiser_id,
                     keyword_id=dominant_keyword_id,
                     channel=channel,
-                    first_seen=agg.first_seen or now,
+                    campaign_name=auto_name,
+                    first_seen=first,
                     last_seen=agg.last_seen or now,
                     is_active=True,
                     total_est_spend=0.0,
@@ -566,6 +573,11 @@ async def _upsert_campaigns_and_spend(
             campaign.snapshot_count = len(agg.snapshot_ids)
             campaign.channels = [channel]
             campaign.is_active = campaign.last_seen.timestamp() >= active_cutoff
+            # 기존 캠페인 중 이름이 없으면 자동 생성
+            if not campaign.campaign_name:
+                adv = await session.get(Advertiser, advertiser_id)
+                adv_name = adv.name if adv else "Unknown"
+                campaign.campaign_name = f"{adv_name} {campaign.first_seen.month}월캠페인"
             if not campaign.spend_category:
                 campaign.spend_category = _get_spend_category(channel)
             campaign.extra_data = {
