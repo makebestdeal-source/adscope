@@ -68,8 +68,7 @@ const CHANNEL_LABELS: Record<string, string> = {
   youtube_ads: "YT-Ads",
   google_gdn: "GDN",
   kakao_da: "Kakao",
-  facebook: "Facebook",
-  instagram: "Instagram",
+  meta: "Meta",
   tiktok_ads: "TikTok",
   naver_shopping: "N-Shop",
 };

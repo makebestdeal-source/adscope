@@ -7,10 +7,10 @@ export const CHANNEL_LABELS: Record<string, string> = {
   youtube_ads: "유튜브",
   youtube_surf: "유튜브",
   kakao_da: "카카오 DA",
-  meta: "Meta 광고",
-  facebook: "Meta 광고",
-  facebook_contact: "Meta 광고",
-  instagram: "Meta 광고",
+  meta: "Meta",
+  naver_shopping: "네이버 쇼핑",
+  google_search_ads: "Google 검색",
+  tiktok_ads: "TikTok",
 };
 
 export const CHANNEL_COLORS: Record<string, string> = {
@@ -21,9 +21,9 @@ export const CHANNEL_COLORS: Record<string, string> = {
   youtube_surf: "#FF4444",
   kakao_da: "#FEE500",
   meta: "#0081FB",
-  facebook: "#0081FB",
-  facebook_contact: "#0081FB",
-  instagram: "#0081FB",
+  naver_shopping: "#03C75A",
+  google_search_ads: "#4285F4",
+  tiktok_ads: "#010101",
 };
 
 export const CHANNEL_BADGE_COLORS: Record<string, string> = {
@@ -34,9 +34,9 @@ export const CHANNEL_BADGE_COLORS: Record<string, string> = {
   youtube_surf: "bg-red-50 text-red-700",
   kakao_da: "bg-yellow-100 text-yellow-800",
   meta: "bg-blue-100 text-blue-700",
-  facebook: "bg-blue-100 text-blue-700",
-  facebook_contact: "bg-blue-100 text-blue-700",
-  instagram: "bg-blue-100 text-blue-700",
+  naver_shopping: "bg-green-100 text-green-700",
+  google_search_ads: "bg-blue-50 text-blue-700",
+  tiktok_ads: "bg-gray-100 text-gray-800",
 };
 
 export const AGE_GROUPS = ["10대", "20대", "30대", "40대", "50대", "60대"] as const;

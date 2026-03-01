@@ -12,9 +12,7 @@ const CHANNEL_BADGE: Record<string, { label: string; color: string }> = {
   youtube_surf: { label: "유튜브 접촉", color: "bg-red-50 text-red-600" },
   google_gdn: { label: "Google GDN", color: "bg-sky-100 text-sky-700" },
   kakao_da: { label: "카카오 DA", color: "bg-yellow-100 text-yellow-700" },
-  facebook: { label: "페이스북", color: "bg-blue-100 text-blue-700" },
-  facebook_contact: { label: "페이스북 접촉", color: "bg-blue-50 text-blue-600" },
-  instagram: { label: "인스타그램", color: "bg-pink-100 text-pink-700" },
+  meta: { label: "Meta", color: "bg-blue-100 text-blue-700" },
 };
 
 export function AdTimeline() {

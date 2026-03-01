@@ -30,7 +30,7 @@ const PERSONA_LABEL_MAP: Record<string, string> = {
 
 const CHANNELS = [
   "", "naver_search", "naver_da", "google_gdn", "youtube_ads", "youtube_surf",
-  "kakao_da", "facebook", "facebook_contact", "instagram",
+  "kakao_da", "meta", "naver_shopping", "tiktok_ads",
 ];
 
 const BAR_COLORS = [

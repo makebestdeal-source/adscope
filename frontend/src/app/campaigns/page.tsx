@@ -95,7 +95,7 @@ const OBJECTIVE_KO: Record<string, { label: string; color: string }> = {
 
 const CHANNELS = [
   "", "naver_search", "naver_da", "google_gdn", "google_search_ads",
-  "youtube_ads", "kakao_da", "facebook", "instagram", "tiktok", "naver_shopping",
+  "youtube_ads", "kakao_da", "meta", "tiktok_ads", "naver_shopping",
 ];
 
 type SortKey = "advertiser_name" | "channel" | "campaign_name" | "objective" | "total_est_spend" | "last_seen" | "snapshot_count" | "status";

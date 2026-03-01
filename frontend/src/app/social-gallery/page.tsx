@@ -251,7 +251,7 @@ function SocialCard({ item, onClick, selectMode = false, selected = false }: { i
 
   const platformBadge = item.channel === "youtube"
     ? { label: "YouTube", cls: "bg-red-100 text-red-800" }
-    : (item.channel === "instagram" || item.channel === "facebook" || item.channel === "meta")
+    : (item.channel === "meta")
     ? { label: "Meta", cls: "bg-blue-100 text-blue-800" }
     : { label: item.channel, cls: "bg-gray-100 text-gray-700" };
 

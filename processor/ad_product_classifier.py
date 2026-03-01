@@ -50,10 +50,7 @@ _CHANNEL_FORMAT_MAP = {
     "kakao_da": "display",
     "google_gdn": "display",
     "youtube_ads": "video",
-    "facebook": "social",
-    "instagram": "social",
-    "instagram_catalog": "social",
-    "meta_library": "social",
+    "meta": "social",
     "tiktok_ads": "social",
 }
 
@@ -131,7 +128,7 @@ def _classify_product_name(channel: str, ad_type: str, extra: dict, placement: s
         return "트루뷰 인스트림"
 
     # ── 메타 (Facebook/Instagram) ──
-    if channel in ("facebook", "meta_library", "instagram", "instagram_catalog"):
+    if channel in ("meta", "facebook", "meta_library", "instagram", "instagram_catalog"):
         platforms = extra.get("platforms") or extra.get("publisher_platforms") or []
         is_ig = "instagram" in str(platforms).lower() or "instagram" in channel
         # format detection
