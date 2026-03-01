@@ -25,6 +25,7 @@ from database import async_session
 from processor.ai_enricher import enrich_ads
 from processor.campaign_builder import rebuild_campaigns_and_spend
 from processor.pipeline import save_crawl_results
+from scripts.sync_db_to_railway import sync as sync_db_to_railway
 from scheduler.schedules import WEEKDAY_SCHEDULE, WEEKEND_SCHEDULE, ScheduleSlot
 from scheduler.weekend_rules import get_weekend_boost_keywords
 
@@ -682,6 +683,14 @@ class AdScopeScheduler:
                         logger.info("[schedule] AI panel: recorded %d observations", panel_count)
             except Exception:
                 logger.exception("[schedule] AI panel recording failed")
+
+        # ── Sync DB to Railway after successful crawl ──
+        if saved > 0:
+            try:
+                sync_db_to_railway()
+                logger.info("[schedule] Railway DB sync complete")
+            except Exception:
+                logger.exception("[schedule] Railway DB sync failed (non-fatal)")
 
         logger.info(
             f"[schedule] crawl finished: {persona_code} / {device_type} / {label} - "
