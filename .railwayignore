@@ -10,3 +10,15 @@ backups/
 logs/
 *.log
 .claude/
+
+# Large data files (DB lives on Railway volume, images uploaded separately)
+adscope.db
+adscope.db-wal
+adscope.db-shm
+adscope.db-journal
+*.db.gz
+stored_images/
+stored_images.tar.gz
+screenshots/
+*.tar.gz
+cloudflared.exe
