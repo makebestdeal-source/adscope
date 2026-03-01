@@ -292,6 +292,54 @@ async def root():
     return RedirectResponse(url="/docs")
 
 
+@app.get("/api/_debug_db", include_in_schema=False)
+async def debug_db():
+    """Temporary debug endpoint to diagnose DB issues."""
+    import traceback
+    from database import engine, DATABASE_URL
+    info = {
+        "database_url": DATABASE_URL[:50] + "..." if len(DATABASE_URL) > 50 else DATABASE_URL,
+        "cwd": os.getcwd(),
+        "db_file_exists": None,
+        "db_file_size": None,
+        "engine_url": str(engine.url),
+        "connect_test": None,
+        "table_count": None,
+        "user_count": None,
+        "error": None,
+    }
+    # Check DB file
+    db_path_str = DATABASE_URL.split("///")[-1]
+    if not os.path.isabs(db_path_str):
+        db_path_str = os.path.join(os.getcwd(), db_path_str)
+    info["resolved_db_path"] = db_path_str
+    info["db_file_exists"] = os.path.exists(db_path_str)
+    if info["db_file_exists"]:
+        info["db_file_size"] = os.path.getsize(db_path_str)
+
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+            info["connect_test"] = "OK"
+            # Count tables
+            result = await conn.execute(text(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type='table'"
+            ))
+            info["table_count"] = result.scalar()
+            # Count users
+            try:
+                result = await conn.execute(text("SELECT COUNT(*) FROM users"))
+                info["user_count"] = result.scalar()
+            except Exception as e:
+                info["user_count_error"] = str(e)
+    except Exception as e:
+        info["connect_test"] = "FAILED"
+        info["error"] = str(e)
+        info["traceback"] = traceback.format_exc()[-500:]
+
+    return info
+
+
 @app.get("/health")
 async def health():
     """Production-grade health check with monitoring."""
