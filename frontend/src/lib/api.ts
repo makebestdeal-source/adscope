@@ -1010,6 +1010,7 @@ export const api = {
       plan: string | null;
       plan_period: string | null;
       is_active: boolean;
+      payment_confirmed: boolean;
       plan_expires_at: string | null;
       trial_started_at: string | null;
       created_at: string | null;
@@ -1056,6 +1057,27 @@ export const api = {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
     }),
+
+  adminUpdatePermissions: (
+    userId: number,
+    params: {
+      can_download?: boolean;
+      can_manage?: boolean;
+      plan?: string;
+      is_active?: boolean;
+    },
+    token: string
+  ) => {
+    const qs = new URLSearchParams();
+    if (params.can_download !== undefined) qs.set("can_download", String(params.can_download));
+    if (params.can_manage !== undefined) qs.set("can_manage", String(params.can_manage));
+    if (params.plan !== undefined) qs.set("plan", params.plan);
+    if (params.is_active !== undefined) qs.set("is_active", String(params.is_active));
+    return fetchApi<{ status: string; user_id: number }>(
+      `/admin/users/${userId}/permissions?${qs.toString()}`,
+      { method: "PUT", headers: { Authorization: `Bearer ${token}` } }
+    );
+  },
 
   // Advertiser Favorites
   getFavorites: (category?: string) => {

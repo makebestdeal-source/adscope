@@ -578,27 +578,30 @@ export default function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-gray-50 text-left text-xs text-gray-500 uppercase tracking-wider">
-                    <th className="px-4 py-3">이메일</th>
-                    <th className="px-4 py-3">이름</th>
-                    <th className="px-4 py-3">회사명</th>
-                    <th className="px-4 py-3">플랜</th>
-                    <th className="px-4 py-3">결제 유형</th>
-                    <th className="px-4 py-3">만료일</th>
-                    <th className="px-4 py-3">상태</th>
-                    <th className="px-4 py-3 text-right">작업</th>
+                    <th className="px-3 py-3">이메일</th>
+                    <th className="px-3 py-3">이름</th>
+                    <th className="px-3 py-3">회사명</th>
+                    <th className="px-3 py-3">유형</th>
+                    <th className="px-3 py-3 text-center">자료조회</th>
+                    <th className="px-3 py-3 text-center">다운로드</th>
+                    <th className="px-3 py-3 text-center">관리</th>
+                    <th className="px-3 py-3">플랜</th>
+                    <th className="px-3 py-3">만료일</th>
+                    <th className="px-3 py-3">상태</th>
+                    <th className="px-3 py-3 text-right">작업</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {usersLoading ? (
                     <tr>
-                      <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-400">
+                      <td colSpan={11} className="px-4 py-8 text-center text-sm text-gray-400">
                         <Spinner size={16} />
                         <span className="ml-2">로딩 중...</span>
                       </td>
                     </tr>
                   ) : users.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-400">회원 없음</td>
+                      <td colSpan={11} className="px-4 py-8 text-center text-sm text-gray-400">회원 없음</td>
                     </tr>
                   ) : (
                     users.map((u: any) => {
@@ -607,22 +610,88 @@ export default function AdminPage() {
                       const daysLeft = expiresAt ? Math.ceil((expiresAt.getTime() - now.getTime()) / 86400000) : null;
                       const expired = daysLeft !== null && daysLeft < 0;
                       const isAdmin = u.role === "admin";
+                      const canView = u.is_active;
+                      const canDownload = u.payment_confirmed === true;
+                      const canManage = isAdmin;
+
+                      // User type badge
+                      const userType = isAdmin ? "관리자" :
+                        u.plan === "full" ? "유료(Full)" :
+                        u.plan === "lite" ? "유료(Lite)" : "무료체험";
+                      const typeBadgeClass = isAdmin ? "bg-purple-100 text-purple-700" :
+                        u.plan === "full" ? "bg-adscope-100 text-adscope-700" :
+                        u.plan === "lite" ? "bg-blue-50 text-blue-600" :
+                        "bg-gray-100 text-gray-500";
+
+                      const handlePermChange = async (params: { can_download?: boolean; can_manage?: boolean; plan?: string; is_active?: boolean }) => {
+                        if (!token) return;
+                        try {
+                          await api.adminUpdatePermissions(u.id, params, token);
+                          await loadUsers();
+                        } catch {
+                          alert("권한 변경 실패");
+                        }
+                      };
+
                       return (
                         <tr key={u.id} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 text-xs text-gray-900">{u.email}</td>
-                          <td className="px-4 py-3 text-xs text-gray-700">{u.name || "-"}</td>
-                          <td className="px-4 py-3 text-xs text-gray-700">{u.company_name || "-"}</td>
-                          <td className="px-4 py-3">
-                            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                              u.plan === "full" ? "bg-adscope-100 text-adscope-700" :
-                              u.plan === "lite" ? "bg-blue-50 text-blue-600" :
-                              "bg-gray-100 text-gray-500"
-                            }`}>
-                              {u.plan || "free"}
+                          <td className="px-3 py-3 text-xs text-gray-900">{u.email}</td>
+                          <td className="px-3 py-3 text-xs text-gray-700">{u.name || "-"}</td>
+                          <td className="px-3 py-3 text-xs text-gray-700">{u.company_name || "-"}</td>
+                          <td className="px-3 py-3">
+                            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${typeBadgeClass}`}>
+                              {userType}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-xs text-gray-600">{u.plan_period || "-"}</td>
-                          <td className="px-4 py-3 text-xs">
+                          {/* 자료조회 */}
+                          <td className="px-3 py-3 text-center">
+                            <input
+                              type="checkbox"
+                              checked={canView}
+                              onChange={(e) => handlePermChange({ is_active: e.target.checked })}
+                              className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
+                            />
+                          </td>
+                          {/* 다운로드 */}
+                          <td className="px-3 py-3 text-center">
+                            <input
+                              type="checkbox"
+                              checked={canDownload}
+                              onChange={(e) => handlePermChange({ can_download: e.target.checked })}
+                              className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
+                            />
+                          </td>
+                          {/* 관리 */}
+                          <td className="px-3 py-3 text-center">
+                            <input
+                              type="checkbox"
+                              checked={canManage}
+                              disabled={isAdmin && u.email === getUser()?.email}
+                              onChange={(e) => {
+                                if (!e.target.checked && isAdmin) {
+                                  if (!confirm(`${u.email}의 관리자 권한을 해제하겠습니까?`)) return;
+                                }
+                                handlePermChange({ can_manage: e.target.checked });
+                              }}
+                              className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer disabled:opacity-50"
+                            />
+                          </td>
+                          {/* 플랜 */}
+                          <td className="px-3 py-3">
+                            <select
+                              value={u.plan || "free"}
+                              onChange={(e) => {
+                                const newPlan = e.target.value === "free" ? undefined : e.target.value;
+                                if (newPlan) handlePermChange({ plan: newPlan });
+                              }}
+                              className="text-xs border border-gray-200 rounded px-1.5 py-1 bg-white cursor-pointer"
+                            >
+                              <option value="free">무료체험</option>
+                              <option value="lite">Lite</option>
+                              <option value="full">Full</option>
+                            </select>
+                          </td>
+                          <td className="px-3 py-3 text-xs">
                             {expiresAt ? (
                               <span className={expired ? "text-red-600 font-medium" : "text-gray-600"}>
                                 {expiresAt.toLocaleDateString("ko-KR")}
@@ -634,14 +703,14 @@ export default function AdminPage() {
                               </span>
                             ) : "-"}
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-3 py-3">
                             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
                               u.is_active ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"
                             }`}>
                               {u.is_active ? "활성" : "비활성"}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-right">
+                          <td className="px-3 py-3 text-right">
                             <div className="flex items-center justify-end gap-2">
                               <button
                                 onClick={async () => {

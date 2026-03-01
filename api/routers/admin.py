@@ -949,12 +949,53 @@ async def list_users(
             "company_name": u.company_name, "role": u.role,
             "plan": u.plan, "plan_period": u.plan_period,
             "is_active": u.is_active,
+            "payment_confirmed": getattr(u, "payment_confirmed", False) or False,
             "plan_expires_at": u.plan_expires_at.isoformat() if u.plan_expires_at else None,
             "trial_started_at": u.trial_started_at.isoformat() if u.trial_started_at else None,
             "created_at": u.created_at.isoformat() if u.created_at else None,
         }
         for u in users
     ]
+
+
+@router.put("/users/{user_id}/permissions")
+async def update_user_permissions(
+    user_id: int,
+    can_download: bool | None = None,
+    can_manage: bool | None = None,
+    plan: str | None = None,
+    is_active: bool | None = None,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin),
+):
+    """Admin: update user permissions (download, manage, plan, active status)."""
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(404, "User not found")
+
+    # Safety: cannot remove own admin role
+    if can_manage is False and user.id == admin.id:
+        raise HTTPException(400, "Cannot remove your own admin role")
+
+    changes = {}
+    if can_download is not None:
+        user.payment_confirmed = can_download
+        changes["payment_confirmed"] = can_download
+    if can_manage is not None:
+        user.role = "admin" if can_manage else "viewer"
+        changes["role"] = user.role
+    if plan is not None and plan in ("lite", "full"):
+        user.plan = plan
+        changes["plan"] = plan
+    if is_active is not None:
+        if not is_active and user.id == admin.id:
+            raise HTTPException(400, "Cannot deactivate yourself")
+        user.is_active = is_active
+        changes["is_active"] = is_active
+
+    await db.commit()
+    return {"status": "updated", "user_id": user_id, "changes": changes}
 
 
 @router.post("/users/{user_id}/extend")
