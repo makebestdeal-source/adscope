@@ -37,9 +37,8 @@ def upload_to_railway() -> bool:
     try:
         with open(GZ_PATH, "rb") as f:
             resp = requests.post(
-                RAILWAY_URL,
+                f"{RAILWAY_URL}?secret={SECRET}",
                 files={"file": ("adscope.db.gz", f, "application/gzip")},
-                data={"secret": SECRET},
                 timeout=300,
             )
         if resp.status_code == 200:
