@@ -380,10 +380,14 @@ async def upload_data(file: UploadFile = File(...), secret: str = ""):
 
     if filename.endswith(".db.gz"):
         # Gzipped SQLite DB — must close engine, remove WAL/SHM, then replace
-        from database import engine
-        target = data_dir / "adscope.db"
-        wal = data_dir / "adscope.db-wal"
-        shm = data_dir / "adscope.db-shm"
+        from database import engine, DATABASE_URL
+        # Resolve actual DB path from DATABASE_URL (e.g. sqlite+aiosqlite:///adscope.db)
+        db_path_str = DATABASE_URL.split("///")[-1]
+        if not os.path.isabs(db_path_str):
+            db_path_str = os.path.join("/app", db_path_str)
+        target = Path(db_path_str)
+        wal = Path(f"{db_path_str}-wal")
+        shm = Path(f"{db_path_str}-shm")
 
         # Dispose all connections so SQLite releases the file
         await engine.dispose()
