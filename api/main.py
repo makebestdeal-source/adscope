@@ -399,8 +399,13 @@ async def upload_data(file: UploadFile = File(...), secret: str = ""):
             with open(target, "wb") as out:
                 shutil.copyfileobj(gz, out)
         os.remove("/tmp/upload.db.gz")
+
+        # Re-initialize engine so API keeps working after upload
+        from database import init_db
+        await init_db()
+
         size_mb = round(target.stat().st_size / (1024 * 1024), 2)
-        return {"status": "ok", "file": str(target), "size_mb": size_mb, "note": "Restart service to use new DB"}
+        return {"status": "ok", "file": str(target), "size_mb": size_mb}
 
     elif filename.endswith(".tar.gz"):
         # Images archive
