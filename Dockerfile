@@ -16,8 +16,10 @@ COPY . .
 # Supervisord config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Railway: DB lives on persistent volume at /data
+# Railway: persistent volume config
 ENV DATABASE_URL=sqlite+aiosqlite:////data/adscope.db
+ENV IMAGE_STORE_DIR=/data/stored_images
+ENV PORT=8000
 
 EXPOSE 8000
 

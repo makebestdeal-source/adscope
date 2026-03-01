@@ -358,10 +358,13 @@ async def health():
         health_status["status"] = "degraded"
         health_status["database"] = f"error: {str(e)}"
 
-    # DB file size
-    db_path = os.path.join(os.getcwd(), "adscope.db")
-    if os.path.exists(db_path):
-        size_mb = round(os.path.getsize(db_path) / (1024 * 1024), 2)
+    # DB file size (resolve from DATABASE_URL)
+    from database import DATABASE_URL
+    _db_path_str = DATABASE_URL.split("///")[-1]
+    if not os.path.isabs(_db_path_str):
+        _db_path_str = os.path.join(os.getcwd(), _db_path_str)
+    if os.path.exists(_db_path_str):
+        size_mb = round(os.path.getsize(_db_path_str) / (1024 * 1024), 2)
         health_status["db_size_mb"] = size_mb
         if size_mb > 500:
             health_status["db_size_warning"] = True
