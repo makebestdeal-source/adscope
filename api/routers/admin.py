@@ -137,12 +137,15 @@ async def admin_stats(
         latest_kst = latest_dt + timedelta(hours=9)
         latest_crawl = latest_kst.isoformat()
 
-    # DB file size
+    # DB file size (resolve from DATABASE_URL)
     db_size_mb = 0
     try:
-        db_path = os.path.join(os.getcwd(), "adscope.db")
-        if os.path.exists(db_path):
-            db_size_mb = round(os.path.getsize(db_path) / (1024 * 1024), 2)
+        from database import DATABASE_URL
+        _dbp = DATABASE_URL.split("///")[-1]
+        if not os.path.isabs(_dbp):
+            _dbp = os.path.join(os.getcwd(), _dbp)
+        if os.path.exists(_dbp):
+            db_size_mb = round(os.path.getsize(_dbp) / (1024 * 1024), 2)
     except Exception:
         pass
 
