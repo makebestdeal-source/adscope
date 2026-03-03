@@ -262,9 +262,8 @@ async def detect_visual_marks(
                             WHEN 'google_gdn' THEN 1
                             WHEN 'kakao_da' THEN 2
                             WHEN 'naver_da' THEN 3
-                            WHEN 'facebook' THEN 4
-                            WHEN 'instagram' THEN 5
-                            ELSE 6
+                            WHEN 'meta' THEN 4
+                            ELSE 5
                         END
                     LIMIT :lim"""
                 ),

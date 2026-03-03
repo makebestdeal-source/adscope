@@ -51,7 +51,7 @@ def main():
             SELECT d.id FROM ad_details d
             JOIN ad_snapshots s ON d.snapshot_id = s.id
             WHERE s.channel IN ('kakao_da', 'youtube_surf')
-               OR (s.channel = 'facebook' AND d.ad_text LIKE '0:0%')
+               OR (s.channel = 'meta' AND d.ad_text LIKE '0:0%')
           )
     """)
     n1 = cur.rowcount

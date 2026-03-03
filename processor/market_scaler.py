@@ -42,8 +42,7 @@ _ANNUAL_MARKET_SIZE_KRW: dict[str, int] = {
     "youtube_brand":     300_000_000_000,   # 유튜브 브랜드채널 3,000억
 
     # 소셜 광고 (~1.3조)
-    "facebook":          400_000_000_000,   # 페이스북 4,000억
-    "instagram":         700_000_000_000,   # 인스타그램 7,000억
+    "meta":            1_100_000_000_000,   # 메타(FB+IG) 1.1조
 
     # 검색 (제외 대상이지만 참고용)
     # "naver_search":   2_000_000_000_000,
@@ -61,8 +60,7 @@ _DAILY_MARKET_SIZE_KRW = {ch: v // 365 for ch, v in _ANNUAL_MARKET_SIZE_KRW.item
 _MEDIA_USAGE_WEIGHT: dict[str, float] = {
     "youtube_ads":       1.8,   # 유튜브: MAU 4,600만, 광고 지면 매우 다양, 수집 커버리지 낮음
     "youtube_surf":      1.5,
-    "instagram":         1.5,   # 인스타: MAU 2,200만, 스토리/릴스 미수집
-    "facebook":          1.2,   # 페이스북: MAU 1,800만, Ad Library로 상당 부분 커버
+    "meta":              1.3,   # 메타(FB+IG): MAU 2,200만+1,800만, Ad Library 커버
     "google_gdn":        1.3,   # GDN: 매우 넓은 인벤토리, 언론사 기사면만 수집
     "mobile_gdn":        1.4,
     "naver_da":          1.0,   # 네이버DA: 수집 커버리지 높음 (웹 DA + stealth)

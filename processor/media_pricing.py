@@ -188,7 +188,7 @@ INDUSTRY_CPC_TABLE = {
 DAILY_PAGEVIEWS = {
     "naver_main": 30_000_000,       # 네이버 메인 일 PV
     "naver_search": 50_000_000,     # 네이버 검색 일 PV
-    "facebook": 20_000_000,        # 페이스북 일 DAU (한국)
+    "meta": 20_000_000,             # 메타(FB+IG) 일 DAU (한국)
     "daum_main": 8_000_000,         # 다음 메인 일 PV
     "kakao_chat": 25_000_000,       # 카카오톡 일 DAU (비즈보드 노출)
     "yna_news": 3_000_000,          # 연합뉴스 일 PV
@@ -207,8 +207,7 @@ def get_channel_pricing(channel: str) -> dict:
         "naver_da": NAVER_DA_PRICING,
         "kakao_da": KAKAO_PRICING,
         "google_gdn": GOOGLE_GDN_PRICING,
-        "facebook": META_PRICING,
-        "instagram": META_PRICING,
+        "meta": META_PRICING,
         "youtube_ads": YOUTUBE_PRICING,
     }
     return _MAP.get(channel, {})

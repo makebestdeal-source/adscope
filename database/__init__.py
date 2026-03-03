@@ -174,6 +174,40 @@ async def _ensure_ad_platforms_table(conn):
     await conn.execute(text("""
         CREATE INDEX IF NOT EXISTS ix_ad_platform_type ON ad_platforms(platform_type)
     """))
+    # Auto-seed from JSON if table is empty
+    result = await conn.execute(text("SELECT COUNT(*) FROM ad_platforms"))
+    count = result.scalar()
+    if count == 0:
+        import json as _json, os as _os
+        seed_path = _os.path.join(_os.path.dirname(_os.path.dirname(__file__)), "data", "kr_ad_platforms_master.json")
+        if _os.path.exists(seed_path):
+            with open(seed_path, "r", encoding="utf-8") as f:
+                seed_data = _json.load(f)
+            _type_map = {
+                "search": "search", "display": "display", "video": "video",
+                "social": "social", "commerce": "commerce", "programmatic_dsp": "programmatic",
+                "programmatic_ssp": "programmatic", "ad_exchange": "programmatic",
+                "ad_network": "programmatic", "media_rep": "programmatic", "reward": "reward",
+                "affiliate": "affiliate", "influencer": "social", "ott": "video",
+                "audio": "audio", "dooh": "display", "messaging": "social",
+                "map_local": "local", "mobile_game": "mobile", "retail_media": "commerce",
+                "adtech": "programmatic",
+            }
+            for p in seed_data.get("platforms", []):
+                types = p.get("type", [])
+                primary_type = _type_map.get(types[0], types[0]) if types else None
+                sub_type = types[0] if types else None
+                await conn.execute(text("""
+                    INSERT OR IGNORE INTO ad_platforms (operator_name, platform_name, service_name,
+                        platform_type, sub_type, url, description, billing_types,
+                        is_self_serve, is_active, country, data_source, notes)
+                    VALUES (:op, :pn, :sn, :pt, :st, :url, :desc, :bt, 1, 1, 'KR', 'seed', :notes)
+                """), {
+                    "op": p["operator"], "pn": p["platform"], "sn": p.get("service"),
+                    "pt": primary_type, "st": sub_type, "url": p.get("url"),
+                    "desc": p.get("description"), "bt": _json.dumps([]),
+                    "notes": _json.dumps({"tier": p.get("tier"), "original_types": types}, ensure_ascii=False),
+                })
 
 
 async def _ensure_dedup_tracking_columns(conn):
@@ -593,7 +627,7 @@ async def _ensure_is_contact_column(conn):
             UPDATE ad_details SET is_contact = 0
             WHERE snapshot_id IN (
                 SELECT id FROM ad_snapshots
-                WHERE channel IN ('youtube_ads', 'facebook')
+                WHERE channel IN ('youtube_ads', 'meta')
             )
             """
         )
@@ -602,7 +636,7 @@ async def _ensure_is_contact_column(conn):
             UPDATE ad_details SET is_contact = 0
             WHERE ad_type = 'social_library'
               AND snapshot_id IN (
-                  SELECT id FROM ad_snapshots WHERE channel = 'instagram'
+                  SELECT id FROM ad_snapshots WHERE channel = 'meta'
               )
             """
         )

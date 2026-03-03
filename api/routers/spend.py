@@ -71,7 +71,7 @@ async def spend_summary(
 ):
     """채널별 추정 광고비 요약.
 
-    campaigns.total_est_spend (30일 투영) 기준으로 집계합니다.
+    campaigns.total_est_spend (관측 기간 실제 합계) 기준으로 집계합니다.
     캠페인 페이지와 동일한 수치를 반환합니다.
     """
     query = (
@@ -119,7 +119,7 @@ async def spend_by_advertiser(
 ):
     """광고주별 추정 광고비 랭킹.
 
-    campaigns.total_est_spend (30일 투영) 기준으로 집계합니다.
+    campaigns.total_est_spend (관측 기간 실제 합계) 기준으로 집계합니다.
     캠페인 페이지와 동일한 수치를 반환합니다.
     """
     query = (
@@ -206,7 +206,7 @@ async def spend_by_advertiser_enriched(
 ):
     """광고주별 채널별 추정 광고비 (매체비 + 수주액 환산 포함).
 
-    campaigns.total_est_spend (30일 투영) 기준으로 집계합니다.
+    campaigns.total_est_spend (관측 기간 실제 합계) 기준으로 집계합니다.
     """
     query = (
         select(

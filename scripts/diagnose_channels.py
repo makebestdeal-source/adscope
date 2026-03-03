@@ -97,7 +97,7 @@ CHANNEL_PROBES = {
             '[class*="ad_wrap"]',
         ],
     },
-    "facebook": {
+    "meta": {
         "url": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=KR&q=%EB%8C%80%EC%B6%9C",
         "env_vars": [],
         "selectors": [

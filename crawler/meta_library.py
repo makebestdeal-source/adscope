@@ -168,7 +168,7 @@ def classify_meta_api_error(
 class MetaLibraryCrawler(BaseCrawler):
     """Meta 광고 크롤러 — 브라우저 기반 + API fallback."""
 
-    channel = "facebook"
+    channel = "meta"
 
     def __init__(self):
         super().__init__()

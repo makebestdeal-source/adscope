@@ -71,8 +71,7 @@ SUPPORTED_CRAWLER_MAP = {
     # 카탈로그 채널 (is_contact=False)
     "youtube_ads": YouTubeAdsCrawler,
     "google_search_ads": GoogleSearchAdsCrawler,
-    "facebook": MetaLibraryCrawler,
-    "instagram": InstagramCatalogCrawler,
+    "meta": MetaLibraryCrawler,
     "tiktok_ads": TikTokAdsCrawler,
     "naver_shopping": NaverShoppingCrawler,
 }
@@ -173,8 +172,7 @@ class AdScopeScheduler:
             "google_search_ads",  # 투명성센터 카탈로그
             "naver_shopping",     # 키워드 기반 파워링크
             "youtube_ads",        # 투명성센터 카탈로그
-            "facebook",           # Ad Library 카탈로그
-            "instagram",          # Ad Library 카탈로그
+            "meta",               # Ad Library 카탈로그
             "tiktok_ads",         # Creative Center 카탈로그
         ]
         for ch in _no_persona_channels:

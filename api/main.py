@@ -337,6 +337,48 @@ async def debug_db():
         info["error"] = str(e)
         info["traceback"] = traceback.format_exc()[-500:]
 
+    # Check image store
+    image_store_dir = os.getenv("IMAGE_STORE_DIR", "stored_images")
+    info["image_store_dir"] = image_store_dir
+    info["image_store_exists"] = os.path.exists(image_store_dir)
+    if os.path.exists(image_store_dir):
+        try:
+            subdirs = sorted(os.listdir(image_store_dir))
+            info["image_store_subdirs"] = subdirs
+        except Exception as e:
+            info["image_store_list_error"] = str(e)
+    # Sample DB image paths - 패턴별로
+    try:
+        async with engine.connect() as conn:
+            # meta 채널 경로 샘플
+            r = await conn.execute(text("""
+                SELECT ad_details.creative_image_path
+                FROM ad_details
+                JOIN ad_snapshots ON ad_details.snapshot_id = ad_snapshots.id
+                WHERE ad_snapshots.channel = 'meta'
+                  AND ad_details.creative_image_path IS NOT NULL
+                LIMIT 5
+            """))
+            meta_paths = [row[0] for row in r.all()]
+            info["meta_paths"] = meta_paths
+            # 첫 번째 meta 경로의 실제 resolve 결과
+            if meta_paths:
+                raw = meta_paths[0]
+                p = raw.replace("\\", "/")
+                image_store_dir = os.getenv("IMAGE_STORE_DIR", "stored_images")
+                direct_exists = os.path.exists(p)
+                resolved = os.path.join(image_store_dir, p[len("stored_images/"):]) if p.startswith("stored_images/") else None
+                resolved_exists = os.path.exists(resolved) if resolved else None
+                info["meta_debug"] = {
+                    "raw": raw, "normalized": p,
+                    "image_store_dir": image_store_dir,
+                    "direct_exists": direct_exists,
+                    "resolved": resolved,
+                    "resolved_exists": resolved_exists,
+                }
+    except Exception as e:
+        info["meta_debug_error"] = str(e)
+
     return info
 
 

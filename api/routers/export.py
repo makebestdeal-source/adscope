@@ -546,8 +546,11 @@ async def export_social(
         .order_by(BrandChannelContent.discovered_at.desc())
     )
 
-    if channel and channel in ("youtube", "instagram"):
-        query = query.where(BrandChannelContent.platform == channel)
+    if channel and channel in ("youtube", "instagram", "meta"):
+        if channel == "meta":
+            query = query.where(BrandChannelContent.platform.in_(["meta", "instagram", "facebook"]))
+        else:
+            query = query.where(BrandChannelContent.platform == channel)
     if advertiser_id:
         query = query.where(BrandChannelContent.advertiser_id == advertiser_id)
 
@@ -564,7 +567,7 @@ async def export_social(
         cid = _safe(r[8])
         if platform == "youtube" and cid:
             url = f"https://www.youtube.com/watch?v={cid}"
-        elif platform == "instagram" and cid:
+        elif platform in ("instagram", "meta") and cid:
             url = f"https://www.instagram.com/p/{cid}/"
         else:
             url = ""
@@ -946,8 +949,11 @@ async def export_social_xlsx(
         .where(BrandChannelContent.discovered_at <= date_to)
         .order_by(BrandChannelContent.discovered_at.desc())
     )
-    if channel and channel in ("youtube", "instagram"):
-        query = query.where(BrandChannelContent.platform == channel)
+    if channel and channel in ("youtube", "instagram", "meta"):
+        if channel == "meta":
+            query = query.where(BrandChannelContent.platform.in_(["meta", "instagram", "facebook"]))
+        else:
+            query = query.where(BrandChannelContent.platform == channel)
     if advertiser_id:
         query = query.where(BrandChannelContent.advertiser_id == advertiser_id)
 

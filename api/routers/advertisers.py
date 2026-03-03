@@ -3,6 +3,20 @@
 import os
 from datetime import datetime, timedelta, timezone
 
+_IMAGE_STORE_DIR = os.getenv("IMAGE_STORE_DIR", "stored_images")
+
+def _normalize_image_path(path: str) -> str | None:
+    if not path:
+        return None
+    p = path.replace("\\", "/")
+    if os.path.exists(p):
+        return p
+    if p.startswith("stored_images/"):
+        resolved = os.path.join(_IMAGE_STORE_DIR, p[len("stored_images/"):])
+        if os.path.exists(resolved):
+            return p
+    return None
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from api.deps import get_current_user, require_admin, require_paid
@@ -537,8 +551,7 @@ async def media_breakdown(
     recent_ads = []
     for row in gallery_result.all():
         img_path = row[4]
-        if img_path and not os.path.exists(img_path):
-            img_path = None
+        img_path = _normalize_image_path(img_path)
         recent_ads.append({
             "id": row[0],
             "advertiser_name_raw": row[1],

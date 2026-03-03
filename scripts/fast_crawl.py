@@ -257,9 +257,8 @@ CHANNEL_TASKS_BASE = [
     # [7] 구글 검색광고 투명성센터 — 시장 2.0조 (네이버SA 이상 수집, 200+ 키워드)
     ("google_search_ads", _load_google_search_ads_keywords()),
 
-    # [8] 메타 (FB+IG) — 시장 1조 (478 키워드)
-    ("facebook", _load_meta_ad_keywords()),
-    ("instagram", _load_meta_ad_keywords()),
+    # [8] 메타 (FB+IG 통합) — 시장 1조 (478 키워드)
+    ("meta", _load_meta_ad_keywords()),
 
     # [9] 틱톡 — 시장 0.3조
     ("tiktok_ads", [""]),
@@ -473,7 +472,6 @@ def _get_crawler_cls(channel_name):
     from crawler.kakao_da import KakaoDACrawler
     from crawler.youtube_ads import YouTubeAdsCrawler
     from crawler.youtube_surf import YouTubeSurfCrawler
-    from crawler.instagram_catalog import InstagramCatalogCrawler
     from crawler.meta_library import MetaLibraryCrawler
     from crawler.tiktok_ads import TikTokAdsCrawler
     from crawler.naver_shopping import NaverShoppingCrawler
@@ -487,8 +485,7 @@ def _get_crawler_cls(channel_name):
         "kakao_da": KakaoDACrawler,
         "youtube_ads": YouTubeAdsCrawler,
         "youtube_surf": YouTubeSurfCrawler,
-        "facebook": MetaLibraryCrawler,
-        "instagram": InstagramCatalogCrawler,
+        "meta": MetaLibraryCrawler,
         "tiktok_ads": TikTokAdsCrawler,
         "naver_shopping": NaverShoppingCrawler,
     }[channel_name]
@@ -499,8 +496,7 @@ CHANNEL_TIMEOUT = {
     "google_search_ads": 240,    # 200+ kw, 글로벌 매체 비중 반영
     "youtube_ads": 360,
     "youtube_surf": 360,
-    "instagram": 360,
-    "facebook": 360,
+    "meta": 360,
     "naver_da": 180,
 }
 
@@ -589,14 +585,21 @@ async def main():
     deadline = time.time() + TOTAL_TIMEOUT
     t_start = time.time()
 
-    # 페르소나별 태스크 생성 + 병렬 실행
+    # 페르소나별 태스크 생성 + 동시 3개씩 실행 (CPU/메모리 과부하 방지)
+    MAX_CONCURRENT = 3
     persona_tasks = build_persona_tasks()
-    tasks = []
-    for channel, persona_code, device, keywords in persona_tasks:
-        print(f"  Starting {channel} [{persona_code}/{device}] ({len(keywords)} kw)...", flush=True)
-        tasks.append(crawl_channel(channel, persona_code, device, keywords, deadline))
-
-    results = await asyncio.gather(*tasks, return_exceptions=True)
+    results = []
+    for i in range(0, len(persona_tasks), MAX_CONCURRENT):
+        batch = persona_tasks[i:i + MAX_CONCURRENT]
+        tasks = []
+        for channel, persona_code, device, keywords in batch:
+            print(f"  Starting {channel} [{persona_code}/{device}] ({len(keywords)} kw)...", flush=True)
+            tasks.append(crawl_channel(channel, persona_code, device, keywords, deadline))
+        batch_results = await asyncio.gather(*tasks, return_exceptions=True)
+        results.extend(batch_results)
+        if time.time() > deadline:
+            print("  [!] Deadline reached, skipping remaining batches", flush=True)
+            break
 
     # 결과 요약
     elapsed_total = time.time() - t_start

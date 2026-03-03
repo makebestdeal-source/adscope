@@ -1,7 +1,7 @@
 {
   "persona_code": "M40",
   "channel": "youtube_surf",
-  "updated_at": "2026-02-28T03:49:13.836134+00:00",
+  "updated_at": "2026-03-01T16:40:44.279014+00:00",
   "cookie_count": 8,
   "cookies": [
     {
@@ -19,7 +19,7 @@
       "value": "tz=Asia.Seoul&hl=ko&gl=KR",
       "domain": ".youtube.com",
       "path": "/",
-      "expires": 1806810547.927567,
+      "expires": 1806943224.740554,
       "httpOnly": false,
       "secure": true,
       "sameSite": "Lax"
@@ -29,14 +29,14 @@
       "value": "1",
       "domain": ".youtube.com",
       "path": "/",
-      "expires": 1772252059.024639,
+      "expires": 1772384747.81525,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "YSC",
-      "value": "U2sCGIweRV0",
+      "value": "uB3fIQyfOJY",
       "domain": ".youtube.com",
       "path": "/",
       "expires": -1,
@@ -46,40 +46,40 @@
     },
     {
       "name": "VISITOR_INFO1_LIVE",
-      "value": "XrFqQ93n6cU",
+      "value": "Ly638a0NOPA",
       "domain": ".youtube.com",
       "path": "/",
-      "expires": 1787802542.469243,
+      "expires": 1787935221.957603,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "VISITOR_PRIVACY_METADATA",
-      "value": "CgJLUhIEGgAgUQ%3D%3D",
+      "value": "CgJLUhIEGgAgSw%3D%3D",
       "domain": ".youtube.com",
       "path": "/",
-      "expires": 1787802542.469359,
+      "expires": 1787935221.957711,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "CONSISTENCY",
-      "value": "AAsGu9l2TgGP-QcNmY4Gf6n5TuwYQJ3AlafNM88g-_zzXfCVy0QI_t_qFBDBI3FW2ARsWLyhpRrzH1HsiQC7NAOkQYl5oq4oCNQci6hndjI9VJE2hn8R9mqWFLnqLglPISsOc_jjJRSbOrqx2xSl_6U",
+      "value": "AG2Tqf-MWEmFRAiaycNdNmursVjlefUlIb96FoaBdiz7cihkl5jKIOer1rD4-WqoTLYaMxB2lrrUnfe7lsweFZD4RpHUcrRzVttTMS0ggwIjOviDM7sFN4JSh3EhOdg_15Sc5yV0ho8Ix0smKDLfVSU",
       "domain": ".youtube.com",
       "path": "/",
-      "expires": 1772250899,
+      "expires": 1772383705,
       "httpOnly": false,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "IDE",
-      "value": "AHWqTUndWLnW8YZoI0H1uGbjx_vj3UCkqNGoYsMpCDVhr6AakSLJUgT6HCg-3zzI",
+      "value": "AHWqTUlua7voUyK-wk060hr3H2gf1nS_YC9ulg36Nd3qEb6JZdxy5ADVFipcEVJT",
       "domain": ".doubleclick.net",
       "path": "/",
-      "expires": 1806810373.60843,
+      "expires": 1806943150.185464,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"

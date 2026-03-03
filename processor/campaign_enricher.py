@@ -146,8 +146,7 @@ async def enrich_campaign_metadata(limit: int = 100, force: bool = False) -> dic
                     "naver_da": "naver DA",
                     "kakao_da": "kakao DA",
                     "google_gdn": "Google GDN",
-                    "facebook": "Facebook",
-                    "instagram": "Instagram",
+                    "meta": "Meta",
                     "youtube_ads": "YouTube",
                     "tiktok_ads": "TikTok",
                     "naver_shopping": "naver shopping",
@@ -160,8 +159,7 @@ async def enrich_campaign_metadata(limit: int = 100, force: bool = False) -> dic
                 c.objective = {
                     "naver_search": "traffic",
                     "naver_shopping": "conversion",
-                    "facebook": "engagement",
-                    "instagram": "engagement",
+                    "meta": "engagement",
                     "youtube_ads": "brand_awareness",
                 }.get(c.channel, "brand_awareness")
 

@@ -92,7 +92,7 @@ NETWORK_PARAMS: dict[str, dict] = {
         "cpm": 5_000,
         "daily_impressions": 800_000,
         "benchmark_key": "meta",
-        "channel_name": "facebook",
+        "channel_name": "meta",
     },
 }
 
