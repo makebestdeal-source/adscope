@@ -1,18 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-
-const API = "";  // Use relative path so Next.js rewrites proxy to backend
-
-function headers() {
-  const token = typeof window !== "undefined" ? localStorage.getItem("adscope_token") : null;
-  const fp = typeof window !== "undefined" ? localStorage.getItem("adscope_device_fp") : null;
-  return {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...(fp ? { "X-Device-Fingerprint": fp } : {}),
-  };
-}
+import { fetchApi } from "@/lib/api";
 
 // ── Platform type labels ──
 const PLATFORM_TYPE_LABELS: Record<string, string> = {
@@ -99,6 +88,7 @@ function PlatformManager() {
   const [loading, setLoading] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
+  const [debugError, setDebugError] = useState<string | null>(null);
 
   const fetchPlatforms = useCallback(async () => {
     setLoading(true);
@@ -106,18 +96,17 @@ function PlatformManager() {
     if (search) params.set("search", search);
     if (typeFilter) params.set("platform_type", typeFilter);
     try {
-      const res = await fetch(`${API}/api/master/platforms?${params}`, { headers: headers() });
-      const data = await res.json();
+      const data = await fetchApi(`/master/platforms?${params}`);
       setPlatforms(data.items || []);
       setTotal(data.total || 0);
-    } catch (e) { console.error(e); }
+      setDebugError(null);
+    } catch (e: any) { console.error(e); setDebugError(`platforms: ${e.message}`); }
     setLoading(false);
   }, [page, search, typeFilter]);
 
   const fetchTypes = useCallback(async () => {
     try {
-      const res = await fetch(`${API}/api/master/platforms/types`, { headers: headers() });
-      const data = await res.json();
+      const data = await fetchApi(`/master/platforms/types`);
       setTypeSummary(Array.isArray(data) ? data : []);
     } catch (e) { console.error(e); }
   }, []);
@@ -127,7 +116,7 @@ function PlatformManager() {
 
   const handleDelete = async (id: number, name: string) => {
     if (!confirm(`'${name}' 매체를 삭제하시겠습니까?`)) return;
-    await fetch(`${API}/api/master/platforms/${id}`, { method: "DELETE", headers: headers() });
+    await fetchApi(`/master/platforms/${id}`, { method: "DELETE" });
     fetchPlatforms();
     fetchTypes();
   };
@@ -149,6 +138,9 @@ function PlatformManager() {
           </div>
         ))}
       </div>
+
+      {/* Debug */}
+      {debugError && <div className="bg-red-900 text-red-200 p-3 rounded mb-4 text-sm">API Error: {debugError}</div>}
 
       {/* Search + Filter */}
       <div className="flex flex-wrap gap-3 mb-4">
@@ -264,9 +256,8 @@ function PlatformAddModal({ onClose, onSaved }: { onClose: () => void; onSaved: 
   const handleSave = async () => {
     if (!form.operator_name || !form.platform_name) return alert("운영사와 플랫폼명은 필수입니다.");
     setSaving(true);
-    await fetch(`${API}/api/master/platforms`, {
+    await fetchApi(`/master/platforms`, {
       method: "POST",
-      headers: headers(),
       body: JSON.stringify({
         ...form,
         billing_types: form.billing_types.split(",").map((s) => s.trim()).filter(Boolean),
@@ -361,8 +352,7 @@ function AdvertiserManager() {
     if (websiteFilter === "yes") params.set("has_website", "true");
     if (websiteFilter === "no") params.set("has_website", "false");
     try {
-      const res = await fetch(`${API}/api/master/advertisers?${params}`, { headers: headers() });
-      const data = await res.json();
+      const data = await fetchApi(`/master/advertisers?${params}`);
       setAdvertisers(data.items || []);
       setTotal(data.total || 0);
       if (data.industries) setIndustries(data.industries);
@@ -372,8 +362,8 @@ function AdvertiserManager() {
 
   const fetchStats = useCallback(async () => {
     try {
-      const res = await fetch(`${API}/api/master/advertisers/stats`, { headers: headers() });
-      setStats(await res.json());
+      const data = await fetchApi(`/master/advertisers/stats`);
+      setStats(data);
     } catch (e) { console.error(e); }
   }, []);
 
@@ -382,7 +372,7 @@ function AdvertiserManager() {
 
   const handleDelete = async (id: number, name: string) => {
     if (!confirm(`'${name}' 광고주를 삭제하시겠습니까? 관련 소재/캠페인도 삭제됩니다.`)) return;
-    await fetch(`${API}/api/master/advertisers/${id}`, { method: "DELETE", headers: headers() });
+    await fetchApi(`/master/advertisers/${id}`, { method: "DELETE" });
     fetchAdvertisers();
     fetchStats();
   };
@@ -548,8 +538,7 @@ function MediaMapView() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`${API}/api/master/platforms?page_size=200`, { headers: headers() });
-        const data = await res.json();
+        const data = await fetchApi(`/master/platforms?page_size=200`);
         setPlatforms(data.items || []);
       } catch (e) { console.error(e); }
       setLoading(false);
@@ -663,8 +652,7 @@ function AdvertiserMapView() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`${API}/api/master/advertisers?page_size=200`, { headers: headers() });
-        const data = await res.json();
+        const data = await fetchApi(`/master/advertisers?page_size=200`);
         setAdvertisers(data.items || []);
       } catch (e) { console.error(e); }
       setLoading(false);
@@ -774,9 +762,8 @@ function AdvertiserAddModal({ industries, onClose, onSaved }: { industries: {id:
   const handleSave = async () => {
     if (!form.name) return alert("광고주명은 필수입니다.");
     setSaving(true);
-    await fetch(`${API}/api/master/advertisers`, {
+    await fetchApi(`/master/advertisers`, {
       method: "POST",
-      headers: headers(),
       body: JSON.stringify({
         ...form,
         industry_id: form.industry_id ? parseInt(form.industry_id) : null,

@@ -7,7 +7,7 @@ COPY . .
 ARG API_URL=http://localhost:8000
 ENV API_URL=${API_URL}
 
-RUN npm run build
+RUN echo "rebuild-20260302" && npm run build
 
 FROM node:20-alpine AS runner
 WORKDIR /app
