@@ -1,6 +1,9 @@
 /** AdScope API 클라이언트 */
 
-const API_BASE = "/api";
+const API_BASE =
+  typeof window !== "undefined" && window.location.hostname === "adscope.kr"
+    ? "https://api.adscope.kr/api"
+    : "/api";
 
 export async function fetchApi<T = any>(path: string, init?: RequestInit): Promise<T> {
   const headers: Record<string, string> = {
