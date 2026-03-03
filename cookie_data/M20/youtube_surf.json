@@ -1,71 +1,9 @@
 {
   "persona_code": "M20",
   "channel": "youtube_surf",
-  "updated_at": "2026-02-28T04:07:12.521445+00:00",
+  "updated_at": "2026-03-01T16:40:55.128842+00:00",
   "cookie_count": 8,
   "cookies": [
-    {
-      "name": "PREF",
-      "value": "tz=Asia.Seoul&hl=ko&gl=KR",
-      "domain": ".youtube.com",
-      "path": "/",
-      "expires": 1806811613.249978,
-      "httpOnly": false,
-      "secure": true,
-      "sameSite": "Lax"
-    },
-    {
-      "name": "VISITOR_INFO1_LIVE",
-      "value": "noFr_pMBVg0",
-      "domain": ".youtube.com",
-      "path": "/",
-      "expires": 1787803610.745411,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
-    },
-    {
-      "name": "VISITOR_PRIVACY_METADATA",
-      "value": "CgJLUhIEGgAgbg%3D%3D",
-      "domain": ".youtube.com",
-      "path": "/",
-      "expires": 1787803610.745539,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
-    },
-    {
-      "name": "IDE",
-      "value": "AHWqTUnu4HmWUMxl_VYPBhVAj1B2Jmu2fDUi7z8P79UAWgpTCO8G7EeBK2RJZg8H_Ds",
-      "domain": ".doubleclick.net",
-      "path": "/",
-      "expires": 1806770276.759452,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
-    },
-    {
-      "name": "GPS",
-      "value": "1",
-      "domain": ".youtube.com",
-      "path": "/",
-      "expires": 1772252059.038859,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "Lax"
-    },
-    {
-      "name": "APC",
-      "value": "AfxxVi56na-9rOShHfi3P97ETGqTZx1WdhtDK6zUeqizm8Rw0lwV3A",
-      "domain": ".doubleclick.net",
-      "path": "/",
-      "expires": 1786781448.074907,
-      "httpOnly": false,
-      "secure": true,
-      "sameSite": "None",
-      "partitionKey": "https://youtube.com",
-      "_crHasCrossSiteAncestor": true
-    },
     {
       "name": "CONSENT",
       "value": "YES+cb.20260215-00-p0.kr+FX+999",
@@ -77,11 +15,73 @@
       "sameSite": "Lax"
     },
     {
+      "name": "PREF",
+      "value": "tz=Asia.Seoul&hl=ko&gl=KR",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1806943234.874485,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "GPS",
+      "value": "1",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1772384749.521614,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
       "name": "YSC",
-      "value": "lJk9pOe19Go",
+      "value": "rL9UjVWLxBM",
       "domain": ".youtube.com",
       "path": "/",
       "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "VISITOR_INFO1_LIVE",
+      "value": "OOr-JExfYsI",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1787935233.67267,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "VISITOR_PRIVACY_METADATA",
+      "value": "CgJLUhIEGgAgFg%3D%3D",
+      "domain": ".youtube.com",
+      "path": "/",
+      "expires": 1787935233.67274,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "APC",
+      "value": "AfxxVi5MtHNzjKqR55Q9YfTMfMEiHOgbu2sGwygpEiAsF_YriQtuIw",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1787934976.941643,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://youtube.com",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "IDE",
+      "value": "AHWqTUns8mSrTLjjaRz691tP69gxcWG9utdYyU2os3DqFa7hsEFCRjb7p72cZe5E",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1806943035.906984,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"

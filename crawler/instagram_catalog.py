@@ -26,7 +26,7 @@ _INSTAGRAM_LIBRARY_SEARCH_URL = (
 class InstagramCatalogCrawler(MetaLibraryCrawler):
     """Meta Ad Library crawler filtered to Instagram platform only."""
 
-    channel = "instagram"
+    channel = "meta"
 
     async def _search_ad_library(
         self, context, keyword: str, persona_code: str,

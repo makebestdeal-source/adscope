@@ -18,6 +18,25 @@ from processor.channel_utils import SEARCH_CHANNELS, normalize_channel_for_displ
 router = APIRouter(prefix="/api/ads", tags=["ads"],
     dependencies=[Depends(get_current_user)])
 
+_IMAGE_STORE_DIR = os.getenv("IMAGE_STORE_DIR", "stored_images")
+
+def _normalize_image_path(path: str) -> str | None:
+    """DB 경로를 정규화하고 실제 파일이 존재하면 정규화된 경로를 반환, 없으면 None."""
+    if not path:
+        return None
+    # Windows 백슬래시 → 슬래시
+    p = path.replace("\\", "/")
+    # 로컬 직접 경로 체크
+    if os.path.exists(p):
+        return p
+    # stored_images/ 접두사: IMAGE_STORE_DIR 기준으로 resolve
+    if p.startswith("stored_images/"):
+        resolved = os.path.join(_IMAGE_STORE_DIR, p[len("stored_images/"):])
+        if os.path.exists(resolved):
+            return p  # 프론트에는 stored_images/... 형식으로 반환
+    # screenshots/ 는 서버에 없을 수 있으므로 None
+    return None
+
 
 @router.get("/snapshots", response_model=list[AdSnapshotOut])
 async def list_snapshots(
@@ -296,10 +315,7 @@ async def ad_gallery(
 
         result = await db.execute(query)
         for row in result.all():
-            img_path = row[4]
-            # 이미지 파일 존재 검증 -- 깨진 경로 방지
-            if img_path and not os.path.exists(img_path):
-                img_path = None
+            img_path = _normalize_image_path(row[4])
             extra = row[9] or {}
             landing = extra.get("landing_analysis") if isinstance(extra, dict) else None
             ch = row[7]
@@ -363,10 +379,7 @@ async def ad_gallery(
         result = await db.execute(sq)
         for row in result.all():
             extra = row[5] or {}
-            local_path = extra.get("local_image_path")
-            # 이미지 파일 존재 검증 -- 깨진 경로 방지
-            if local_path and not os.path.exists(local_path):
-                local_path = None
+            local_path = _normalize_image_path(extra.get("local_image_path"))
             upload_dt = row[12]  # BrandChannelContent.upload_date
             discovered_dt = row[7]  # BrandChannelContent.discovered_at
             # Use upload_date (original publish date) as captured_at; fall back to discovered_at

@@ -435,8 +435,7 @@ async def _load_stealth_contact_multipliers(
         "naver_search": 1.0,
         "naver_shopping": 1.0,
         "kakao_da": 1.1,
-        "facebook": 1.1,
-        "instagram": 1.1,
+        "meta": 1.1,
         "google_search_ads": 1.05,  # 검색광고 기본 보정
         "tiktok_ads": 1.1,
     }
@@ -637,11 +636,9 @@ async def _upsert_campaigns_and_spend(
                 total_estimate_rows += 1
                 campaign_total += est_daily_spend
 
-            # Campaign.total_est_spend: 30일 투영 추정 매체비 (KRW)
-            # 관측일 기반 일평균을 구하여 30일로 투영
-            observed_days = max(1, len(agg.by_day))
-            avg_daily = campaign_total / observed_days if observed_days > 0 else 0
-            campaign.total_est_spend = round(avg_daily * 30, 2)
+            # Campaign.total_est_spend: 관측 기간 내 실제 추정 매체비 합계 (KRW)
+            # 30일 투영 제거 — 실제 수집된 일별 추정치의 단순 합산
+            campaign.total_est_spend = round(campaign_total, 2)
 
         await session.commit()
         return len(touched_campaigns), total_estimate_rows

@@ -27,7 +27,7 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv(Path(_root) / ".env")
 
 # -- Default 6 channels --
-_DEFAULT_CHANNELS = "naver_search,naver_da,kakao_da,google_gdn,youtube_ads,facebook,instagram,naver_shopping"
+_DEFAULT_CHANNELS = "naver_search,naver_da,kakao_da,google_gdn,youtube_ads,meta,naver_shopping"
 os.environ.setdefault("CRAWL_CHANNELS", _DEFAULT_CHANNELS)
 
 from loguru import logger  # noqa: E402

@@ -107,17 +107,11 @@ REAL_EXECUTION_BENCHMARKS = {
 # For FB/IG/YT catalog (ad library scraping, no contact frequency)
 # Base daily spend estimates by creative format and active status
 CATALOG_BASE_DAILY = {
-    "facebook": {
-        "image": 150_000,     # 이미지 소재 하루 15만원
-        "video": 300_000,     # 동영상 소재 하루 30만원
-        "carousel": 200_000,  # 캐러셀 하루 20만원
-        "default": 100_000,   # 기본 하루 10만원
-    },
-    "instagram": {
-        "image": 120_000,
-        "video": 250_000,
-        "carousel": 180_000,
-        "default": 80_000,
+    "meta": {
+        "image": 135_000,     # 메타 이미지 소재 하루 13.5만원 (FB+IG 평균)
+        "video": 275_000,     # 메타 동영상 소재 하루 27.5만원
+        "carousel": 190_000,  # 메타 캐러셀 하루 19만원
+        "default": 90_000,    # 메타 기본 하루 9만원
     },
     "youtube_ads": {
         "video": 500_000,     # 유튜브 동영상 하루 50만원
@@ -243,7 +237,7 @@ def estimate_catalog_daily_spend(
 
     Uses creative count, format, and active duration as proxy signals.
     """
-    channel_pricing = CATALOG_BASE_DAILY.get(channel, CATALOG_BASE_DAILY.get("facebook", {}))
+    channel_pricing = CATALOG_BASE_DAILY.get(channel, CATALOG_BASE_DAILY.get("meta", {}))
     base_daily = channel_pricing.get(creative_format, channel_pricing.get("default", 100_000))
 
     # Creative count multiplier

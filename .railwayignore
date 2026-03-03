@@ -1,4 +1,4 @@
-frontend/
+# frontend/ -- 프론트엔드 배포시 제외하면 안됨
 .next/
 node_modules/
 __pycache__/

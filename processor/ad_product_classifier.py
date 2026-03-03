@@ -127,8 +127,8 @@ def _classify_product_name(channel: str, ad_type: str, extra: dict, placement: s
             return "범퍼광고"
         return "트루뷰 인스트림"
 
-    # ── 메타 (Facebook/Instagram) ──
-    if channel in ("meta", "facebook", "meta_library", "instagram", "instagram_catalog"):
+    # ── 메타 (Facebook/Instagram 통합) ──
+    if channel in ("meta", "meta_library"):
         platforms = extra.get("platforms") or extra.get("publisher_platforms") or []
         is_ig = "instagram" in str(platforms).lower() or "instagram" in channel
         # format detection

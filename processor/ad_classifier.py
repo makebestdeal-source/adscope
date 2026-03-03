@@ -33,9 +33,7 @@ AD_MARKERS: dict[str, list[str]] = {
     ],
     "meta": [
         "Sponsored", "광고", "paid partnership", "Paid",
-    ],
-    "instagram": [
-        "Sponsored", "스폰서", "광고", "paid partnership",
+        "스폰서",
     ],
     "youtube": [
         "광고", "Sponsored", "ad-showing", "video-ads",
@@ -352,12 +350,12 @@ def classify_position_zone(
         # GDN은 대부분 콘텐츠 중간/하단
         return "middle"
 
-    # ── 페이스북 ──
-    if channel == "facebook":
-        placement = (ad_placement or "").lower()
-        if "stories" in placement:
+    # ── 메타 (Facebook/Instagram 통합) ──
+    if channel == "meta":
+        combined = ((ad_placement or "") + " " + (ad_type or "")).lower()
+        if "stories" in combined or "story" in combined:
             return "top"
-        if "reels" in placement:
+        if "reels" in combined:
             return "middle"
         return "middle"  # 피드 기본
 
@@ -368,15 +366,6 @@ def classify_position_zone(
             return "top"
         if "promoted" in ad_t:
             return "top"
-        return "middle"
-
-    # ── 인스타그램 ──
-    if channel == "instagram":
-        combined = ((ad_placement or "") + " " + (ad_type or "")).lower()
-        if "stories" in combined:
-            return "top"
-        if "reels" in combined:
-            return "middle"
         return "middle"
 
     # ── 구글 검색 ──

@@ -36,7 +36,7 @@ async def backfill():
         WHERE (d.creative_image_path IS NULL OR d.creative_image_path = '')
           AND d.extra_data IS NOT NULL
           AND d.extra_data != ''
-          AND s.channel IN ('facebook', 'instagram', 'naver_da', 'kakao_da', 'youtube_ads', 'google_search_ads', 'naver_search', 'naver_shopping', 'tiktok_ads', 'google_gdn')
+          AND s.channel IN ('meta', 'naver_da', 'kakao_da', 'youtube_ads', 'google_search_ads', 'naver_search', 'naver_shopping', 'tiktok_ads', 'google_gdn')
     """).fetchall()
 
     print(f"Found {len(rows)} ads with missing images and extra_data")
