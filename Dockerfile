@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Cache bust: change this value to force COPY . . to re-run with fresh adscope.db
+RUN echo "FORCE_FRESH_BUILD_20260320_V9"
+
 # Copy source code (includes adscope.db)
 COPY . .
 
