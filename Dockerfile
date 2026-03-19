@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy source code (includes adscope.db)
 COPY . .
 
-# Verify DB record count
-RUN python -c "import sqlite3; c=sqlite3.connect('/app/adscope.db'); print('ad_details:', c.execute('SELECT COUNT(*) FROM ad_details').fetchone()[0])"
+# Verify DB record count (MUST show ~32000+ records or build has wrong DB)
+RUN ls -lah /app/adscope.db && python -c "import sqlite3; c=sqlite3.connect('/app/adscope.db'); print('DB ad_details count:', c.execute('SELECT COUNT(*) FROM ad_details').fetchone()[0])"
 
 # Supervisord config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
