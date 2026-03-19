@@ -24,8 +24,8 @@ node_modules/
 .env
 .env.local
 
-# Database (will use volume)
-adscope.db
+# Database (bundled in image, updated each deploy)
+# adscope.db
 
 # Large files
 cloudflared.exe
@@ -37,7 +37,7 @@ nul
 
 # Docker
 docker-compose.yml
-Dockerfile
+# Dockerfile  -- must NOT exclude, or Railway may use stale cached version
 
 # Docs
 *.md
