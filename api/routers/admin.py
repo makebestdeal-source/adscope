@@ -1064,3 +1064,103 @@ def _parse_bool(value: str | None) -> bool | None:
     if v in ("false", "0", "no", "n"):
         return False
     return None
+
+
+@router.post("/upload-db")
+async def upload_db(
+    file: UploadFile = File(...),
+    _admin: User = Depends(require_admin),
+):
+    """Upload a new SQLite DB file to replace the current one.
+
+    Streams the upload to avoid memory issues with large files.
+    Creates a .bak backup of the existing DB before replacing.
+    """
+    import shutil
+    from database import DATABASE_URL
+
+    # Extract file path from DATABASE_URL
+    # sqlite+aiosqlite:///adscope.db -> adscope.db (relative)
+    # sqlite+aiosqlite:////data/adscope.db -> /data/adscope.db (absolute)
+    url_path = DATABASE_URL.split("///", 1)[-1]
+    if not url_path:
+        raise HTTPException(500, "Cannot determine DB path from DATABASE_URL")
+
+    db_path = os.path.abspath(url_path)
+    bak_path = db_path + ".bak"
+
+    # Backup existing DB
+    if os.path.exists(db_path):
+        shutil.copy2(db_path, bak_path)
+        logger.info("Backed up %s -> %s", db_path, bak_path)
+
+    # Stream upload to temp file, then rename
+    tmp_path = db_path + ".upload_tmp"
+    total_bytes = 0
+    try:
+        with open(tmp_path, "wb") as f:
+            while chunk := await file.read(1024 * 1024):  # 1MB chunks
+                f.write(chunk)
+                total_bytes += len(chunk)
+
+        # Validate it's a valid SQLite file
+        import sqlite3
+        conn = sqlite3.connect(tmp_path)
+        try:
+            row = conn.execute("SELECT COUNT(*) FROM ad_details").fetchone()
+            ad_count = row[0] if row else 0
+        except Exception as e:
+            conn.close()
+            os.remove(tmp_path)
+            raise HTTPException(400, f"Invalid DB file: {e}")
+        conn.close()
+
+        # Replace
+        shutil.move(tmp_path, db_path)
+        logger.info("DB replaced: %s (%.1f MB, %d ads)", db_path, total_bytes / 1e6, ad_count)
+
+        return {
+            "status": "ok",
+            "db_path": db_path,
+            "size_mb": round(total_bytes / 1e6, 1),
+            "ad_count": ad_count,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+        raise HTTPException(500, f"Upload failed: {e}")
+
+
+@router.post("/cleanup-no-website")
+async def cleanup_no_website(
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(require_admin),
+):
+    """Delete advertisers without website and their ad_details + orphans."""
+    r1 = await db.execute(text(
+        "DELETE FROM ad_details WHERE advertiser_id IN "
+        "(SELECT id FROM advertisers WHERE website IS NULL OR website = '')"
+    ))
+    ads_del = r1.rowcount
+    r2 = await db.execute(text(
+        "DELETE FROM advertisers WHERE website IS NULL OR website = ''"
+    ))
+    adv_del = r2.rowcount
+    r3 = await db.execute(text(
+        "DELETE FROM ad_details WHERE advertiser_id IS NULL"
+    ))
+    orphan_del = r3.rowcount
+    await db.commit()
+    r4 = await db.execute(text("SELECT COUNT(*) FROM advertisers"))
+    remaining_adv = r4.scalar()
+    r5 = await db.execute(text("SELECT COUNT(*) FROM ad_details"))
+    remaining_ads = r5.scalar()
+    return {
+        "deleted_ads": ads_del,
+        "deleted_advertisers": adv_del,
+        "deleted_orphans": orphan_del,
+        "remaining_advertisers": remaining_adv,
+        "remaining_ads": remaining_ads,
+    }

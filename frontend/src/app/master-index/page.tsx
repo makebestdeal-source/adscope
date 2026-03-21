@@ -25,10 +25,20 @@ export default function MasterIndexPage() {
   const [tab, setTab] = useState<"platforms" | "advertisers" | "media-map" | "advertiser-map">("platforms");
 
   return (
-    <div className="p-6 max-w-[1400px] mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white mb-1">마스터 인덱스 관리</h1>
-        <p className="text-sm text-slate-400">광고 매체 및 광고주 마스터 데이터베이스</p>
+    <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
+      {/* Header */}
+      <div className="mb-8 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-500 to-gray-700 flex items-center justify-center shadow-lg shadow-gray-200/50">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+            <ellipse cx="12" cy="5" rx="9" ry="3" />
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+          </svg>
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">마스터 인덱스 관리</h1>
+          <p className="text-sm text-gray-500">광고 매체 및 광고주 마스터 데이터베이스</p>
+        </div>
       </div>
 
       {/* Tab Navigation */}

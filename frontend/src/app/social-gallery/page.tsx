@@ -89,17 +89,17 @@ function SocialGalleryContent() {
   return (
     <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
       {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-5 h-5">
-              <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">소셜 소재</h1>
-            <p className="text-sm text-gray-500">광고주 공식 채널 YouTube, Meta(Facebook/Instagram) 콘텐츠</p>
-          </div>
+      <div className="mb-8 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg shadow-pink-200/50">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
+          </svg>
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">소셜 소재</h1>
+          <p className="text-sm text-gray-500">광고주 공식 채널 YouTube, Meta(Facebook/Instagram) 콘텐츠</p>
         </div>
       </div>
 

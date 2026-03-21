@@ -130,17 +130,27 @@ export default function MarketingSchedulePage() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Marketing Plan</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            광고주별 상품/서비스 광고 스케줄 추적
-          </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-200/50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Marketing Plan</h1>
+            <p className="text-sm text-gray-500">광고주별 상품/서비스 광고 스케줄 추적</p>
+          </div>
         </div>
         <PeriodSelector days={days} onDaysChange={setDays} />
       </div>
+
+      <div className="space-y-6">
 
       {/* Search + Tabs */}
       <div className="flex items-center gap-4">
@@ -226,6 +236,7 @@ export default function MarketingSchedulePage() {
       {tab === "detection" && (
         <DetectionTab detections={detections || []} />
       )}
+      </div>
     </div>
   );
 }

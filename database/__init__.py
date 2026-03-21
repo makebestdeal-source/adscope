@@ -34,6 +34,22 @@ async def get_db() -> AsyncSession:
 
 async def init_db():
     """Create base tables and apply lightweight compatibility migrations."""
+    # Railway: remove leftover WAL/SHM before opening DB.
+    # Safe because engine.dispose() in lifespan shutdown checkpoints WAL first.
+    # Prevents "database disk image is malformed" after DB file replacement.
+    _db_path = DATABASE_URL.split("///", 1)[-1]
+    if _db_path:
+        import pathlib
+        _dbf = pathlib.Path(_db_path).resolve()
+        if _dbf.exists():
+            for _sfx in ("-shm", "-wal"):
+                _wf = _dbf.parent / (_dbf.name + _sfx)
+                if _wf.exists():
+                    try:
+                        _wf.unlink()
+                    except OSError:
+                        pass
+
     async with engine.begin() as conn:
         # SQLite performance pragmas
         await conn.exec_driver_sql("PRAGMA journal_mode=WAL")

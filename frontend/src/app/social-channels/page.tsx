@@ -233,9 +233,21 @@ export default function SocialChannelsPage() {
   return (
     <PlanGate>
       <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">소셜 채널 분석</h1>
-          <p className="text-sm text-gray-500 mt-1">소셜 채널 랭킹 및 브랜드 채널 모니터링</p>
+        {/* Header */}
+        <div className="mb-8 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-200/50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">소셜 채널 분석</h1>
+            <p className="text-sm text-gray-500">소셜 채널 랭킹 및 브랜드 채널 모니터링</p>
+          </div>
         </div>
         <div className="flex gap-1 bg-gray-100 rounded-lg p-1 mb-6 w-fit">
           {([

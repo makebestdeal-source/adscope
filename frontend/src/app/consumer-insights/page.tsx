@@ -81,14 +81,27 @@ export default function ConsumerInsightsPage() {
   });
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">소비자 인사이트</h1>
-          <p className="text-sm text-gray-500 mt-1">광고 카피 트렌드, 프로모션 유형, 효과적인 메시지를 분석합니다</p>
+    <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
+      {/* Header */}
+      <div className="mb-8 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-700 flex items-center justify-center shadow-lg shadow-cyan-200/50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">소비자 인사이트</h1>
+            <p className="text-sm text-gray-500">광고 카피 트렌드, 프로모션 유형, 효과적인 메시지를 분석합니다</p>
+          </div>
         </div>
         <PeriodSelector days={days} onDaysChange={setDays} />
       </div>
+
+      <div className="space-y-6">
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -279,6 +292,7 @@ export default function ConsumerInsightsPage() {
           )}
         </>
       )}
+      </div>
     </div>
   );
 }

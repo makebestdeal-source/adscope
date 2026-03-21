@@ -105,27 +105,7 @@ export function Dashboard() {
       />
 
       {/* KPI cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <KpiCard
-          title="실접촉 광고"
-          value={stats?.total_contacts ?? 0}
-          subtitle={
-            latestCrawlAt
-              ? `최근: ${formatKSTShort(latestCrawlAt)}`
-              : stats?.date
-                ? `${stats.date} 기준`
-                : undefined
-          }
-          loading={statsLoading}
-          accent="border-l-adscope-500"
-        />
-        <KpiCard
-          title="카탈로그"
-          value={stats?.total_catalog ?? 0}
-          subtitle="투명성 센터/광고 라이브러리"
-          loading={statsLoading}
-          accent="border-l-indigo-400"
-        />
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <KpiCard
           title="전체 광고"
           value={stats?.total_ads ?? 0}
@@ -219,58 +199,6 @@ export function Dashboard() {
             <EmptyState text="수집된 채널 데이터가 없습니다" />
           )}
         </div>
-      </div>
-
-      {/* Contact vs Catalog breakdown */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm card-hover">
-        <h2 className="text-base font-semibold text-gray-900 mb-5">
-          접촉 채널별 광고 수집 현황
-        </h2>
-        {stats?.contact_channels && Object.keys(stats.contact_channels).length > 0 ? (
-          <div className="space-y-4">
-            {Object.entries(stats.contact_channels)
-              .sort(([, a], [, b]) => b - a)
-              .map(([channel, count]) => {
-                const vals = Object.values(stats.contact_channels); const max = vals.length > 0 ? Math.max(...vals) : 1;
-                const pct = max > 0 ? (count / max) * 100 : 0;
-                return (
-                  <div key={channel}>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-sm text-gray-700 font-medium">
-                        {formatChannelLabel(channel)}
-                      </span>
-                      <span className="text-sm font-semibold text-gray-900">
-                        {count.toLocaleString()}건
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-100 rounded-full h-3">
-                      <div
-                        className={`h-3 rounded-full transition-all ${CHANNEL_COLORS[channel] ?? "bg-adscope-500"}`}
-                        style={{ width: `${Math.min(100, pct)}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
-              <span className="text-xs text-gray-500">접촉 광고 합계</span>
-              <span className="text-sm font-bold text-adscope-600">
-                {Object.values(stats.contact_channels).reduce((a, b) => a + b, 0).toLocaleString()}건
-              </span>
-            </div>
-          </div>
-        ) : statsLoading ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i}>
-                <div className="skeleton h-4 w-24 mb-2" />
-                <div className="skeleton h-3 w-full" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <EmptyState text="접촉 광고 데이터가 없습니다" />
-        )}
       </div>
 
       {/* Spend Chart */}

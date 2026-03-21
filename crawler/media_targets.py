@@ -102,6 +102,9 @@ MEDIA_TARGETS: list[MediaTarget] = [
     MediaTarget("kakao_da", "ZigZag", "https://zigzag.kr/", "extended", 14),
     MediaTarget("kakao_da", "Ohou Projects", "https://ohou.se/projects", "extended", 15),
     MediaTarget("kakao_da", "Ohou Store", "https://ohou.se/store", "extended", 16),
+    MediaTarget("kakao_da", "Daum Auto", "https://auto.daum.net/", "extended", 17),
+    MediaTarget("kakao_da", "KakaoTV", "https://tv.kakao.com/", "extended", 18),
+    MediaTarget("kakao_da", "Daum Dictionary", "https://dic.daum.net/", "extended", 19),
 ]
 
 

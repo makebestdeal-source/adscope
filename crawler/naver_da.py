@@ -27,20 +27,42 @@ from crawler.personas.profiles import PersonaProfile
 
 NAVER_DA_PLACEMENTS: dict[str, list[dict]] = {
     "pc": [
-        {
-            "name": "main",
-            "label": "PC메인",
-            "url": "https://www.naver.com/",
-            "description": "PC 메인 — GFP 네트워크 캡처로 DA 수집",
-        },
+        {"name": "main", "label": "PC메인", "url": "https://www.naver.com/"},
+        {"name": "news", "label": "뉴스", "url": "https://news.naver.com/"},
+        {"name": "sports", "label": "스포츠", "url": "https://sports.naver.com/"},
+        {"name": "entertainment", "label": "연예", "url": "https://entertain.naver.com/"},
+        {"name": "finance", "label": "금융", "url": "https://finance.naver.com/"},
+        {"name": "shopping", "label": "쇼핑", "url": "https://shopping.naver.com/"},
+        {"name": "realestate", "label": "부동산", "url": "https://land.naver.com/"},
+        {"name": "auto", "label": "자동차", "url": "https://auto.naver.com/"},
+        {"name": "living", "label": "리빙", "url": "https://section.blog.naver.com/ThemePost.naver"},
+        {"name": "movie", "label": "영화", "url": "https://movie.naver.com/"},
+        {"name": "series", "label": "시리즈", "url": "https://series.naver.com/"},
+        {"name": "webtoon", "label": "웹툰", "url": "https://comic.naver.com/"},
+        {"name": "cafe", "label": "카페", "url": "https://section.cafe.naver.com/"},
+        {"name": "kin", "label": "지식iN", "url": "https://kin.naver.com/"},
+        {"name": "tv", "label": "TV", "url": "https://tv.naver.com/"},
+        {"name": "chzzk", "label": "치지직", "url": "https://chzzk.naver.com/"},
+        {"name": "weather", "label": "날씨", "url": "https://weather.naver.com/"},
+        {"name": "blog", "label": "블로그", "url": "https://section.blog.naver.com/"},
     ],
     "mobile": [
-        {
-            "name": "main",
-            "label": "모바일메인",
-            "url": "https://m.naver.com/",
-            "description": "모바일 메인 — GFP 네트워크 캡처로 DA 수집",
-        },
+        {"name": "main", "label": "모바일메인", "url": "https://m.naver.com/"},
+        {"name": "news", "label": "모바일뉴스", "url": "https://m.news.naver.com/"},
+        {"name": "sports", "label": "모바일스포츠", "url": "https://m.sports.naver.com/"},
+        {"name": "entertainment", "label": "모바일연예", "url": "https://m.entertain.naver.com/"},
+        {"name": "finance", "label": "모바일금융", "url": "https://m.stock.naver.com/"},
+        {"name": "shopping", "label": "모바일쇼핑", "url": "https://mshopping.naver.com/"},
+        {"name": "realestate", "label": "모바일부동산", "url": "https://m.land.naver.com/"},
+        {"name": "auto", "label": "모바일자동차", "url": "https://m.auto.naver.com/"},
+        {"name": "movie", "label": "모바일영화", "url": "https://m.movie.naver.com/"},
+        {"name": "webtoon", "label": "모바일웹툰", "url": "https://m.comic.naver.com/"},
+        {"name": "cafe", "label": "모바일카페", "url": "https://m.cafe.naver.com/"},
+        {"name": "kin", "label": "모바일지식iN", "url": "https://m.kin.naver.com/"},
+        {"name": "tv", "label": "모바일TV", "url": "https://m.tv.naver.com/"},
+        {"name": "chzzk", "label": "모바일치지직", "url": "https://m.chzzk.naver.com/"},
+        {"name": "weather", "label": "모바일날씨", "url": "https://m.weather.naver.com/"},
+        {"name": "blog", "label": "모바일블로그", "url": "https://m.blog.naver.com/"},
     ],
 }
 
@@ -131,8 +153,11 @@ class NaverDACrawler(BaseCrawler):
 
             page.on('response', _on_naver_ad_response)
 
-            # URL 방문 (PC/모바일 메인)
-            main_url = placements[0]["url"] if placements else "https://www.naver.com/"
+            # keyword에 해당하는 지면 URL 선택 (없으면 첫 번째 지면)
+            main_url = next(
+                (p["url"] for p in placements if p["name"] == keyword),
+                placements[0]["url"] if placements else "https://www.naver.com/",
+            )
             await page.goto(main_url, wait_until="domcontentloaded")
             await page.wait_for_timeout(3000)
 

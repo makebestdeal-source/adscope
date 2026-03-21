@@ -36,17 +36,27 @@ export default function AdvertiserTrendsPage() {
   });
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">광고주 트렌드</h1>
-          <p className="text-sm text-gray-500 mt-1">광고주 활동 변화와 시장 동향을 한눈에 확인합니다</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-200/50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">광고주 트렌드</h1>
+            <p className="text-sm text-gray-500">광고주 활동 변화와 시장 동향을 한눈에 확인합니다</p>
+          </div>
         </div>
         <PeriodSelector days={days} onDaysChange={setDays} />
       </div>
 
+      <div className="space-y-6">
+
       {isLoading ? <LoadingSkeleton /> : data ? <TrendContent data={data} /> : null}
+      </div>
     </div>
   );
 }

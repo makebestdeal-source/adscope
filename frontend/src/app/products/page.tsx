@@ -312,45 +312,54 @@ export default function ProductsPage() {
   return (
     <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-2 mb-1">
-          {selectedCategoryId && (
-            <button
-              onClick={() => setSelectedCategoryId(null)}
-              className="text-adscope-600 hover:text-adscope-800 transition-colors"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="w-5 h-5"
-              >
-                <path
-                  d="M15 18l-6-6 6-6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          )}
-          <h1 className="text-2xl font-bold text-gray-900">
-            {selectedCategoryId
-              ? parentOfSub
-                ? `${parentOfSub.name} > ${
-                    parentOfSub.children.find(
-                      (c) => c.id === selectedCategoryId
-                    )?.name || ""
-                  }`
-                : selectedCategory?.name || ""
-              : "제품/서비스 분석"}
-          </h1>
+      <div className="mb-8 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-lg shadow-indigo-200/50">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" y1="22.08" x2="12" y2="12" />
+          </svg>
         </div>
-        <p className="text-sm text-gray-500 mt-1">
-          {selectedCategoryId
-            ? "카테고리별 광고주 랭킹 및 광고비 분석"
-            : "제품/서비스 카테고리별 광고 현황"}
-        </p>
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            {selectedCategoryId && (
+              <button
+                onClick={() => setSelectedCategoryId(null)}
+                className="text-adscope-600 hover:text-adscope-800 transition-colors"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="w-5 h-5"
+                >
+                  <path
+                    d="M15 18l-6-6 6-6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            )}
+            <h1 className="text-2xl font-bold text-gray-900">
+              {selectedCategoryId
+                ? parentOfSub
+                  ? `${parentOfSub.name} > ${
+                      parentOfSub.children.find(
+                        (c) => c.id === selectedCategoryId
+                      )?.name || ""
+                    }`
+                  : selectedCategory?.name || ""
+                : "제품/서비스 분석"}
+            </h1>
+          </div>
+          <p className="text-sm text-gray-500">
+            {selectedCategoryId
+              ? "카테고리별 광고주 랭킹 및 광고비 분석"
+              : "제품/서비스 카테고리별 광고 현황"}
+          </p>
+        </div>
       </div>
 
       {/* Stats */}

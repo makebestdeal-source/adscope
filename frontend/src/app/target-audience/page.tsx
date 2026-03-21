@@ -84,11 +84,21 @@ export default function TargetAudiencePage() {
   })();
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">타겟 오디언스</h1>
-          <p className="text-sm text-gray-500 mt-1">누구에게, 어떤 채널에서 광고를 보여줘야 효과적인지 분석합니다</p>
+    <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
+      {/* Header */}
+      <div className="mb-8 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-200/50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+              <circle cx="12" cy="12" r="10" />
+              <circle cx="12" cy="12" r="6" />
+              <circle cx="12" cy="12" r="2" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">타겟 오디언스</h1>
+            <p className="text-sm text-gray-500">누구에게, 어떤 채널에서 광고를 보여줘야 효과적인지 분석합니다</p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -124,6 +134,8 @@ export default function TargetAudiencePage() {
           <PeriodSelector days={days} onDaysChange={setDays} />
         </div>
       </div>
+
+      <div className="space-y-6">
 
       {/* Recommendation Cards */}
       {recommendation?.recommendations?.length > 0 && (
@@ -281,6 +293,7 @@ export default function TargetAudiencePage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

@@ -65,15 +65,24 @@ export default function BuzzDashboardPage() {
   });
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">브랜드 버즈</h1>
-          <p className="text-sm text-gray-500 mt-1">시장에서 브랜드에 대해 무슨 이야기가 나오고 있는지 한눈에 파악합니다</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-200/50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">브랜드 버즈</h1>
+            <p className="text-sm text-gray-500">시장에서 브랜드에 대해 무슨 이야기가 나오고 있는지 한눈에 파악합니다</p>
+          </div>
         </div>
         <PeriodSelector days={days} onDaysChange={setDays} />
       </div>
+
+      <div className="space-y-6">
 
       {loadingOverview ? (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -274,6 +283,7 @@ export default function BuzzDashboardPage() {
           </div>
         </>
       ) : null}
+      </div>
     </div>
   );
 }

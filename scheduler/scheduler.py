@@ -159,14 +159,14 @@ class AdScopeScheduler:
         self.crawl_channels = _parse_channels(os.getenv("CRAWL_CHANNELS", "naver_search"))
         self.non_keyword_channel_min_interval_minutes = _env_int(
             "NON_KEYWORD_CHANNEL_MIN_INTERVAL_MINUTES",
-            default=240,
+            default=120,  # 240→120 (2배 빈도)
             minimum=0,
         )
         self.channel_min_intervals = _parse_channel_int_map(
             os.getenv("CRAWL_CHANNEL_MIN_INTERVALS"),
             minimum=0,
         )
-        # 검색/카탈로그 광고는 연령 타겟팅 없음 → 페르소나별 반복 불필요 (120분 간격)
+        # 검색/카탈로그 광고는 연령 타겟팅 없음 → 페르소나별 반복 불필요 (60분 간격, 2배 빈도)
         _no_persona_channels = [
             "naver_search",       # 키워드 입찰, 연령 무관
             "google_search_ads",  # 투명성센터 카탈로그
@@ -177,7 +177,7 @@ class AdScopeScheduler:
         ]
         for ch in _no_persona_channels:
             if ch not in self.channel_min_intervals:
-                self.channel_min_intervals[ch] = 120
+                self.channel_min_intervals[ch] = 60  # 120→60 (2배 빈도)
         self.channel_keyword_limits = _parse_channel_int_map(
             os.getenv("CRAWL_CHANNEL_KEYWORD_LIMITS"),
             minimum=0,

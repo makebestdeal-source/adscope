@@ -109,13 +109,21 @@ export default function CampaignEffectPage() {
   ] : [];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
+      {/* Header */}
+      <div className="mb-8 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center shadow-lg shadow-teal-200/50">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+            <path d="M18 20V10M12 20V4M6 20v-6" />
+          </svg>
+        </div>
         <div>
-          <h1 className="text-2xl font-bold text-white">캠페인 효과</h1>
-          <p className="text-slate-400 text-sm mt-1">캠페인 전후 리프트 분석 및 효과 비교</p>
+          <h1 className="text-2xl font-bold text-gray-900">캠페인 효과</h1>
+          <p className="text-sm text-gray-500">캠페인 전후 리프트 분석 및 효과 비교</p>
         </div>
       </div>
+
+      <div className="space-y-6">
 
       {/* Campaign Selector */}
       <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
@@ -339,6 +347,7 @@ export default function CampaignEffectPage() {
           )}
         </>
       )}
+      </div>
     </div>
   );
 }

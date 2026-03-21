@@ -44,10 +44,19 @@ export default function ShoppingInsightPage() {
   return (
     <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">쇼핑인사이트</h1>
-          <p className="text-sm text-gray-500 mt-1">카테고리별 광고 트렌드 + 스마트스토어 매출 추정</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-200/50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">쇼핑인사이트</h1>
+            <p className="text-sm text-gray-500">카테고리별 광고 트렌드 + 스마트스토어 매출 추정</p>
+          </div>
         </div>
         <select value={days} onChange={(e) => setDays(Number(e.target.value))} className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white">
           <option value={7}>7일</option>
