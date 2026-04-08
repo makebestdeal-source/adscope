@@ -4,42 +4,59 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
-import { getUser, logout, AuthUser } from "@/lib/auth";
+import { useTheme } from "next-themes";
+import { getUser, logout, AuthUser, isInTrial } from "@/lib/auth";
 
-type NavItem = { href: string; label: string; icon: string; beta?: boolean; soon?: boolean; adminOnly?: boolean };
-type NavGroup = { title: string; items: NavItem[] };
+type NavItem = { href: string; label: string; icon: string; beta?: boolean; soon?: boolean; adminOnly?: boolean; public?: boolean };
+type NavGroup = { title: string; items: NavItem[]; public?: boolean };
 
 const NAV_GROUPS: NavGroup[] = [
   {
     title: "",
     items: [
+      { href: "/reports", label: "보고서", icon: "report" },
       { href: "/advertisers/favorites", label: "나의 광고주", icon: "star" },
       { href: "/", label: "대시보드", icon: "dashboard" },
+      { href: "/advertisers", label: "광고주", icon: "advertisers" },
+      { href: "/campaigns", label: "캠페인", icon: "campaign" },
       { href: "/gallery", label: "광고 소재", icon: "gallery" },
       { href: "/social-gallery", label: "소셜 소재", icon: "social" },
-      { href: "/advertisers", label: "광고주 리포트", icon: "advertisers" },
-      { href: "/campaigns", label: "캠페인", icon: "campaign" },
-      { href: "/spend", label: "광고비 분석", icon: "spend" },
+      { href: "/spend", label: "매체별 광고비", icon: "spend" },
+    ],
+  },
+  {
+    title: "키워드 분석",
+    items: [
+      { href: "/keyword-analysis/reverse", label: "키워드 역추적", icon: "reverse" },
+      { href: "/keyword-analysis/landscape", label: "광고 랜드스케이프", icon: "landscape_kw" },
+      { href: "/keyword-analysis/spend-trend", label: "광고비 추이", icon: "trend" },
     ],
   },
   {
     title: "시장 분석",
     items: [
       { href: "/industries", label: "산업별 현황", icon: "landscape" },
-      { href: "/products", label: "제품/서비스별", icon: "products" },
+      { href: "/products", label: "제품/서비스 현황", icon: "products" },
       { href: "/competitors", label: "경쟁사 비교", icon: "competitors" },
       { href: "/advertiser-trends", label: "광고주 트렌드", icon: "ranking" },
+    ],
+  },
+  {
+    title: "쇼핑 분석",
+    items: [
       { href: "/shopping-insight", label: "쇼핑인사이트", icon: "shopping" },
+      { href: "/shopping-keyword", label: "키워드 분석", icon: "keyword" },
+      { href: "/shopping-sales", label: "판매량 추정", icon: "sales" },
+      { href: "/shopping-ranking", label: "상품 순위 추적", icon: "ranking" },
     ],
   },
   {
     title: "소셜 인사이트",
     items: [
-      { href: "/buzz-dashboard", label: "브랜드 버즈", icon: "buzz" },
-      { href: "/consumer-insights", label: "소비자 인사이트", icon: "insight" },
-      { href: "/campaign-effect", label: "캠페인 효과", icon: "effect" },
       { href: "/social-channels", label: "소셜 채널 분석", icon: "brand" },
-      { href: "/launch-impact", label: "신상품 임팩트", icon: "launch", soon: true },
+      { href: "/social-content", label: "콘텐츠 성과", icon: "content" },
+      { href: "/buzz-dashboard", label: "브랜드 버즈", icon: "buzz" },
+      { href: "/campaign-effect", label: "캠페인 효과", icon: "effect" },
     ],
   },
   {
@@ -48,13 +65,14 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/analytics/sov", label: "SOV 분석", icon: "sov" },
       { href: "/analytics/persona-contact", label: "페르소나 접촉률", icon: "contact" },
       { href: "/target-audience", label: "타겟 오디언스", icon: "target" },
+      { href: "/consumer-insights", label: "소비자 인사이트", icon: "insight", soon: true },
+      { href: "/launch-impact", label: "신상품 임팩트", icon: "launch", soon: true },
+      { href: "/marketing-schedule", label: "마케팅 플랜", icon: "schedule", soon: true },
     ],
   },
   {
-    title: "도구",
+    title: "관리",
     items: [
-      { href: "/reports", label: "보고서", icon: "report" },
-      { href: "/marketing-schedule", label: "마케팅 플랜", icon: "schedule", soon: true },
       { href: "/master-index", label: "매체/광고주 관리", icon: "database", adminOnly: true },
       { href: "/admin", label: "관리", icon: "admin", adminOnly: true },
       { href: "/admin/staging", label: "데이터 스테이징", icon: "staging", adminOnly: true },
@@ -62,6 +80,7 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     title: "안내",
+    public: true,
     items: [
       { href: "/guide", label: "서비스 소개", icon: "guide" },
       { href: "/manual", label: "이용 매뉴얼", icon: "manual" },
@@ -323,6 +342,50 @@ function NavIcon({ name, className = "w-5 h-5" }: { name: string; className?: st
           <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" />
         </svg>
       );
+    case "keyword":
+      return (
+        <svg {...props}>
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+          <path d="M8 11h6" />
+        </svg>
+      );
+    case "reverse":
+      return (
+        <svg {...props}>
+          <path d="M9 14l-4-4 4-4" />
+          <path d="M5 10h11a4 4 0 110 8h-1" />
+        </svg>
+      );
+    case "landscape_kw":
+      return (
+        <svg {...props}>
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M3 9h18M9 21V9" />
+          <circle cx="15" cy="15" r="2" />
+        </svg>
+      );
+    case "trend":
+      return (
+        <svg {...props}>
+          <path d="M3 3v18h18" />
+          <path d="M7 16l4-8 4 4 4-8" />
+        </svg>
+      );
+    case "sales":
+      return (
+        <svg {...props}>
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+        </svg>
+      );
+    case "content":
+      return (
+        <svg {...props}>
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+          <path d="M8 21h8M12 17v4" />
+          <path d="M10 9l4 2-4 2V9z" fill="currentColor" />
+        </svg>
+      );
     default:
       return null;
   }
@@ -332,9 +395,12 @@ export function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setUser(getUser());
+    setMounted(true);
   }, []);
 
   const sidebarContent = (
@@ -426,10 +492,11 @@ export function Sidebar() {
               <span className={clsx(
                 "text-[10px] font-semibold px-1.5 py-0.5 rounded",
                 user.role === "admin" ? "bg-amber-500/20 text-amber-300" :
+                isInTrial() ? "bg-violet-500/20 text-violet-300" :
                 user.plan === "full" ? "bg-green-500/20 text-green-300" :
                 "bg-slate-600 text-slate-300"
               )}>
-                {user.role === "admin" ? "Admin" : user.plan === "full" ? "Full" : "Lite"}
+                {user.role === "admin" ? "Admin" : isInTrial() ? "체험판" : user.plan === "full" ? "Full" : "Lite"}
               </span>
               <Link
                 href="/settings"
@@ -466,6 +533,40 @@ export function Sidebar() {
             </Link>
           </div>
         )}
+        {mounted && (
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="w-full flex items-center justify-center gap-2 py-1.5 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-slate-800/70 transition-colors"
+            aria-label="Toggle dark mode"
+          >
+            {theme === "dark" ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+            <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+          </button>
+        )}
+        <a
+          href="https://doubleestudio.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block text-center text-[10px] text-slate-500 hover:text-slate-300 transition-colors mt-2"
+        >
+          Powered by DoubleE Studio
+        </a>
       </div>
     </div>
   );

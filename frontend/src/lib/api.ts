@@ -39,13 +39,15 @@ export async function fetchApi<T = any>(path: string, init?: RequestInit): Promi
   }
 
   if (res.status === 401) {
-    // Token expired - clear storage but don't force redirect (let pages handle it)
+    // Token expired or missing - clear storage and show login modal
     if (typeof window !== "undefined") {
       localStorage.removeItem("adscope_token");
       localStorage.removeItem("adscope_user");
-      // Only redirect if not on admin page (admin has its own login)
-      if (!window.location.pathname.startsWith("/admin")) {
-        window.location.href = "/login";
+      // Dispatch event for login modal (debounced via flag on window)
+      if (!(window as any).__adscopeAuthModalPending) {
+        (window as any).__adscopeAuthModalPending = true;
+        window.dispatchEvent(new CustomEvent("adscope:requireAuth"));
+        setTimeout(() => { (window as any).__adscopeAuthModalPending = false; }, 3000);
       }
     }
     throw new Error("Session expired");
@@ -58,7 +60,7 @@ export async function fetchApi<T = any>(path: string, init?: RequestInit): Promi
       const planExpired = res.headers.get("X-Plan-Expired");
 
       if (upgradeRequired === "true" || requiredPlan || planExpired === "true") {
-        alert("유료 회원 전용 기능입니다.\n플랜을 업그레이드해주세요.\n\n문의: admin@adscope.kr");
+        alert("유료 회원 전용 기능입니다.\n플랜을 업그레이드해주세요.\n\n문의: support@adscope.kr");
         window.location.href = "/pricing";
         throw new Error("Upgrade required");
       }
@@ -693,6 +695,14 @@ export const api = {
       `/advertisers/ranking/top?days=${days}&limit=${limit}`
     ),
 
+  getAdvertiserSummaryStats: () =>
+    fetchApi<{
+      total_advertisers: number;
+      active_30d: number;
+      total_exposure_30d: number;
+      website_verified: number;
+    }>(`/advertisers/summary-stats`),
+
   searchAdvertisers: (q: string, limit = 20) =>
     fetchApi<AdvertiserSearchResult[]>(
       `/advertisers/search?q=${encodeURIComponent(q)}&limit=${limit}`
@@ -707,6 +717,11 @@ export const api = {
   getAdvertiserSpendReport: (id: number, days = 30) =>
     fetchApi<AdvertiserSpendReport>(
       `/advertisers/${id}/spend-report?days=${days}`
+    ),
+
+  getAdvertiserMonthlySpend: (id: number, months = 6) =>
+    fetchApi<{ advertiser_id: number; monthly_data: { month: string; total_spend: number; by_channel: Record<string, number> }[] }>(
+      `/advertisers/${id}/monthly-spend?months=${months}`
     ),
 
   getAdvertiserCampaigns: (id: number) =>
@@ -768,6 +783,22 @@ export const api = {
     return fetchApi<SOVTrendPoint[]>(`/analytics/sov/trend?${qs.toString()}`);
   },
 
+  getKeywordLandscape: (keyword: string, days = 30) =>
+    fetchApi<{
+      keyword: string;
+      keyword_ids: number[];
+      total_advertisers: number;
+      advertisers: {
+        advertiser_id: number;
+        advertiser_name: string;
+        channels: string[];
+        impression_count: number;
+        sov_percentage: number;
+        position_zones: Record<string, number>;
+        last_seen: string | null;
+      }[];
+    }>(`/analytics/sov/keyword-landscape?keyword=${encodeURIComponent(keyword)}&days=${days}`),
+
   // Persona Ranking
   getPersonaRanking: (params?: {
     persona_code?: string;
@@ -823,6 +854,13 @@ export const api = {
   adminScheduleOverview: (token: string) =>
     fetchApi<ScheduleOverview>(`/admin/schedule-overview`, { headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` } }),
 
+  adminMediaMap: (token: string) =>
+    fetchApi<MediaMapResponse>(`/admin/media-map`, { headers: { Authorization: `Bearer ${token}` } }),
+
+  adminAdvertiserMap: (token: string, limit = 100) =>
+    fetchApi<AdvertiserMapResponse>(`/admin/advertiser-map?limit=${limit}`, { headers: { Authorization: `Bearer ${token}` } }),
+
+
   adminCollectSocial: (token: string) =>
     fetchApi<{ status: string; message: string }>(`/admin/collect/social`, { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` } }),
 
@@ -849,6 +887,22 @@ export const api = {
     fetchApi<CompetitorList>(
       `/competitors/${advertiserId}?days=${days}&limit=${limit}`
     ),
+
+  getAdvertiserKeywords: (advertiserId: number, days = 30) =>
+    fetchApi<{
+      advertiser_id: number;
+      advertiser_name: string;
+      keywords: {
+        keyword_id: number;
+        keyword: string;
+        channels: string[];
+        impression_count: number;
+        first_seen: string | null;
+        last_seen: string | null;
+        monthly_search_vol: number | null;
+        naver_cpc: number | null;
+      }[];
+    }>(`/competitors/${advertiserId}/keywords?days=${days}`),
 
   getIndustryLandscape: (industryId: number, days = 30) =>
     fetchApi<IndustryLandscape>(
@@ -976,31 +1030,52 @@ export const api = {
   getSocialImpactTopImpact: (days = 30, limit = 10) =>
     fetchApi<SocialImpactTopItem[]>(`/social-impact/top-impact?days=${days}&limit=${limit}`),
 
-  // Payments
-  preparePayment: (plan: string, period: string) =>
+  // Payments (Toss Payments)
+  readyPayment: (plan: string, period: string) =>
     fetchApi<{
-      merchant_uid: string;
+      order_id: string;
+      order_name: string;
       amount: number;
       plan: string;
       plan_period: string;
-      buyer_email: string;
-      buyer_name: string;
-      store_id: string;
-      channel_key: string;
+      customer_email: string;
+      customer_name: string;
+      client_key: string;
       payment_id: number;
-    }>("/payments/prepare", {
+    }>("/payments/ready", {
       method: "POST",
       body: JSON.stringify({ plan, plan_period: period }),
     }),
 
-  completePayment: (impUid: string, merchantUid: string) =>
-    fetchApi<{ status: string; message: string; payment_id: number }>(
-      "/payments/complete",
-      {
-        method: "POST",
-        body: JSON.stringify({ imp_uid: impUid, merchant_uid: merchantUid }),
-      }
-    ),
+  confirmPayment: (paymentKey: string, orderId: string, amount: number) =>
+    fetchApi<{
+      status: string;
+      message: string;
+      payment_id: number;
+      plan: string;
+      plan_period: string;
+      plan_expires_at: string | null;
+    }>("/payments/confirm", {
+      method: "POST",
+      body: JSON.stringify({ payment_key: paymentKey, order_id: orderId, amount }),
+    }),
+
+  // Legacy aliases for backward compatibility
+  preparePayment: (plan: string, period: string) =>
+    fetchApi<{
+      order_id: string;
+      order_name: string;
+      amount: number;
+      plan: string;
+      plan_period: string;
+      customer_email: string;
+      customer_name: string;
+      client_key: string;
+      payment_id: number;
+    }>("/payments/ready", {
+      method: "POST",
+      body: JSON.stringify({ plan, plan_period: period }),
+    }),
 
   // Admin: User/Payment management
   adminListUsers: (token: string) =>
@@ -1058,6 +1133,29 @@ export const api = {
   adminDeactivateUser: (userId: number, token: string) =>
     fetchApi<{ status: string }>(`/admin/users/${userId}/deactivate`, {
       method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+
+  adminCreateUser: (
+    data: { email: string; password: string; name?: string; company_name?: string; role?: string; plan?: string },
+    token: string
+  ) => {
+    const qs = new URLSearchParams();
+    qs.set("email", data.email);
+    qs.set("password", data.password);
+    if (data.name) qs.set("name", data.name);
+    if (data.company_name) qs.set("company_name", data.company_name);
+    if (data.role) qs.set("role", data.role);
+    if (data.plan) qs.set("plan", data.plan);
+    return fetchApi<{ status: string; user_id: number; email: string }>(
+      `/admin/users/create?${qs.toString()}`,
+      { method: "POST", headers: { Authorization: `Bearer ${token}` } }
+    );
+  },
+
+  adminDeleteUser: (userId: number, token: string) =>
+    fetchApi<{ status: string }>(`/admin/users/${userId}`, {
+      method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     }),
 
@@ -1670,6 +1768,44 @@ export interface LIIAdvertiserImpact {
     date: string | null;
   };
   mention_count: number;
+}
+
+export interface MediaMapChannel {
+  channel: string;
+  total_snapshots: number;
+  total_ads: number;
+  unique_advertisers: number;
+  unique_keywords: number;
+  today_ads: number;
+  last_crawl_kst: string | null;
+  minutes_ago: number | null;
+  status: string;
+  week_trend: { date: string; count: number }[];
+}
+
+export interface MediaMapResponse {
+  channels: MediaMapChannel[];
+  server_time_kst: string;
+}
+
+export interface AdvertiserMapItem {
+  id: number;
+  name: string;
+  brand_name: string | null;
+  website: string | null;
+  industry: string | null;
+  ad_count: number;
+  channels: Record<string, number>;
+}
+
+export interface AdvertiserMapResponse {
+  advertisers: AdvertiserMapItem[];
+  summary: {
+    total: number;
+    with_website: number;
+    with_industry: number;
+  };
+  industry_distribution: { industry: string; count: number }[];
 }
 
 export interface MediaSourceItem {
