@@ -12,15 +12,22 @@ export async function fetchApi<T = any>(path: string, init?: RequestInit): Promi
   };
 
   // Auto-attach JWT token + device fingerprint
+  let hadToken = false;
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("adscope_token");
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
+      hadToken = true;
     }
     const fp = localStorage.getItem("adscope_device_fp");
     if (fp) {
       headers["X-Device-Fingerprint"] = fp;
     }
+  }
+
+  // 토큰이 없으면 API 호출 없이 조용히 실패 (미로그인 사용자 페이지 브라우징 허용)
+  if (!hadToken && typeof window !== "undefined") {
+    throw new Error("Not authenticated");
   }
 
   // AbortController-based 30s timeout
@@ -39,11 +46,10 @@ export async function fetchApi<T = any>(path: string, init?: RequestInit): Promi
   }
 
   if (res.status === 401) {
-    // Token expired or missing - clear storage and show login modal
+    // 토큰이 있었는데 서버가 거부 = 세션 만료 → 로그인 모달 표시
     if (typeof window !== "undefined") {
       localStorage.removeItem("adscope_token");
       localStorage.removeItem("adscope_user");
-      // Dispatch event for login modal (debounced via flag on window)
       if (!(window as any).__adscopeAuthModalPending) {
         (window as any).__adscopeAuthModalPending = true;
         window.dispatchEvent(new CustomEvent("adscope:requireAuth"));
