@@ -168,10 +168,20 @@ export function getUserPlan(): string {
   return user.plan || "lite";
 }
 
+/** Check if user is in an active free trial (not yet paid, trial not expired). */
+export function isInTrial(): boolean {
+  const user = getUser();
+  if (!user) return false;
+  if (user.role === "admin") return false;
+  if (user.paid) return false; // 결제 완료된 유저는 체험판 아님
+  if (!user.trial_started_at || !user.plan_expires_at) return false;
+  return new Date(user.plan_expires_at) > new Date();
+}
+
 /** Check if user has access to full features (gallery, social). */
 export function hasFullAccess(): boolean {
   const plan = getUserPlan();
-  return plan === "full" || plan === "admin";
+  return plan === "full" || plan === "admin" || isInTrial();
 }
 
 /** Check if user is a paid member (payment_confirmed or admin). */

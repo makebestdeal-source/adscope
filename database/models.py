@@ -30,6 +30,8 @@ class Industry(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False, unique=True)
+    industry_medium = Column(String(100))   # 업종(중)
+    industry_large = Column(String(100))    # 업종(대)
     avg_cpc_min = Column(Integer)
     avg_cpc_max = Column(Integer)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -222,6 +224,11 @@ class AdDetail(Base):
     ad_product_master_id = Column(Integer, ForeignKey("ad_product_master.id"), nullable=True)  # 정규화된 광고상품 FK
     model_name = Column(String(200))             # 모델/셀럽 이름
     estimated_budget = Column(Float)             # 건별 추정 예산
+    # -- 아카이브 소급 수집 필드 --
+    archive_source = Column(String(50))          # "meta_library" / "google_transparency" / "tiktok_creative" / NULL
+    ad_delivery_start = Column(DateTime)         # 라이브러리에서 받은 실제 집행 시작일
+    ad_delivery_end = Column(DateTime)           # 라이브러리에서 받은 실제 집행 종료일
+    is_retroactive = Column(Boolean, default=False)  # True=소급 아카이브 수집
     extra_data = Column(JSON)
 
     snapshot = relationship("AdSnapshot", back_populates="details")
@@ -270,6 +277,8 @@ class Advertiser(Base):
     smartstore_url = Column(String(500))              # 네이버 스마트스토어 URL
     dart_ad_expense = Column(Float)                   # DART 광고비 (원)
     dart_fiscal_year = Column(String(10))             # DART 회계연도
+    corp_code = Column(String(20))                    # DART 법인 고유번호
+    dart_matched_at = Column(DateTime)                # DART 매칭 완료 시각
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -364,6 +373,8 @@ class SpendEstimate(Base):
     confidence = Column(Float)
     calculation_method = Column(String(50))
     factors = Column(JSON)
+    data_source = Column(String(30))             # "crawl" / "dart_derived" / "library_derived" / "benchmark"
+    confidence_tier = Column(String(10))         # "high" / "medium" / "low"
 
     campaign = relationship("Campaign", back_populates="spend_estimates")
 
@@ -522,6 +533,7 @@ class BrandChannelContent(Base):
     upload_date = Column(DateTime)
     view_count = Column(Integer)
     like_count = Column(Integer)
+    comment_count = Column(Integer)
     duration_seconds = Column(Integer)
     is_ad_content = Column(Boolean, default=False)
     ad_indicators = Column(JSON)
@@ -801,17 +813,19 @@ class PaymentRecord(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    merchant_uid = Column(String(100), unique=True, nullable=False)
-    imp_uid = Column(String(100), nullable=True)
+    merchant_uid = Column(String(100), unique=True, nullable=False)  # orderId for Toss
+    imp_uid = Column(String(100), nullable=True)  # legacy PortOne field
+    payment_key = Column(String(200), nullable=True)  # Toss paymentKey
     plan = Column(String(20), nullable=False)
-    plan_period = Column(String(20), nullable=False)
+    plan_period = Column(String(20), nullable=False)  # monthly/yearly
     amount = Column(Integer, nullable=False)
     pay_method = Column(String(30), nullable=True)
-    status = Column(String(30), default="pending")  # pending/paid/activated/failed/refunded
+    status = Column(String(30), default="pending")  # pending/paid/failed/cancelled/refunded
     paid_at = Column(DateTime, nullable=True)
     verified_at = Column(DateTime, nullable=True)
     activated_by = Column(String(100), nullable=True)
-    portone_response = Column(JSON, nullable=True)
+    portone_response = Column(JSON, nullable=True)  # legacy
+    toss_response = Column(JSON, nullable=True)  # Toss Payments 응답 전체
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -1424,4 +1438,188 @@ class UnknownAdMark(Base):
     __table_args__ = (
         Index("ix_unknown_marks_status", "status"),
         Index("ix_unknown_marks_network", "suggested_network"),
+    )
+
+
+# ─────────────────────────────────────────────
+# 쇼핑 키워드 (네이버 쇼핑 전용)
+# ─────────────────────────────────────────────
+class ShoppingKeyword(Base):
+    __tablename__ = "shopping_keywords"
+
+    id = Column(Integer, primary_key=True)
+    keyword = Column(String(200), nullable=False, unique=True)
+    category = Column(String(100))                    # "가전", "패션", "뷰티" 등
+    subcategory = Column(String(100))                 # "에어컨", "원피스", "립스틱" 등
+    priority = Column(Integer, default=5)             # 1(최고) ~ 10(최저)
+    monthly_search_vol = Column(Integer)              # 월간 검색량
+    avg_product_price = Column(Integer)               # 평균 상품 가격대 (원)
+    competition_level = Column(String(10))            # "low", "mid", "high"
+    is_active = Column(Boolean, default=True)
+    last_crawled_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (
+        Index("ix_shopping_kw_category", "category"),
+        Index("ix_shopping_kw_priority", "priority"),
+        Index("ix_shopping_kw_active", "is_active"),
+    )
+
+
+# ─────────────────────────────────────────────
+# 38. 소셜 카테고리 랭킹 (산업별 일일 스냅샷)
+# ─────────────────────────────────────────────
+class SocialCategoryRanking(Base):
+    """산업(Industry) 카테고리별 광고주 소셜 활동 일일 랭킹."""
+    __tablename__ = "social_category_rankings"
+
+    id = Column(Integer, primary_key=True)
+    date = Column(DateTime, nullable=False)
+    industry_id = Column(Integer, ForeignKey("industries.id"), nullable=False)
+    advertiser_id = Column(Integer, ForeignKey("advertisers.id"), nullable=False)
+
+    # 원시 메트릭 (기존 테이블에서 집계)
+    total_subscribers = Column(Integer, default=0)       # YouTube 구독자 + IG 팔로워
+    total_posts_period = Column(Integer, default=0)      # 7일간 포스팅 수
+    total_views_period = Column(Integer, default=0)      # 7일간 조회수 합계
+    total_likes_period = Column(Integer, default=0)      # 7일간 좋아요 합계
+    engagement_rate = Column(Float)                      # (avg_likes/subscribers)×100
+    subscriber_growth_rate = Column(Float)               # WoW 구독자 증감률(%)
+    posting_frequency = Column(Float)                    # 주간 포스팅 빈도
+
+    # 종합 점수 & 순위
+    composite_score = Column(Float, default=0.0)         # 0-100
+    rank_in_industry = Column(Integer)                   # 산업 내 1-based 순위
+
+    # 카테고리 컨텍스트
+    industry_avg_score = Column(Float)
+    industry_total_advs = Column(Integer)
+
+    # WoW 변화
+    score_wow_change = Column(Float)
+    rank_wow_change = Column(Integer)
+
+    advertiser = relationship("Advertiser", backref="social_category_rankings")
+    industry = relationship("Industry", backref="social_category_rankings")
+
+    __table_args__ = (
+        UniqueConstraint("date", "advertiser_id", name="uq_social_cat_rank_date_adv"),
+        Index("ix_scr_date", "date"),
+        Index("ix_scr_industry_date", "industry_id", "date"),
+        Index("ix_scr_advertiser_date", "advertiser_id", "date"),
+        Index("ix_scr_rank", "date", "industry_id", "rank_in_industry"),
+    )
+
+
+# ─────────────────────────────────────────────
+# 39. 쇼핑 카테고리 랭킹 (카테고리별 일일 스냅샷)
+# ─────────────────────────────────────────────
+class ShoppingCategoryRanking(Base):
+    """쇼핑 카테고리별 스토어 일일 랭킹."""
+    __tablename__ = "shopping_category_rankings"
+
+    id = Column(Integer, primary_key=True)
+    date = Column(DateTime, nullable=False)
+    shopping_category = Column(String(100), nullable=False)   # ShoppingKeyword.category
+    store_name = Column(String(200), nullable=False)
+    advertiser_id = Column(Integer, ForeignKey("advertisers.id"), nullable=True)
+
+    # 원시 메트릭
+    product_count = Column(Integer, default=0)               # 카테고리 내 상품 수
+    avg_price = Column(Integer)                              # 평균 가격
+    total_estimated_daily_sales = Column(Integer, default=0) # 일 예상 판매량
+    total_estimated_gmv = Column(Integer, default=0)         # 일 예상 GMV
+    total_review_count = Column(Integer, default=0)          # 리뷰 수 합계
+    total_review_delta = Column(Integer, default=0)          # 7일간 신규 리뷰
+    total_purchase_cnt = Column(Integer, default=0)          # 구매건수 합계
+    total_purchase_delta = Column(Integer, default=0)        # 7일간 신규 구매
+
+    # 종합 점수 & 순위
+    composite_score = Column(Float, default=0.0)             # 0-100
+    rank_in_category = Column(Integer)
+
+    # 카테고리 컨텍스트
+    category_avg_score = Column(Float)
+    category_total_stores = Column(Integer)
+
+    # WoW 변화
+    score_wow_change = Column(Float)
+    rank_wow_change = Column(Integer)
+    gmv_wow_change_pct = Column(Float)
+
+    advertiser = relationship("Advertiser", backref="shopping_category_rankings")
+
+    __table_args__ = (
+        UniqueConstraint("date", "shopping_category", "store_name",
+                         name="uq_shop_cat_rank_date_cat_store"),
+        Index("ix_shopr_date", "date"),
+        Index("ix_shopr_category_date", "shopping_category", "date"),
+        Index("ix_shopr_store_date", "store_name", "date"),
+        Index("ix_shopr_rank", "date", "shopping_category", "rank_in_category"),
+        Index("ix_shopr_advertiser", "advertiser_id"),
+    )
+
+
+# ---------------------------------------------
+# 34. DART 재무 원천 (분기별 광고선전비)
+# ---------------------------------------------
+class DartFinancial(Base):
+    __tablename__ = "dart_financials"
+
+    id = Column(Integer, primary_key=True)
+    advertiser_id = Column(Integer, ForeignKey("advertisers.id"), nullable=True)
+    corp_code = Column(String(20), nullable=False)      # DART 고유번호 (e.g. "00126380")
+    corp_name = Column(String(200), nullable=False)     # 법인명 (e.g. "삼성전자(주)")
+    stock_code = Column(String(20))                     # KRX 종목코드 (e.g. "005930")
+    fiscal_year = Column(Integer, nullable=False)       # 회계연도 (2024)
+    fiscal_quarter = Column(Integer, nullable=True)     # 1~4, NULL=연간 결산
+    report_type = Column(String(20), nullable=False)    # annual/half/quarter
+    ad_expense = Column(Float)                          # 광고선전비 (원)
+    sales_promo_expense = Column(Float)                 # 판매촉진비 (원)
+    total_selling_expense = Column(Float)               # 판매비와관리비 합계
+    revenue = Column(Float)                             # 매출액
+    report_filed_at = Column(DateTime)                  # 공시 제출일
+    dart_api_url = Column(String(500))                  # 원문 URL (추적용)
+    collected_at = Column(DateTime, default=datetime.utcnow)
+
+    advertiser = relationship("Advertiser", backref="dart_financials")
+
+    __table_args__ = (
+        UniqueConstraint("corp_code", "fiscal_year", "fiscal_quarter", name="uq_dart_corp_period"),
+        Index("ix_dart_advertiser", "advertiser_id"),
+        Index("ix_dart_corp_code", "corp_code"),
+        Index("ix_dart_fiscal", "fiscal_year", "fiscal_quarter"),
+    )
+
+
+# ---------------------------------------------
+# 35. 광고비 배분 추정 (DART -> 채널별 월별)
+# ---------------------------------------------
+class SpendAllocation(Base):
+    __tablename__ = "spend_allocations"
+
+    id = Column(Integer, primary_key=True)
+    advertiser_id = Column(Integer, ForeignKey("advertisers.id"), nullable=False)
+    dart_financial_id = Column(Integer, ForeignKey("dart_financials.id"), nullable=True)
+    period_year = Column(Integer, nullable=False)        # 2025
+    period_month = Column(Integer, nullable=False)       # 1~12
+    channel = Column(String(30), nullable=False)         # naver_search / youtube_ads / meta / etc
+    total_dart_expense = Column(Float)                   # 해당 기간 DART 광고선전비 원본
+    allocation_ratio = Column(Float)                     # 채널 배분 비율 (0.0~1.0)
+    seasonality_factor = Column(Float, default=1.0)      # 계절 보정 계수
+    allocated_spend = Column(Float)                      # = total_dart x ratio x seasonality
+    allocation_basis = Column(String(50))                # "kaa_2024" / "nasmedia_2024" / "custom"
+    confidence = Column(Float)                           # 0.0~1.0
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    advertiser = relationship("Advertiser", backref="spend_allocations")
+    dart_financial = relationship("DartFinancial", backref="spend_allocations")
+
+    __table_args__ = (
+        UniqueConstraint("advertiser_id", "period_year", "period_month", "channel",
+                         name="uq_spend_allocation"),
+        Index("ix_alloc_advertiser", "advertiser_id"),
+        Index("ix_alloc_period", "period_year", "period_month"),
+        Index("ix_alloc_channel", "channel"),
+        Index("ix_alloc_dart", "dart_financial_id"),
     )

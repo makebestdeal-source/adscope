@@ -69,9 +69,12 @@ export default function CampaignsPage() {
 
 interface EnrichedCampaign {
   id: number;
+  campaign_ids: number[];
   advertiser_id: number;
   advertiser_name: string | null;
   channel: string;
+  channels: string[];
+  month: string | null;
   campaign_name: string | null;
   objective: string | null;
   product_service: string | null;
@@ -94,11 +97,12 @@ const OBJECTIVE_KO: Record<string, { label: string; color: string }> = {
 };
 
 const CHANNELS = [
-  "", "naver_search", "naver_da", "google_gdn", "google_search_ads",
-  "youtube_ads", "kakao_da", "meta", "tiktok_ads", "naver_shopping",
+  "", "naver_search", "naver_da", "naver_shopping", "google_search_ads",
+  "google_gdn", "youtube_ads", "youtube_surf", "meta", "meta_feed",
+  "kakao_da", "tiktok_ads",
 ];
 
-type SortKey = "advertiser_name" | "channel" | "campaign_name" | "objective" | "total_est_spend" | "last_seen" | "snapshot_count" | "status";
+type SortKey = "advertiser_name" | "campaign_name" | "objective" | "total_est_spend" | "last_seen" | "snapshot_count" | "status";
 
 function CampaignListTab() {
   const [search, setSearch] = useState("");
@@ -207,7 +211,7 @@ function CampaignListTab() {
               <tr className="bg-gray-50 border-b border-gray-200">
                 {([
                   ["advertiser_name", "광고주", "text-left"], ["campaign_name", "캠페인명", "text-left"],
-                  ["channel", "매체", "text-left"], ["objective", "목적", "text-left"],
+                  ["objective", "목적", "text-left"],
                   ["total_est_spend", "추정 광고비", "text-right"], ["last_seen", "최근 활동", "text-right"],
                   ["snapshot_count", "스냅샷", "text-right"], ["status", "상태", "text-center"],
                 ] as [SortKey, string, string][]).map(([key, label, align]) => (
@@ -219,6 +223,7 @@ function CampaignListTab() {
                     </span>
                   </th>
                 ))}
+                <th className="py-3 px-4 text-xs font-semibold uppercase text-gray-500 text-left">매체</th>
               </tr>
             </thead>
             <tbody>
@@ -240,16 +245,10 @@ function CampaignListTab() {
                       </td>
                       <td className="py-3 px-4">
                         <Link href={`/campaigns/${c.id}`} className="text-sm text-gray-900 hover:text-adscope-600 hover:underline font-medium">
-                          {c.campaign_name || `#${c.id}`}
+                          {c.campaign_name || (c.month ? `${c.advertiser_name} ${c.month}` : `#${c.id}`)}
                         </Link>
                         {c.model_info && <span className="ml-1.5 text-[10px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded">{c.model_info}</span>}
                         {c.product_service && <p className="text-xs text-gray-400 mt-0.5 truncate max-w-[250px]">{c.product_service}</p>}
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded"
-                          style={{ backgroundColor: (CHANNEL_COLORS[c.channel] || "#666") + "18", color: CHANNEL_COLORS[c.channel] || "#666" }}>
-                          {formatChannel(c.channel)}
-                        </span>
                       </td>
                       <td className="py-3 px-4">
                         {obj ? <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${obj.color}`}>{obj.label}</span> : <span className="text-gray-300 text-xs">-</span>}
@@ -261,6 +260,16 @@ function CampaignListTab() {
                         <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${c.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
                           {c.is_active ? "활성" : "종료"}
                         </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex flex-wrap gap-0.5">
+                          {(c.channels?.length ? c.channels : [c.channel]).map((ch) => (
+                            <span key={ch} className="text-[10px] font-semibold px-1.5 py-0.5 rounded"
+                              style={{ backgroundColor: (CHANNEL_COLORS[ch] || "#666") + "18", color: CHANNEL_COLORS[ch] || "#666" }}>
+                              {formatChannel(ch)}
+                            </span>
+                          ))}
+                        </div>
                       </td>
                     </tr>
                   );

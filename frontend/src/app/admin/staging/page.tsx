@@ -65,12 +65,15 @@ const STATUS_COLORS: Record<string, string> = {
 const CHANNEL_LABELS: Record<string, string> = {
   naver_search: "N-Search",
   naver_da: "N-DA",
-  youtube_ads: "YT-Ads",
-  google_gdn: "GDN",
-  kakao_da: "Kakao",
-  meta: "Meta",
-  tiktok_ads: "TikTok",
   naver_shopping: "N-Shop",
+  google_search_ads: "G-Search",
+  google_gdn: "GDN",
+  youtube_ads: "YT-Ads",
+  youtube_surf: "YT-Surf",
+  meta: "Meta",
+  meta_feed: "Meta-Feed",
+  kakao_da: "Kakao",
+  tiktok_ads: "TikTok",
 };
 
 export default function StagingPage() {

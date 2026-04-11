@@ -13,10 +13,15 @@ import { GallerySelectionDownload, DownloadButton } from "@/components/DownloadB
 const ALL_CHANNELS = [
   "naver_search",
   "naver_da",
+  "naver_shopping",
+  "google_search_ads",
   "google_gdn",
   "youtube_ads",
-  "kakao_da",
+  "youtube_surf",
   "meta",
+  "meta_feed",
+  "kakao_da",
+  "tiktok_ads",
 ];
 
 export default function GalleryPage() {
@@ -424,6 +429,26 @@ function GalleryContent() {
   );
 }
 
+const TEXT_AD_CHANNELS = new Set(["naver_search", "google_search_ads"]);
+
+function TextAdCard({ item }: { item: GalleryItem }) {
+  const isNaver = item.channel === "naver_search";
+  const domain = item.url ? (() => { try { return new URL(item.url).hostname.replace(/^www\./, ""); } catch { return item.url; } })() : null;
+  return (
+    <div className={`flex flex-col justify-center h-full px-3 py-3 text-left ${isNaver ? "bg-[#f0f8ff]" : "bg-[#f8fff0]"}`}>
+      {domain && (
+        <p className={`text-[10px] mb-1 truncate font-medium ${isNaver ? "text-green-700" : "text-green-600"}`}>{domain}</p>
+      )}
+      <p className={`text-xs font-semibold leading-snug mb-1 line-clamp-2 ${isNaver ? "text-blue-700" : "text-blue-600"}`}>
+        {item.ad_text || item.advertiser_name_raw || "(텍스트 없음)"}
+      </p>
+      <p className="text-[10px] text-gray-500 line-clamp-2">
+        {item.url || ""}
+      </p>
+    </div>
+  );
+}
+
 function ImagePlaceholder({ channel }: { channel?: string }) {
   const channelLabel = channel ? (CHANNEL_LABELS[channel] ?? channel) : null;
   return (
@@ -579,6 +604,8 @@ function GalleryCard({
             loading="lazy"
             onError={() => setImgError(true)}
           />
+        ) : TEXT_AD_CHANNELS.has(item.channel) ? (
+          <TextAdCard item={item} />
         ) : (
           <ImagePlaceholder channel={item.channel} />
         )}

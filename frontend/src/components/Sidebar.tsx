@@ -8,7 +8,7 @@ import { useTheme } from "next-themes";
 import { getUser, logout, AuthUser, isInTrial } from "@/lib/auth";
 
 type NavItem = { href: string; label: string; icon: string; beta?: boolean; soon?: boolean; adminOnly?: boolean; public?: boolean };
-type NavGroup = { title: string; items: NavItem[]; public?: boolean };
+type NavGroup = { title: string; items: NavItem[]; public?: boolean; adminOnly?: boolean };
 
 const NAV_GROUPS: NavGroup[] = [
   {
@@ -16,12 +16,10 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/reports", label: "보고서", icon: "report" },
       { href: "/advertisers/favorites", label: "나의 광고주", icon: "star" },
-      { href: "/", label: "대시보드", icon: "dashboard" },
       { href: "/advertisers", label: "광고주", icon: "advertisers" },
       { href: "/campaigns", label: "캠페인", icon: "campaign" },
       { href: "/gallery", label: "광고 소재", icon: "gallery" },
       { href: "/social-gallery", label: "소셜 소재", icon: "social" },
-      { href: "/spend", label: "매체별 광고비", icon: "spend" },
     ],
   },
   {
@@ -30,24 +28,6 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/keyword-analysis/reverse", label: "키워드 역추적", icon: "reverse" },
       { href: "/keyword-analysis/landscape", label: "광고 랜드스케이프", icon: "landscape_kw" },
       { href: "/keyword-analysis/spend-trend", label: "광고비 추이", icon: "trend" },
-    ],
-  },
-  {
-    title: "시장 분석",
-    items: [
-      { href: "/industries", label: "산업별 현황", icon: "landscape" },
-      { href: "/products", label: "제품/서비스 현황", icon: "products" },
-      { href: "/competitors", label: "경쟁사 비교", icon: "competitors" },
-      { href: "/advertiser-trends", label: "광고주 트렌드", icon: "ranking" },
-    ],
-  },
-  {
-    title: "쇼핑 분석",
-    items: [
-      { href: "/shopping-insight", label: "쇼핑인사이트", icon: "shopping" },
-      { href: "/shopping-keyword", label: "키워드 분석", icon: "keyword" },
-      { href: "/shopping-sales", label: "판매량 추정", icon: "sales" },
-      { href: "/shopping-ranking", label: "상품 순위 추적", icon: "ranking" },
     ],
   },
   {
@@ -60,22 +40,12 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    title: "분석 도구",
+    title: "시장 분석",
     items: [
-      { href: "/analytics/sov", label: "SOV 분석", icon: "sov" },
-      { href: "/analytics/persona-contact", label: "페르소나 접촉률", icon: "contact" },
-      { href: "/target-audience", label: "타겟 오디언스", icon: "target" },
-      { href: "/consumer-insights", label: "소비자 인사이트", icon: "insight", soon: true },
-      { href: "/launch-impact", label: "신상품 임팩트", icon: "launch", soon: true },
-      { href: "/marketing-schedule", label: "마케팅 플랜", icon: "schedule", soon: true },
-    ],
-  },
-  {
-    title: "관리",
-    items: [
-      { href: "/master-index", label: "매체/광고주 관리", icon: "database", adminOnly: true },
-      { href: "/admin", label: "관리", icon: "admin", adminOnly: true },
-      { href: "/admin/staging", label: "데이터 스테이징", icon: "staging", adminOnly: true },
+      { href: "/industries", label: "산업별 현황", icon: "landscape" },
+      { href: "/products", label: "제품/서비스 현황", icon: "products" },
+      { href: "/competitors", label: "경쟁사 비교", icon: "competitors" },
+      { href: "/advertiser-trends", label: "광고주 트렌드", icon: "ranking" },
     ],
   },
   {
@@ -85,6 +55,39 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/guide", label: "서비스 소개", icon: "guide" },
       { href: "/manual", label: "이용 매뉴얼", icon: "manual" },
       { href: "/faq", label: "FAQ", icon: "faq" },
+    ],
+  },
+  {
+    title: "관리",
+    adminOnly: true,
+    items: [
+      { href: "/", label: "대시보드", icon: "dashboard", adminOnly: true },
+      { href: "/spend", label: "매체별 광고비", icon: "spend", adminOnly: true },
+      { href: "/master-index", label: "매체/광고주 관리", icon: "database", adminOnly: true },
+      { href: "/admin", label: "관리", icon: "admin", adminOnly: true },
+      { href: "/admin/staging", label: "데이터 스테이징", icon: "staging", adminOnly: true },
+    ],
+  },
+  {
+    title: "쇼핑 분석",
+    adminOnly: true,
+    items: [
+      { href: "/shopping-insight", label: "쇼핑인사이트", icon: "shopping" },
+      { href: "/shopping-keyword", label: "키워드 분석", icon: "keyword" },
+      { href: "/shopping-sales", label: "판매량 추정", icon: "sales" },
+      { href: "/shopping-ranking", label: "상품 순위 추적", icon: "ranking" },
+    ],
+  },
+  {
+    title: "분석 도구",
+    adminOnly: true,
+    items: [
+      { href: "/analytics/sov", label: "SOV 분석", icon: "sov" },
+      { href: "/analytics/persona-contact", label: "페르소나 접촉률", icon: "contact" },
+      { href: "/target-audience", label: "타겟 오디언스", icon: "target" },
+      { href: "/consumer-insights", label: "소비자 인사이트", icon: "insight", soon: true },
+      { href: "/launch-impact", label: "신상품 임팩트", icon: "launch", soon: true },
+      { href: "/marketing-schedule", label: "마케팅 플랜", icon: "schedule", soon: true },
     ],
   },
 ];
@@ -403,9 +406,34 @@ export function Sidebar() {
     setMounted(true);
   }, []);
 
+  const DarkModeToggle = () =>
+    mounted ? (
+      <button
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        className="flex-shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/70 transition-colors"
+        aria-label="Toggle dark mode"
+        title={theme === "dark" ? "라이트 모드" : "다크 모드"}
+      >
+        {theme === "dark" ? (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        )}
+      </button>
+    ) : null;
+
   const sidebarContent = (
     <div className="flex flex-col h-full">
-      <Link href="/about" className="block px-6 py-5 border-b border-slate-700/50 hover:bg-slate-800/50 transition-colors group">
+      {/* Logo */}
+      <Link href="/about" className="block px-6 py-4 hover:bg-slate-800/50 transition-colors group">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-900/30 group-hover:shadow-indigo-800/40 transition-shadow">
             <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-white">
@@ -420,8 +448,74 @@ export function Sidebar() {
         </div>
       </Link>
 
-      <nav className="flex-1 px-3 py-4 space-y-4">
-        {NAV_GROUPS.map((group, gi) => (
+      {/* User / Login — top */}
+      <div className="px-4 py-3 border-y border-slate-700/50">
+        {user ? (
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full bg-adscope-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+              {(user.name || user.email)?.[0]?.toUpperCase() || "U"}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium text-white truncate leading-tight">
+                {user.name || user.email}
+              </p>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className={clsx(
+                  "text-[9px] font-semibold px-1 py-0.5 rounded leading-none",
+                  user.role === "admin" ? "bg-amber-500/20 text-amber-300" :
+                  isInTrial() ? "bg-violet-500/20 text-violet-300" :
+                  user.plan === "full" ? "bg-green-500/20 text-green-300" :
+                  "bg-slate-600 text-slate-300"
+                )}>
+                  {user.role === "admin" ? "Admin" : isInTrial() ? "체험판" : user.plan === "full" ? "Full" : "Lite"}
+                </span>
+                <Link href="/settings" onClick={() => setOpen(false)} className="text-[10px] text-slate-400 hover:text-white transition-colors">설정</Link>
+                <button
+                  onClick={() => { if (window.confirm("로그아웃 하시겠습니까?")) logout(); }}
+                  className="text-[10px] text-slate-400 hover:text-white transition-colors"
+                >로그아웃</button>
+              </div>
+            </div>
+            <DarkModeToggle />
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Link
+              href="/login"
+              className="flex-1 text-center py-1.5 px-3 bg-adscope-600 hover:bg-adscope-700 text-white text-xs font-medium rounded-lg transition-colors"
+            >
+              로그인
+            </Link>
+            <Link
+              href="/pricing"
+              className="flex-1 text-center py-1.5 px-3 border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 text-xs font-medium rounded-lg transition-colors"
+            >
+              회원가입
+            </Link>
+            <DarkModeToggle />
+          </div>
+        )}
+      </div>
+
+      {!user && (
+        <div className="mx-3 mt-3 p-3 rounded-lg bg-indigo-950/60 border border-indigo-800/40">
+          <p className="text-[11px] text-indigo-300 font-medium leading-snug mb-1.5">
+            광고 데이터 전체 열람
+          </p>
+          <p className="text-[10px] text-slate-400 leading-relaxed mb-2">
+            광고주·캠페인·소재·키워드 분석 등 모든 자료는 회원가입 후 확인하실 수 있습니다.
+          </p>
+          <Link
+            href="/pricing"
+            className="block text-center py-1 px-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-medium transition-colors"
+          >
+            무료로 시작하기 →
+          </Link>
+        </div>
+      )}
+
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-4">
+        {NAV_GROUPS.filter((group) => !group.adminOnly || user?.role === "admin").map((group, gi) => (
           <div key={gi}>
             {group.title && (
               <p className="px-3 mb-2 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
@@ -472,98 +566,12 @@ export function Sidebar() {
         ))}
       </nav>
 
-      <div className="px-4 py-4 border-t border-slate-700/50 space-y-3">
-        {user ? (
-          <>
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-adscope-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                {(user.name || user.email)?.[0]?.toUpperCase() || "U"}
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-white truncate">
-                  {user.name || user.email}
-                </p>
-                <p className="text-[10px] text-slate-400 truncate">
-                  {user.company_name || user.email}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={clsx(
-                "text-[10px] font-semibold px-1.5 py-0.5 rounded",
-                user.role === "admin" ? "bg-amber-500/20 text-amber-300" :
-                isInTrial() ? "bg-violet-500/20 text-violet-300" :
-                user.plan === "full" ? "bg-green-500/20 text-green-300" :
-                "bg-slate-600 text-slate-300"
-              )}>
-                {user.role === "admin" ? "Admin" : isInTrial() ? "체험판" : user.plan === "full" ? "Full" : "Lite"}
-              </span>
-              <Link
-                href="/settings"
-                onClick={() => setOpen(false)}
-                className="text-xs text-slate-400 hover:text-white transition-colors"
-              >
-                설정
-              </Link>
-              <button
-                onClick={() => {
-                  if (window.confirm("로그아웃 하시겠습니까?")) {
-                    logout();
-                  }
-                }}
-                className="ml-auto text-xs text-slate-400 hover:text-white transition-colors"
-              >
-                로그아웃
-              </button>
-            </div>
-          </>
-        ) : (
-          <div className="space-y-2">
-            <Link
-              href="/login"
-              className="block w-full text-center py-2 px-3 bg-adscope-600 hover:bg-adscope-700 text-white text-sm font-medium rounded-lg transition-colors"
-            >
-              로그인
-            </Link>
-            <Link
-              href="/pricing"
-              className="block w-full text-center py-2 px-3 border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 text-sm font-medium rounded-lg transition-colors"
-            >
-              회원가입
-            </Link>
-          </div>
-        )}
-        {mounted && (
-          <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="w-full flex items-center justify-center gap-2 py-1.5 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-slate-800/70 transition-colors"
-            aria-label="Toggle dark mode"
-          >
-            {theme === "dark" ? (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                <circle cx="12" cy="12" r="5" />
-                <line x1="12" y1="1" x2="12" y2="3" />
-                <line x1="12" y1="21" x2="12" y2="23" />
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                <line x1="1" y1="12" x2="3" y2="12" />
-                <line x1="21" y1="12" x2="23" y2="12" />
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-              </svg>
-            )}
-            <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
-          </button>
-        )}
+      <div className="px-4 py-3 border-t border-slate-700/50">
         <a
           href="https://doubleestudio.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="block text-center text-[10px] text-slate-500 hover:text-slate-300 transition-colors mt-2"
+          className="block text-center text-[10px] text-slate-500 hover:text-slate-300 transition-colors"
         >
           Powered by DoubleE Studio
         </a>

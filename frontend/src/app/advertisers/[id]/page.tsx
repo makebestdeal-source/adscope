@@ -111,6 +111,13 @@ export default function AdvertiserDetailPage() {
     enabled: !!id,
   });
 
+  const [monthlyPeriod, setMonthlyPeriod] = useState(6);
+  const { data: monthlySpend } = useQuery({
+    queryKey: ["advertiserMonthlySpend", id, monthlyPeriod],
+    queryFn: () => api.getAdvertiserMonthlySpend(id, monthlyPeriod),
+    enabled: !!id,
+  });
+
   const { data: metaSignal } = useQuery({
     queryKey: ["metaSignalOverview", id],
     queryFn: () => api.getMetaSignalOverview(id),
@@ -721,6 +728,62 @@ export default function AdvertiserDetailPage() {
         </div>
       )}
 
+      {/* Monthly spend trend (stacked bar) */}
+      {(monthlySpend?.monthly_data?.length ?? 0) > 0 && (() => {
+        const allChannels = Array.from(
+          new Set(monthlySpend!.monthly_data.flatMap((m) => Object.keys(m.by_channel)))
+        ).sort();
+        const chartData = monthlySpend!.monthly_data.map((m) => ({
+          month: m.month,
+          ...m.by_channel,
+        }));
+        return (
+          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mb-6">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-base font-semibold text-gray-900">
+                월별 광고비 추이
+              </h2>
+              <div className="flex gap-1">
+                {[3, 6, 12].map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => setMonthlyPeriod(m)}
+                    className={`px-3 py-1 text-xs rounded-full border transition-colors ${
+                      monthlyPeriod === m
+                        ? "bg-indigo-50 border-indigo-300 text-indigo-700"
+                        : "border-gray-200 text-gray-500 hover:bg-gray-50"
+                    }`}
+                  >
+                    {m}개월
+                  </button>
+                ))}
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                <YAxis tickFormatter={(v) => formatSpend(v)} tick={{ fontSize: 11 }} />
+                <Tooltip
+                  formatter={(v: number, name: string) => [formatSpend(v), formatChannel(name)]}
+                  labelFormatter={(label) => `${label}`}
+                />
+                <Legend formatter={(value) => formatChannel(value)} wrapperStyle={{ fontSize: 11 }} />
+                {allChannels.map((ch) => (
+                  <Bar
+                    key={ch}
+                    dataKey={ch}
+                    stackId="spend"
+                    fill={CHANNEL_COLORS[ch] || "#94a3b8"}
+                    radius={0}
+                  />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      })()}
+
       {/* Recent Ads Gallery */}
       {(mb?.recent_ads || []).length > 0 && (
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
@@ -819,14 +882,16 @@ export default function AdvertiserDetailPage() {
                   <div className="px-6 py-4">
                     {/* Row 1: Campaign name + badges */}
                     <div className="flex items-center gap-2 flex-wrap mb-2">
-                      <span
-                        className={`text-[10px] font-medium px-2 py-0.5 rounded ${
-                          CHANNEL_BADGE_COLORS[c.channel] ??
-                          "bg-gray-100 text-gray-600"
-                        }`}
-                      >
-                        {formatChannel(c.channel)}
-                      </span>
+                      {(c.channels?.length ? c.channels : [c.channel]).map((ch: string) => (
+                        <span
+                          key={ch}
+                          className={`text-[10px] font-medium px-2 py-0.5 rounded ${
+                            CHANNEL_BADGE_COLORS[ch] ?? "bg-gray-100 text-gray-600"
+                          }`}
+                        >
+                          {formatChannel(ch)}
+                        </span>
+                      ))}
                       <h3 className="text-sm font-semibold text-gray-900 truncate max-w-md">
                         {detail?.campaign_name || `캠페인 #${c.id}`}
                       </h3>
@@ -993,12 +1058,20 @@ export default function AdvertiserDetailPage() {
                 활동 점수 추이
               </h3>
               <ResponsiveContainer width="100%" height={240}>
-                <LineChart data={activityTimeline.map(d => ({
-                  date: d.date?.slice(5, 10) ?? "",
-                  score: d.composite_score,
-                  campaigns: d.active_campaigns,
-                  creatives: d.creative_variants,
-                }))}>
+                <LineChart data={(() => {
+                  // Deduplicate by date (keep last entry per calendar date)
+                  const byDate = new Map<string, { date: string; score: number; campaigns: number; creatives: number }>();
+                  for (const d of activityTimeline) {
+                    const key = d.date?.slice(0, 10) ?? "";
+                    byDate.set(key, {
+                      date: d.date?.slice(5, 10) ?? "",
+                      score: d.composite_score,
+                      campaigns: d.active_campaigns,
+                      creatives: d.creative_variants,
+                    });
+                  }
+                  return Array.from(byDate.values());
+                })()}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} />
                   <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
@@ -1149,7 +1222,7 @@ export default function AdvertiserDetailPage() {
                         </td>
                         <td className="py-2 px-3 text-gray-500 whitespace-nowrap">
                           {item.publisher
-                            ? new URL(item.publisher).hostname.replace("www.", "").slice(0, 20)
+                            ? (() => { try { return new URL(item.publisher).hostname.replace("www.", "").slice(0, 20); } catch { return item.publisher.slice(0, 20); } })()
                             : "-"}
                         </td>
                         <td className="py-2 px-3 text-center">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import {
   BarChart,
   Bar,
@@ -94,6 +95,13 @@ export default function CompetitorsPage() {
   const { data: competitorData, isLoading: competitorLoading } = useQuery({
     queryKey: ["competitors", selectedAdvertiserId, days],
     queryFn: () => api.getCompetitors(selectedAdvertiserId!, days),
+    enabled: !!selectedAdvertiserId,
+  });
+
+  // Keyword reverse lookup
+  const { data: keywordData, isLoading: keywordLoading } = useQuery({
+    queryKey: ["advertiserKeywords", selectedAdvertiserId, days],
+    queryFn: () => api.getAdvertiserKeywords(selectedAdvertiserId!, days),
     enabled: !!selectedAdvertiserId,
   });
 
@@ -399,6 +407,95 @@ export default function CompetitorsPage() {
               </p>
             </div>
           )}
+
+          {/* Keyword Reverse Lookup */}
+          {keywordLoading ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400 text-sm shadow-sm">
+              키워드 역추적 중...
+            </div>
+          ) : keywordData && keywordData.keywords.length > 0 ? (
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100">
+                <h3 className="text-sm font-semibold text-gray-700">
+                  키워드 역추적
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {selectedAdvertiserName}이(가) 광고를 집행한 키워드 목록
+                </p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+                        키워드
+                      </th>
+                      <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+                        채널
+                      </th>
+                      <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+                        노출수
+                      </th>
+                      <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+                        월간 검색량
+                      </th>
+                      <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+                        CPC
+                      </th>
+                      <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+                        최근 수집
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {keywordData.keywords.map((kw) => (
+                      <tr
+                        key={kw.keyword_id}
+                        className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
+                      >
+                        <td className="py-3 px-4">
+                          <Link
+                            href={`/analytics/sov?keyword=${encodeURIComponent(kw.keyword)}`}
+                            className="font-medium text-indigo-600 hover:text-indigo-800 hover:underline"
+                          >
+                            {kw.keyword}
+                          </Link>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex flex-wrap gap-1">
+                            {kw.channels.map((ch) => (
+                              <span
+                                key={ch}
+                                className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-gray-100 text-gray-600"
+                              >
+                                {formatChannel(ch)}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 text-right tabular-nums text-gray-700">
+                          {kw.impression_count.toLocaleString()}
+                        </td>
+                        <td className="py-3 px-4 text-right tabular-nums text-gray-700">
+                          {kw.monthly_search_vol
+                            ? kw.monthly_search_vol.toLocaleString()
+                            : "-"}
+                        </td>
+                        <td className="py-3 px-4 text-right tabular-nums text-gray-700">
+                          {kw.naver_cpc
+                            ? `${kw.naver_cpc.toLocaleString()}원`
+                            : "-"}
+                        </td>
+                        <td className="py-3 px-4 text-right tabular-nums text-gray-500 text-xs">
+                          {kw.last_seen ?? "-"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : null}
         </div>
       )}
 

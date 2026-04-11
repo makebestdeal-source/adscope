@@ -14,7 +14,7 @@ interface TopAdvertiser { rank: number; advertiser_id: number; name: string; bra
 interface PromotionType { type: string; count: number; }
 interface ShoppingInsightData { summary: ShoppingSummary; top_categories: CategoryItem[]; channel_distribution: ChannelDist[]; top_advertisers: TopAdvertiser[]; promotion_types: PromotionType[]; }
 
-const CHANNEL_LABELS: Record<string, string> = { naver_search: "네이버 검색", naver_da: "네이버 DA", youtube_ads: "유튜브", google_gdn: "GDN", kakao_da: "카카오", meta: "Meta", naver_shopping: "네이버 쇼핑", tiktok_ads: "TikTok" };
+const CHANNEL_LABELS: Record<string, string> = { naver_search: "네이버 검색", naver_da: "네이버 DA", naver_shopping: "네이버 쇼핑", google_search_ads: "구글 검색광고", google_gdn: "구글 GDN", youtube_ads: "유튜브", youtube_surf: "유튜브 서핑", meta: "메타", meta_feed: "메타 피드", kakao_da: "카카오 DA", tiktok_ads: "틱톡" };
 const ACTIVITY_LABELS: Record<string, { label: string; color: string }> = { test: { label: "테스트", color: "bg-gray-100 text-gray-600" }, scale: { label: "확장", color: "bg-blue-100 text-blue-700" }, push: { label: "푸시", color: "bg-orange-100 text-orange-700" }, peak: { label: "피크", color: "bg-red-100 text-red-700" }, cooldown: { label: "쿨다운", color: "bg-green-100 text-green-700" } };
 const METHOD_LABELS: Record<string, string> = { stock: "재고 추적", purchase_cnt: "구매수 델타", review: "리뷰 속도", composite: "복합" };
 
@@ -38,7 +38,7 @@ function ConfidenceBadge({ value }: { value: number }) {
 
 /* ──────── Main Page ──────── */
 export default function ShoppingInsightPage() {
-  const [tab, setTab] = useState<"category" | "smartstore">("smartstore");
+  const [tab, setTab] = useState<"category" | "smartstore">("category");
   const [days, setDays] = useState(30);
 
   return (
@@ -64,6 +64,29 @@ export default function ShoppingInsightPage() {
           <option value={30}>30일</option>
           <option value={90}>90일</option>
         </select>
+      </div>
+
+      {/* Usage Guide */}
+      <div className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-5">
+        <h3 className="text-sm font-semibold text-green-800 mb-2">사용 가이드</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-green-700">
+          <div>
+            <p className="font-medium mb-1">카테고리 분석</p>
+            <ul className="space-y-0.5 list-disc list-inside text-green-600">
+              <li>산업별 쇼핑 광고 트렌드와 집행 현황 확인</li>
+              <li>카테고리별 광고주 수, 광고비 추정치 비교</li>
+              <li>전 기간 대비 성장률(%)로 트렌드 파악</li>
+            </ul>
+          </div>
+          <div>
+            <p className="font-medium mb-1">스마트스토어 매출 추정</p>
+            <ul className="space-y-0.5 list-disc list-inside text-green-600">
+              <li>스마트스토어 URL 입력 → 자동 매출 추정 시작</li>
+              <li>재고/구매수/리뷰 변화 기반 복합 추정 방식</li>
+              <li>일별 판매 추이 차트와 신뢰도 확인 가능</li>
+            </ul>
+          </div>
+        </div>
       </div>
 
       {/* Tabs */}

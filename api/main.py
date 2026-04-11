@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import FastAPI, File, HTTPException, Request, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -24,9 +24,11 @@ from api.routers import (
     buzz, campaign_effect, campaigns, competitors, consumer_insights, download,
     events, export, impact, industries, master_index,
     marketing_schedule, meta_signals, mobile_panel, payments, launch_impact,
-    products, smartstore, social_channels, social_impact, spend, staging,
-    stealth_surf, target_audience, trends,
+    products, public as public_router, shopping_analytics, shopping_keywords,
+    shopping_ranking_v2, smartstore, social_channels, social_impact, social_ranking,
+    spend, staging, stealth_surf, target_audience, trends,
 )
+from api.deps import require_admin
 from database import async_session, init_db
 from database.models import User
 
@@ -227,6 +229,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
+app.include_router(public_router.router, prefix="/api")
 app.include_router(auth.router)
 app.include_router(admin.router)
 app.include_router(ads.router)
@@ -242,6 +245,8 @@ app.include_router(brand_channels.router)
 app.include_router(social_channels.router)
 app.include_router(meta_signals.router)
 app.include_router(smartstore.router)
+app.include_router(shopping_analytics.router)
+app.include_router(shopping_keywords.router)
 app.include_router(social_impact.router)
 app.include_router(payments.router)
 app.include_router(advertiser_trends.router)
@@ -259,6 +264,8 @@ app.include_router(consumer_insights.router)
 app.include_router(target_audience.router)
 app.include_router(campaign_effect.router)
 app.include_router(master_index.router)
+app.include_router(social_ranking.router)
+app.include_router(shopping_ranking_v2.router)
 
 
 # ---------------------------------------------------------------------------
@@ -293,7 +300,7 @@ async def root():
 
 
 @app.get("/api/_debug_db", include_in_schema=False)
-async def debug_db():
+async def debug_db(_admin: User = Depends(require_admin)):
     """Temporary debug endpoint to diagnose DB issues."""
     import traceback
     from database import engine, DATABASE_URL
@@ -434,22 +441,6 @@ async def health():
     except Exception:
         pass
 
-    # Active users count
-    try:
-        async with engine.connect() as conn:
-            result = await conn.execute(text("SELECT COUNT(*) FROM users WHERE is_active = 1"))
-            health_status["active_users"] = result.scalar() or 0
-    except Exception:
-        pass
-
-    # Backup status
-    backup_dir = os.path.join(os.getcwd(), "backups")
-    if os.path.exists(backup_dir):
-        backups = sorted(Path(backup_dir).glob("adscope_*.db"), reverse=True)
-        if backups:
-            health_status["last_backup"] = backups[0].name
-            health_status["backup_count"] = len(backups)
-
     health_status["python"] = platform.python_version()
     return health_status
 
@@ -458,13 +449,15 @@ async def health():
 # TEMPORARY: Data upload endpoint for Railway migration
 # Remove after initial data is transferred
 # ---------------------------------------------------------------------------
+_MIGRATION_SECRET = os.getenv("MIGRATION_SECRET", "")
+
 @app.post("/api/_upload_data", include_in_schema=False)
 async def upload_data(file: UploadFile = File(...), secret: str = ""):
     """Upload gzipped DB or tar.gz images to /data volume."""
     import gzip
     import shutil
 
-    if secret != "adscope-migrate-2026":
+    if not _MIGRATION_SECRET or secret != _MIGRATION_SECRET:
         raise HTTPException(status_code=403, detail="Forbidden")
 
     filename = file.filename or "unknown"
@@ -511,9 +504,51 @@ async def upload_data(file: UploadFile = File(...), secret: str = ""):
         with open(tmp_path, "wb") as f:
             shutil.copyfileobj(file.file, f)
         with tarfile.open(tmp_path, "r:gz") as tar:
-            tar.extractall(path=str(data_dir))
+            # Path traversal 방어: ../ 경로 포함 멤버 차단
+            safe_members = []
+            for member in tar.getmembers():
+                member_path = os.path.realpath(os.path.join(str(data_dir), member.name))
+                if not member_path.startswith(os.path.realpath(str(data_dir)) + os.sep):
+                    logger.warning("Blocked unsafe tar path: %s", member.name)
+                    continue
+                safe_members.append(member)
+            tar.extractall(path=str(data_dir), members=safe_members)
         os.remove(tmp_path)
         return {"status": "ok", "extracted_to": str(data_dir)}
 
     else:
         raise HTTPException(status_code=400, detail="Only .db.gz or .tar.gz")
+
+
+@app.get("/api/_download_db", include_in_schema=False)
+async def download_db(secret: str = ""):
+    """Download the current DB as gzipped file for backup/merge."""
+    import gzip as _gzip
+
+    if not _MIGRATION_SECRET or secret != _MIGRATION_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    from database import DATABASE_URL
+    db_path_str = DATABASE_URL.split("///")[-1]
+    if not os.path.isabs(db_path_str):
+        db_path_str = os.path.join("/app", db_path_str)
+
+    if not os.path.exists(db_path_str):
+        raise HTTPException(status_code=404, detail="DB file not found")
+
+    # Compress to temp file
+    tmp_gz = "/tmp/download_db.gz"
+    with open(db_path_str, "rb") as f_in:
+        with _gzip.open(tmp_gz, "wb", compresslevel=6) as f_out:
+            while True:
+                chunk = f_in.read(4 * 1024 * 1024)
+                if not chunk:
+                    break
+                f_out.write(chunk)
+
+    from starlette.responses import FileResponse
+    return FileResponse(
+        tmp_gz,
+        media_type="application/gzip",
+        filename="adscope_server.db.gz",
+    )

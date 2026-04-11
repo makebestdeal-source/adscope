@@ -1,16 +1,17 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { api, SOVData } from "@/lib/api";
 import { formatChannel, formatPercent, CHANNEL_COLORS } from "@/lib/constants";
 import { PeriodSelector } from "@/components/PeriodSelector";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, Legend, Cell,
 } from "recharts";
 
-const CHANNELS = ["", "naver_search", "naver_da", "google_gdn", "youtube_ads", "youtube_surf", "kakao_da", "meta", "naver_shopping", "tiktok_ads"];
+const CHANNELS = ["", "naver_search", "naver_da", "naver_shopping", "google_search_ads", "google_gdn", "youtube_ads", "youtube_surf", "meta", "meta_feed", "kakao_da", "tiktok_ads"];
 const BAR_COLORS = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#f97316", "#ec4899", "#14b8a6", "#a855f7"];
 
 export default function SOVPage() {
@@ -28,6 +29,19 @@ export default function SOVPage() {
         days,
         limit: 20,
       }),
+  });
+
+  // Keyword landscape (triggers when keyword is entered)
+  const [debouncedKw, setDebouncedKw] = useState("");
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedKw(keyword), 500);
+    return () => clearTimeout(t);
+  }, [keyword]);
+
+  const { data: landscape, isLoading: landscapeLoading } = useQuery({
+    queryKey: ["keywordLandscape", debouncedKw, days],
+    queryFn: () => api.getKeywordLandscape(debouncedKw, days),
+    enabled: debouncedKw.length >= 1,
   });
 
   const { data: competitive } = useQuery({
@@ -253,7 +267,7 @@ export default function SOVPage() {
 
       {/* SOV 상세 테이블 */}
       {sovData && sovData.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-6">
           <div className="px-6 py-4 border-b border-gray-100">
             <h2 className="text-base font-semibold text-gray-900">상세 데이터</h2>
           </div>
@@ -293,6 +307,104 @@ export default function SOVPage() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* Keyword Ad Landscape */}
+      {debouncedKw && landscape && landscape.advertisers.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100">
+            <h2 className="text-base font-semibold text-gray-900">
+              키워드 광고 랜드스케이프
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              &ldquo;{debouncedKw}&rdquo; 키워드에 광고를 집행하는 광고주 {landscape.total_advertisers}개
+            </p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">#</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">광고주</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">채널</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">노출수</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">SOV</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">포지션</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">최근 수집</th>
+                </tr>
+              </thead>
+              <tbody>
+                {landscape.advertisers.map((a, idx) => (
+                  <tr
+                    key={a.advertiser_id}
+                    className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="py-3 px-4 text-gray-400 tabular-nums">{idx + 1}</td>
+                    <td className="py-3 px-4">
+                      <Link
+                        href={`/advertisers/${a.advertiser_id}`}
+                        className="font-medium text-indigo-600 hover:text-indigo-800 hover:underline"
+                      >
+                        {a.advertiser_name}
+                      </Link>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex flex-wrap gap-1">
+                        {a.channels.map((ch) => (
+                          <span
+                            key={ch}
+                            className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-gray-100 text-gray-600"
+                          >
+                            {formatChannel(ch)}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-right tabular-nums text-gray-700">
+                      {a.impression_count.toLocaleString()}
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-indigo-500"
+                            style={{ width: `${Math.min(a.sov_percentage, 100)}%` }}
+                          />
+                        </div>
+                        <span className="tabular-nums font-medium text-gray-900 w-14 text-right">
+                          {a.sov_percentage.toFixed(1)}%
+                        </span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex flex-wrap gap-1">
+                        {Object.entries(a.position_zones)
+                          .sort(([, a], [, b]) => b - a)
+                          .slice(0, 3)
+                          .map(([zone, cnt]) => (
+                            <span
+                              key={zone}
+                              className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-blue-50 text-blue-700"
+                            >
+                              {zone}: {cnt}
+                            </span>
+                          ))}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-right tabular-nums text-gray-500 text-xs">
+                      {a.last_seen ?? "-"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      {debouncedKw && landscapeLoading && (
+        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400 text-sm shadow-sm">
+          랜드스케이프 분석 중...
         </div>
       )}
     </div>

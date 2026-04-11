@@ -71,9 +71,11 @@ class UserResponse(BaseModel):
     is_active: bool
     created_at: datetime | None
     plan: str | None = None
+    paid: bool = False
     company_name: str | None = None
     plan_period: str | None = None
     plan_expires_at: datetime | None = None
+    trial_started_at: datetime | None = None
 
 
 class SessionInfo(BaseModel):
@@ -172,7 +174,12 @@ async def login(
     ))
     await db.commit()
 
-    token = create_access_token(user.id, user.email, user.role, user.plan or "lite", session_id, paid=bool(getattr(user, "payment_confirmed", False)))
+    token = create_access_token(
+        user.id, user.email, user.role, user.plan or "lite", session_id,
+        paid=bool(getattr(user, "payment_confirmed", False)),
+        plan_expires_at=user.plan_expires_at,
+        trial_started_at=getattr(user, "trial_started_at", None),
+    )
     return TokenResponse(
         access_token=token,
         user={
@@ -185,6 +192,7 @@ async def login(
             "company_name": user.company_name,
             "plan_period": user.plan_period,
             "plan_expires_at": user.plan_expires_at.isoformat() if user.plan_expires_at else None,
+            "trial_started_at": user.trial_started_at.isoformat() if getattr(user, "trial_started_at", None) else None,
         },
     )
 
@@ -374,9 +382,11 @@ async def me(user: User = Depends(get_current_user)):
         id=user.id, email=user.email, name=user.name,
         role=user.role, is_active=user.is_active, created_at=user.created_at,
         plan=user.plan or ("admin" if user.role == "admin" else "lite"),
+        paid=bool(getattr(user, "payment_confirmed", False)) or user.role == "admin",
         company_name=user.company_name,
         plan_period=user.plan_period,
         plan_expires_at=user.plan_expires_at,
+        trial_started_at=getattr(user, "trial_started_at", None),
     )
 
 
@@ -400,7 +410,12 @@ async def refresh(
         except Exception:
             pass
 
-    token = create_access_token(user.id, user.email, user.role, user.plan or "lite", session_id, paid=bool(getattr(user, "payment_confirmed", False)))
+    token = create_access_token(
+        user.id, user.email, user.role, user.plan or "lite", session_id,
+        paid=bool(getattr(user, "payment_confirmed", False)),
+        plan_expires_at=user.plan_expires_at,
+        trial_started_at=getattr(user, "trial_started_at", None),
+    )
     return TokenResponse(
         access_token=token,
         user={
@@ -717,6 +732,24 @@ NAVER_CLIENT_ID = os.getenv("NAVER_CLIENT_ID", "")
 NAVER_CLIENT_SECRET = os.getenv("NAVER_CLIENT_SECRET", "")
 OAUTH_REDIRECT_BASE = os.getenv("OAUTH_REDIRECT_BASE", "https://adscope.kr")
 
+# In-memory OAuth state store (state -> expiry timestamp)
+# TTL 10분. 서버 재시작 시 기존 state 무효화됨 (허용 가능한 동작).
+import time as _time
+_oauth_states: dict[str, float] = {}
+_OAUTH_STATE_TTL = 600  # 10 minutes
+
+def _register_oauth_state(state: str) -> None:
+    # 만료된 state 정리
+    now = _time.time()
+    expired = [k for k, exp in _oauth_states.items() if exp < now]
+    for k in expired:
+        del _oauth_states[k]
+    _oauth_states[state] = now + _OAUTH_STATE_TTL
+
+def _validate_oauth_state(state: str) -> bool:
+    exp = _oauth_states.pop(state, None)
+    return exp is not None and exp > _time.time()
+
 
 async def _oauth_login_or_register(
     db: AsyncSession, request: Request,
@@ -774,12 +807,19 @@ async def _oauth_login_or_register(
         user_agent=ua, device_fingerprint=None, success=True,
     ))
     await db.commit()
-    token = create_access_token(user.id, user.email, user.role, user.plan or "lite", session_id, paid=bool(getattr(user, "payment_confirmed", False)))
+    token = create_access_token(
+        user.id, user.email, user.role, user.plan or "lite", session_id,
+        paid=bool(getattr(user, "payment_confirmed", False)),
+        plan_expires_at=user.plan_expires_at,
+        trial_started_at=getattr(user, "trial_started_at", None),
+    )
     return {"access_token": token, "user": {
         "id": user.id, "email": user.email, "name": user.name,
         "role": user.role, "plan": user.plan or "lite",
+        "paid": bool(getattr(user, "payment_confirmed", False)) or user.role == "admin",
         "company_name": user.company_name, "plan_period": user.plan_period,
         "plan_expires_at": user.plan_expires_at.isoformat() if user.plan_expires_at else None,
+        "trial_started_at": user.trial_started_at.isoformat() if getattr(user, "trial_started_at", None) else None,
     }}
 
 
@@ -853,6 +893,7 @@ async def naver_oauth_redirect():
     if not NAVER_CLIENT_ID:
         raise HTTPException(status_code=501, detail="Naver OAuth not configured")
     state = secrets.token_urlsafe(16)
+    _register_oauth_state(state)
     params = {"client_id": NAVER_CLIENT_ID,
         "redirect_uri": f"{OAUTH_REDIRECT_BASE}/api/auth/oauth/naver/callback",
         "response_type": "code", "state": state}
@@ -861,6 +902,8 @@ async def naver_oauth_redirect():
 
 @router.get("/oauth/naver/callback")
 async def naver_oauth_callback(code: str, state: str, request: Request, db: AsyncSession = Depends(get_db)):
+    if not _validate_oauth_state(state):
+        raise HTTPException(status_code=400, detail="Invalid or expired OAuth state")
     async with httpx.AsyncClient() as client:
         tok = await client.post("https://nid.naver.com/oauth2.0/token", data={
             "grant_type": "authorization_code", "client_id": NAVER_CLIENT_ID,

@@ -20,7 +20,7 @@ const NETWORK_COLORS: Record<string, string> = {
   gdn: "#4285f4", naver: "#03c75a", kakao: "#fee500", meta: "#0668E1", other: "#9ca3af",
 };
 const NETWORK_LABELS: Record<string, string> = {
-  gdn: "Google GDN", naver: "Naver DA", kakao: "Kakao DA", meta: "Meta (FB/IG)", other: "Other",
+  gdn: "구글 GDN", naver: "네이버 DA", kakao: "카카오 DA", meta: "메타 (FB/IG)", other: "기타",
 };
 const PERSONA_LABEL_MAP: Record<string, string> = {
   M10: "10대 남성", F10: "10대 여성", M20: "20대 남성", F20: "20대 여성",
@@ -29,8 +29,9 @@ const PERSONA_LABEL_MAP: Record<string, string> = {
 };
 
 const CHANNELS = [
-  "", "naver_search", "naver_da", "google_gdn", "youtube_ads", "youtube_surf",
-  "kakao_da", "meta", "naver_shopping", "tiktok_ads",
+  "", "naver_search", "naver_da", "naver_shopping", "google_search_ads",
+  "google_gdn", "youtube_ads", "youtube_surf", "meta", "meta_feed",
+  "kakao_da", "tiktok_ads",
 ];
 
 const BAR_COLORS = [

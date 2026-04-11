@@ -8,11 +8,15 @@ import { toImageUrl } from "@/lib/image-utils";
 const CHANNEL_BADGE: Record<string, { label: string; color: string }> = {
   naver_search: { label: "네이버 검색", color: "bg-green-100 text-green-700" },
   naver_da: { label: "네이버 DA", color: "bg-emerald-100 text-emerald-700" },
-  youtube_ads: { label: "유튜브 카탈로그", color: "bg-red-100 text-red-700" },
-  youtube_surf: { label: "유튜브 접촉", color: "bg-red-50 text-red-600" },
-  google_gdn: { label: "Google GDN", color: "bg-sky-100 text-sky-700" },
+  naver_shopping: { label: "네이버 쇼핑", color: "bg-green-100 text-green-600" },
+  google_search_ads: { label: "구글 검색광고", color: "bg-sky-50 text-sky-700" },
+  google_gdn: { label: "구글 GDN", color: "bg-sky-100 text-sky-700" },
+  youtube_ads: { label: "유튜브", color: "bg-red-100 text-red-700" },
+  youtube_surf: { label: "유튜브 서핑", color: "bg-red-50 text-red-600" },
+  meta: { label: "메타", color: "bg-blue-100 text-blue-700" },
+  meta_feed: { label: "메타 피드", color: "bg-blue-50 text-blue-600" },
   kakao_da: { label: "카카오 DA", color: "bg-yellow-100 text-yellow-700" },
-  meta: { label: "Meta", color: "bg-blue-100 text-blue-700" },
+  tiktok_ads: { label: "틱톡", color: "bg-gray-100 text-gray-700" },
 };
 
 export function AdTimeline() {

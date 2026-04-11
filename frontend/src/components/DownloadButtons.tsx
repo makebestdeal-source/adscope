@@ -4,10 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import { isPaid } from "@/lib/auth";
 
 function showUpgradeAlert() {
-  alert("다운로드는 유료 회원 전용 기능입니다.\n플랜을 업그레이드해주세요.\n\n문의: admin@adscope.kr");
+  alert("다운로드는 유료 회원 전용 기능입니다.\n플랜을 업그레이드해주세요.\n\n문의: support@adscope.kr");
 }
 
-async function authDownload(url: string): Promise<boolean> {
+export async function authDownload(url: string): Promise<boolean> {
   const token = localStorage.getItem("adscope_token");
   if (!token) {
     alert("로그인이 필요합니다.");

@@ -220,9 +220,14 @@ export default function AdvertisersPage() {
     enabled: debouncedSearch.length >= 1,
   });
 
+  const { data: advStats } = useQuery({
+    queryKey: ["advertiserSummaryStats"],
+    queryFn: () => api.getAdvertiserSummaryStats(),
+  });
+
   const { data: topAdvertisers } = useQuery({
     queryKey: ["topAdvertisers30"],
-    queryFn: () => api.getTopAdvertisers(30, 200),
+    queryFn: () => api.getTopAdvertisers(30, 500),
   });
 
   const { data: brandTree, isLoading: treeLoading } = useQuery({
@@ -428,13 +433,13 @@ export default function AdvertisersPage() {
       </div>
 
       {/* 통계 카드 */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
           <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
             전체 광고주
           </p>
           <p className="text-2xl font-bold text-gray-900 mt-1 tabular-nums">
-            {isLoading ? "-" : (advertisers?.length ?? 0).toLocaleString()}
+            {advStats ? advStats.total_advertisers.toLocaleString() : "-"}
           </p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
@@ -442,17 +447,23 @@ export default function AdvertisersPage() {
             30일 활성 광고주
           </p>
           <p className="text-2xl font-bold text-gray-900 mt-1 tabular-nums">
-            {topAdvertisers?.length ?? "-"}
+            {advStats ? advStats.active_30d.toLocaleString() : "-"}
           </p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hidden lg:block">
+        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
           <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
             30일 총 노출
           </p>
           <p className="text-2xl font-bold text-gray-900 mt-1 tabular-nums">
-            {topAdvertisers
-              ? topAdvertisers.reduce((s, a) => s + a.ad_count, 0).toLocaleString()
-              : "-"}
+            {advStats ? advStats.total_exposure_30d.toLocaleString() : "-"}
+          </p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hidden lg:block">
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+            웹사이트 확인
+          </p>
+          <p className="text-2xl font-bold text-gray-900 mt-1 tabular-nums">
+            {advStats ? advStats.website_verified.toLocaleString() : "-"}
           </p>
         </div>
       </div>

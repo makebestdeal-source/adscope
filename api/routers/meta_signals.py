@@ -86,16 +86,25 @@ async def get_smartstore_timeline(
     days: int = Query(30, ge=1, le=365),
     db: AsyncSession = Depends(get_db),
 ):
-    """Get smartstore snapshot timeline for an advertiser."""
+    """Get smartstore snapshot timeline for an advertiser (1 per date, latest)."""
     cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
-    result = await db.execute(
-        select(SmartStoreSnapshot)
+    # Sub-query: keep only the latest snapshot per calendar date
+    latest_sub = (
+        select(
+            func.max(SmartStoreSnapshot.id).label("max_id"),
+        )
         .where(
             and_(
                 SmartStoreSnapshot.advertiser_id == advertiser_id,
                 SmartStoreSnapshot.captured_at >= cutoff,
             )
         )
+        .group_by(func.date(SmartStoreSnapshot.captured_at))
+        .subquery()
+    )
+    result = await db.execute(
+        select(SmartStoreSnapshot)
+        .join(latest_sub, SmartStoreSnapshot.id == latest_sub.c.max_id)
         .order_by(SmartStoreSnapshot.captured_at.asc())
     )
     return result.scalars().all()
@@ -107,16 +116,25 @@ async def get_traffic_timeline(
     days: int = Query(30, ge=1, le=365),
     db: AsyncSession = Depends(get_db),
 ):
-    """Get traffic signal timeline for an advertiser."""
+    """Get traffic signal timeline for an advertiser (1 per date, latest)."""
     cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
-    result = await db.execute(
-        select(TrafficSignal)
+    # Sub-query: keep only the latest traffic signal per calendar date
+    latest_sub = (
+        select(
+            func.max(TrafficSignal.id).label("max_id"),
+        )
         .where(
             and_(
                 TrafficSignal.advertiser_id == advertiser_id,
                 TrafficSignal.date >= cutoff,
             )
         )
+        .group_by(func.date(TrafficSignal.date))
+        .subquery()
+    )
+    result = await db.execute(
+        select(TrafficSignal)
+        .join(latest_sub, TrafficSignal.id == latest_sub.c.max_id)
         .order_by(TrafficSignal.date.asc())
     )
     return result.scalars().all()
@@ -128,16 +146,25 @@ async def get_activity_timeline(
     days: int = Query(30, ge=1, le=365),
     db: AsyncSession = Depends(get_db),
 ):
-    """Get activity score timeline for an advertiser."""
+    """Get activity score timeline for an advertiser (1 per date, latest)."""
     cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
-    result = await db.execute(
-        select(ActivityScore)
+    # Sub-query: keep only the latest activity score per calendar date
+    latest_sub = (
+        select(
+            func.max(ActivityScore.id).label("max_id"),
+        )
         .where(
             and_(
                 ActivityScore.advertiser_id == advertiser_id,
                 ActivityScore.date >= cutoff,
             )
         )
+        .group_by(func.date(ActivityScore.date))
+        .subquery()
+    )
+    result = await db.execute(
+        select(ActivityScore)
+        .join(latest_sub, ActivityScore.id == latest_sub.c.max_id)
         .order_by(ActivityScore.date.asc())
     )
     return result.scalars().all()
@@ -254,7 +281,18 @@ async def get_top_active_advertisers(
     """Get top advertisers by meta-signal composite score (for dashboard widget)."""
     cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
 
-    # Latest composite per advertiser with activity_state from ActivityScore
+    # Subquery: latest date per advertiser
+    latest_sub = (
+        select(
+            MetaSignalComposite.advertiser_id,
+            func.max(MetaSignalComposite.date).label("max_date"),
+        )
+        .where(MetaSignalComposite.date >= cutoff)
+        .group_by(MetaSignalComposite.advertiser_id)
+        .subquery()
+    )
+
+    # Join to get full row for latest date per advertiser (deduplicated)
     result = await db.execute(
         select(
             MetaSignalComposite.advertiser_id,
@@ -268,6 +306,13 @@ async def get_top_active_advertisers(
             Advertiser.brand_name,
             ActivityScore.activity_state,
         )
+        .join(
+            latest_sub,
+            and_(
+                MetaSignalComposite.advertiser_id == latest_sub.c.advertiser_id,
+                MetaSignalComposite.date == latest_sub.c.max_date,
+            ),
+        )
         .join(Advertiser, MetaSignalComposite.advertiser_id == Advertiser.id)
         .outerjoin(
             ActivityScore,
@@ -276,7 +321,6 @@ async def get_top_active_advertisers(
                 ActivityScore.date == MetaSignalComposite.date,
             ),
         )
-        .where(MetaSignalComposite.date >= cutoff)
         .order_by(MetaSignalComposite.composite_score.desc())
         .limit(limit)
     )

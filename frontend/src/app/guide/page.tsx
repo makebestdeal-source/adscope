@@ -2,171 +2,341 @@
 
 import Link from "next/link";
 
-const FEATURES = [
+/* ── Feature Sections ── */
+const GUIDE_SECTIONS = [
   {
-    title: "광고 소재 갤러리",
-    href: "/gallery",
-    description:
-      "네이버(검색/DA/쇼핑), 카카오, 구글(GDN/검색광고), 유튜브, 페이스북, 인스타그램, 틱톡 등 10개 채널에서 수집한 광고 크리에이티브를 한눈에 비교합니다. 채널/광고주/기간별 필터, AI 제품 카테고리 분류, 랜딩 페이지 분석, 크리에이티브 해시 기반 중복 제거를 제공합니다.",
+    id: "overview",
+    title: "서비스 개요",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 16v-4" strokeLinecap="round" />
+        <path d="M12 8h.01" strokeLinecap="round" />
+      </svg>
+    ),
+    content: (
+      <div className="space-y-3">
+        <p>
+          AdScope는 국내 주요 9개 디지털 광고 채널의 소재, 집행 현황, 광고비를
+          통합 모니터링하여 마케팅 의사결정에 필요한 경쟁 인텔리전스를 제공하는 B2B SaaS 플랫폼입니다.
+        </p>
+        <p>
+          <strong>광고 분석 + 소셜 분석 + 쇼핑 분석</strong>의 3축 통합 분석으로
+          디지털 마케팅 시장의 전체 그림을 파악할 수 있습니다.
+        </p>
+        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+          <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+            <p className="text-xl font-bold text-adscope-600">9</p>
+            <p className="text-xs text-gray-500">수집 채널</p>
+          </div>
+          <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+            <p className="text-xl font-bold text-adscope-600">39,000+</p>
+            <p className="text-xs text-gray-500">광고 소재</p>
+          </div>
+          <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+            <p className="text-xl font-bold text-adscope-600">6,000+</p>
+            <p className="text-xs text-gray-500">광고주</p>
+          </div>
+          <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+            <p className="text-xl font-bold text-adscope-600">11,000+</p>
+            <p className="text-xs text-gray-500">캠페인</p>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "channels",
+    title: "지원 채널 (9개)",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+        <path d="M21.21 15.89A10 10 0 1 1 8 2.83" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M22 12A10 10 0 0 0 12 2v10z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    content: (
+      <div className="space-y-3">
+        <p>페르소나 기반 접촉 측정과 카탈로그 수집을 병행하여 실제 소비자가 접하는 광고를 포착합니다.</p>
+        <div className="grid sm:grid-cols-3 gap-2">
+          {[
+            { name: "네이버 검색", tag: "SA/파워링크", color: "bg-green-100 text-green-700" },
+            { name: "네이버 DA", tag: "디스플레이", color: "bg-emerald-100 text-emerald-700" },
+            { name: "네이버 쇼핑", tag: "쇼핑 파워링크", color: "bg-lime-100 text-lime-700" },
+            { name: "카카오 DA", tag: "비즈보드/DA", color: "bg-yellow-100 text-yellow-700" },
+            { name: "구글 GDN", tag: "디스플레이 네트워크", color: "bg-sky-100 text-sky-700" },
+            { name: "구글 검색광고", tag: "Search Ads", color: "bg-cyan-100 text-cyan-700" },
+            { name: "유튜브", tag: "투명성 센터", color: "bg-red-100 text-red-700" },
+            { name: "메타(FB/IG)", tag: "Ad Library", color: "bg-blue-100 text-blue-700" },
+            { name: "틱톡", tag: "Creative Center", color: "bg-purple-100 text-purple-700" },
+          ].map((ch) => (
+            <div key={ch.name} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${ch.color}`}>{ch.tag}</span>
+              <span className="text-sm font-medium text-gray-800">{ch.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "main-menu",
+    title: "메인 메뉴",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" strokeLinecap="round" strokeLinejoin="round" />
         <circle cx="8.5" cy="8.5" r="1.5" />
-        <path d="M21 15l-5-5L5 21" />
+        <path d="M21 15l-5-5L5 21" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    plan: "Lite+",
+    content: (
+      <div className="space-y-4">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">보고서</h4>
+            <p className="text-xs text-gray-500">광고주별 맞춤 보고서를 생성합니다. 광고 소재, 매체 분석, 소셜 분석 등을 포함한 종합 리포트를 출력합니다.</p>
+          </div>
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">나의광고주</h4>
+            <p className="text-xs text-gray-500">관심 광고주를 등록하고 관리합니다. 등록된 광고주의 최신 광고 활동을 우선적으로 모니터링합니다.</p>
+          </div>
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">대시보드</h4>
+            <p className="text-xs text-gray-500">전체 광고 시장 현황을 한눈에 파악합니다. 채널별 수집 현황, 주요 광고주 활동, 트렌드 요약을 제공합니다.</p>
+          </div>
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">광고주</h4>
+            <p className="text-xs text-gray-500">기업-브랜드-제품 계층 구조로 광고주를 관리합니다. 광고주별 미디어 브레이크다운, 채널 분포, 활동 추이를 분석합니다.</p>
+          </div>
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">캠페인</h4>
+            <p className="text-xs text-gray-500">캠페인 단위로 광고 소재를 매핑하고, 캠페인별 집행 현황과 성과를 추적합니다.</p>
+          </div>
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">광고소재 / 소셜소재</h4>
+            <p className="text-xs text-gray-500">수집된 광고 크리에이티브와 소셜 콘텐츠를 갤러리 형태로 열람합니다. 채널/광고주/기간별 필터를 지원합니다.</p>
+          </div>
+          <div className="p-3 bg-gray-50 rounded-lg sm:col-span-2">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">매체별광고비</h4>
+            <p className="text-xs text-gray-500">CPC 기반 추정, 카탈로그 역추산, 메타시그널 보정의 다층 방식으로 채널별 광고비를 역추정합니다. 광고주별, 매체별 광고비 추이를 확인합니다.</p>
+          </div>
+        </div>
+      </div>
+    ),
   },
   {
-    title: "소셜 소재 분석",
-    href: "/social-gallery",
-    description:
-      "광고주의 유튜브 채널 영상과 인스타그램 공식 포스트를 모니터링합니다. 조회수, 좋아요, 댓글, 게시일 등 콘텐츠 성과 지표를 추적하고 브랜드 채널별 콘텐츠 전략을 분석합니다.",
+    id: "keyword",
+    title: "키워드분석",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8">
-        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
-        <path d="M13.73 21a2 2 0 01-3.46 0" />
-        <circle cx="18" cy="3" r="2" fill="currentColor" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+        <circle cx="11" cy="11" r="8" />
+        <path d="M21 21l-4.35-4.35" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    plan: "Full",
+    content: (
+      <div className="space-y-4">
+        <div className="grid sm:grid-cols-3 gap-3">
+          <div className="p-3 bg-amber-50 rounded-lg border border-amber-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">키워드역추적</h4>
+            <p className="text-xs text-gray-500">특정 광고주가 입찰하고 있는 검색 키워드를 역추적합니다. 경쟁사의 검색 광고 전략을 파악할 수 있습니다.</p>
+          </div>
+          <div className="p-3 bg-amber-50 rounded-lg border border-amber-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">광고랜드스케이프</h4>
+            <p className="text-xs text-gray-500">키워드별 광고 분포를 시각화합니다. 어떤 광고주가 어떤 키워드에서 경쟁하고 있는지 한눈에 파악합니다.</p>
+          </div>
+          <div className="p-3 bg-amber-50 rounded-lg border border-amber-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">광고비추이</h4>
+            <p className="text-xs text-gray-500">광고주별, 매체별 광고비 추이를 시계열로 분석합니다. 시장 투자 변화와 경쟁 역학을 추적합니다.</p>
+          </div>
+        </div>
+      </div>
+    ),
   },
   {
-    title: "광고주 리포트",
-    href: "/advertisers",
-    description:
-      "기업-브랜드-제품 계층 구조로 광고주를 관리합니다. 미디어 브레이크다운, 채널 분포, 캠페인 상세(저니/리프트), 광고모델 정보, 메타시그널 종합 점수, 활동 추이를 분석합니다.",
+    id: "market",
+    title: "시장분석",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8">
-        <circle cx="9" cy="7" r="3" />
-        <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
-        <circle cx="17" cy="8" r="2" />
-        <path d="M21 21v-1a3 3 0 0 0-2-2.8" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+        <path d="M2 20L8.5 8 13 16l4-6 5 10" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M2 20h20" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    plan: "Lite+",
+    content: (
+      <div className="space-y-4">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">산업별현황</h4>
+            <p className="text-xs text-gray-500">산업/업종별 광고 시장 규모, 주요 플레이어, 매체별 분포를 분석합니다.</p>
+          </div>
+          <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">제품서비스현황</h4>
+            <p className="text-xs text-gray-500">제품/서비스 카테고리별 광고 현황과 트렌드를 파악합니다.</p>
+          </div>
+          <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">경쟁사비교</h4>
+            <p className="text-xs text-gray-500">특정 광고주와 경쟁사의 광고 활동, 매체 믹스, 광고비를 비교 분석합니다.</p>
+          </div>
+          <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">광고주트렌드</h4>
+            <p className="text-xs text-gray-500">광고주의 시간별 활동 변화, 신규 진입/이탈 광고주, 시장 점유율 변동을 추적합니다.</p>
+          </div>
+        </div>
+      </div>
+    ),
   },
   {
-    title: "광고비 분석",
-    href: "/spend",
-    description:
-      "CPC 기반 추정, 카탈로그 역추산, 메타시그널 보정, 실집행 벤치마크 캘리브레이션의 4가지 방식을 결합하여 광고주별 광고비를 산출합니다. 채널별 시장 보정 계수(META x10.1, GDN x13.9 등)를 적용하여 실집행 수준의 정확도를 제공합니다.",
+    id: "shopping",
+    title: "쇼핑분석",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8">
-        <rect x="2" y="6" width="20" height="12" rx="2" />
-        <circle cx="12" cy="12" r="3" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M3 6h18" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M16 10a4 4 0 01-8 0" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    plan: "Lite+",
+    content: (
+      <div className="space-y-3">
+        <div className="p-3 bg-violet-50 rounded-lg border border-violet-100">
+          <h4 className="font-semibold text-gray-900 text-sm mb-1">쇼핑인사이트</h4>
+          <p className="text-xs text-gray-500">
+            네이버 쇼핑 파워링크 광고를 추적하고, 카테고리별 광고 분포와 프로모션 트렌드를 분석합니다.
+            키워드별 쇼핑 광고 경쟁 현황, 광고주별 쇼핑 전략을 파악하여 커머스 광고 전략 수립에 필요한 인사이트를 제공합니다.
+          </p>
+        </div>
+      </div>
+    ),
   },
   {
-    title: "시장 분석",
-    href: "/industries",
-    description:
-      "산업별 현황, 제품/서비스 카테고리, 경쟁사 비교, 소셜 채널 분석, 광고주 트렌드를 통해 시장 전체를 조망합니다. SOV(점유율), 접촉률, 페르소나별 광고 노출 랭킹 등 심층 분석 도구를 함께 제공합니다.",
+    id: "social",
+    title: "소셜인사이트",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8">
-        <path d="M2 20L8.5 8 13 16l4-6 5 10" />
-        <path d="M2 20h20" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M13.73 21a2 2 0 01-3.46 0" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    plan: "Lite+",
+    content: (
+      <div className="space-y-4">
+        <p className="text-sm text-gray-500">Full 플랜에서 이용 가능한 소셜 분석 기능입니다.</p>
+        <div className="grid sm:grid-cols-3 gap-3">
+          <div className="p-3 bg-rose-50 rounded-lg border border-rose-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">소셜채널분석</h4>
+            <p className="text-xs text-gray-500">브랜드 공식 YouTube/Instagram 채널의 구독자, 팔로워, 인게이지먼트 변화를 추적합니다.</p>
+          </div>
+          <div className="p-3 bg-rose-50 rounded-lg border border-rose-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">브랜드버즈</h4>
+            <p className="text-xs text-gray-500">브랜드 관련 소셜 미디어 언급량, 감성 분석, 화제성 변화를 모니터링합니다.</p>
+          </div>
+          <div className="p-3 bg-rose-50 rounded-lg border border-rose-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">캠페인효과</h4>
+            <p className="text-xs text-gray-500">캠페인 전후 소셜 반응 변화를 측정하여 캠페인의 소셜 임팩트를 분석합니다.</p>
+          </div>
+        </div>
+      </div>
+    ),
   },
   {
-    title: "소셜 채널 분석",
-    href: "/social-channels",
-    description:
-      "브랜드 공식 YouTube/Instagram 채널의 구독자, 팔로워, 인게이지먼트 변화를 추적합니다. 채널별 콘텐츠 성과와 성장 추이를 비교 분석합니다.",
+    id: "tools",
+    title: "분석도구",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8">
-        <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
-        <path d="M22 12A10 10 0 0 0 12 2v10z" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+        <path d="M22 11.08V12a10 10 0 11-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M22 4L12 14.01l-3-3" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    plan: "Full",
+    content: (
+      <div className="space-y-4">
+        <div className="grid sm:grid-cols-3 gap-3">
+          <div className="p-3 bg-sky-50 rounded-lg border border-sky-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">SOV분석</h4>
+            <p className="text-xs text-gray-500">Share of Voice(광고 점유율)를 채널별, 카테고리별로 분석합니다. 시장 내 광고 노출 비중을 파악합니다.</p>
+          </div>
+          <div className="p-3 bg-sky-50 rounded-lg border border-sky-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">페르소나접촉률</h4>
+            <p className="text-xs text-gray-500">연령/성별 페르소나별 광고 접촉 빈도를 분석합니다. 타겟 그룹별 광고 노출 랭킹을 확인합니다.</p>
+          </div>
+          <div className="p-3 bg-sky-50 rounded-lg border border-sky-100">
+            <h4 className="font-semibold text-gray-900 text-sm mb-1">타겟오디언스</h4>
+            <p className="text-xs text-gray-500">광고주가 타겟팅하는 오디언스 세그먼트를 분석합니다. 경쟁사의 타겟팅 전략을 역추적합니다.</p>
+          </div>
+        </div>
+      </div>
+    ),
   },
   {
-    title: "캠페인 분석",
-    href: "/campaigns",
-    description:
-      "캠페인별 소재 매핑, 고객 저니(노출-관심-고려-전환) 추적, 캠페인 전후 리프트 효과(검색량/소셜/매출)를 분석합니다. 캠페인 목적, 프로모션 카피, 광고 모델 정보까지 체계적으로 관리합니다.",
+    id: "data-collection",
+    title: "데이터 수집 방식",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8">
-        <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-        <path d="M22 4L12 14.01l-3-3" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="8" y1="21" x2="16" y2="21" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="12" y1="17" x2="12" y2="21" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    plan: "Lite+",
+    content: (
+      <div className="space-y-4">
+        <p>AdScope는 두 가지 방식을 병행하여 광고 데이터를 수집합니다.</p>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <h4 className="font-semibold text-gray-900 mb-2">카탈로그 수집</h4>
+            <p className="text-sm text-gray-500 mb-2">
+              광고 플랫폼이 제공하는 공개 카탈로그/API를 통해 대량의 광고 소재를 수집합니다.
+            </p>
+            <ul className="text-xs text-gray-400 space-y-1">
+              <li>YouTube Ads - 투명성 센터</li>
+              <li>Meta - Ad Library</li>
+              <li>TikTok - Creative Center</li>
+              <li>네이버 쇼핑 - 쇼핑탭 파워링크</li>
+            </ul>
+          </div>
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <h4 className="font-semibold text-gray-900 mb-2">페르소나 접촉 측정</h4>
+            <p className="text-sm text-gray-500 mb-2">
+              연령/성별별 페르소나로 실제 콘텐츠를 로드하여 어떤 광고가 노출되는지 측정합니다.
+            </p>
+            <ul className="text-xs text-gray-400 space-y-1">
+              <li>네이버 검색광고 - 키워드별 수집</li>
+              <li>네이버 DA - 메인/서비스 지면</li>
+              <li>카카오 DA - 비즈보드/DA</li>
+              <li>구글 GDN - 언론사 기사면</li>
+            </ul>
+          </div>
+        </div>
+        <p className="text-xs text-gray-400">
+          * 매일 자동 스케줄러가 수집을 수행하며, AI 모델이 제품 카테고리 분류, 광고주 매칭, 중복 제거를 자동 처리합니다.
+        </p>
+      </div>
+    ),
   },
   {
-    title: "신제품 출시 임팩트",
-    href: "/launch-impact",
-    description:
-      "신제품/신규 캠페인 런칭 전후의 광고 집행, 검색 트렌드, 소셜 반응을 종합하여 LII(Launch Impact Index) 스코어를 산출합니다. 출시 효과를 정량적으로 평가합니다.",
+    id: "export",
+    title: "데이터 내보내기 / 보고서",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8">
-        <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M14 2v6h6" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="16" y1="13" x2="8" y2="13" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="16" y1="17" x2="8" y2="17" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    plan: "Lite+",
-  },
-  {
-    title: "마케팅 스케줄 추적",
-    href: "/marketing-schedule",
-    description:
-      "광고주별 마케팅 캠페인 일정을 타임라인으로 시각화합니다. 프로모션 기간, 광고 집중 시기, 시즌 캠페인 패턴을 파악하여 경쟁사 마케팅 플랜을 예측합니다.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-        <line x1="16" y1="2" x2="16" y2="6" />
-        <line x1="8" y1="2" x2="8" y2="6" />
-        <line x1="3" y1="10" x2="21" y2="10" />
-      </svg>
+    content: (
+      <div className="space-y-3">
+        <ul className="space-y-2 text-sm text-gray-600">
+          <li className="flex items-start gap-2">
+            <span className="text-adscope-500 font-bold mt-0.5">PDF</span>
+            <span>광고주별 맞춤 보고서를 PDF로 생성합니다. 매체 분석, 광고 소재, 소셜 분석 등 섹션을 선택하여 포함할 수 있습니다.</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-adscope-500 font-bold mt-0.5">CSV</span>
+            <span>광고 소재 목록, 광고비 분석 결과, 키워드 데이터 등을 CSV로 다운로드할 수 있습니다.</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-adscope-500 font-bold mt-0.5">Excel</span>
+            <span>시장 분석, 경쟁사 비교 등 테이블 데이터를 Excel 형식으로 내보낼 수 있습니다.</span>
+          </li>
+        </ul>
+      </div>
     ),
-    plan: "Lite+",
   },
-  {
-    title: "쇼핑인사이트",
-    href: "/shopping-insight",
-    description:
-      "네이버 쇼핑 파워링크 광고를 추적하고, 카테고리별 광고 분포와 프로모션 트렌드를 분석합니다. 커머스 광고 전략 수립에 필요한 인사이트를 제공합니다.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8">
-        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-        <path d="M3 6h18" />
-        <path d="M16 10a4 4 0 01-8 0" />
-      </svg>
-    ),
-    plan: "Lite+",
-  },
-  {
-    title: "보고서 생성",
-    href: "/reports",
-    description:
-      "광고 소재와 소셜 소재를 독립적으로 선택하여 맞춤형 보고서를 생성합니다. 매체 태그, 광고주별 요약, 채널 분석 등 다양한 포맷을 지원합니다.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8">
-        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-        <path d="M14 2v6h6" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-      </svg>
-    ),
-    plan: "Lite+",
-  },
-];
-
-const CHANNELS = [
-  { name: "네이버 검색", color: "bg-green-100 text-green-700" },
-  { name: "네이버 DA", color: "bg-emerald-100 text-emerald-700" },
-  { name: "네이버 쇼핑", color: "bg-lime-100 text-lime-700" },
-  { name: "카카오 DA", color: "bg-yellow-100 text-yellow-700" },
-  { name: "Google GDN", color: "bg-sky-100 text-sky-700" },
-  { name: "Google 검색광고", color: "bg-cyan-100 text-cyan-700" },
-  { name: "YouTube Ads", color: "bg-red-100 text-red-700" },
-  { name: "Facebook", color: "bg-blue-100 text-blue-700" },
-  { name: "Instagram", color: "bg-pink-100 text-pink-700" },
-  { name: "TikTok", color: "bg-gray-100 text-gray-600" },
 ];
 
 export default function GuidePage() {
@@ -174,230 +344,107 @@ export default function GuidePage() {
     <div className="p-6 lg:p-8 max-w-5xl">
       {/* Header */}
       <div className="mb-10">
-        <h1 className="text-3xl font-bold text-gray-900">AdScope 서비스 소개</h1>
+        <h1 className="text-3xl font-bold text-gray-900">이용 매뉴얼</h1>
         <p className="text-base text-gray-500 mt-2">
-          한국 디지털 광고 통합 모니터링 인텔리전스 플랫폼
+          AdScope의 주요 기능과 활용 방법을 안내합니다.
         </p>
-        <a
-          href="/AdScope_서비스소개.pdf"
-          download
-          className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-200/50 transition-all duration-200 active:scale-[0.98] text-sm"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4.5 h-4.5">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M7 10l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M12 15V3" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          서비스 소개서 다운로드
-        </a>
+        <div className="flex flex-wrap gap-3 mt-4">
+          <a
+            href="/AdScope_서비스소개.pdf"
+            download
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-200/50 transition-all duration-200 active:scale-[0.98] text-sm"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M7 10l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M12 15V3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            서비스 소개서 다운로드
+          </a>
+          <Link
+            href="/faq"
+            className="inline-flex items-center gap-2 px-5 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-adscope-400 hover:text-adscope-600 transition-colors text-sm"
+          >
+            FAQ 바로가기
+          </Link>
+        </div>
       </div>
 
-      {/* What is AdScope */}
-      <section className="mb-12 bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl p-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">AdScope란?</h2>
-        <p className="text-gray-700 leading-relaxed">
-          AdScope는 국내 주요 디지털 광고 채널(네이버, 카카오, 구글, 유튜브, 페이스북, 인스타그램, 틱톡 등 10개 채널)의
-          광고 소재를 자동 수집하고, AI 기반으로 광고주/산업/제품 카테고리를 분류하며,
-          광고비를 역추산하여 시장 인텔리전스를 제공하는 B2B SaaS 플랫폼입니다.
-          캠페인 분석, 고객 저니 추적, 신제품 출시 임팩트 측정, 소셜 채널 모니터링,
-          스마트스토어 카테고리 분석까지 마케팅 의사결정에 필요한 종합 경쟁 인텔리전스를 제공합니다.
-        </p>
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <p className="text-2xl font-bold text-blue-600">10</p>
-            <p className="text-xs text-gray-500 mt-1">수집 채널</p>
-          </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <p className="text-2xl font-bold text-blue-600">6,200+</p>
-            <p className="text-xs text-gray-500 mt-1">수집 광고 소재</p>
-          </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <p className="text-2xl font-bold text-blue-600">630+</p>
-            <p className="text-xs text-gray-500 mt-1">모니터링 광고주</p>
-          </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <p className="text-2xl font-bold text-blue-600">24/7</p>
-            <p className="text-xs text-gray-500 mt-1">자동 수집</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Meta-Signal System */}
-      <section className="mb-12 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">메타시그널 시스템</h2>
-        <p className="text-gray-700 leading-relaxed mb-6">
-          광고 소재 수집 외에도 다양한 외부 신호를 종합하여 광고주의 실제 마케팅 활동 강도를 분석합니다.
-          4가지 구성요소가 결합되어 광고비 추정의 정확도를 높입니다.
-        </p>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl p-5 shadow-sm">
-            <h4 className="font-semibold text-gray-900 mb-1">스마트스토어 추적</h4>
-            <p className="text-sm text-gray-500">네이버 스마트스토어의 상품 변동, 리뷰 수, 판매량 추이를 추적하여 커머스 활동 지표를 생성합니다.</p>
-          </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm">
-            <h4 className="font-semibold text-gray-900 mb-1">트래픽 분석</h4>
-            <p className="text-sm text-gray-500">네이버 데이터랩 검색 트렌드와 채널 조회수를 분석하여 브랜드 관심도 변화를 수치화합니다.</p>
-          </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm">
-            <h4 className="font-semibold text-gray-900 mb-1">활동 점수</h4>
-            <p className="text-sm text-gray-500">광고 수집 빈도, 소셜 포스팅, 채널 활동 등을 종합하여 광고주별 일일 활동 점수를 산출합니다.</p>
-          </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm">
-            <h4 className="font-semibold text-gray-900 mb-1">패널 보정</h4>
-            <p className="text-sm text-gray-500">크롤링 시 자동 기록되는 AI 패널 관찰 데이터와 사용자 제출 데이터를 결합하여 추정치를 보정합니다.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Spend Estimation */}
-      <section className="mb-12 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">광고비 역추산 (4가지 방식)</h2>
-        <p className="text-gray-700 leading-relaxed mb-6">
-          단일 방법론의 한계를 극복하기 위해 4가지 독립적인 역추산 방식을 결합합니다.
-          실집행 데이터 기반 채널별 보정 계수를 적용하여 실제 광고비 대비 99~101% 일치율을 달성합니다.
-        </p>
-        <div className="space-y-3">
-          <div className="bg-white rounded-xl p-4 shadow-sm flex items-start gap-3">
-            <span className="flex-shrink-0 w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-bold">1</span>
-            <div>
-              <h4 className="font-semibold text-gray-900">CPC 기반 추정</h4>
-              <p className="text-sm text-gray-500">채널별 평균 CPC/CPV에 노출 빈도를 곱하여 기본 광고비를 산출합니다.</p>
-            </div>
-          </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm flex items-start gap-3">
-            <span className="flex-shrink-0 w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-bold">2</span>
-            <div>
-              <h4 className="font-semibold text-gray-900">카탈로그 역추산</h4>
-              <p className="text-sm text-gray-500">메타 Ad Library 등 카탈로그의 소재 수, 포맷, 활성일수를 기반으로 역추산합니다.</p>
-            </div>
-          </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm flex items-start gap-3">
-            <span className="flex-shrink-0 w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-bold">3</span>
-            <div>
-              <h4 className="font-semibold text-gray-900">메타시그널 보정</h4>
-              <p className="text-sm text-gray-500">검색량, 채널 활동, 스마트스토어 데이터로 0.7~1.5x 보정 배수를 적용합니다.</p>
-            </div>
-          </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm flex items-start gap-3">
-            <span className="flex-shrink-0 w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-bold">4</span>
-            <div>
-              <h4 className="font-semibold text-gray-900">실집행 벤치마크</h4>
-              <p className="text-sm text-gray-500">실제 미디어 집행 데이터로 채널별 매체비 대비 총수주액 비율을 캘리브레이션합니다. (META x10.1, GDN x13.9 등)</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Core Features */}
-      <section className="mb-12">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">핵심 기능</h2>
-        <div className="space-y-4">
-          {FEATURES.map((f) => (
-            <Link
-              key={f.href}
-              href={f.href}
-              className="flex items-start gap-4 p-5 bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all group"
+      {/* Table of Contents */}
+      <nav className="mb-10 bg-gray-50 rounded-2xl p-6">
+        <h2 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">목차</h2>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
+          {GUIDE_SECTIONS.map((s, i) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white hover:shadow-sm transition-all text-sm text-gray-600 hover:text-adscope-600"
             >
-              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                {f.icon}
+              <span className="text-xs font-bold text-adscope-400 w-5">{String(i + 1).padStart(2, "0")}</span>
+              {s.title}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      {/* Sections */}
+      <div className="space-y-8">
+        {GUIDE_SECTIONS.map((section, i) => (
+          <section
+            key={section.id}
+            id={section.id}
+            className="bg-white border border-gray-200 rounded-2xl p-6 md:p-8 scroll-mt-6"
+          >
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 rounded-lg bg-adscope-50 text-adscope-600 flex items-center justify-center flex-shrink-0">
+                {section.icon}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                    {f.title}
-                  </h3>
-                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
-                    f.plan === "Full" ? "bg-green-100 text-green-700" :
-                    f.plan === "Lite+" ? "bg-blue-100 text-blue-700" :
-                    "bg-gray-100 text-gray-500"
-                  }`}>
-                    {f.plan}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-500 mt-1 leading-relaxed">{f.description}</p>
+              <div>
+                <span className="text-xs font-bold text-adscope-400">{String(i + 1).padStart(2, "0")}</span>
+                <h2 className="text-lg font-bold text-gray-900">{section.title}</h2>
               </div>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5 text-gray-300 group-hover:text-blue-400 flex-shrink-0 mt-1 transition-colors">
-                <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+            </div>
+            <div className="text-sm text-gray-700 leading-relaxed">
+              {section.content}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      {/* Plans Quick Ref */}
+      <section className="mt-10 mb-8">
+        <div className="bg-gradient-to-br from-adscope-50 to-blue-50 rounded-2xl p-6 md:p-8 border border-adscope-100/50">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">요금제 안내</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="bg-white rounded-xl p-5 shadow-sm">
+              <h3 className="font-bold text-gray-900">Lite</h3>
+              <p className="text-2xl font-bold text-gray-900 mt-1">49,000<span className="text-sm font-normal text-gray-400">/월</span></p>
+              <p className="text-xs text-gray-400">연간 490,000원 (17% 할인)</p>
+              <ul className="mt-3 space-y-1 text-xs text-gray-500">
+                <li>9개 채널 광고 소재 / 광고주 리포트</li>
+                <li>키워드분석 / 시장분석 / 쇼핑분석</li>
+                <li>SOV 분석 / 페르소나 접촉률 / 보고서</li>
+              </ul>
+            </div>
+            <div className="bg-adscope-600 text-white rounded-xl p-5 shadow-sm">
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold">Full</h3>
+                <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-semibold">추천</span>
+              </div>
+              <p className="text-2xl font-bold mt-1">99,000<span className="text-sm font-normal text-adscope-200">/월</span></p>
+              <p className="text-xs text-adscope-200">연간 990,000원 (17% 할인)</p>
+              <ul className="mt-3 space-y-1 text-xs text-adscope-100">
+                <li>Lite 전체 기능 포함</li>
+                <li>소셜 소재 / 소셜 채널 / 브랜드 버즈</li>
+                <li>캠페인 효과 / 보고서 소셜 섹션</li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-4 text-center">
+            <Link href="/pricing" className="text-sm text-adscope-600 hover:text-adscope-700 font-medium">
+              상세 요금 안내 보기 &rarr;
             </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Supported Channels */}
-      <section className="mb-12">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">지원 채널 (10개)</h2>
-        <div className="flex flex-wrap gap-2">
-          {CHANNELS.map((ch) => (
-            <span key={ch.name} className={`px-3 py-1.5 rounded-full text-sm font-medium ${ch.color}`}>
-              {ch.name}
-            </span>
-          ))}
-        </div>
-        <p className="text-xs text-gray-400 mt-3">
-          * 네이버 검색/DA/쇼핑 각각 독립 수집, YouTube는 투명성 센터 + 영상 접촉 방식 병행
-        </p>
-      </section>
-
-      {/* AI Enrichment */}
-      <section className="mb-12 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl p-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">AI 기반 자동 분석</h2>
-        <p className="text-gray-700 leading-relaxed mb-6">
-          매일 새벽 AI 모델이 수집된 광고 소재를 자동 분석하여 부가 정보를 생성합니다.
-        </p>
-        <div className="grid sm:grid-cols-3 gap-4">
-          <div className="bg-white rounded-xl p-5 shadow-sm">
-            <h4 className="font-semibold text-gray-900 mb-1">제품 카테고리 분류</h4>
-            <p className="text-sm text-gray-500">DeepSeek + OpenRouter Vision 모델로 광고 소재의 제품/서비스 카테고리를 자동 분류합니다.</p>
           </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm">
-            <h4 className="font-semibold text-gray-900 mb-1">랜딩 페이지 분석</h4>
-            <p className="text-sm text-gray-500">광고 클릭 후 도달하는 랜딩 페이지를 자동 분석하여 도메인-브랜드 매핑 캐시를 구축합니다.</p>
-          </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm">
-            <h4 className="font-semibold text-gray-900 mb-1">크리에이티브 중복 제거</h4>
-            <p className="text-sm text-gray-500">SHA-256 해시 기반으로 채널 간 동일 소재를 감지하여 중복 없는 깨끗한 데이터를 유지합니다.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Plans */}
-      <section className="mb-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">요금제</h2>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-bold text-lg text-gray-900">Lite</h3>
-            <p className="text-3xl font-bold text-gray-900 mt-2">49,000<span className="text-base font-normal text-gray-400">/월</span></p>
-            <p className="text-sm text-gray-400">연간 490,000원</p>
-            <ul className="mt-4 space-y-2 text-sm text-gray-600">
-              <li className="flex items-center gap-2"><span className="text-green-500">&#10003;</span> 광고 소재 갤러리 (10개 채널)</li>
-              <li className="flex items-center gap-2"><span className="text-green-500">&#10003;</span> 광고주 리포트 (캠페인/모델/메타시그널)</li>
-              <li className="flex items-center gap-2"><span className="text-green-500">&#10003;</span> 광고비 분석 (4가지 역추산)</li>
-              <li className="flex items-center gap-2"><span className="text-green-500">&#10003;</span> 시장 분석 (산업/경쟁사/SOV/접촉률)</li>
-              <li className="flex items-center gap-2"><span className="text-green-500">&#10003;</span> 신제품 출시 임팩트 (LII)</li>
-              <li className="flex items-center gap-2"><span className="text-green-500">&#10003;</span> 마케팅 스케줄 / 쇼핑인사이트</li>
-              <li className="flex items-center gap-2"><span className="text-green-500">&#10003;</span> 보고서 생성 (광고 정보)</li>
-              <li className="flex items-center gap-2 text-gray-300"><span>&#10007;</span> 소셜 소재 갤러리</li>
-              <li className="flex items-center gap-2 text-gray-300"><span>&#10007;</span> 소셜 채널 / 브랜드 채널 분석</li>
-            </ul>
-          </div>
-          <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-xl p-6">
-            <h3 className="font-bold text-lg">Full <span className="text-xs bg-blue-500 px-2 py-0.5 rounded-full ml-2">추천</span></h3>
-            <p className="text-3xl font-bold mt-2">99,000<span className="text-base font-normal text-blue-200">/월</span></p>
-            <p className="text-sm text-blue-200">연간 990,000원</p>
-            <ul className="mt-4 space-y-2 text-sm text-blue-50">
-              <li className="flex items-center gap-2"><span>&#10003;</span> Lite 전체 기능 포함</li>
-              <li className="flex items-center gap-2"><span>&#10003;</span> 소셜 소재 갤러리 (YouTube/Instagram)</li>
-              <li className="flex items-center gap-2"><span>&#10003;</span> 브랜드 채널 분석</li>
-              <li className="flex items-center gap-2"><span>&#10003;</span> 소셜 채널 분석 (구독자/인게이지먼트)</li>
-              <li className="flex items-center gap-2"><span>&#10003;</span> 보고서 소셜 섹션 포함</li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-4 text-center">
-          <Link href="/pricing" className="text-sm text-blue-600 hover:text-blue-800 font-medium">
-            상세 요금 안내 보기 &rarr;
-          </Link>
         </div>
       </section>
     </div>

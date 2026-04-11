@@ -377,7 +377,19 @@ async def ad_gallery(
             sq = sq.where(BrandChannelContent.discovered_at <= date_to)
 
         result = await db.execute(sq)
+        # 같은 (advertiser_id, platform, title) 조합 중 조회수 높은 1개만 표시 (시각적 중복 제거)
+        _seen_title_key: dict = {}
         for row in result.all():
+            title_key = (row[1], row[6], row[2])  # advertiser_id, platform, title
+            if title_key in _seen_title_key:
+                existing_views = _seen_title_key[title_key]
+                cur_views = row[8] or 0
+                if cur_views <= existing_views:
+                    continue
+                # 더 높은 조회수 발견 → 기존 항목 제거하고 교체
+                social_items = [x for x in social_items if x.get("_title_key") != title_key]
+            _seen_title_key[title_key] = row[8] or 0
+
             extra = row[5] or {}
             local_path = _normalize_image_path(extra.get("local_image_path"))
             upload_dt = row[12]  # BrandChannelContent.upload_date
@@ -410,7 +422,11 @@ async def ad_gallery(
                 "like_count": row[9],
                 "upload_date": upload_dt.isoformat() if upload_dt else None,
                 "thumbnail_url": thumb_url,
+                "_title_key": title_key,
             })
+        # _title_key 내부 필드 제거
+        for item in social_items:
+            item.pop("_title_key", None)
 
     # ── 합치기 ──
     all_items = ad_items + social_items

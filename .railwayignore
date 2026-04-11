@@ -12,7 +12,8 @@ logs/
 .claude/
 
 # Large data files (DB lives on Railway volume, images uploaded separately)
-# adscope.db  -- 배포시 포함 (볼륨에 복사)
+adscope.db
+*.db
 adscope.db-wal
 adscope.db-shm
 adscope.db-journal
@@ -25,3 +26,9 @@ cloudflared.exe
 mobile_captures/
 crawler/mobile/
 adscope.db.bak
+adscope.db.pre_cleanup_0320
+merged_db.db
+server_db.db
+resp_adv.json
+resp_plat.json
+cookie_data/

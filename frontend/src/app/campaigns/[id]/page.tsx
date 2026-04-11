@@ -17,9 +17,11 @@ import { formatSpend } from "@/lib/constants";
 
 /* ── 상수 ── */
 const CHANNEL_COLORS: Record<string, string> = {
-  naver_search: "#03C75A", naver_da: "#1EC800", kakao_da: "#FEE500",
-  google_gdn: "#4285F4", youtube_ads: "#FF0000", meta: "#0081FB",
-  tiktok_ads: "#010101", naver_shopping: "#00C73C", google_search_ads: "#4285F4",
+  naver_search: "#03C75A", naver_da: "#1EC800", naver_shopping: "#00C73C",
+  google_search_ads: "#4285F4", google_gdn: "#4285F4",
+  youtube_ads: "#FF0000", youtube_surf: "#FF4444",
+  meta: "#0081FB", meta_feed: "#0081FB",
+  kakao_da: "#FEE500", tiktok_ads: "#010101",
 };
 
 const OBJECTIVE_LABELS: Record<string, string> = {

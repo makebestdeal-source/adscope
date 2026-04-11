@@ -139,6 +139,120 @@ async def get_brand_channel_stats(
     }
 
 
+@router.get("/content-analysis")
+async def content_analysis(
+    days: int = Query(30, ge=1, le=365),
+    platform: str = Query("", description="Filter by platform"),
+    db: AsyncSession = Depends(get_db),
+):
+    """Content performance analysis across all monitored brand channels."""
+    from datetime import timezone as tz
+
+    cutoff = datetime.now(tz.utc).replace(tzinfo=None) - timedelta(days=days)
+
+    # Base query for contents within period
+    base_filter = [BrandChannelContent.discovered_at >= cutoff]
+    if platform:
+        base_filter.append(BrandChannelContent.platform == platform)
+
+    # Summary stats
+    summary_q = select(
+        func.count(BrandChannelContent.id).label("total"),
+        func.count(func.distinct(BrandChannelContent.advertiser_id)).label("advs"),
+        func.avg(BrandChannelContent.view_count).label("avg_views"),
+        func.avg(BrandChannelContent.like_count).label("avg_likes"),
+    ).where(*base_filter)
+    summary_row = (await db.execute(summary_q)).one()
+
+    ad_count_q = select(func.count(BrandChannelContent.id)).where(
+        *base_filter, BrandChannelContent.is_ad_content == True
+    )
+    ad_count = (await db.execute(ad_count_q)).scalar() or 0
+    total = summary_row.total or 0
+    ad_pct = round((ad_count / total) * 100, 1) if total > 0 else 0
+
+    # Platform distribution
+    plat_q = (
+        select(
+            BrandChannelContent.platform,
+            func.count(BrandChannelContent.id).label("count"),
+        )
+        .where(BrandChannelContent.discovered_at >= cutoff)
+        .group_by(BrandChannelContent.platform)
+    )
+    plat_rows = (await db.execute(plat_q)).all()
+
+    # Top performing by views
+    top_q = (
+        select(BrandChannelContent, Advertiser.name.label("adv_name"))
+        .join(Advertiser, BrandChannelContent.advertiser_id == Advertiser.id)
+        .where(*base_filter, BrandChannelContent.view_count.isnot(None))
+        .order_by(desc(BrandChannelContent.view_count))
+        .limit(20)
+    )
+    top_rows = (await db.execute(top_q)).all()
+
+    # Recent content
+    recent_q = (
+        select(BrandChannelContent, Advertiser.name.label("adv_name"))
+        .join(Advertiser, BrandChannelContent.advertiser_id == Advertiser.id)
+        .where(*base_filter)
+        .order_by(desc(BrandChannelContent.discovered_at))
+        .limit(100)
+    )
+    recent_rows = (await db.execute(recent_q)).all()
+
+    # Daily uploads
+    from sqlalchemy import cast, Date
+    daily_q = (
+        select(
+            func.date(BrandChannelContent.discovered_at).label("date"),
+            func.count(BrandChannelContent.id).label("count"),
+        )
+        .where(BrandChannelContent.discovered_at >= cutoff)
+        .group_by(func.date(BrandChannelContent.discovered_at))
+        .order_by(func.date(BrandChannelContent.discovered_at))
+    )
+    daily_rows = (await db.execute(daily_q)).all()
+
+    def _content_dict(row, adv_name: str) -> dict:
+        c = row
+        return {
+            "id": c.id,
+            "advertiser_id": c.advertiser_id,
+            "advertiser_name": adv_name,
+            "platform": c.platform,
+            "content_type": c.content_type,
+            "title": c.title,
+            "thumbnail_url": c.thumbnail_url,
+            "upload_date": c.upload_date.isoformat() if c.upload_date else None,
+            "view_count": c.view_count,
+            "like_count": c.like_count,
+            "duration_seconds": c.duration_seconds,
+            "is_ad_content": c.is_ad_content or False,
+            "content_id": c.content_id,
+            "channel_url": c.channel_url,
+        }
+
+    return {
+        "summary": {
+            "total_contents": total,
+            "total_advertisers": summary_row.advs or 0,
+            "avg_views": round(summary_row.avg_views or 0),
+            "avg_likes": round(summary_row.avg_likes or 0),
+            "ad_content_pct": ad_pct,
+            "platform_dist": [
+                {"platform": r.platform, "count": r.count} for r in plat_rows
+            ],
+        },
+        "top_performing": [_content_dict(r[0], r.adv_name) for r in top_rows],
+        "recent": [_content_dict(r[0], r.adv_name) for r in recent_rows],
+        "daily_uploads": [
+            {"date": str(r.date), "count": r.count} for r in daily_rows
+        ],
+    }
+
+
 # ── Dynamic-path endpoints ──
 
 

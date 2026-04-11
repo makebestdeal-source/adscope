@@ -168,7 +168,7 @@ class AdvertiserSpendReport(BaseModel):
     period: dict[str, str] = Field(description="조회 기간 {start, end} ISO format")
     by_channel: list[ChannelSpendSummary]
     daily_trend: list[DailySpendPoint]
-    active_campaigns: list["CampaignOut"] = []
+    active_campaigns: list[dict] = []
 
 
 # ── Campaign ──
@@ -177,6 +177,7 @@ class CampaignOut(BaseModel):
     id: int
     advertiser_id: int
     channel: str
+    channels: list[str] = []  # 그룹핑 시 복수 채널 (비어있으면 channel 단일값 사용)
     first_seen: datetime
     last_seen: datetime
     is_active: bool

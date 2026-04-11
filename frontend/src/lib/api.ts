@@ -79,6 +79,22 @@ export async function fetchApi<T = any>(path: string, init?: RequestInit): Promi
   return res.json();
 }
 
+/** Fetch without authentication — for public preview endpoints. */
+export async function fetchPublicApi<T = any>(path: string): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`);
+  if (!res.ok) throw new Error(`API Error: ${res.status}`);
+  return res.json();
+}
+
+export interface PublicStats {
+  total_ads: number;
+  total_advertisers: number;
+  active_7d: number;
+  total_channels: number;
+  by_channel: Record<string, number>;
+  top_advertisers: { rank: number; name: string; locked: boolean }[];
+}
+
 // ── 기존 타입 ──
 
 export interface AdSnapshot {
@@ -205,6 +221,7 @@ export interface Campaign {
   id: number;
   advertiser_id: number;
   channel: string;
+  channels?: string[];  // 그룹핑 시 복수 채널
   first_seen: string;
   last_seen: string;
   is_active: boolean;
@@ -652,6 +669,9 @@ export interface ProductCategoryAdvertiser {
 // ── API 함수 ──
 
 export const api = {
+  // ── 퍼블릭 (no-auth) ──
+  getPublicStats: () => fetchPublicApi<PublicStats>("/public/stats"),
+
   // 광고 스냅샷
   getSnapshots: (params?: Record<string, string>) => {
     const qs = params ? "?" + new URLSearchParams(params).toString() : "";

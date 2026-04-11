@@ -88,6 +88,8 @@ async def init_db():
         await _ensure_composite_indexes(conn)
         await _ensure_visual_mark_columns(conn)
         await _ensure_oauth_columns(conn)
+        await _ensure_toss_payment_columns(conn)
+        await _ensure_researchad_schema_columns(conn)
 
 
 async def _ensure_oauth_columns(conn):
@@ -102,6 +104,23 @@ async def _ensure_oauth_columns(conn):
             await conn.exec_driver_sql(f"ALTER TABLE users ADD COLUMN {col} {typ}")
         except Exception:
             pass
+
+
+async def _ensure_toss_payment_columns(conn):
+    """Add Toss Payments columns to payment_records table."""
+    rows = await conn.exec_driver_sql("PRAGMA table_info(payment_records)")
+    existing = {row[1] for row in rows.fetchall()}
+    for col, typ in [
+        ("payment_key", "VARCHAR(200)"),
+        ("toss_response", "JSON"),
+    ]:
+        if col not in existing:
+            try:
+                await conn.exec_driver_sql(
+                    f"ALTER TABLE payment_records ADD COLUMN {col} {typ}"
+                )
+            except Exception:
+                pass
 
 
 async def _ensure_visual_mark_columns(conn):
@@ -1138,3 +1157,32 @@ async def _ensure_mobile_panel_tables(conn):
                 await conn.exec_driver_sql(idx_name)
             except Exception:
                 pass
+
+
+async def _ensure_researchad_schema_columns(conn):
+    """ResearchAD 18컬럼 표준 포맷 지원을 위한 스키마 마이그레이션."""
+    # industries: 업종 3단계 계층 (대/중/소)
+    rows = await conn.exec_driver_sql("PRAGMA table_info(industries)")
+    existing = {row[1] for row in rows.fetchall()}
+    for col, typ in [
+        ("industry_medium", "TEXT"),  # 업종(중)
+        ("industry_large", "TEXT"),   # 업종(대)
+    ]:
+        if col not in existing:
+            try:
+                await conn.exec_driver_sql(
+                    f"ALTER TABLE industries ADD COLUMN {col} {typ}"
+                )
+            except Exception:
+                pass
+
+    # brand_channel_contents: comment_count 추가
+    rows = await conn.exec_driver_sql("PRAGMA table_info(brand_channel_contents)")
+    existing = {row[1] for row in rows.fetchall()}
+    if "comment_count" not in existing:
+        try:
+            await conn.exec_driver_sql(
+                "ALTER TABLE brand_channel_contents ADD COLUMN comment_count INTEGER"
+            )
+        except Exception:
+            pass

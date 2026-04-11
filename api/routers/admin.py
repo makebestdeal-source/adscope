@@ -1037,6 +1037,76 @@ async def deactivate_user(
     return {"status": "deactivated", "user_id": user_id}
 
 
+@router.post("/users/create")
+async def create_user(
+    email: str,
+    password: str,
+    name: str | None = None,
+    company_name: str | None = None,
+    role: str = "viewer",
+    plan: str = "lite",
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(require_admin),
+):
+    """Admin: create a new user account."""
+    import bcrypt
+
+    # Check duplicate email
+    existing = await db.execute(select(User).where(User.email == email))
+    if existing.scalar_one_or_none():
+        raise HTTPException(400, "Email already exists")
+
+    if role not in ("viewer", "admin"):
+        raise HTTPException(400, "Invalid role")
+    if plan not in ("lite", "full"):
+        raise HTTPException(400, "Invalid plan")
+
+    hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    new_user = User(
+        email=email,
+        hashed_password=hashed,
+        name=name,
+        company_name=company_name,
+        role=role,
+        plan=plan,
+        is_active=True,
+    )
+    db.add(new_user)
+    await db.commit()
+    await db.refresh(new_user)
+    return {"status": "created", "user_id": new_user.id, "email": email}
+
+
+@router.delete("/users/{user_id}")
+async def delete_user(
+    user_id: int,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin),
+):
+    """Admin: permanently delete a user account."""
+    if user_id == admin.id:
+        raise HTTPException(400, "Cannot delete yourself")
+
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(404, "User not found")
+    if user.role == "admin":
+        raise HTTPException(400, "Cannot delete admin account")
+
+    # Delete related records (FK constraints)
+    for tbl in [
+        "user_sessions", "login_history", "password_reset_tokens",
+        "smartstore_tracked_products", "payment_records",
+        "api_usage_logs", "advertiser_favorites",
+    ]:
+        await db.execute(text(f'DELETE FROM "{tbl}" WHERE user_id = :uid'), {"uid": user_id})
+
+    await db.delete(user)
+    await db.commit()
+    return {"status": "deleted", "user_id": user_id}
+
+
 def _parse_float(value: str | None) -> float | None:
     if not value or not value.strip():
         return None
@@ -1133,6 +1203,60 @@ async def upload_db(
         raise HTTPException(500, f"Upload failed: {e}")
 
 
+@router.post("/restore-db")
+async def restore_db():
+    """Restore DB from .bak backup (no auth required during outage)."""
+    import shutil
+    from database import DATABASE_URL, engine
+
+    url_path = DATABASE_URL.split("///", 1)[-1]
+    if not url_path:
+        raise HTTPException(500, "Cannot determine DB path")
+
+    db_path = os.path.abspath(url_path)
+    bak_path = db_path + ".bak"
+
+    if not os.path.exists(bak_path):
+        raise HTTPException(404, f"No backup found at {bak_path}")
+
+    bak_size = os.path.getsize(bak_path) / 1e6
+
+    # Dispose all engine connections first
+    await engine.dispose()
+
+    # Remove WAL/SHM files (these cause corruption after DB replacement)
+    for suffix in ("-wal", "-shm"):
+        wal_file = db_path + suffix
+        if os.path.exists(wal_file):
+            os.remove(wal_file)
+            logger.info("Removed %s", wal_file)
+
+    # Restore from backup
+    shutil.copy2(bak_path, db_path)
+    new_size = os.path.getsize(db_path) / 1e6
+
+    # Validate restored DB
+    import sqlite3
+    conn = sqlite3.connect(db_path)
+    try:
+        integrity = conn.execute("PRAGMA integrity_check").fetchone()[0]
+        ad_count = conn.execute("SELECT COUNT(*) FROM ad_details").fetchone()[0]
+    except Exception as e:
+        conn.close()
+        raise HTTPException(500, f"Restored DB validation failed: {e}")
+    conn.close()
+
+    logger.info("DB restored from backup: %.1f MB, %d ads, integrity=%s", new_size, ad_count, integrity)
+
+    return {
+        "status": "ok",
+        "restored_from": bak_path,
+        "size_mb": round(new_size, 1),
+        "ad_count": ad_count,
+        "integrity": integrity,
+    }
+
+
 @router.post("/cleanup-no-website")
 async def cleanup_no_website(
     db: AsyncSession = Depends(get_db),
@@ -1163,4 +1287,195 @@ async def cleanup_no_website(
         "deleted_orphans": orphan_del,
         "remaining_advertisers": remaining_adv,
         "remaining_ads": remaining_ads,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Media Map -- per-channel detailed statistics
+# ---------------------------------------------------------------------------
+@router.get("/media-map")
+async def media_map(
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(require_admin),
+):
+    """Return detailed per-channel statistics for the media map."""
+    KST = timezone(timedelta(hours=9))
+    now_kst = datetime.now(KST)
+    today_start_kst = now_kst.replace(hour=0, minute=0, second=0, microsecond=0)
+    today_start_utc = today_start_kst.replace(tzinfo=None) - timedelta(hours=9)
+    week_ago_utc = today_start_utc - timedelta(days=7)
+
+    channel_stats_q = await db.execute(
+        select(
+            AdSnapshot.channel,
+            func.count(AdSnapshot.id).label("total_snapshots"),
+            func.max(AdSnapshot.captured_at).label("last_crawl"),
+        ).group_by(AdSnapshot.channel)
+    )
+    channel_basics = {row.channel: row for row in channel_stats_q.all()}
+
+    channel_ads_q = await db.execute(
+        select(AdSnapshot.channel, func.count(AdDetail.id).label("total_ads"))
+        .join(AdDetail, AdDetail.snapshot_id == AdSnapshot.id)
+        .group_by(AdSnapshot.channel)
+    )
+    channel_ads = {row[0]: row[1] for row in channel_ads_q.all()}
+
+    channel_advertisers_q = await db.execute(
+        select(AdSnapshot.channel, func.count(func.distinct(AdDetail.advertiser_id)).label("n"))
+        .join(AdDetail, AdDetail.snapshot_id == AdSnapshot.id)
+        .where(AdDetail.advertiser_id.isnot(None))
+        .group_by(AdSnapshot.channel)
+    )
+    channel_advertisers = {row[0]: row[1] for row in channel_advertisers_q.all()}
+
+    channel_keywords_q = await db.execute(
+        select(AdSnapshot.channel, func.count(func.distinct(AdSnapshot.keyword_id)).label("n"))
+        .group_by(AdSnapshot.channel)
+    )
+    channel_keywords = {row[0]: row[1] for row in channel_keywords_q.all()}
+
+    today_ads_q = await db.execute(
+        select(AdSnapshot.channel, func.count(AdDetail.id).label("n"))
+        .join(AdDetail, AdDetail.snapshot_id == AdSnapshot.id)
+        .where(AdSnapshot.captured_at >= today_start_utc)
+        .group_by(AdSnapshot.channel)
+    )
+    today_ads = {row[0]: row[1] for row in today_ads_q.all()}
+
+    week_trend_q = await db.execute(
+        select(
+            AdSnapshot.channel,
+            func.date(AdSnapshot.captured_at).label("dt"),
+            func.count(AdDetail.id).label("cnt"),
+        ).join(AdDetail, AdDetail.snapshot_id == AdSnapshot.id)
+        .where(AdSnapshot.captured_at >= week_ago_utc)
+        .group_by(AdSnapshot.channel, func.date(AdSnapshot.captured_at))
+    )
+    week_trend: dict[str, list] = {}
+    for row in week_trend_q.all():
+        ch = row[0]
+        if ch not in week_trend:
+            week_trend[ch] = []
+        week_trend[ch].append({"date": str(row[1]), "count": row[2]})
+
+    channels = []
+    for ch, basics in channel_basics.items():
+        last_dt = basics.last_crawl
+        last_kst = None
+        minutes_ago = None
+        status = "idle"
+        if last_dt:
+            last_kst_dt = last_dt + timedelta(hours=9)
+            last_kst = last_kst_dt.isoformat()
+            diff = now_kst.replace(tzinfo=None) - last_kst_dt
+            minutes_ago = int(diff.total_seconds() / 60)
+            if minutes_ago < 60:
+                status = "recent"
+            elif minutes_ago < 1440:
+                status = "today"
+            else:
+                status = "stale"
+        channels.append({
+            "channel": ch,
+            "total_snapshots": basics.total_snapshots,
+            "total_ads": channel_ads.get(ch, 0),
+            "unique_advertisers": channel_advertisers.get(ch, 0),
+            "unique_keywords": channel_keywords.get(ch, 0),
+            "today_ads": today_ads.get(ch, 0),
+            "last_crawl_kst": last_kst,
+            "minutes_ago": minutes_ago,
+            "status": status,
+            "week_trend": sorted(week_trend.get(ch, []), key=lambda x: x["date"]),
+        })
+
+    return {
+        "channels": sorted(channels, key=lambda x: x["total_ads"], reverse=True),
+        "server_time_kst": now_kst.isoformat(),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Advertiser Map -- top advertisers with channel distribution
+# ---------------------------------------------------------------------------
+@router.get("/advertiser-map")
+async def advertiser_map(
+    limit: int = 100,
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(require_admin),
+):
+    """Return top advertisers with ad counts, channel distribution, and industry."""
+    top_q = await db.execute(
+        select(
+            AdDetail.advertiser_id,
+            Advertiser.name,
+            Advertiser.brand_name,
+            Advertiser.website,
+            Industry.name.label("industry_name"),
+            func.count(AdDetail.id).label("ad_count"),
+        )
+        .join(Advertiser, Advertiser.id == AdDetail.advertiser_id)
+        .outerjoin(Industry, Industry.id == Advertiser.industry_id)
+        .where(AdDetail.advertiser_id.isnot(None))
+        .group_by(AdDetail.advertiser_id)
+        .order_by(func.count(AdDetail.id).desc())
+        .limit(limit)
+    )
+    top_rows = top_q.all()
+    adv_ids = [row.advertiser_id for row in top_rows]
+
+    ch_dist_q = await db.execute(
+        select(AdDetail.advertiser_id, AdSnapshot.channel, func.count(AdDetail.id).label("cnt"))
+        .join(AdSnapshot, AdSnapshot.id == AdDetail.snapshot_id)
+        .where(AdDetail.advertiser_id.in_(adv_ids))
+        .group_by(AdDetail.advertiser_id, AdSnapshot.channel)
+    )
+    ch_dist: dict[int, dict[str, int]] = {}
+    for row in ch_dist_q.all():
+        if row.advertiser_id not in ch_dist:
+            ch_dist[row.advertiser_id] = {}
+        ch_dist[row.advertiser_id][row.channel] = row.cnt
+
+    advertisers = []
+    for row in top_rows:
+        advertisers.append({
+            "id": row.advertiser_id,
+            "name": row.name,
+            "brand_name": row.brand_name,
+            "website": row.website,
+            "industry": row.industry_name,
+            "ad_count": row.ad_count,
+            "channels": ch_dist.get(row.advertiser_id, {}),
+        })
+
+    total_advertisers = (await db.execute(select(func.count(Advertiser.id)))).scalar() or 0
+    with_website = (await db.execute(
+        select(func.count(Advertiser.id))
+        .where(Advertiser.website.isnot(None))
+        .where(Advertiser.website != "")
+    )).scalar() or 0
+    with_industry = (await db.execute(
+        select(func.count(Advertiser.id))
+        .where(Advertiser.industry_id.isnot(None))
+    )).scalar() or 0
+
+    ind_dist_q = await db.execute(
+        select(Industry.name, func.count(Advertiser.id).label("cnt"))
+        .join(Advertiser, Advertiser.industry_id == Industry.id)
+        .group_by(Industry.name)
+        .order_by(func.count(Advertiser.id).desc())
+        .limit(20)
+    )
+
+    return {
+        "advertisers": advertisers,
+        "summary": {
+            "total": total_advertisers,
+            "with_website": with_website,
+            "with_industry": with_industry,
+        },
+        "industry_distribution": [
+            {"industry": row[0], "count": row[1]}
+            for row in ind_dist_q.all()
+        ],
     }

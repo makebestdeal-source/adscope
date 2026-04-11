@@ -18,7 +18,7 @@ import {
 } from "@/lib/api";
 import { formatChannel, formatSpend, CHANNEL_COLORS } from "@/lib/constants";
 import { toImageUrl } from "@/lib/image-utils";
-import { AdvertiserDownloadDropdown } from "@/components/DownloadButtons";
+import { AdvertiserDownloadDropdown, authDownload } from "@/components/DownloadButtons";
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, LineChart, Line,
@@ -1129,6 +1129,182 @@ function StatCard({ label, value }: { label: string; value: string }) {
   );
 }
 
+// ── Scope별 Raw Data 다운로드 ──
+type ScopeTab = "ad" | "social" | "shop";
+
+const SCOPE_TABS: { key: ScopeTab; label: string; desc: string; color: string }[] = [
+  { key: "ad", label: "Ad Scope", desc: "광고소재 / 광고주 / 캠페인 / 광고비", color: "indigo" },
+  { key: "social", label: "Social Scope", desc: "채널 / 콘텐츠 / 통계 추이", color: "emerald" },
+  { key: "shop", label: "Shop Scope", desc: "추적상품 / 상품 스냅샷", color: "amber" },
+];
+
+const AD_CHANNELS = [
+  { value: "", label: "전체 채널" },
+  { value: "naver_search", label: "네이버 검색" },
+  { value: "naver_da", label: "네이버 DA" },
+  { value: "naver_shopping", label: "네이버 쇼핑" },
+  { value: "google_search_ads", label: "구글 검색광고" },
+  { value: "google_gdn", label: "구글 GDN" },
+  { value: "youtube_ads", label: "유튜브" },
+  { value: "youtube_surf", label: "유튜브 서핑" },
+  { value: "meta", label: "메타" },
+  { value: "meta_feed", label: "메타 피드" },
+  { value: "kakao_da", label: "카카오 DA" },
+  { value: "tiktok_ads", label: "틱톡" },
+];
+
+const SOCIAL_PLATFORMS = [
+  { value: "", label: "전체 플랫폼" },
+  { value: "youtube", label: "YouTube" },
+  { value: "instagram", label: "Instagram" },
+  { value: "meta", label: "메타" },
+];
+
+function ScopeDownloadPanel() {
+  const [scope, setScope] = useState<ScopeTab>("ad");
+  const [days, setDays] = useState(30);
+  const [advertiserId, setAdvertiserId] = useState<number | null>(null);
+  const [advertiserName, setAdvertiserName] = useState("");
+  const [channel, setChannel] = useState("");
+  const [platform, setPlatform] = useState("");
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    const dateTo = new Date();
+    const dateFrom = new Date();
+    dateFrom.setDate(dateFrom.getDate() - days);
+
+    const params = new URLSearchParams();
+    params.set("date_from", dateFrom.toISOString());
+    params.set("date_to", dateTo.toISOString());
+    if (advertiserId) params.set("advertiser_id", String(advertiserId));
+
+    if (scope === "ad" && channel) params.set("channel", channel);
+    if (scope === "social" && platform) params.set("platform", platform);
+
+    await authDownload(`/api/export/${scope}-scope.xlsx?${params.toString()}`);
+    setTimeout(() => setDownloading(false), 2000);
+  };
+
+  const tabColors: Record<ScopeTab, { active: string; ring: string; btn: string }> = {
+    ad: { active: "bg-indigo-600 text-white", ring: "ring-indigo-200", btn: "bg-indigo-600 hover:bg-indigo-700" },
+    social: { active: "bg-emerald-600 text-white", ring: "ring-emerald-200", btn: "bg-emerald-600 hover:bg-emerald-700" },
+    shop: { active: "bg-amber-600 text-white", ring: "ring-amber-200", btn: "bg-amber-600 hover:bg-amber-700" },
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-5">
+      <div className="flex items-center gap-2 mb-1">
+        <div className="w-6 h-6 rounded bg-green-100 text-green-700 flex items-center justify-center text-xs font-bold">XLS</div>
+        <h2 className="text-lg font-bold text-gray-900">Raw Data 다운로드</h2>
+      </div>
+
+      {/* Scope 탭 */}
+      <div className="flex gap-2">
+        {SCOPE_TABS.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => { setScope(t.key); setChannel(""); setPlatform(""); }}
+            className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+              scope === t.key
+                ? `${tabColors[t.key].active} shadow-sm ring-2 ${tabColors[t.key].ring}`
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Scope 설명 */}
+      <p className="text-sm text-gray-500">
+        {SCOPE_TABS.find((t) => t.key === scope)?.desc}
+      </p>
+
+      {/* 필터 */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* 기간 */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-1.5">기간</label>
+          <div className="flex gap-1.5">
+            {[7, 14, 30, 60, 90].map((d) => (
+              <button
+                key={d}
+                onClick={() => setDays(d)}
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+                  days === d
+                    ? `${tabColors[scope].active}`
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {d}일
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 광고주 (선택) */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-1.5">광고주 (선택)</label>
+          <AdvertiserSearch
+            onSelect={(id, name) => { setAdvertiserId(id); setAdvertiserName(name); }}
+          />
+          {advertiserId && (
+            <div className="mt-1 flex items-center gap-1">
+              <span className="text-xs text-indigo-600 font-medium">{advertiserName}</span>
+              <button onClick={() => { setAdvertiserId(null); setAdvertiserName(""); }} className="text-xs text-gray-400 hover:text-red-500">x</button>
+            </div>
+          )}
+        </div>
+
+        {/* 채널/플랫폼 필터 */}
+        {scope === "ad" && (
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1.5">채널</label>
+            <select
+              value={channel}
+              onChange={(e) => setChannel(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
+            >
+              {AD_CHANNELS.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
+            </select>
+          </div>
+        )}
+        {scope === "social" && (
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1.5">플랫폼</label>
+            <select
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
+            >
+              {SOCIAL_PLATFORMS.map((p) => (
+                <option key={p.value} value={p.value}>{p.label}</option>
+              ))}
+            </select>
+          </div>
+        )}
+        {scope === "shop" && <div />}
+      </div>
+
+      {/* 다운로드 버튼 */}
+      <button
+        onClick={handleDownload}
+        disabled={downloading}
+        className={`w-full py-3 rounded-lg text-sm font-semibold text-white transition-colors ${
+          downloading ? "bg-gray-400 cursor-not-allowed" : tabColors[scope].btn
+        }`}
+      >
+        {downloading ? "다운로드 중..." : `${SCOPE_TABS.find((t) => t.key === scope)?.label} Excel 다운로드`}
+      </button>
+    </div>
+  );
+}
+
+
 // ── 메인 페이지 ──
 export default function ReportsPage() {
   const [config, setConfig] = useState<ReportConfig>(DEFAULT_CONFIG);
@@ -1187,9 +1363,19 @@ export default function ReportsPage() {
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">보고서 생성</h1>
-            <p className="text-sm text-gray-500">원하는 항목을 선택하여 맞춤 보고서를 생성하세요</p>
+            <h1 className="text-2xl font-bold text-gray-900">보고서</h1>
+            <p className="text-sm text-gray-500">Scope별 Raw Data 다운로드 및 맞춤 보고서 생성</p>
           </div>
+        </div>
+
+        {/* Scope별 Raw Data 다운로드 */}
+        <ScopeDownloadPanel />
+
+        {/* 구분선 */}
+        <div className="my-8 flex items-center gap-3">
+          <div className="h-px flex-1 bg-gray-200" />
+          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">커스텀 보고서</span>
+          <div className="h-px flex-1 bg-gray-200" />
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">

@@ -62,6 +62,49 @@ KST = timezone(timedelta(hours=9))
 # ── 기존 API ──
 
 
+@router.get("/summary-stats")
+async def advertiser_summary_stats(
+    db: AsyncSession = Depends(get_db),
+):
+    """광고주 페이지 상단 통계 카드용 -- 전체/활성/노출 수."""
+    cutoff = datetime.utcnow() - timedelta(days=30)
+
+    total = (await db.execute(select(func.count(Advertiser.id)))).scalar_one()
+
+    # 30일 내 광고 노출이 있는 고유 광고주명 수
+    active_q = (
+        select(func.count(func.distinct(AdDetail.advertiser_name_raw)))
+        .join(AdSnapshot)
+        .where(AdSnapshot.captured_at >= cutoff)
+        .where(AdDetail.advertiser_name_raw.isnot(None))
+        .where(AdDetail.advertiser_name_raw != "")
+    )
+    active_count = (await db.execute(active_q)).scalar_one()
+
+    # 30일 총 노출 수
+    exposure_q = (
+        select(func.count(AdDetail.id))
+        .join(AdSnapshot)
+        .where(AdSnapshot.captured_at >= cutoff)
+    )
+    total_exposure = (await db.execute(exposure_q)).scalar_one()
+
+    # 웹사이트 확인된 광고주 수
+    verified = (await db.execute(
+        select(func.count(Advertiser.id)).where(
+            Advertiser.website.isnot(None),
+            Advertiser.website != "",
+        )
+    )).scalar_one()
+
+    return {
+        "total_advertisers": total,
+        "active_30d": active_count,
+        "total_exposure_30d": total_exposure,
+        "website_verified": verified,
+    }
+
+
 @router.get("", response_model=list[AdvertiserOut])
 async def list_advertisers(
     industry_id: int | None = None,
@@ -81,6 +124,17 @@ async def list_advertisers(
     query = query.offset(offset).limit(limit)
     result = await db.execute(query)
     return result.scalars().all()
+
+
+_NON_ADVERTISER_NAMES = frozenset({
+    "ader", "blog", "map",
+    "keywordad", "textad", "powerlink", "shopping",
+    "banner", "text", "video", "display_banner",
+    "gdn_display", "google_search_text", "kakao_banner",
+    "kakao_native", "naver_shopping_ad", "social_library",
+    "tiktok_creative_center", "youtube_transparency", "phone_da",
+    "naver", "daum", "kakao",
+})
 
 
 @router.get("/ranking/top")
@@ -103,6 +157,11 @@ async def top_advertisers(
         .where(AdSnapshot.captured_at >= cutoff)
         .where(AdDetail.advertiser_name_raw.isnot(None))
         .where(AdDetail.advertiser_name_raw != "")
+        .where(func.lower(AdDetail.advertiser_name_raw).notin_(_NON_ADVERTISER_NAMES))
+        .where(~AdDetail.advertiser_name_raw.like("m.%.%"))
+        .where(~AdDetail.advertiser_name_raw.like("www.%"))
+        .where(~AdDetail.advertiser_name_raw.like("tr.ad.%"))
+        .where(~AdDetail.advertiser_name_raw.like("%://%"))
         .group_by(AdDetail.advertiser_name_raw)
         .order_by(func.count(AdDetail.id).desc())
         .limit(limit)
@@ -1166,6 +1225,40 @@ async def advertiser_spend_report(
         for d, s in sorted(daily_data.items())
     ]
 
+    # 캠페인 월별+제품 그룹핑 (같은 광고주+월+제품이면 채널 합산)
+    from collections import defaultdict
+    grouped: dict[tuple, dict] = defaultdict(lambda: {
+        "id": None, "advertiser_id": None, "channels": [], "channel": "",
+        "first_seen": None, "last_seen": None, "is_active": False,
+        "total_est_spend": 0.0, "snapshot_count": 0,
+    })
+    for c in campaigns:
+        month = c.first_seen.strftime("%Y-%m") if c.first_seen else "unknown"
+        product = (c.product_service or "").strip()
+        key = (c.advertiser_id, month, product)
+        g = grouped[key]
+        if g["id"] is None:
+            g["id"] = c.id
+            g["advertiser_id"] = c.advertiser_id
+            g["first_seen"] = c.first_seen
+            g["last_seen"] = c.last_seen
+        else:
+            if c.first_seen and c.first_seen < g["first_seen"]:
+                g["first_seen"] = c.first_seen
+            if c.last_seen and c.last_seen > g["last_seen"]:
+                g["last_seen"] = c.last_seen
+        if c.channel not in g["channels"]:
+            g["channels"].append(c.channel)
+        g["total_est_spend"] += c.total_est_spend or 0
+        g["snapshot_count"] += c.snapshot_count or 0
+        if c.is_active:
+            g["is_active"] = True
+
+    grouped_campaigns = sorted(grouped.values(), key=lambda x: x["last_seen"] or "", reverse=True)
+    for g in grouped_campaigns:
+        g["channel"] = g["channels"][0] if len(g["channels"]) == 1 else "multi"
+        g["total_est_spend"] = round(g["total_est_spend"])
+
     return AdvertiserSpendReport(
         advertiser=advertiser,
         total_est_spend=round(total_spend, 2),
@@ -1175,8 +1268,78 @@ async def advertiser_spend_report(
         },
         by_channel=by_channel,
         daily_trend=daily_trend,
-        active_campaigns=campaigns[:20],
+        active_campaigns=grouped_campaigns[:20],
     )
+
+
+@router.get("/{advertiser_id}/monthly-spend")
+async def advertiser_monthly_spend(
+    advertiser_id: int,
+    months: int = Query(default=6, le=12, description="조회 기간 (개월)"),
+    include_children: bool = Query(default=True, description="하위 계열사 합산"),
+    db: AsyncSession = Depends(get_db),
+):
+    """월별 채널별 광고비 추이.
+
+    SpendEstimate를 월 단위로 GROUP BY 하여 채널별 추이를 반환합니다.
+    """
+    result = await db.execute(
+        select(Advertiser).where(Advertiser.id == advertiser_id)
+    )
+    advertiser = result.scalar_one_or_none()
+    if not advertiser:
+        raise HTTPException(status_code=404, detail="광고주를 찾을 수 없습니다")
+
+    target_ids = {advertiser_id}
+    if include_children:
+        children_result = await db.execute(
+            select(Advertiser.id).where(Advertiser.parent_id == advertiser_id)
+        )
+        for row in children_result.all():
+            target_ids.add(row[0])
+
+    cutoff = datetime.utcnow() - timedelta(days=months * 30)
+
+    campaign_result = await db.execute(
+        select(Campaign.id).where(Campaign.advertiser_id.in_(list(target_ids)))
+    )
+    campaign_ids = [r[0] for r in campaign_result.all()]
+
+    if not campaign_ids:
+        return {"advertiser_id": advertiser_id, "monthly_data": []}
+
+    spend_q = (
+        select(
+            func.strftime('%Y-%m', SpendEstimate.date).label("month"),
+            SpendEstimate.channel,
+            func.sum(SpendEstimate.est_daily_spend).label("monthly_spend"),
+        )
+        .where(
+            SpendEstimate.campaign_id.in_(campaign_ids),
+            SpendEstimate.date >= cutoff,
+        )
+        .group_by("month", SpendEstimate.channel)
+        .order_by("month")
+    )
+    spend_rows = (await db.execute(spend_q)).all()
+
+    # 월별로 그룹핑
+    monthly_map: dict[str, dict[str, float]] = {}
+    for month, channel, spend in spend_rows:
+        if month not in monthly_map:
+            monthly_map[month] = {}
+        monthly_map[month][channel] = round(spend or 0)
+
+    monthly_data = [
+        {
+            "month": m,
+            "total_spend": sum(channels.values()),
+            "by_channel": channels,
+        }
+        for m, channels in sorted(monthly_map.items())
+    ]
+
+    return {"advertiser_id": advertiser_id, "monthly_data": monthly_data}
 
 
 # ── 기존 상세/캠페인 API ──

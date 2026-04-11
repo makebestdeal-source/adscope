@@ -9,7 +9,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
-from database.models import AdDetail, AdSnapshot, Persona
+from database.models import AdDetail, AdSnapshot, Advertiser, Keyword, Persona
 from database.schemas import (
     ContactRateOut, ContactRateTrendPoint, CompetitiveSOVOut, SOVOut,
     PersonaAdvertiserRankOut, PersonaHeatmapCellOut, PersonaRankingTrendPoint,
@@ -171,6 +171,88 @@ async def get_sov_trend(
         }
         for r in results
     ]
+
+
+@router.get("/sov/keyword-landscape")
+async def keyword_landscape(
+    keyword: str = Query(..., description="검색 키워드"),
+    days: int = Query(default=30, le=365),
+    limit: int = Query(default=30, le=100),
+    db: AsyncSession = Depends(get_db),
+):
+    """키워드별 광고 랜드스케이프 — 해당 키워드에 광고하는 모든 광고주 상세."""
+    cutoff = datetime.utcnow() - timedelta(days=days)
+
+    # 키워드 검색
+    kw_result = await db.execute(
+        select(Keyword.id, Keyword.keyword)
+        .where(Keyword.keyword.ilike(f"%{keyword}%"))
+    )
+    kw_rows = kw_result.all()
+    if not kw_rows:
+        return {"keyword": keyword, "keyword_ids": [], "total_advertisers": 0, "advertisers": []}
+
+    keyword_ids = [r[0] for r in kw_rows]
+
+    # 광고주별 집계
+    q = (
+        select(
+            Advertiser.id.label("advertiser_id"),
+            Advertiser.name.label("advertiser_name"),
+            AdSnapshot.channel,
+            AdDetail.position_zone,
+            func.count(AdDetail.id).label("cnt"),
+            func.max(AdSnapshot.captured_at).label("last_seen"),
+        )
+        .select_from(AdDetail)
+        .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+        .join(Advertiser, AdDetail.advertiser_id == Advertiser.id)
+        .where(
+            AdSnapshot.keyword_id.in_(keyword_ids),
+            AdSnapshot.captured_at >= cutoff,
+            AdDetail.advertiser_id.isnot(None),
+        )
+        .group_by(Advertiser.id, Advertiser.name, AdSnapshot.channel, AdDetail.position_zone)
+    )
+    rows = (await db.execute(q)).all()
+
+    # 광고주별로 합산
+    adv_map: dict[int, dict] = {}
+    total_impressions = 0
+    for r in rows:
+        aid = r.advertiser_id
+        if aid not in adv_map:
+            adv_map[aid] = {
+                "advertiser_id": aid,
+                "advertiser_name": r.advertiser_name,
+                "channels": set(),
+                "impression_count": 0,
+                "position_zones": {},
+                "last_seen": None,
+            }
+        adv_map[aid]["channels"].add(r.channel)
+        adv_map[aid]["impression_count"] += r.cnt
+        total_impressions += r.cnt
+        if r.position_zone:
+            pz = adv_map[aid]["position_zones"]
+            pz[r.position_zone] = pz.get(r.position_zone, 0) + r.cnt
+        if r.last_seen:
+            ls = r.last_seen.strftime("%Y-%m-%d")
+            if not adv_map[aid]["last_seen"] or ls > adv_map[aid]["last_seen"]:
+                adv_map[aid]["last_seen"] = ls
+
+    # SOV 계산 + 정렬
+    advertisers = sorted(adv_map.values(), key=lambda x: -x["impression_count"])[:limit]
+    for a in advertisers:
+        a["channels"] = sorted(a["channels"])
+        a["sov_percentage"] = round(a["impression_count"] / total_impressions * 100, 1) if total_impressions else 0
+
+    return {
+        "keyword": keyword,
+        "keyword_ids": keyword_ids,
+        "total_advertisers": len(adv_map),
+        "advertisers": advertisers,
+    }
 
 
 # ── Persona Ranking ──

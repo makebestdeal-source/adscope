@@ -69,26 +69,38 @@ async def list_campaigns_enriched(
     offset: int = 0,
     db: AsyncSession = Depends(get_db),
 ):
-    """캠페인 목록 (광고주명 포함). 프론트 캠페인 리스트 페이지용."""
+    """캠페인 목록 (광고주+월+제품 기준 그룹핑). 프론트 캠페인 리스트 페이지용.
+
+    동일 광고주 + 동일 월 + 동일 제품(product_service)이면 채널을 합산해 1개 캠페인으로 표시.
+    product_service가 NULL/빈값이면 같은 제품으로 간주.
+    """
+    from sqlalchemy import Integer, cast as sa_cast
+
+    month_expr = func.strftime("%Y-%m", Campaign.first_seen)
+    product_expr = func.coalesce(Campaign.product_service, "")
+
     query = (
         select(
-            Campaign.id,
+            func.min(Campaign.id).label("id"),
             Campaign.advertiser_id,
             Advertiser.name.label("advertiser_name"),
-            Campaign.channel,
-            Campaign.campaign_name,
-            Campaign.objective,
-            Campaign.product_service,
-            Campaign.model_info,
-            Campaign.promotion_copy,
-            Campaign.first_seen,
-            Campaign.last_seen,
-            Campaign.is_active,
-            Campaign.total_est_spend,
-            Campaign.snapshot_count,
-            Campaign.status,
+            month_expr.label("month"),
+            product_expr.label("product_service"),
+            func.group_concat(Campaign.channel).label("channels_raw"),
+            func.group_concat(Campaign.id).label("campaign_ids_raw"),
+            func.sum(Campaign.total_est_spend).label("total_est_spend"),
+            func.min(Campaign.first_seen).label("first_seen"),
+            func.max(Campaign.last_seen).label("last_seen"),
+            func.sum(Campaign.snapshot_count).label("snapshot_count"),
+            func.max(Campaign.campaign_name).label("campaign_name"),
+            func.max(Campaign.objective).label("objective"),
+            func.max(Campaign.model_info).label("model_info"),
+            func.max(Campaign.promotion_copy).label("promotion_copy"),
+            func.max(Campaign.status).label("status"),
+            func.max(sa_cast(Campaign.is_active, Integer)).label("is_active"),
         )
         .outerjoin(Advertiser, Campaign.advertiser_id == Advertiser.id)
+        .group_by(Campaign.advertiser_id, month_expr, product_expr)
     )
 
     if channel:
@@ -104,15 +116,14 @@ async def list_campaigns_enriched(
             | (Campaign.model_info.ilike(pat))
         )
 
-    # 정렬
+    # 정렬 (집계 함수 기반)
     sort_col = {
-        "last_seen": Campaign.last_seen,
-        "first_seen": Campaign.first_seen,
-        "total_est_spend": Campaign.total_est_spend,
+        "last_seen": func.max(Campaign.last_seen),
+        "first_seen": func.min(Campaign.first_seen),
+        "total_est_spend": func.sum(Campaign.total_est_spend),
         "advertiser_name": Advertiser.name,
-        "channel": Campaign.channel,
-        "snapshot_count": Campaign.snapshot_count,
-    }.get(sort_by, Campaign.last_seen)
+        "snapshot_count": func.sum(Campaign.snapshot_count),
+    }.get(sort_by, func.max(Campaign.last_seen))
 
     if sort_dir == "asc":
         query = query.order_by(sort_col.asc())
@@ -129,29 +140,38 @@ async def list_campaigns_enriched(
 
     rows = (await db.execute(query.offset(offset).limit(limit))).all()
 
+    items = []
+    for r in rows:
+        # GROUP_CONCAT 결과에서 채널 중복 제거
+        channels = list(dict.fromkeys((r.channels_raw or "").split(",")))
+        channels = [c for c in channels if c]
+        campaign_ids = [int(x) for x in (r.campaign_ids_raw or "").split(",") if x.strip()]
+
+        items.append({
+            "id": r.id,
+            "campaign_ids": campaign_ids,
+            "advertiser_id": r.advertiser_id,
+            "advertiser_name": r.advertiser_name,
+            "channel": channels[0] if len(channels) == 1 else "multi",
+            "channels": channels,
+            "month": r.month,
+            "campaign_name": r.campaign_name,
+            "objective": r.objective,
+            "product_service": r.product_service or None,
+            "model_info": r.model_info,
+            "promotion_copy": r.promotion_copy,
+            "first_seen": r.first_seen.isoformat() if r.first_seen else None,
+            "last_seen": r.last_seen.isoformat() if r.last_seen else None,
+            "is_active": bool(r.is_active),
+            "total_est_spend": round(r.total_est_spend or 0),
+            "snapshot_count": r.snapshot_count or 0,
+            "status": r.status,
+        })
+
     return {
         "total": total,
         "total_spend_sum": total_spend_sum,
-        "items": [
-            {
-                "id": r.id,
-                "advertiser_id": r.advertiser_id,
-                "advertiser_name": r.advertiser_name,
-                "channel": r.channel,
-                "campaign_name": r.campaign_name,
-                "objective": r.objective,
-                "product_service": r.product_service,
-                "model_info": r.model_info,
-                "promotion_copy": r.promotion_copy,
-                "first_seen": r.first_seen.isoformat() if r.first_seen else None,
-                "last_seen": r.last_seen.isoformat() if r.last_seen else None,
-                "is_active": r.is_active,
-                "total_est_spend": round(r.total_est_spend or 0),
-                "snapshot_count": r.snapshot_count or 0,
-                "status": r.status,
-            }
-            for r in rows
-        ],
+        "items": items,
     }
 
 

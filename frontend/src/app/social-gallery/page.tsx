@@ -11,7 +11,7 @@ import { GallerySelectionDownload } from "@/components/DownloadButtons";
 const PLATFORM_OPTIONS = [
   { value: "", label: "전체 플랫폼" },
   { value: "youtube", label: "YouTube" },
-  { value: "meta", label: "Meta" },
+  { value: "meta", label: "메타" },
 ];
 
 function formatViewCount(n: number | null | undefined): string {
@@ -252,7 +252,7 @@ function SocialCard({ item, onClick, selectMode = false, selected = false }: { i
   const platformBadge = item.channel === "youtube"
     ? { label: "YouTube", cls: "bg-red-100 text-red-800" }
     : (item.channel === "meta")
-    ? { label: "Meta", cls: "bg-blue-100 text-blue-800" }
+    ? { label: "메타", cls: "bg-blue-100 text-blue-800" }
     : { label: item.channel, cls: "bg-gray-100 text-gray-700" };
 
   // Prefer upload_date (original publish date); fall back to captured_at (crawl date)
@@ -414,7 +414,7 @@ function SocialModal({ item, onClose }: { item: GalleryItem; onClose: () => void
             <span className={`px-2 py-0.5 rounded text-xs font-medium ${
               item.channel === "youtube" ? "bg-red-100 text-red-800" : "bg-blue-100 text-blue-800"
             }`}>
-              {item.channel === "youtube" ? "YouTube" : "Meta"}
+              {item.channel === "youtube" ? "YouTube" : "메타"}
             </span>
             {item.view_count != null && (
               <span>조회 {formatViewCount(item.view_count)}</span>

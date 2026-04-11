@@ -23,7 +23,7 @@ export function ExportDropdown({ csvUrl, xlsxUrl, label = "다운로드" }: Expo
 
   const download = (url: string) => {
     if (!isPaid()) {
-      alert("다운로드는 유료 회원 전용 기능입니다.\n플랜을 업그레이드해주세요.\n\n문의: admin@adscope.kr");
+      alert("다운로드는 유료 회원 전용 기능입니다.\n플랜을 업그레이드해주세요.\n\n문의: support@adscope.kr");
       window.location.href = "/pricing";
       return;
     }
@@ -38,7 +38,7 @@ export function ExportDropdown({ csvUrl, xlsxUrl, label = "다운로드" }: Expo
   return (
     <div className="relative" ref={ref}>
       <button
-        onClick={() => { if (!isPaid()) { alert("다운로드는 유료 회원 전용 기능입니다.\n플랜을 업그레이드해주세요.\n\n문의: admin@adscope.kr"); window.location.href = "/pricing"; return; } setOpen(!open); }}
+        onClick={() => { if (!isPaid()) { alert("다운로드는 유료 회원 전용 기능입니다.\n플랜을 업그레이드해주세요.\n\n문의: support@adscope.kr"); window.location.href = "/pricing"; return; } setOpen(!open); }}
         className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">

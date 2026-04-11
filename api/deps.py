@@ -67,6 +67,8 @@ _bearer_scheme = HTTPBearer(auto_error=False)
 def create_access_token(
     user_id: int, email: str, role: str, plan: str = "lite",
     session_id: str | None = None, paid: bool = False,
+    plan_expires_at: datetime | None = None,
+    trial_started_at: datetime | None = None,
 ) -> str:
     """Create a JWT access token with optional session binding."""
     expire = datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRE_HOURS)
@@ -80,6 +82,10 @@ def create_access_token(
     }
     if session_id:
         payload["sid"] = session_id
+    if plan_expires_at:
+        payload["plan_expires_at"] = plan_expires_at.isoformat()
+    if trial_started_at:
+        payload["trial_started_at"] = trial_started_at.isoformat()
     return jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
 
 
@@ -134,17 +140,14 @@ async def get_current_user(
     if user.role == "admin":
         return user
 
-    # Plan expiry check (non-admin only)
-    # plan_expires_at may be naive (SQLite) or aware — normalize both to naive UTC
+    # Plan expiry: mark on user object but do NOT block login/basic API access.
+    # Individual endpoints use require_plan() / require_paid() for feature gating.
     if user.plan_expires_at:
         expires = user.plan_expires_at.replace(tzinfo=None) if user.plan_expires_at.tzinfo else user.plan_expires_at
         now_utc = datetime.now(timezone.utc).replace(tzinfo=None)
-        if expires < now_utc:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Plan expired. Please renew your subscription.",
-                headers={"X-Plan-Expired": "true"},
-            )
+        user._plan_expired = expires < now_utc  # type: ignore[attr-defined]
+    else:
+        user._plan_expired = False  # type: ignore[attr-defined]
 
     # Non-admin: validate active session
     session_id = payload.get("sid")
@@ -225,6 +228,15 @@ def require_plan(min_plan: str):
         # Admin bypasses all plan checks
         if user.role == "admin":
             return user
+        # Active trial: trial_started_at set, plan not expired, not yet paid
+        if (
+            user.trial_started_at
+            and user.plan_expires_at
+            and not getattr(user, "payment_confirmed", False)
+        ):
+            expires = user.plan_expires_at.replace(tzinfo=None) if user.plan_expires_at.tzinfo else user.plan_expires_at
+            if expires > datetime.now(timezone.utc).replace(tzinfo=None):
+                return user  # trial period — grant full access
         user_level = _plan_levels.get(user.plan or "lite", 0)
         if user_level < required_level:
             raise HTTPException(

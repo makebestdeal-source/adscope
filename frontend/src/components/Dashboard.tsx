@@ -12,11 +12,15 @@ import { SpendChart } from "./SpendChart";
 const CHANNEL_COLORS: Record<string, string> = {
   naver_search: "bg-green-500",
   naver_da: "bg-emerald-500",
+  naver_shopping: "bg-green-400",
+  google_search_ads: "bg-sky-400",
+  google_gdn: "bg-sky-500",
   youtube_ads: "bg-red-500",
   youtube_surf: "bg-red-400",
-  google_gdn: "bg-sky-500",
-  kakao_da: "bg-yellow-500",
   meta: "bg-blue-500",
+  meta_feed: "bg-blue-400",
+  kakao_da: "bg-yellow-500",
+  tiktok_ads: "bg-gray-700",
 };
 
 /** KST ISO 문자열 -> "N분 전" / "N시간 전" / "N일 전" 형식 */
@@ -66,8 +70,14 @@ export function Dashboard() {
 
   const { data: topAdvertisers, isLoading: topLoading } = useQuery({
     queryKey: ["topAdvertisers"],
-    queryFn: () => api.getTopAdvertisers(30, 30),
+    queryFn: () => api.getTopAdvertisers(7, 10),
     refetchInterval: 60_000,
+  });
+
+  const { data: advStats } = useQuery({
+    queryKey: ["advertiserSummaryStats"],
+    queryFn: () => api.getAdvertiserSummaryStats(),
+    refetchInterval: 120_000,
   });
 
   const { data: dailyTrend, isLoading: trendLoading } = useQuery({
@@ -82,7 +92,8 @@ export function Dashboard() {
     refetchInterval: 120_000,
   });
 
-  const totalAdvertisers = topAdvertisers?.length ?? 0;
+  const totalAdvertisers = advStats?.total_advertisers ?? 0;
+  const activeAdvertisers = advStats?.active_30d ?? 0;
 
   // 최근 수집 시각 (KST ISO string from API)
   const latestCrawlAt = stats?.latest_crawl_at ?? null;
@@ -120,10 +131,10 @@ export function Dashboard() {
           accent="border-l-amber-500"
         />
         <KpiCard
-          title="상위 광고주"
+          title="전체 광고주"
           value={totalAdvertisers}
-          subtitle="30일 기준"
-          loading={topLoading}
+          subtitle={`30일 활성 ${activeAdvertisers.toLocaleString()}`}
+          loading={!advStats}
           accent="border-l-rose-500"
         />
       </div>

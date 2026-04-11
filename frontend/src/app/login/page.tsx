@@ -17,23 +17,50 @@ function LoginContent() {
   useEffect(() => {
     const oauthToken = searchParams.get("oauth_token");
     if (oauthToken) {
-      // Decode JWT to get user info
-      try {
-        const payload = JSON.parse(atob(oauthToken.split(".")[1]));
-        const user = {
-          id: payload.sub,
-          email: payload.email,
-          name: payload.email?.split("@")[0],
-          role: payload.role,
-          plan: payload.plan,
-        };
-        localStorage.setItem("adscope_token", oauthToken);
-        localStorage.setItem("adscope_user", JSON.stringify(user));
-        document.cookie = `adscope_token=${oauthToken}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
-        router.push("/");
-      } catch {
-        setError("소셜 로그인 처리 중 오류가 발생했습니다");
-      }
+      (async () => {
+        try {
+          // Save token first
+          localStorage.setItem("adscope_token", oauthToken);
+          document.cookie = `adscope_token=${oauthToken}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
+          // Fetch full user profile from /auth/me (includes paid, trial_started_at, plan_expires_at)
+          const res = await fetch("/api/auth/me", {
+            headers: { Authorization: `Bearer ${oauthToken}` },
+          });
+          if (res.ok) {
+            const profile = await res.json();
+            const user = {
+              id: profile.id,
+              email: profile.email,
+              name: profile.name,
+              role: profile.role,
+              plan: profile.plan,
+              paid: profile.paid,
+              company_name: profile.company_name,
+              plan_period: profile.plan_period,
+              plan_expires_at: profile.plan_expires_at,
+              trial_started_at: profile.trial_started_at,
+            };
+            localStorage.setItem("adscope_user", JSON.stringify(user));
+          } else {
+            // Fallback: decode JWT for basic info (includes trial fields)
+            const payload = JSON.parse(atob(oauthToken.split(".")[1]));
+            const user = {
+              id: payload.sub,
+              email: payload.email,
+              name: payload.email?.split("@")[0],
+              role: payload.role,
+              plan: payload.plan,
+              paid: payload.paid,
+              plan_expires_at: payload.plan_expires_at || null,
+              trial_started_at: payload.trial_started_at || null,
+            };
+            localStorage.setItem("adscope_user", JSON.stringify(user));
+          }
+          router.push("/");
+        } catch {
+          setError("소셜 로그인 처리 중 오류가 발생했습니다");
+        }
+      })();
     }
   }, [searchParams, router]);
 
