@@ -12,9 +12,10 @@ screenshots/
 backups/
 logs/
 *.log
-adscope.db
-adscope.db-journal
-adscope.db-wal
+adscope.db*
+server_db.db
+merged_db.db*
+images_new.tar.gz
 .claude/
 *.egg-info/
 dist/
