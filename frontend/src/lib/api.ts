@@ -26,10 +26,6 @@ export async function fetchApi<T = any>(path: string, init?: RequestInit): Promi
   }
 
   // 토큰이 없으면 API 호출 없이 조용히 실패 (미로그인 사용자 페이지 브라우징 허용)
-  if (!hadToken && typeof window !== "undefined") {
-    throw new Error("Not authenticated");
-  }
-
   // AbortController-based 30s timeout
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 30_000);
@@ -48,15 +44,17 @@ export async function fetchApi<T = any>(path: string, init?: RequestInit): Promi
   if (res.status === 401) {
     // 토큰이 있었는데 서버가 거부 = 세션 만료 → 로그인 모달 표시
     if (typeof window !== "undefined") {
-      localStorage.removeItem("adscope_token");
-      localStorage.removeItem("adscope_user");
-      if (!(window as any).__adscopeAuthModalPending) {
-        (window as any).__adscopeAuthModalPending = true;
-        window.dispatchEvent(new CustomEvent("adscope:requireAuth"));
-        setTimeout(() => { (window as any).__adscopeAuthModalPending = false; }, 3000);
+      if (hadToken) {
+        localStorage.removeItem("adscope_token");
+        localStorage.removeItem("adscope_user");
+        if (!(window as any).__adscopeAuthModalPending) {
+          (window as any).__adscopeAuthModalPending = true;
+          window.dispatchEvent(new CustomEvent("adscope:requireAuth"));
+          setTimeout(() => { (window as any).__adscopeAuthModalPending = false; }, 3000);
+        }
       }
     }
-    throw new Error("Session expired");
+    throw new Error(hadToken ? "Session expired" : "Authentication required");
   }
 
   if (res.status === 403) {
@@ -230,6 +228,18 @@ export interface Campaign {
   snapshot_count: number;
 }
 
+export interface CampaignCreative {
+  id: number;
+  advertiser_name_raw: string | null;
+  ad_text: string | null;
+  ad_type: string | null;
+  creative_image_path: string | null;
+  url: string | null;
+  channel: string;
+  captured_at: string;
+  extra_data: Record<string, unknown> | null;
+}
+
 export interface CampaignDetail extends Campaign {
   campaign_name: string | null;
   objective: string | null;
@@ -242,6 +252,9 @@ export interface CampaignDetail extends Campaign {
   creative_ids: number[] | null;
   status: string | null;
   enrichment_status: string | null;
+  advertiser_name: string | null;
+  advertiser_exists: boolean;
+  creatives: CampaignCreative[];
 }
 
 export interface JourneyEvent {
@@ -403,8 +416,13 @@ export interface GalleryItem {
   advertiser_name_raw: string | null;
   ad_text: string | null;
   ad_type: string | null;
+  material_type?: string | null;
+  keyword?: string | null;
+  search_keyword?: string | null;
+  channel_raw?: string | null;
   creative_image_path: string | null;
   url: string | null;
+  display_url: string | null;
   brand: string | null;
   channel: string;
   captured_at: string | null;
@@ -446,6 +464,44 @@ export interface CompetitorList {
   industry_id: number | null;
   industry_name: string | null;
   competitors: CompetitorScore[];
+}
+
+export interface CasualCompetitiveSummary {
+  advertiser_id: number;
+  advertiser_name: string;
+  included_advertiser_ids: number[];
+  period_days: number;
+  data_basis: string;
+  headline: string;
+  quick_reads: string[];
+  top_keywords: {
+    keyword_id: number;
+    keyword: string;
+    channels: string[];
+    ad_count: number;
+    first_seen: string | null;
+    last_seen: string | null;
+  }[];
+  top_competitors: {
+    advertiser_id: number;
+    advertiser_name: string;
+    ad_count: number;
+    shared_keyword_count: number;
+    shared_keywords: string[];
+    last_seen: string | null;
+    note: string;
+  }[];
+  channel_mix: {
+    channel: string;
+    channel_label: string;
+    ad_count: number;
+    share: number;
+    last_seen: string | null;
+  }[];
+  message_terms: {
+    term: string;
+    count: number;
+  }[];
 }
 
 // ── Industry Landscape ──
@@ -710,6 +766,27 @@ export const api = {
     return fetchApi<GalleryResponse>(`/ads/gallery${q ? "?" + q : ""}`);
   },
 
+  getPublicGallery: (params?: {
+    channel?: string;
+    advertiser?: string;
+    date_from?: string;
+    date_to?: string;
+    source?: string;
+    limit?: number;
+    offset?: number;
+  }) => {
+    const qs = new URLSearchParams();
+    if (params?.channel) qs.set("channel", params.channel);
+    if (params?.advertiser) qs.set("advertiser", params.advertiser);
+    if (params?.date_from) qs.set("date_from", params.date_from);
+    if (params?.date_to) qs.set("date_to", params.date_to);
+    if (params?.source) qs.set("source", params.source);
+    if (params?.limit) qs.set("limit", String(params.limit));
+    if (params?.offset) qs.set("offset", String(params.offset));
+    const q = qs.toString();
+    return fetchPublicApi<GalleryResponse>(`/ads/gallery${q ? "?" + q : ""}`);
+  },
+
   // 광고주
   getAdvertisers: (params?: Record<string, string>) => {
     const qs = params ? "?" + new URLSearchParams(params).toString() : "";
@@ -914,10 +991,16 @@ export const api = {
       `/competitors/${advertiserId}?days=${days}&limit=${limit}`
     ),
 
-  getAdvertiserKeywords: (advertiserId: number, days = 30) =>
+  getCasualCompetitiveSummary: (advertiserId: number, days = 30) =>
+    fetchApi<CasualCompetitiveSummary>(
+      `/competitors/${advertiserId}/simple-summary?days=${days}`
+    ),
+
+  getAdvertiserKeywords: (advertiserId: number, days = 30, includeChildren = true) =>
     fetchApi<{
       advertiser_id: number;
       advertiser_name: string;
+      included_advertiser_ids: number[];
       keywords: {
         keyword_id: number;
         keyword: string;
@@ -928,7 +1011,9 @@ export const api = {
         monthly_search_vol: number | null;
         naver_cpc: number | null;
       }[];
-    }>(`/competitors/${advertiserId}/keywords?days=${days}`),
+    }>(
+      `/competitors/${advertiserId}/keywords?days=${days}&include_children=${includeChildren}`
+    ),
 
   getIndustryLandscape: (industryId: number, days = 30) =>
     fetchApi<IndustryLandscape>(
@@ -959,6 +1044,15 @@ export const api = {
       ad_content_count: number;
     }>("/brand-channels/stats/summary"),
 
+  getPublicBrandChannelStats: () =>
+    fetchPublicApi<{
+      monitored_brands: number;
+      total_channels: number;
+      total_contents: number;
+      new_this_week: number;
+      ad_content_count: number;
+    }>("/brand-channels/stats/summary"),
+
   getBrandRecentUploads: (params?: {
     days?: number;
     limit?: number;
@@ -972,6 +1066,21 @@ export const api = {
     if (params?.is_ad !== undefined) qs.set("is_ad", String(params.is_ad));
     const q = qs.toString();
     return fetchApi<BrandChannelContent[]>(`/brand-channels/recent-uploads${q ? "?" + q : ""}`);
+  },
+
+  getPublicBrandRecentUploads: (params?: {
+    days?: number;
+    limit?: number;
+    platform?: string;
+    is_ad?: boolean;
+  }) => {
+    const qs = new URLSearchParams();
+    if (params?.days) qs.set("days", String(params.days));
+    if (params?.limit) qs.set("limit", String(params.limit));
+    if (params?.platform) qs.set("platform", params.platform);
+    if (params?.is_ad !== undefined) qs.set("is_ad", String(params.is_ad));
+    const q = qs.toString();
+    return fetchPublicApi<BrandChannelContent[]>(`/brand-channels/recent-uploads${q ? "?" + q : ""}`);
   },
 
   getBrandChannelContents: (

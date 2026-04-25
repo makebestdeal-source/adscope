@@ -10,6 +10,13 @@ backups/
 logs/
 *.log
 .claude/
+.pytest_cache/
+.pytest_tmp/
+.vscode/
+.wrangler/
+.archive_checkpoints/
+.archive_checkpoints_dated/
+cache/
 
 # Large data files (DB lives on Railway volume, images uploaded separately)
 adscope.db

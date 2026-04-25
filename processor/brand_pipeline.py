@@ -119,10 +119,13 @@ async def save_brand_content(
             # Update mutable fields
             view_count = item.get("view_count")
             like_count = item.get("like_count")
+            comment_count = item.get("comment_count")
             if view_count is not None:
                 existing.view_count = view_count
             if like_count is not None:
                 existing.like_count = like_count
+            if comment_count is not None:
+                existing.comment_count = comment_count
             # Refresh thumbnail_url with fresh CDN URL
             thumb = item.get("thumbnail_url")
             if thumb:
@@ -164,6 +167,7 @@ async def save_brand_content(
                 upload_date=upload_date,
                 view_count=item.get("view_count"),
                 like_count=item.get("like_count"),
+                comment_count=item.get("comment_count"),
                 duration_seconds=item.get("duration_seconds"),
                 is_ad_content=ad_info.get("has_sponsored_tag", False),
                 ad_indicators=ad_info if ad_info.get("ad_keywords_found") else None,

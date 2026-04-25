@@ -94,8 +94,8 @@ function LoginContent() {
 
       <div className="relative w-full max-w-sm mx-4 animate-fade-in">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 shadow-lg shadow-indigo-200 mb-4">
+        <Link href="/" aria-label="Go to AdScope home" className="block text-center mb-8 group">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 shadow-lg shadow-indigo-200 mb-4 transition-shadow group-hover:shadow-indigo-300">
             <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 text-white">
               <path d="M3 3v18h18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
               <path d="M7 16l4-6 3 3 3-7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -107,7 +107,7 @@ function LoginContent() {
           <p className="text-sm text-slate-500 mt-1">
             광고 인텔리전스 플랫폼
           </p>
-        </div>
+        </Link>
 
         {/* Login Card */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl shadow-slate-200/50 border border-white/60 p-7">

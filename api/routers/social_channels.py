@@ -8,7 +8,6 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from api.deps import require_plan
 from pydantic import BaseModel
 from sqlalchemy import func, select, desc, and_, case, literal_column
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,11 +16,7 @@ from sqlalchemy.orm import aliased
 from database import get_db
 from database.models import Advertiser, BrandChannelContent, ChannelStats
 
-router = APIRouter(
-    prefix="/api/social-channels",
-    tags=["social-channels"],
-    dependencies=[Depends(require_plan("full"))],
-)
+router = APIRouter(prefix="/api/social-channels", tags=["social-channels"])
 
 KST = timezone(timedelta(hours=9))
 

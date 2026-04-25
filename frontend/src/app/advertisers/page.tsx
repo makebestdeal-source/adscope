@@ -6,6 +6,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { ExportDropdown } from "@/components/ExportDropdown";
 import { DownloadButton } from "@/components/DownloadButtons";
+import { isAuthenticated } from "@/lib/auth";
 
 /* ── Tree Node Component ── */
 function TreeNode({ node, depth = 0 }: { node: BrandTreeChild; depth?: number }) {
@@ -181,6 +182,7 @@ function StarButton({ advertiserId, isFavorite, onToggle }: { advertiserId: numb
 /* ── Main Page ── */
 export default function AdvertisersPage() {
   const queryClient = useQueryClient();
+  const [authed, setAuthed] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -191,6 +193,7 @@ export default function AdvertisersPage() {
 
   // debounce 300ms
   useEffect(() => {
+    setAuthed(isAuthenticated());
     const timer = setTimeout(() => setDebouncedSearch(search), 300);
     return () => clearTimeout(timer);
   }, [search]);
@@ -240,6 +243,7 @@ export default function AdvertisersPage() {
   const { data: favoritesData } = useQuery({
     queryKey: ["favorites"],
     queryFn: () => api.getFavorites(),
+    enabled: authed,
   });
 
   const favoriteIds = useMemo(() => {
@@ -291,6 +295,10 @@ export default function AdvertisersPage() {
   });
 
   const handleToggleFavorite = (advertiserId: number, currentlyFavorite: boolean) => {
+    if (!authed) {
+      window.dispatchEvent(new CustomEvent("adscope:requireAuth"));
+      return;
+    }
     if (currentlyFavorite) {
       removeFavMutation.mutate(advertiserId);
     } else {
@@ -381,6 +389,11 @@ export default function AdvertisersPage() {
 
       {/* 검색 */}
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 shadow-sm" ref={dropdownRef}>
+        {!authed && (
+          <div className="mb-4 rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs text-indigo-900">
+            비회원도 광고주 목록과 기본 활동 현황을 열람할 수 있습니다. 내보내기와 다운로드는 유료 가입 후 사용할 수 있습니다.
+          </div>
+        )}
         <div className="relative">
           <svg
             viewBox="0 0 24 24"
@@ -544,11 +557,13 @@ export default function AdvertisersPage() {
                     >
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <StarButton
-                            advertiserId={adv.id}
-                            isFavorite={favoriteIds.has(adv.id)}
-                            onToggle={handleToggleFavorite}
-                          />
+                          {authed && (
+                            <StarButton
+                              advertiserId={adv.id}
+                              isFavorite={favoriteIds.has(adv.id)}
+                              onToggle={handleToggleFavorite}
+                            />
+                          )}
                           <Link
                             href={adv.id ? `/advertisers/${adv.id}` : "#"}
                             className="font-medium text-adscope-600 hover:text-adscope-800 hover:underline"

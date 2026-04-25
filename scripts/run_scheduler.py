@@ -15,6 +15,7 @@ import io
 import json
 import os
 import signal
+import subprocess
 import sys
 from pathlib import Path
 
@@ -57,6 +58,39 @@ _scheduler: AdScopeScheduler | None = None
 _shutdown_event: asyncio.Event | None = None
 
 
+def _kill_orphan_nodes():
+    """현재 Python 프로세스 하위가 아닌 좀비 node.exe 프로세스 정리 (Windows)."""
+    try:
+        import psutil
+        my_pid = os.getpid()
+        my_children = {p.pid for p in psutil.Process(my_pid).children(recursive=True)}
+        killed = 0
+        for proc in psutil.process_iter(["pid", "name", "ppid"]):
+            try:
+                if proc.info["name"] and "node" in proc.info["name"].lower():
+                    if proc.info["pid"] not in my_children:
+                        # 부모가 살아있는 node는 건드리지 않음 (VSCode 등)
+                        try:
+                            parent = psutil.Process(proc.info["ppid"])
+                            if parent.is_running() and parent.name() not in ("python.exe", "python"):
+                                continue
+                        except (psutil.NoSuchProcess, psutil.AccessDenied):
+                            pass  # 부모 없음 = orphan
+                        proc.kill()
+                        killed += 1
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                pass
+        if killed:
+            logger.info("[node_cleanup] orphan node 프로세스 {} 개 정리", killed)
+    except ImportError:
+        # psutil 없으면 taskkill fallback (과격하지만 최후 수단)
+        subprocess.run(["taskkill", "/F", "/IM", "node.exe"],
+                       capture_output=True, check=False)
+        logger.info("[node_cleanup] taskkill /F /IM node.exe 실행")
+    except Exception as e:
+        logger.debug("[node_cleanup] error: {}", e)
+
+
 def _handle_signal(sig, _frame):
     """Graceful shutdown on SIGINT / SIGTERM."""
     sig_name = signal.Signals(sig).name
@@ -66,6 +100,7 @@ def _handle_signal(sig, _frame):
             _scheduler.stop()
         except Exception:
             pass
+    _kill_orphan_nodes()
     if _shutdown_event is not None:
         _shutdown_event.set()
 
@@ -150,11 +185,24 @@ async def main():
 
     _scheduler.start()
 
+    # -- 시작 시 한 번 orphan node 정리 --
+    _kill_orphan_nodes()
+
+    # -- 30분마다 orphan node 정리 태스크 --
+    async def _periodic_node_cleanup():
+        while not (_shutdown_event and _shutdown_event.is_set()):
+            await asyncio.sleep(30 * 60)
+            _kill_orphan_nodes()
+
+    asyncio.ensure_future(_periodic_node_cleanup())
+
     # -- Wait for shutdown --
     _shutdown_event = asyncio.Event()
     logger.info("Scheduler running. Ctrl+C to stop.")
     await _shutdown_event.wait()
 
+    # -- 종료 시 최종 정리 --
+    _kill_orphan_nodes()
     logger.info("Scheduler stopped.")
 
 

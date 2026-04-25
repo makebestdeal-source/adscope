@@ -17,8 +17,7 @@ from database.models import (
     SocialImpactScore,
 )
 
-router = APIRouter(prefix="/api/buzz", tags=["buzz"],
-    dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/api/buzz", tags=["buzz"])
 
 KST = timezone(timedelta(hours=9))
 

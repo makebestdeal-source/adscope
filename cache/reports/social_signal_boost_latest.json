@@ -1,0 +1,161 @@
+{
+  "started_at": "2026-04-25 20:10:34",
+  "finished_at": "2026-04-25 20:36:38",
+  "elapsed_seconds": 1564.0,
+  "before": {
+    "advertisers": 6160,
+    "with_website": 2744,
+    "with_official_channels": 866,
+    "active_advertisers_90d": 4690,
+    "channel_stats": {
+      "rows": 1305,
+      "advertisers": 606,
+      "latest": "2026-03-29 01:44:22.242797"
+    },
+    "brand_channel_contents": {
+      "rows": 11929,
+      "advertisers": 399,
+      "latest": "2026-03-28 16:13:08.404321"
+    },
+    "news_mentions": {
+      "rows": 8813,
+      "advertisers": 430,
+      "latest": "2026-04-25 10:11:55.640197"
+    },
+    "traffic_signals": {
+      "rows": 2484,
+      "advertisers": 119,
+      "latest": "2026-04-24 00:00:00.000000"
+    },
+    "social_impact_scores": {
+      "rows": 23694,
+      "advertisers": 8007,
+      "latest": "2026-04-25 00:00:00.000000"
+    },
+    "meta_signal_composites": {
+      "rows": 43199,
+      "advertisers": 12062,
+      "latest": "2026-04-25 00:00:00.000000"
+    }
+  },
+  "after": {
+    "advertisers": 6160,
+    "with_website": 2744,
+    "with_official_channels": 970,
+    "active_advertisers_90d": 4690,
+    "channel_stats": {
+      "rows": 1424,
+      "advertisers": 682,
+      "latest": "2026-04-25 20:33:12.758837"
+    },
+    "brand_channel_contents": {
+      "rows": 12722,
+      "advertisers": 437,
+      "latest": "2026-04-25 11:28:51.912995"
+    },
+    "news_mentions": {
+      "rows": 9188,
+      "advertisers": 430,
+      "latest": "2026-04-25 11:33:13.153746"
+    },
+    "traffic_signals": {
+      "rows": 2848,
+      "advertisers": 133,
+      "latest": "2026-04-24 00:00:00.000000"
+    },
+    "social_impact_scores": {
+      "rows": 23743,
+      "advertisers": 8024,
+      "latest": "2026-04-25 00:00:00.000000"
+    },
+    "meta_signal_composites": {
+      "rows": 43215,
+      "advertisers": 12076,
+      "latest": "2026-04-25 00:00:00.000000"
+    }
+  },
+  "steps": [
+    {
+      "name": "discover_social_channels",
+      "status": "ok",
+      "elapsed": 446.8,
+      "result": {
+        "processed": 500,
+        "discovered": 104,
+        "channels_added": 241,
+        "errors": 0
+      }
+    },
+    {
+      "name": "collect_brand_content",
+      "status": "ok",
+      "elapsed": 651.0,
+      "result": {
+        "targets": 80,
+        "processed": 80,
+        "new_items": 793,
+        "youtube_channels": 44,
+        "instagram_channels": 61,
+        "errors": 0
+      }
+    },
+    {
+      "name": "collect_channel_stats",
+      "status": "ok",
+      "elapsed": 260.8,
+      "result": {
+        "targets": 120,
+        "youtube_success": 52,
+        "instagram_success": 67,
+        "errors": 0
+      }
+    },
+    {
+      "name": "collect_news",
+      "status": "ok",
+      "elapsed": 87.1,
+      "result": {
+        "processed": 150,
+        "saved": 375,
+        "errors": 0
+      }
+    },
+    {
+      "name": "collect_search_trends",
+      "status": "ok",
+      "elapsed": 23.8,
+      "result": {
+        "processed": 78,
+        "saved": 364,
+        "errors": 0
+      }
+    },
+    {
+      "name": "recompute_scores",
+      "status": "ok",
+      "elapsed": 93.9,
+      "result": {
+        "activity_scores": {
+          "processed": 743,
+          "created": 23,
+          "updated": 720
+        },
+        "meta_signal_composites": {
+          "processed": 2997,
+          "created": 16,
+          "updated": 2981
+        },
+        "social_impact_scores": {
+          "processed": 2630,
+          "created": 49,
+          "updated": 2581
+        },
+        "social_category_rankings": {
+          "processed": 686,
+          "created": 93,
+          "industries": 21
+        }
+      }
+    }
+  ]
+}

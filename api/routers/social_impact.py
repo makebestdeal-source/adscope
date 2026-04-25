@@ -22,8 +22,7 @@ from database.schemas import (
     SocialImpactTopItem,
 )
 
-router = APIRouter(prefix="/api/social-impact", tags=["social-impact"],
-    dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/api/social-impact", tags=["social-impact"])
 
 KST = timezone(timedelta(hours=9))
 

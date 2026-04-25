@@ -17,8 +17,8 @@ import httpx
 from loguru import logger
 from playwright.async_api import async_playwright
 
-_ROOT = Path(__file__).resolve().parent.parent
-_IG_COOKIES_PATH = _ROOT / "ig_cookies.json"
+from crawler.cookie_utils import load_ig_cookies
+
 
 
 class SocialStatsCrawler:
@@ -40,34 +40,7 @@ class SocialStatsCrawler:
 
     @staticmethod
     def _load_ig_cookies() -> list[dict]:
-        """Load Instagram cookies from ig_cookies.json."""
-        if not _IG_COOKIES_PATH.exists():
-            logger.warning(f"Instagram cookies not found: {_IG_COOKIES_PATH}")
-            return []
-        try:
-            raw = json.loads(_IG_COOKIES_PATH.read_text(encoding="utf-8"))
-            cookies = []
-            for c in raw:
-                cookie = {
-                    "name": c["name"],
-                    "value": c["value"],
-                    "domain": c.get("domain", ".instagram.com"),
-                    "path": c.get("path", "/"),
-                }
-                if c.get("expires") and c["expires"] > 0:
-                    cookie["expires"] = c["expires"]
-                if c.get("httpOnly") is not None:
-                    cookie["httpOnly"] = c["httpOnly"]
-                if c.get("secure") is not None:
-                    cookie["secure"] = c["secure"]
-                if c.get("sameSite"):
-                    cookie["sameSite"] = c["sameSite"]
-                cookies.append(cookie)
-            logger.info(f"Loaded {len(cookies)} Instagram cookies")
-            return cookies
-        except Exception as e:
-            logger.warning(f"Failed to load Instagram cookies: {e}")
-            return []
+        return load_ig_cookies("social_stats")
 
     async def stop(self):
         if self._ig_page:

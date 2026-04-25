@@ -19,23 +19,13 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.deps import get_current_user
+from api.pricing import PLAN_PRICES, PLAN_PRICES_USD, validate_billable_plan
 from database import get_db
 from database.models import User, PaymentRecord
 
 logger = logging.getLogger("adscope.payments")
 
 router = APIRouter(prefix="/api/payments", tags=["payments"])
-
-PLAN_PRICES = {
-    "lite": {"monthly": 49000, "yearly": 490000},
-    "full": {"monthly": 99000, "yearly": 990000},
-}
-
-# PayPal USD prices (PayPal does not support KRW)
-PLAN_PRICES_USD = {
-    "lite": {"monthly": 35, "yearly": 350},
-    "full": {"monthly": 70, "yearly": 700},
-}
 
 # 토스 클라이언트 키 (프론트에서 필요)
 TOSS_CLIENT_KEY = os.getenv(
@@ -57,6 +47,16 @@ class ConfirmRequest(BaseModel):
     amount: int       # amount
 
 
+class EnterpriseInquiryRequest(BaseModel):
+    company_name: str
+    contact_name: str
+    email: str
+    phone: str | None = None
+    expected_users: str | None = None
+    expected_advertisers: str | None = None
+    message: str | None = None
+
+
 # ─── 1. 결제 준비 ───────────────────────────────────
 
 @router.post("/ready")
@@ -66,10 +66,10 @@ async def payment_ready(
     db: AsyncSession = Depends(get_db),
 ):
     """결제 준비: orderId 생성 및 PaymentRecord 생성."""
-    if body.plan not in ("lite", "full"):
-        raise HTTPException(400, "Invalid plan")
-    if body.plan_period not in ("monthly", "yearly"):
-        raise HTTPException(400, "Invalid period")
+    try:
+        validate_billable_plan(body.plan, body.plan_period)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
 
     amount = PLAN_PRICES[body.plan][body.plan_period]
     order_id = f"ADSCOPE_{user.id}_{int(time.time())}"
@@ -361,10 +361,10 @@ async def paypal_create_order(
     db: AsyncSession = Depends(get_db),
 ):
     """PayPal 주문 생성: DB에 pending 레코드 생성 후 PayPal order ID 반환."""
-    if body.plan not in ("lite", "full"):
-        raise HTTPException(400, "Invalid plan")
-    if body.plan_period not in ("monthly", "yearly"):
-        raise HTTPException(400, "Invalid period")
+    try:
+        validate_billable_plan(body.plan, body.plan_period)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
 
     amount_krw = PLAN_PRICES[body.plan][body.plan_period]
     amount_usd = PLAN_PRICES_USD[body.plan][body.plan_period]
@@ -416,6 +416,33 @@ async def paypal_create_order(
 
 
 # ─── 10. PayPal 주문 캡처 ─────────────────────────
+
+@router.post("/enterprise-inquiry")
+async def enterprise_inquiry(body: EnterpriseInquiryRequest):
+    """Receive an enterprise payment inquiry.
+
+    Enterprise is handled by quotation, invoice, and bank transfer rather than
+    the online checkout flow used for Lite/Full.
+    """
+    logger.info(
+        "Enterprise inquiry: company=%s contact=%s email=%s users=%s advertisers=%s",
+        body.company_name,
+        body.contact_name,
+        body.email,
+        body.expected_users,
+        body.expected_advertisers,
+    )
+    return {
+        "status": "received",
+        "plan": "enterprise",
+        "payment_flow": "quotation_invoice_bank_transfer",
+        "next_steps": [
+            "담당자가 사용 규모를 확인합니다.",
+            "견적서와 계약 조건을 협의합니다.",
+            "세금계산서 발행 후 계좌이체 또는 월 정산으로 진행합니다.",
+        ],
+    }
+
 
 class PayPalCaptureRequest(BaseModel):
     paypal_order_id: str

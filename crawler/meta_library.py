@@ -1,9 +1,11 @@
-"""Meta 광고 크롤러 — 브라우저 기반 멀티 페르소나 수집 + 광고 투명성 센터 크로스체킹.
+"""Meta 광고 크롤러 — Graph API 우선 + 브라우저 fallback 멀티 페르소나 수집.
 
 수집 모드:
-  - browser (기본): Playwright로 Facebook/Instagram 피드 크롤링 → 광고 수집
+  - API 우선 (META_ACCESS_TOKEN 설정 시): Graph API → 광고 라이브러리 직접 호출
+    META_ACCESS_TOKEN이 있으면 META_CRAWL_MODE 값과 무관하게 API를 먼저 시도.
+    API 실패 또는 결과 0건이면 브라우저 모드로 자동 fallback.
+  - browser (기본/fallback): Playwright로 Facebook 광고 라이브러리 웹 크롤링
     + Meta 광고 라이브러리 웹에서 광고주 검증
-  - api (META_ACCESS_TOKEN 설정 시): 기존 Graph API 방식 fallback
 
 검증 소스:
   - Meta 광고 라이브러리: https://www.facebook.com/ads/library/
@@ -16,6 +18,7 @@ import asyncio
 import json
 import os
 import random
+import re
 from datetime import datetime
 from urllib.parse import urlparse
 
@@ -32,24 +35,31 @@ from crawler.personas.profiles import PersonaProfile
 AUTH_ERROR_CODES = {102, 104, 190}
 QUOTA_ERROR_CODES = {4, 17, 32, 613}
 
+META_ACCESS_TOKEN = os.getenv("META_ACCESS_TOKEN", "").strip()
 META_CRAWL_MODE = os.getenv("META_CRAWL_MODE", "browser").strip().lower()
+# ACCESS_TOKEN이 있으면 API 우선 (훨씬 빠르고 안정적)
+if META_ACCESS_TOKEN and META_CRAWL_MODE == "browser":
+    META_CRAWL_MODE = "api"
+    logger.info("[meta_library] META_ACCESS_TOKEN 감지 — API 우선 모드로 전환")
 META_FEED_SCROLL_COUNT = max(1, int(os.getenv("META_FEED_SCROLL_COUNT", "15")))
 META_TRUST_CHECK = os.getenv("META_TRUST_CHECK", "true").lower() in ("1", "true", "yes", "on")
 META_TRUST_CHECK_LIMIT = max(1, int(os.getenv("META_TRUST_CHECK_LIMIT", "10")))
 META_TRUST_CHECK_TIMEOUT_MS = max(3000, int(os.getenv("META_TRUST_CHECK_TIMEOUT_MS", "10000")))
 
 META_AD_LIBRARY_URL = "https://www.facebook.com/ads/library/"
+# active/all — 전체 기간 아카이브: "all", 활성만: "active"
+_META_ACTIVE_STATUS = os.getenv("META_ACTIVE_STATUS", "all").strip().lower()
 # 키워드 검색용 (country=ALL → 전체 국가에서 가져와서 korean_filter로 필터)
 META_AD_LIBRARY_SEARCH_URL = (
     "https://www.facebook.com/ads/library/"
-    "?active_status=active&ad_type=all&country=ALL"
+    f"?active_status={_META_ACTIVE_STATUS}&ad_type=all&country=ALL"
     "&media_type=all&search_type=keyword_unordered"
     "&publisher_platforms[0]=facebook&q={query}"
 )
 # 검색어 없이 KR 전체 활성 광고 브라우징
 META_AD_LIBRARY_BROWSE_URL = (
     "https://www.facebook.com/ads/library/"
-    "?active_status=active&ad_type=all&country=KR"
+    f"?active_status={_META_ACTIVE_STATUS}&ad_type=all&country=KR"
     "&media_type=all&search_type=keyword_unordered"
 )
 GOOGLE_TRANSPARENCY_URL = "https://adstransparency.google.com/"
@@ -163,6 +173,50 @@ def classify_meta_api_error(
     return ("unknown", False, message or f"http {status_code}")
 
 
+# ── 날짜 파싱 유틸리티 ──
+
+
+def _parse_meta_date(raw):
+    """Meta 광고 라이브러리의 날짜 문자열을 datetime으로 파싱.
+
+    지원 형식:
+      - YYYY년 M월 DD일 (한국어)
+      - YYYY.M.D / YYYY-MM-DD / YYYY/MM/DD
+      - Month D, YYYY (영어)
+      - ISO 8601: 2024-03-15T00:00:00+0000
+    """
+    if not raw:
+        return None
+    raw = raw.strip()
+    # ISO 8601 / API 포맷
+    for fmt in ('%Y-%m-%dT%H:%M:%S+0000', '%Y-%m-%dT%H:%M:%SZ', '%Y-%m-%d'):
+        try:
+            return datetime.strptime(raw, fmt)
+        except ValueError:
+            pass
+    # 한국어: YYYY년 M월 DD일
+    import re as _re
+    m = _re.match(r'(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일', raw)
+    if m:
+        try:
+            return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        except ValueError:
+            pass
+    # 숫자 구분자: YYYY.M.D / YYYY-MM-DD / YYYY/MM/DD
+    m = _re.match(r'(\d{4})[./-](\d{1,2})[./-](\d{1,2})', raw)
+    if m:
+        try:
+            return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        except ValueError:
+            pass
+    # 영어 월 이름: March 15, 2024
+    try:
+        return datetime.strptime(raw, '%B %d, %Y')
+    except ValueError:
+        pass
+    return None
+
+
 # ── 크롤러 ──
 
 class MetaLibraryCrawler(BaseCrawler):
@@ -172,7 +226,7 @@ class MetaLibraryCrawler(BaseCrawler):
 
     def __init__(self):
         super().__init__()
-        self.access_token = os.getenv("META_ACCESS_TOKEN", "").strip()
+        self.access_token = META_ACCESS_TOKEN  # 모듈 레벨 상수 재사용
         self.api_version = os.getenv("META_API_VERSION", "v22.0").strip()
         self.reached_country = os.getenv("META_AD_COUNTRY", "KR").strip().upper() or "KR"
         self.page_limit = max(1, int(os.getenv("META_MAX_PAGES", "5")))
@@ -180,14 +234,19 @@ class MetaLibraryCrawler(BaseCrawler):
         self.max_retries = max(0, int(os.getenv("META_MAX_RETRIES", "3")))
         self.retry_backoff_ms = max(200, int(os.getenv("META_RETRY_BACKOFF_MS", "800")))
         self._client: httpx.AsyncClient | None = None
-        self._use_api = META_CRAWL_MODE == "api" and bool(self.access_token)
+        # API 토큰이 있으면 항상 _use_api=True (모드 무관하게 Graph API 시도 가능)
+        self._use_api = bool(self.access_token)
 
     # ── Lifecycle ──
 
     async def start(self):
         if self._use_api:
+            # API client 초기화 (Graph API 우선 모드)
             self._client = httpx.AsyncClient(timeout=httpx.Timeout(25.0, connect=10.0))
             logger.info("[{}] API client started (version={})", self.channel, self.api_version)
+            # 브라우저 fallback을 위해 Playwright도 함께 기동
+            await super().start()
+            logger.info("[{}] 브라우저 fallback 준비 완료", self.channel)
         else:
             await super().start()
             logger.info("[{}] 브라우저 모드 시작", self.channel)
@@ -198,8 +257,8 @@ class MetaLibraryCrawler(BaseCrawler):
                 await self._client.aclose()
                 self._client = None
             logger.info("[{}] API client stopped", self.channel)
-        else:
-            await super().stop()
+        # 브라우저는 항상 정리 (API+브라우저 혼합 모드에서도 동일)
+        await super().stop()
 
     # ── 메인 진입점 ──
 
@@ -209,8 +268,23 @@ class MetaLibraryCrawler(BaseCrawler):
         persona: PersonaProfile,
         device: DeviceConfig,
     ) -> dict:
-        if self._use_api:
-            return await self._crawl_via_api(keyword, persona, device)
+        # API 모드 우선 시도 (META_ACCESS_TOKEN이 설정된 경우)
+        if META_ACCESS_TOKEN and self._use_api:
+            try:
+                api_result = await self._crawl_via_graph_api(keyword, persona, device)
+                if api_result and api_result.get("ads"):
+                    return api_result
+                logger.warning(
+                    "[{}] Graph API 결과 없음, 브라우저 모드로 fallback (keyword='{}')",
+                    self.channel, keyword,
+                )
+            except Exception as exc:
+                logger.warning(
+                    "[{}] Graph API 실패, 브라우저 모드로 fallback: {}",
+                    self.channel, exc,
+                )
+
+        # 브라우저 모드 (fallback 또는 API 토큰 없을 때)
         return await self._crawl_via_browser(keyword, persona, device)
 
     # ──────────────────────────────────────────
@@ -291,12 +365,35 @@ class MetaLibraryCrawler(BaseCrawler):
                 await page.goto(search_url, wait_until="domcontentloaded")
                 await page.wait_for_timeout(5000)
 
-            # 스크롤하여 더 많은 결과 로드
-            for _ in range(META_FEED_SCROLL_COUNT):
+            # 스크롤하여 더 많은 결과 로드 (새 카드 없을 때까지)
+            prev_card_count = 0
+            no_new_rounds = 0
+            for scroll_i in range(META_FEED_SCROLL_COUNT):
                 try:
                     await self._human_scroll(page, random.randint(800, 1200))
                 except Exception:
                     pass
+                # 카드 수 체크 — 더 이상 새 카드 없으면 중단
+                if scroll_i > 0 and scroll_i % 3 == 0:
+                    cur_count = await page.evaluate("""() => {
+                        const sels = ['[data-testid*="ad-content-body"]', 'div[role="article"]'];
+                        for (const sel of sels) {
+                            const els = document.querySelectorAll(sel);
+                            if (els.length > 0) return els.length;
+                        }
+                        return 0;
+                    }""")
+                    if cur_count <= prev_card_count:
+                        no_new_rounds += 1
+                        if no_new_rounds >= 2:
+                            logger.debug(
+                                "[{}] scroll stop: no new cards after {} scrolls ({} cards)",
+                                self.channel, scroll_i + 1, cur_count,
+                            )
+                            break
+                    else:
+                        no_new_rounds = 0
+                    prev_card_count = cur_count
 
             # ── 광고 크리에이티브(이미지/영상)만 정밀 캡처 ──
             card_screenshot_map: dict[int, str] = {}
@@ -422,7 +519,10 @@ class MetaLibraryCrawler(BaseCrawler):
                                 if (t.length < 2 || /^\\d+:\\d+/.test(t)) continue;
                                 if (/started|running|active|inactive|disclaimer/i.test(t)) continue;
                                 if (/About this ad|See ad details/i.test(t)) continue;
-                                advertiserName = t.slice(0, 150);
+                                // 한글 상태값 필터 (zero-width space 포함)
+                                const cleaned = t.replace(/[\u200b\u200c\u200d\ufeff]/g, '').trim();
+                                if (/^(활성|비활성|활성화|비활성화)$/.test(cleaned)) continue;
+                                advertiserName = cleaned.slice(0, 150);
                                 break;
                             }
 
@@ -442,22 +542,57 @@ class MetaLibraryCrawler(BaseCrawler):
                             if (platformText.includes("audience")) platforms.push("audience_network");
 
                             // 시작일
-                            const dateMatch = (card.innerText || "").match(
-                                /(\\d{4}[./-]\\d{1,2}[./-]\\d{1,2}|\\w+ \\d{1,2}, \\d{4})/
-                            );
+                            // 집행 기간 날짜 추출 (시작일/종료일)
+                            const _datePattern = /(\\d{4}[./-]\\d{1,2}[./-]\\d{1,2}|\\d{4}년\\s*\\d{1,2}월\\s*\\d{1,2}일|\\w+ \\d{1,2}, \\d{4})/g;
+                            const _dateArr = [...(card.innerText || "").matchAll(_datePattern)].map(m => m[1]);
 
-                            // 스냅샷 URL
-                            const snapshotLink = card.querySelector('a[href*="ad_snapshot_url"], a[href*="ads/archive"], a[href*="/ads/library"]');
-                            const pageLink = card.querySelector('a[href*="/ads/?"]');
+                            // ── 랜딩 URL 추출 (CTA 버튼 / 외부 링크) ──
+                            let landingUrl = null;
+                            const allLinks = card.querySelectorAll('a[href]');
+                            for (const link of allLinks) {
+                                const href = link.href || "";
+                                if (!href || !href.startsWith("http")) continue;
+                                // Meta 내부 링크 스킵
+                                if (/facebook\\.com\\/(ads|help|privacy|policies|legal)/i.test(href)) continue;
+                                if (/ads\\/library|ad_snapshot_url|ads\\/archive/i.test(href)) continue;
+                                // l.facebook.com/l.php?u=실제URL → 파싱
+                                if (/l\\.facebook\\.com\\/l\\.php|lm\\.facebook\\.com\\/l\\.php/.test(href)) {
+                                    try {
+                                        const u = new URL(href);
+                                        const actual = u.searchParams.get("u");
+                                        if (actual && actual.startsWith("http")) {
+                                            landingUrl = decodeURIComponent(actual);
+                                            break;
+                                        }
+                                    } catch(e) {}
+                                    continue;
+                                }
+                                // 외부 URL (facebook.com/fb.com 아닌 것)
+                                if (!/facebook\\.com|fb\\.com|fbcdn\\.net|instagram\\.com\\/ads/i.test(href)) {
+                                    landingUrl = href;
+                                    break;
+                                }
+                            }
+                            // fallback: 카드 텍스트에서 표시된 URL 추출
+                            if (!landingUrl) {
+                                for (const span of spans) {
+                                    const t = span.textContent.trim();
+                                    if (/^https?:\\/\\/[^\\s]+\\.[^\\s]{2,}/i.test(t) && !/facebook\\.com/i.test(t)) {
+                                        landingUrl = t;
+                                        break;
+                                    }
+                                }
+                            }
 
                             results.push({
                                 advertiser_name: advertiserName,
                                 ad_text: bodyText || advertiserName || null,
                                 ad_description: null,
-                                url: snapshotLink?.href || pageLink?.href || null,
+                                url: landingUrl,
                                 image_url: imageUrl,
                                 platforms: platforms,
-                                started: dateMatch ? dateMatch[0] : null,
+                                started: _dateArr[0] || null,
+                                ended: _dateArr[1] || null,
                                 position: results.length + 1,
                             });
                         }
@@ -478,8 +613,19 @@ class MetaLibraryCrawler(BaseCrawler):
                     }
 
                     if (cards.length === 0) {
-                        // 링크 기반 최종 fallback
-                        const allLinks = Array.from(document.querySelectorAll('a[href*="ads/library"]'));
+                        // 링크 기반 최종 fallback — 네비게이션 링크 제외
+                        const NAV_BLACKLIST = /ads\/library\/?\?|ads\/library\/?$|api|report|branded.content|transparency/i;
+                        const allLinks = Array.from(document.querySelectorAll('a[href*="ads/library"]'))
+                            .filter(a => {
+                                const href = a.href || '';
+                                const text = (a.innerText || '').trim();
+                                // 사이트 네비게이션 링크 제외
+                                if (NAV_BLACKLIST.test(href) && !href.includes('/advertiser/')) return false;
+                                // 광고주 ID가 포함된 링크만 허용
+                                if (!href.includes('/advertiser/') && !href.match(/id=\d+/)) return false;
+                                if (!text || text.length < 2) return false;
+                                return true;
+                            });
                         return allLinks.slice(0, 20).map((a, idx) => ({
                             advertiser_name: clean(a.innerText).slice(0, 100) || null,
                             ad_text: clean(a.getAttribute("aria-label") || a.title || ""),
@@ -500,7 +646,10 @@ class MetaLibraryCrawler(BaseCrawler):
                             const t = span.textContent.trim();
                             if (t.length < 2 || /^\\d+:\\d+/.test(t)) continue;
                             if (/started|running|active|inactive|disclaimer/i.test(t)) continue;
-                            name = t.slice(0, 150);
+                            // 한글 상태값 필터 (zero-width space 포함)
+                            const cleaned2 = t.replace(/[\u200b\u200c\u200d\ufeff]/g, '').trim();
+                            if (/^(활성|비활성|활성화|비활성화)$/.test(cleaned2)) continue;
+                            name = cleaned2.slice(0, 150);
                             break;
                         }
                         // strong fallback
@@ -519,19 +668,52 @@ class MetaLibraryCrawler(BaseCrawler):
                         if (platformText.includes("instagram")) platforms.push("instagram");
                         if (platformText.includes("messenger")) platforms.push("messenger");
                         if (platformText.includes("audience")) platforms.push("audience_network");
-                        const dateMatch = (card.innerText || "").match(
-                            /(\\d{4}[./-]\\d{1,2}[./-]\\d{1,2}|\\w+ \\d{1,2}, \\d{4})/
-                        );
-                        const snapshotLink = card.querySelector('a[href*="ad_snapshot_url"], a[href*="ads/archive"]');
+                        // 집행 기간 날짜 추출 (시작일/종료일)
+                        const _datePattern = /(\\d{4}[./-]\\d{1,2}[./-]\\d{1,2}|\\d{4}년\\s*\\d{1,2}월\\s*\\d{1,2}일|\\w+ \\d{1,2}, \\d{4})/g;
+                        const _dateArr = [...(card.innerText || "").matchAll(_datePattern)].map(m => m[1]);
+                        // ── 랜딩 URL 추출 (CTA 버튼 / 외부 링크) ──
+                        let landingUrl2 = null;
+                        const cardLinks = card.querySelectorAll('a[href]');
+                        for (const link of cardLinks) {
+                            const href = link.href || "";
+                            if (!href || !href.startsWith("http")) continue;
+                            if (/facebook\\.com\\/(ads|help|privacy|policies|legal)/i.test(href)) continue;
+                            if (/ads\\/library|ad_snapshot_url|ads\\/archive/i.test(href)) continue;
+                            if (/l\\.facebook\\.com\\/l\\.php|lm\\.facebook\\.com\\/l\\.php/.test(href)) {
+                                try {
+                                    const u = new URL(href);
+                                    const actual = u.searchParams.get("u");
+                                    if (actual && actual.startsWith("http")) {
+                                        landingUrl2 = decodeURIComponent(actual);
+                                        break;
+                                    }
+                                } catch(e) {}
+                                continue;
+                            }
+                            if (!/facebook\\.com|fb\\.com|fbcdn\\.net|instagram\\.com\\/ads/i.test(href)) {
+                                landingUrl2 = href;
+                                break;
+                            }
+                        }
+                        if (!landingUrl2) {
+                            for (const span of spans) {
+                                const t = span.textContent.trim();
+                                if (/^https?:\\/\\/[^\\s]+\\.[^\\s]{2,}/i.test(t) && !/facebook\\.com/i.test(t)) {
+                                    landingUrl2 = t;
+                                    break;
+                                }
+                            }
+                        }
 
                         return {
                             advertiser_name: name || null,
                             ad_text: body || name || null,
                             ad_description: null,
-                            url: snapshotLink?.href || null,
+                            url: landingUrl2,
                             image_url: imageUrl,
                             platforms: platforms,
-                            started: dateMatch ? dateMatch[0] : null,
+                            started: _dateArr[0] || null,
+                            ended: _dateArr[1] || null,
                             position: idx + 1,
                         };
                     });
@@ -546,10 +728,7 @@ class MetaLibraryCrawler(BaseCrawler):
                 advertiser_name = item.get("advertiser_name")
                 ad_text = item.get("ad_text") or advertiser_name or "meta_ad"
                 url = item.get("url")
-                # URL fallback: Meta Ad Library 소재에 랜딩 URL 없으면
-                # 광고주 Facebook 페이지를 URL로 사용 (광고주 식별용)
-                if not url and advertiser_name:
-                    url = f"https://www.facebook.com/{advertiser_name.replace(' ', '')}"
+                # URL 없으면 파이프라인에서 필터됨 (가짜 facebook.com URL 생성하지 않음)
 
                 signature = (advertiser_name, ad_text)
                 if signature in seen:
@@ -611,6 +790,9 @@ class MetaLibraryCrawler(BaseCrawler):
                     "ad_description": item.get("ad_description"),
                     "url": url,
                     "display_url": display_url,
+                    "ad_delivery_start": _parse_meta_date(item.get("started")),
+                    "ad_delivery_end": _parse_meta_date(item.get("ended")),
+                    "archive_source": "meta_library",
                     "position": len(ads) + 1,
                     "ad_type": "social_library",
                     "ad_placement": "meta_ads_library",
@@ -620,11 +802,13 @@ class MetaLibraryCrawler(BaseCrawler):
                     "creative_image_path": creative_image_path,
                     "verification_status": "verified",
                     "verification_source": "meta_ads_library",
+                    "archive_source": "meta_library",
                     "extra_data": {
                         "image_url": item.get("image_url"),
                         "publisher_platforms": item.get("platforms", []),
                         "source_channel": "facebook",
                         "ad_delivery_start_time": item.get("started"),
+                        "ad_delivery_end_time": item.get("ended"),
                         "verification_status": "verified",
                         "verification_source": "meta_ads_library",
                         "crawl_mode": "browser",
@@ -636,6 +820,12 @@ class MetaLibraryCrawler(BaseCrawler):
             logger.info(
                 "[{}] 광고 라이브러리 검색 '{}' → {}건 수집",
                 self.channel, keyword, len(ads),
+            )
+            await self._download_creative_assets(
+                ads,
+                extra_keys=("image_url",),
+                category="creative",
+                filename_prefix="meta_creative",
             )
             return ads
 
@@ -719,16 +909,21 @@ class MetaLibraryCrawler(BaseCrawler):
             await page.close()
 
     # ──────────────────────────────────────────
-    # 모드 2: Graph API (fallback)
+    # 모드 2: Graph API (우선 모드 / 브라우저 fallback 전 먼저 시도)
     # ──────────────────────────────────────────
 
-    async def _crawl_via_api(
+    async def _crawl_via_graph_api(
         self,
         keyword: str,
         persona: PersonaProfile,
         device: DeviceConfig,
     ) -> dict:
-        """기존 Meta Graph API 방식 (META_ACCESS_TOKEN 필요)."""
+        """Meta Graph API (ads_archive) 방식 — META_ACCESS_TOKEN 필요.
+
+        https://graph.facebook.com/v22.0/ads_archive 직접 호출.
+        파라미터: search_terms=keyword, ad_reached_countries=["KR"], ad_type=ALL, limit=100
+        pagination: after cursor로 최대 page_limit 페이지.
+        """
         if not self.access_token:
             raise RuntimeError("META_ACCESS_TOKEN is not configured")
         if not self._client:
@@ -776,13 +971,7 @@ class MetaLibraryCrawler(BaseCrawler):
                 title = _first_text(item.get("ad_creative_link_titles"))
                 description = _first_text(item.get("ad_creative_link_descriptions"))
                 advertiser_name = item.get("page_name") or f"page_{item.get('page_id')}"
-                # URL fallback: snapshot_url 없으면 Facebook 페이지를 URL로 사용
-                if not snapshot_url and advertiser_name:
-                    page_id = item.get("page_id")
-                    if page_id:
-                        snapshot_url = f"https://www.facebook.com/{page_id}"
-                    else:
-                        snapshot_url = f"https://www.facebook.com/{advertiser_name.replace(' ', '')}"
+                # snapshot_url은 Meta 내부 URL → 가짜 facebook.com URL 생성하지 않음
 
                 if not ad_text:
                     ad_text = title or description or advertiser_name or "meta_ad"
@@ -821,6 +1010,9 @@ class MetaLibraryCrawler(BaseCrawler):
                     "ad_description": description,
                     "url": snapshot_url,
                     "display_url": display_url,
+                    "ad_delivery_start": _parse_meta_date(item.get("ad_delivery_start_time")),
+                    "ad_delivery_end": _parse_meta_date(item.get("ad_delivery_stop_time")),
+                    "archive_source": "meta_library",
                     "position": len(ads) + 1,
                     "ad_type": "social_library",
                     "ad_placement": "meta_ads_library",
@@ -829,6 +1021,7 @@ class MetaLibraryCrawler(BaseCrawler):
                     "campaign_purpose": _campaign_purpose_api,
                     "verification_status": "verified",
                     "verification_source": "meta_ads_library",
+                    "archive_source": "meta_library",
                     "extra_data": {
                         "ad_id": item.get("id"),
                         "page_id": item.get("page_id"),
@@ -868,6 +1061,16 @@ class MetaLibraryCrawler(BaseCrawler):
             "ads": ads,
             "crawl_duration_ms": elapsed,
         }
+
+    # 하위호환 alias — 기존 코드에서 _crawl_via_api 직접 호출 시 동작 유지
+    async def _crawl_via_api(
+        self,
+        keyword: str,
+        persona: PersonaProfile,
+        device: DeviceConfig,
+    ) -> dict:
+        """_crawl_via_graph_api()의 하위호환 alias."""
+        return await self._crawl_via_graph_api(keyword, persona, device)
 
     async def _request_ads_archive(
         self, url: str, params: dict | None, keyword: str, page_index: int,

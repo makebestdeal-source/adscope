@@ -25,8 +25,7 @@ from database.schemas import (
     LaunchProductUpdateIn,
 )
 
-router = APIRouter(prefix="/api/launch-impact", tags=["launch-impact"],
-    dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/api/launch-impact", tags=["launch-impact"])
 
 
 # ── Product CRUD ──

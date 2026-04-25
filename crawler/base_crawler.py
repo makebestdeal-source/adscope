@@ -12,6 +12,7 @@ from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
 from crawler.config import crawler_settings
 from crawler.cookie_store import CookieStore, get_cookie_store
+from crawler.image_utils import batch_download, detect_image_ext
 from crawler.personas.cookie_profiles import RETARGET_WARMUP_URLS, get_warmup_urls
 from crawler.personas.device_config import DEFAULT_MOBILE, PC_DEVICE, DeviceConfig
 from crawler.personas.profiles import PERSONAS, PersonaProfile
@@ -330,6 +331,92 @@ class BaseCrawler(ABC):
         except Exception as e:
             logger.warning(f"[{self.channel}] element 스냅샷 실패 ({placement_name}): {e}")
             return None
+
+    async def _download_creative_assets(
+        self,
+        ads: list[dict],
+        extra_keys: tuple[str, ...] = ("image_url",),
+        category: str = "creative",
+        filename_prefix: str | None = None,
+        min_size: int = 500,
+    ) -> int:
+        """Download direct image URLs from extra_data and persist them."""
+        if not ads:
+            return 0
+
+        today = datetime.now().strftime("%Y%m%d")
+        base_dir = Path(self.settings.screenshot_dir) / self.channel / today
+        safe_prefix = (filename_prefix or f"{self.channel}_creative").replace(" ", "_")
+        url_to_path: dict[str, Path] = {}
+        url_to_ads: dict[str, list[dict]] = {}
+
+        for idx, ad in enumerate(ads):
+            if ad.get("creative_image_path"):
+                continue
+            extra = ad.get("extra_data") or {}
+            download_url = None
+            for key in extra_keys:
+                candidate = extra.get(key)
+                if isinstance(candidate, str) and candidate.startswith(("http://", "https://")):
+                    download_url = candidate
+                    break
+            if not download_url:
+                continue
+
+            if download_url not in url_to_path:
+                filename = f"{safe_prefix}_{idx}_{datetime.now().strftime('%H%M%S%f')}.jpg"
+                url_to_path[download_url] = base_dir / filename
+                url_to_ads[download_url] = []
+            url_to_ads[download_url].append(ad)
+
+        if not url_to_path:
+            return 0
+
+        results = await batch_download(
+            url_to_path,
+            concurrency=8,
+            timeout=12,
+            min_size=min_size,
+        )
+
+        stored_count = 0
+        for url, success in results.items():
+            if not success:
+                continue
+
+            filepath = url_to_path[url]
+            if not filepath.exists():
+                continue
+
+            try:
+                content = filepath.read_bytes()
+                real_ext = detect_image_ext(content)
+                if filepath.suffix.lower() != real_ext:
+                    normalized = filepath.with_suffix(real_ext)
+                    filepath.rename(normalized)
+                    filepath = normalized
+            except Exception:
+                pass
+
+            try:
+                stored_path = await self._image_store.save(str(filepath), self.channel, category)
+            except Exception as exc:
+                logger.debug(f"[{self.channel}] creative store fallback for {url[:80]}: {exc}")
+                stored_path = str(filepath)
+
+            for ad in url_to_ads.get(url, []):
+                ad["creative_image_path"] = stored_path
+                stored_count += 1
+
+        if stored_count:
+            logger.info(
+                "[{}] creative assets: {} updated from {} URLs",
+                self.channel,
+                stored_count,
+                len(url_to_path),
+            )
+
+        return stored_count
 
     # ── 인간적 인터랙션 헬퍼 (Phase 5 강화) ──
 

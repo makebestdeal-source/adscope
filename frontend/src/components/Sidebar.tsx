@@ -13,17 +13,19 @@ type NavGroup = { title: string; items: NavItem[]; public?: boolean; adminOnly?:
 const NAV_GROUPS: NavGroup[] = [
   {
     title: "",
+    public: true,
     items: [
       { href: "/reports", label: "보고서", icon: "report" },
       { href: "/advertisers/favorites", label: "나의 광고주", icon: "star" },
-      { href: "/advertisers", label: "광고주", icon: "advertisers" },
+      { href: "/advertisers", label: "광고주", icon: "advertisers", public: true },
       { href: "/campaigns", label: "캠페인", icon: "campaign" },
-      { href: "/gallery", label: "광고 소재", icon: "gallery" },
+      { href: "/gallery", label: "광고 소재", icon: "gallery", public: true },
       { href: "/social-gallery", label: "소셜 소재", icon: "social" },
     ],
   },
   {
     title: "키워드 분석",
+    public: true,
     items: [
       { href: "/keyword-analysis/reverse", label: "키워드 역추적", icon: "reverse" },
       { href: "/keyword-analysis/landscape", label: "광고 랜드스케이프", icon: "landscape_kw" },
@@ -32,6 +34,7 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     title: "소셜 인사이트",
+    public: true,
     items: [
       { href: "/social-channels", label: "소셜 채널 분석", icon: "brand" },
       { href: "/social-content", label: "콘텐츠 성과", icon: "content" },
@@ -41,6 +44,7 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     title: "시장 분석",
+    public: true,
     items: [
       { href: "/industries", label: "산업별 현황", icon: "landscape" },
       { href: "/products", label: "제품/서비스 현황", icon: "products" },
@@ -500,22 +504,32 @@ export function Sidebar() {
       {!user && (
         <div className="mx-3 mt-3 p-3 rounded-lg bg-indigo-950/60 border border-indigo-800/40">
           <p className="text-[11px] text-indigo-300 font-medium leading-snug mb-1.5">
-            광고 데이터 전체 열람
+            비회원 공개 열람
           </p>
           <p className="text-[10px] text-slate-400 leading-relaxed mb-2">
-            광고주·캠페인·소재·키워드 분석 등 모든 자료는 회원가입 후 확인하실 수 있습니다.
+            리포트, 광고주, 캠페인, 소재, 키워드 분석과 시장 분석 화면을 회원 가입 없이 둘러볼 수 있습니다. 다운로드와 내보내기는 유료 가입 후 사용할 수 있습니다.
           </p>
           <Link
             href="/pricing"
             className="block text-center py-1 px-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-medium transition-colors"
           >
-            무료로 시작하기 →
+            요금제 보기 →
           </Link>
         </div>
       )}
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-4">
-        {NAV_GROUPS.filter((group) => !group.adminOnly || user?.role === "admin").map((group, gi) => (
+        {NAV_GROUPS
+          .map((group) => ({
+            ...group,
+            items: group.items.filter((item) => {
+              if (item.adminOnly && user?.role !== "admin") return false;
+              if (!user && !group.public && !item.public) return false;
+              return true;
+            }),
+          }))
+          .filter((group) => (!group.adminOnly || user?.role === "admin") && group.items.length > 0)
+          .map((group, gi) => (
           <div key={gi}>
             {group.title && (
               <p className="px-3 mb-2 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
@@ -523,7 +537,7 @@ export function Sidebar() {
               </p>
             )}
             <div className="space-y-1">
-              {group.items.filter((item) => !item.adminOnly || user?.role === "admin").map((item) => {
+              {group.items.map((item) => {
                 const isActive =
                   item.href === "/"
                     ? pathname === "/"

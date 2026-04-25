@@ -6,11 +6,15 @@ import Link from "next/link";
 import { loadTossPayments, type TossPaymentsWidgets } from "@tosspayments/tosspayments-sdk";
 import { getUser, getToken } from "@/lib/auth";
 import { fetchApi } from "@/lib/api";
+import { BILLABLE_PLAN_IDS, BillingCycle, PLAN_CATALOG, formatKrw } from "@/lib/plans";
 
-const PLAN_NAMES: Record<string, string> = { lite: "Lite", full: "Full" };
+const PLAN_NAMES: Record<string, string> = {
+  lite: PLAN_CATALOG.lite.name,
+  full: PLAN_CATALOG.full.name,
+};
 const PLAN_PRICES: Record<string, Record<string, number>> = {
-  lite: { monthly: 49000, yearly: 490000 },
-  full: { monthly: 99000, yearly: 990000 },
+  lite: { monthly: PLAN_CATALOG.lite.monthly!, yearly: PLAN_CATALOG.lite.yearly! },
+  full: { monthly: PLAN_CATALOG.full.monthly!, yearly: PLAN_CATALOG.full.yearly! },
 };
 // PayPal USD prices (PayPal does not support KRW)
 const PLAN_PRICES_USD: Record<string, Record<string, number>> = {
@@ -19,7 +23,7 @@ const PLAN_PRICES_USD: Record<string, Record<string, number>> = {
 };
 
 function fmt(n: number) {
-  return n.toLocaleString("ko-KR");
+  return formatKrw(n);
 }
 
 interface PreparedOrder {
@@ -49,8 +53,10 @@ export default function PaymentPage() {
 function PaymentFlow() {
   const params = useSearchParams();
   const isExpired = params.get("expired") === "true";
-  const defaultPlan = params.get("plan") || "lite";
-  const defaultCycle = params.get("cycle") || params.get("period") || "monthly";
+  const requestedPlan = params.get("plan") || "lite";
+  const requestedCycle = params.get("cycle") || params.get("period") || "monthly";
+  const defaultPlan = BILLABLE_PLAN_IDS.includes(requestedPlan as "lite" | "full") ? requestedPlan : "lite";
+  const defaultCycle: BillingCycle = requestedCycle === "yearly" ? "yearly" : "monthly";
 
   const [plan, setPlan] = useState(defaultPlan);
   const [cycle, setCycle] = useState(defaultCycle);

@@ -1,0 +1,128 @@
+{
+  "persona_code": "M20",
+  "channel": "meta_feed",
+  "updated_at": "2026-03-24T13:48:13.560808+00:00",
+  "cookie_count": 12,
+  "cookies": [
+    {
+      "name": "datr",
+      "value": "L4vCabWH_VxXqfU8VzMufYpV",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1808917294.991109,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "sb",
+      "value": "L4vCaWtq79PFiCusX7q8fhVK",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1808917294.991875,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "m_pixel_ratio",
+      "value": "3",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "wd",
+      "value": "393x852",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "datr",
+      "value": "NIvCaYn6-u27xxhXg2_vv1Vf",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1808917299.657389,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ig_did",
+      "value": "E7BF414C-9779-489C-95A2-005775E5BEFD",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1805893299.657453,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "wd",
+      "value": "393x852",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1774964696,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "mid",
+      "value": "acKLNAAAAAGIv3TJ4Tll_nYCSUAh",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1808917300,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ps_l",
+      "value": "1",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1808917708.01901,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ps_n",
+      "value": "1",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1808917708.019068,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "test_cookie",
+      "value": "CheckForPermission",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1774360223.169857,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "fr",
+      "value": "0VxjC0l7j5mZ2UGU0..Bpwosv..AAA.0.0.BpwpYb.AWfcHvgcmUJyQh3b_MCfG3lQPSE",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1782136090.192018,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ]
+}

@@ -24,12 +24,14 @@ import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 import httpx
 from loguru import logger
 from playwright.async_api import Response
 
 from crawler.base_crawler import BaseCrawler
+from crawler.image_utils import is_valid_image
 from crawler.personas.device_config import DeviceConfig
 from crawler.personas.profiles import PersonaProfile
 
@@ -66,6 +68,51 @@ def _safe_str(val) -> str:
     return str(val).strip()
 
 
+def _pick_material_value(mat: dict, *keys: str) -> str:
+    for key in keys:
+        value = _safe_str(mat.get(key))
+        if value:
+            return value
+    return ""
+
+
+def _pick_nested_value(mat: dict, parent_key: str, *keys: str) -> str:
+    nested = mat.get(parent_key) or {}
+    if not isinstance(nested, dict):
+        return ""
+    return _pick_material_value(nested, *keys)
+
+
+def _extract_domain_hint(text: str | None) -> str | None:
+    candidate = _safe_str(text)
+    if not candidate:
+        return None
+    match = re.search(
+        r"((?:https?://)?(?:www\.)?[A-Za-z0-9][A-Za-z0-9._-]*\.(?:com|co\.kr|kr|net|org|io|shop|store|biz))",
+        candidate,
+        re.IGNORECASE,
+    )
+    if not match:
+        return None
+    return _extract_display_domain(
+        match.group(1) if "://" in match.group(1) else f"https://{match.group(1)}"
+    )
+
+
+def _extract_display_domain(url: str | None) -> str | None:
+    if not url or not url.startswith(("http://", "https://")):
+        return None
+    try:
+        host = urlparse(url).netloc.lower().removeprefix("www.")
+    except ValueError:
+        return None
+    return host or None
+
+
+def _is_creative_center_modal_url(url: str | None) -> bool:
+    return "ads.tiktok.com/business/creativecenter" in str(url or "")
+
+
 def _normalize_material(mat: dict, position: int) -> dict | None:
     """TikTok Creative Radar API material -> 정규화된 광고 dict.
 
@@ -76,11 +123,42 @@ def _normalize_material(mat: dict, position: int) -> dict | None:
         return None
 
     # 광고주 (brand_name이 주 필드)
-    advertiser_name = (
-        _safe_str(mat.get("brand_name"))
-        or _safe_str(mat.get("advertiser_name"))
-        or _safe_str(mat.get("nickname"))
+    advertiser_name = _pick_material_value(
+        mat,
+        "brand_name",
+        "advertiser_name",
+        "brand",
+        "business_name",
+        "business_account_name",
+        "company_name",
+        "account_name",
+        "author_name",
+        "creator_name",
+        "seller_name",
+        "store_name",
+        "shop_name",
+        "page_name",
+        "profile_name",
+        "user_name",
+        "username",
+        "nickname",
     )
+    if not advertiser_name:
+        advertiser_name = _pick_nested_value(
+            mat,
+            "video_info",
+            "brand_name",
+            "author_name",
+            "author",
+            "nickname",
+            "creator_name",
+            "display_name",
+            "username",
+            "account_name",
+            "user_name",
+            "shop_name",
+            "seller_name",
+        )
 
     # 광고 텍스트 (ad_title이 주 필드)
     ad_text = (
@@ -156,20 +234,40 @@ def _normalize_material(mat: dict, position: int) -> dict | None:
             _campaign_purpose = purpose
             break
 
-    # 광고별 고유 URL (material_id 기반 — 광고주 식별용)
-    ad_url = None
-    if material_id:
+    # 실제 랜딩 URL 추출 (API 응답의 landing_page 필드)
+    ad_url = (
+        _safe_str(mat.get("landing_page_url"))
+        or _safe_str(mat.get("landing_page"))
+        or _safe_str(mat.get("link"))
+        or _safe_str(mat.get("url"))
+    )
+    # fallback: Creative Center modal URL (파이프라인에서 필터될 수 있음)
+    if not ad_url and material_id:
         ad_url = (
             f"https://ads.tiktok.com/business/creativecenter"
             f"/inspiration/topads/pc/en?modal_id={material_id}"
         )
+
+    if not advertiser_name and ad_url and not _is_creative_center_modal_url(ad_url):
+        domain_hint = _extract_display_domain(ad_url)
+        if domain_hint and not domain_hint.endswith("tiktok.com"):
+            advertiser_name = domain_hint.split(".")[0]
+    if not advertiser_name:
+        text_domain_hint = _extract_domain_hint(ad_text)
+        if text_domain_hint and not text_domain_hint.endswith("tiktok.com"):
+            advertiser_name = text_domain_hint.split(".")[0]
+
+    display_url = _extract_display_domain(ad_url) or "ads.tiktok.com"
+    modal_fallback_used = _is_creative_center_modal_url(ad_url)
+
+    extra_data["url_source"] = "modal_fallback" if modal_fallback_used else "landing_page"
 
     return {
         "advertiser_name": advertiser_name or None,
         "ad_text": ad_text or f"tiktok_ad_{material_id}",
         "ad_description": None,
         "url": ad_url,
-        "display_url": "ads.tiktok.com",
+        "display_url": display_url,
         "position": position,
         "ad_type": "tiktok_creative_center",
         "ad_placement": "tiktok_top_ads",
@@ -252,8 +350,12 @@ class TikTokAdsCrawler(BaseCrawler):
                                 "[tiktok_ads] API page captured {} ads",
                                 len(mats),
                             )
-                            # 첫 material의 video_info 구조 로깅
+                            # 첫 material의 전체 키 + video_info 구조 로깅
                             if len(api_materials) <= 20:
+                                logger.debug(
+                                    "[tiktok_ads] material keys: {}",
+                                    sorted(mats[0].keys()),
+                                )
                                 vi = mats[0].get("video_info")
                                 if isinstance(vi, dict):
                                     logger.debug(
@@ -372,7 +474,7 @@ class TikTokAdsCrawler(BaseCrawler):
                     if len(content) < 500:
                         continue
 
-                    if not self._is_valid_image(content):
+                    if not is_valid_image(content):
                         continue
 
                     screenshot_dir = (
@@ -415,19 +517,4 @@ class TikTokAdsCrawler(BaseCrawler):
                 download_count, len(ads),
             )
 
-    @staticmethod
-    def _is_valid_image(data: bytes) -> bool:
-        """바이너리가 유효 이미지인지 매직 바이트 확인."""
-        if len(data) < 8:
-            return False
-        if data[:8] == b"\x89PNG\r\n\x1a\n":
-            return True
-        if data[:3] == b"\xff\xd8\xff":
-            return True
-        if data[:6] in (b"GIF87a", b"GIF89a"):
-            return True
-        if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
-            return True
-        if data[:2] == b"BM":
-            return True
-        return False
+    # is_valid_image → crawler.image_utils.is_valid_image

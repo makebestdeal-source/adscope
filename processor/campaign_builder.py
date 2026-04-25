@@ -16,16 +16,21 @@ from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, time
 import os
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import and_, delete, func, or_, select
 
 from database import async_session
 from database.models import AdDetail, AdSnapshot, Advertiser, Campaign, Keyword, SpendEstimate
 from processor.advertiser_name_cleaner import clean_name_for_pipeline
-from processor.advertiser_verifier import NameQuality, verify_advertiser_name
+from processor.advertiser_verifier import NON_AD_ELEMENTS, NameQuality, verify_advertiser_name
 from processor.advertiser_link_collector import extract_website_from_url
-from processor.spend_estimator import SpendEstimatorV2
+from processor.channel_utils import SEARCH_CHANNELS
+from processor.spend_estimator import SpendEstimatorV2, VIDEO_CPV
+_NON_AD_NAME_SET = {
+    name.strip() for name in NON_AD_ELEMENTS if isinstance(name, str) and name.strip()
+}
 
 DEFAULT_EXCLUDED_CHANNELS: set[str] = set()  # youtube_ads 포함 (2,372건 활용)
+YOUTUBE_CHANNELS = {"youtube_ads", "youtube_surf"}
 
 # ── Channel -> spend_category mapping ──
 _CHANNEL_SPEND_CATEGORY: dict[str, str] = {
@@ -43,7 +48,11 @@ _CHANNEL_SPEND_CATEGORY: dict[str, str] = {
 }
 
 
-def _yt_compute_daily_views(agg, fallback_avg_views: float = 0) -> int:
+def _yt_compute_daily_views(
+    agg,
+    fallback_avg_views: float = 0,
+    observed_days: int | None = None,
+) -> int:
     """YouTube 광고주의 일일 유료 조회수 계산.
 
     최근 30일 내 업로드된 10만회+ 영상만 대상.
@@ -57,7 +66,8 @@ def _yt_compute_daily_views(agg, fallback_avg_views: float = 0) -> int:
     """
     if agg.total_view_count > 0:
         # 10만회+ 영상만 합산된 조회수 × 95% → 일 평균 (30일 기준)
-        daily = int(agg.total_view_count * 0.95) // 30
+        days = max(1, observed_days or len(getattr(agg, "by_day", {}) or {}) or 30)
+        daily = int(agg.total_view_count) // days
         return max(100, daily)
 
     if fallback_avg_views > 0:
@@ -66,6 +76,62 @@ def _yt_compute_daily_views(agg, fallback_avg_views: float = 0) -> int:
         return max(100, daily)
 
     return 0
+
+
+def _creative_view_key(extra_data: dict, view_count: int) -> str:
+    for key in ("matched_video_id", "video_id", "content_id", "creative_id", "preview_url", "image_url"):
+        value = extra_data.get(key)
+        if value:
+            return f"{key}:{value}"
+    return f"view_count:{view_count}"
+
+
+def _parse_unix_timestamp(value) -> datetime | None:
+    if value in (None, ""):
+        return None
+    try:
+        timestamp = float(value)
+    except (TypeError, ValueError):
+        return None
+    if timestamp <= 0:
+        return None
+    if timestamp > 10_000_000_000:
+        timestamp = timestamp / 1000
+    try:
+        return datetime.fromtimestamp(timestamp, UTC).replace(tzinfo=None)
+    except (OverflowError, OSError, ValueError):
+        return None
+
+
+def _youtube_ad_period(extra_data: dict) -> tuple[datetime | None, datetime | None]:
+    start_at = _parse_unix_timestamp(
+        extra_data.get("start_timestamp")
+        or extra_data.get("start_ts")
+        or extra_data.get("start_time")
+        or extra_data.get("start")
+    )
+    end_at = _parse_unix_timestamp(
+        extra_data.get("end_timestamp")
+        or extra_data.get("end_ts")
+        or extra_data.get("end_time")
+        or extra_data.get("end")
+    )
+    return start_at, end_at
+
+
+def _is_youtube_ad_ended(extra_data: dict, now: datetime | None = None) -> bool:
+    _, end_at = _youtube_ad_period(extra_data)
+    if end_at is None:
+        return False
+    now = now or datetime.now(UTC).replace(tzinfo=None)
+    return end_at <= now
+
+
+def _youtube_ended_total_spend(agg, channel: str) -> float:
+    if channel not in YOUTUBE_CHANNELS or agg.ended_total_view_count <= 0:
+        return 0.0
+    cpv = VIDEO_CPV.get(channel, 50)
+    return float(agg.ended_total_view_count * cpv)
 
 
 def _get_spend_category(channel: str) -> str:
@@ -91,6 +157,13 @@ class DayAggregate:
     inhouse_count: int = 0
 
 
+def _to_naive_utc(dt: datetime | None) -> datetime | None:
+    """Normalize a datetime to naive UTC (strip tzinfo if present)."""
+    if dt is None:
+        return None
+    return dt.replace(tzinfo=None) if dt.tzinfo else dt
+
+
 @dataclass
 class CampaignAggregate:
     first_seen: datetime | None = None
@@ -102,8 +175,14 @@ class CampaignAggregate:
     has_inhouse: bool = False
     has_contact: bool = False
     max_view_count: int = 0
+    view_count_keys: set[str] = field(default_factory=set)
     total_view_count: int = 0   # 모든 소재의 조회수 합계
     view_count_sources: int = 0  # view_count가 있는 소재 수
+    ended_view_count_keys: set[str] = field(default_factory=set)
+    ended_total_view_count: int = 0
+    ended_view_count_sources: int = 0
+    ended_first_start_at: datetime | None = None
+    ended_last_end_at: datetime | None = None
 
 
 async def _backfill_advertiser_ids() -> tuple[int, int]:
@@ -124,11 +203,20 @@ async def _backfill_advertiser_ids() -> tuple[int, int]:
         # URL 필수: URL 없는 소재는 광고주 매칭에서 제외
         unmatched = (
             await session.execute(
-                select(AdDetail).where(
+                select(AdDetail)
+                .join(AdSnapshot, AdSnapshot.id == AdDetail.snapshot_id)
+                .where(
                     AdDetail.advertiser_id.is_(None),
                     AdDetail.advertiser_name_raw.is_not(None),
                     AdDetail.url.is_not(None),
                     AdDetail.url != "",
+                    or_(
+                        AdSnapshot.channel.in_(list(SEARCH_CHANNELS)),
+                        and_(
+                            AdDetail.creative_image_path.is_not(None),
+                            AdDetail.creative_image_path != "",
+                        ),
+                    ),
                 )
             )
         ).scalars().all()
@@ -144,14 +232,22 @@ async def _backfill_advertiser_ids() -> tuple[int, int]:
             raw_name = (detail.advertiser_name_raw or "").strip()
             if not raw_name:
                 continue
+            if raw_name in _NON_AD_NAME_SET:
+                continue
 
             # ── 항상 먼저 이름 품질 검증 + URL/광고카피 제거 ──
-            verification = verify_advertiser_name(raw_name)
+            clean_name = clean_name_for_pipeline(
+                raw_name,
+                ad_text=detail.ad_text,
+                display_url=detail.display_url,
+                click_url=detail.url,
+            )
+            verification = verify_advertiser_name(clean_name or raw_name)
             if verification.quality == NameQuality.REJECTED:
                 continue
-            clean_name = verification.cleaned_name or raw_name
-            # 추가 정리: URL, 도메인, 이중공백 광고카피 제거
-            clean_name = clean_name_for_pipeline(clean_name)
+            clean_name = verification.cleaned_name or clean_name or raw_name
+            if clean_name in _NON_AD_NAME_SET:
+                continue
 
             # 정제된 이름으로 먼저 검색 (URL 제거된 이름)
             adv_id = name_to_id.get(clean_name)
@@ -196,6 +292,7 @@ async def _backfill_advertiser_industries(excluded_channels: set[str] | None = N
         query = (
             select(AdDetail.advertiser_id, Keyword.industry_id)
             .join(AdSnapshot, AdSnapshot.id == AdDetail.snapshot_id)
+            .join(Advertiser, Advertiser.id == AdDetail.advertiser_id)
             .join(Keyword, Keyword.id == AdSnapshot.keyword_id)
             .where(AdDetail.advertiser_id.is_not(None))
             .where(Keyword.industry_id.is_not(None))
@@ -204,6 +301,7 @@ async def _backfill_advertiser_industries(excluded_channels: set[str] | None = N
             query = query.where(AdSnapshot.channel.notin_(list(excluded_channels)))
 
         rows = await session.execute(query)
+        now = datetime.now(UTC).replace(tzinfo=None)
 
         counts: dict[int, dict[int, int]] = defaultdict(lambda: defaultdict(int))
         for advertiser_id, industry_id in rows.all():
@@ -264,15 +362,38 @@ async def _collect_aggregates(
                 AdDetail.last_seen_at,
             )
             .join(AdSnapshot, AdSnapshot.id == AdDetail.snapshot_id)
+            .join(Advertiser, Advertiser.id == AdDetail.advertiser_id)
             .where(AdDetail.advertiser_id.is_not(None))
             # URL 필수: 광고주 URL 없는 소재는 캠페인 집계에서 제외
             .where(AdDetail.url.is_not(None))
             .where(AdDetail.url != "")
+            .where(
+                or_(
+                    AdDetail.verification_status.is_(None),
+                    AdDetail.verification_status != "rejected",
+                    and_(
+                        AdSnapshot.channel.in_(list(YOUTUBE_CHANNELS)),
+                        AdDetail.extra_data["view_count"].as_integer() > 0,
+                        AdDetail.extra_data["end_timestamp"].as_string().is_not(None),
+                    ),
+                )
+            )
+            .where(Advertiser.name.notin_(list(_NON_AD_NAME_SET)))
+            .where(
+                or_(
+                    AdSnapshot.channel.in_(list(SEARCH_CHANNELS)),
+                    and_(
+                        AdDetail.creative_image_path.is_not(None),
+                        AdDetail.creative_image_path != "",
+                    ),
+                )
+            )
         )
         if excluded_channels:
             query = query.where(AdSnapshot.channel.notin_(list(excluded_channels)))
 
         rows = await session.execute(query)
+        now = datetime.now(UTC).replace(tzinfo=None)
 
         aggregates: dict[tuple[int, str], CampaignAggregate] = {}
         keyword_counts: dict[tuple[int, str], dict[int, int]] = {}  # track dominant keyword
@@ -297,8 +418,9 @@ async def _collect_aggregates(
             agg.ad_occurrences += effective_count
             agg.snapshot_ids.add(int(snapshot_id))
             # Use dedup-tracked timestamps if available, fallback to snapshot captured_at
-            effective_first = first_seen_at or captured_at
-            effective_last = last_seen_at or captured_at
+            # Normalize to naive UTC to avoid offset-naive vs offset-aware comparison errors
+            effective_first = _to_naive_utc(first_seen_at or captured_at)
+            effective_last = _to_naive_utc(last_seen_at or captured_at)
             agg.first_seen = effective_first if agg.first_seen is None else min(agg.first_seen, effective_first)
             agg.last_seen = effective_last if agg.last_seen is None else max(agg.last_seen, effective_last)
 
@@ -317,19 +439,29 @@ async def _collect_aggregates(
                     if vc_int > agg.max_view_count:
                         agg.max_view_count = vc_int
                     # 최근 30일 내 업로드된 10만회+ 영상만 광고비 추정에 사용
-                    if vc_int >= 100_000:
-                        upload_date_str = extra_data.get("upload_date", "")
-                        is_recent = False
-                        if upload_date_str:
-                            try:
-                                from datetime import datetime as _dt
-                                ud = _dt.strptime(str(upload_date_str)[:8], "%Y%m%d")
-                                is_recent = (_dt.utcnow() - ud).days <= 30
-                            except (ValueError, TypeError):
-                                is_recent = False
-                        if is_recent:
-                            agg.total_view_count += vc_int
-                            agg.view_count_sources += 1
+                    view_key = _creative_view_key(extra_data, vc_int)
+                    if view_key not in agg.view_count_keys:
+                        agg.view_count_keys.add(view_key)
+                        agg.total_view_count += vc_int
+                        agg.view_count_sources += 1
+                    if channel in YOUTUBE_CHANNELS and _is_youtube_ad_ended(extra_data, now=now):
+                        if view_key not in agg.ended_view_count_keys:
+                            agg.ended_view_count_keys.add(view_key)
+                            agg.ended_total_view_count += vc_int
+                            agg.ended_view_count_sources += 1
+                        ad_start_at, ad_end_at = _youtube_ad_period(extra_data)
+                        if ad_start_at is not None:
+                            agg.ended_first_start_at = (
+                                ad_start_at
+                                if agg.ended_first_start_at is None
+                                else min(agg.ended_first_start_at, ad_start_at)
+                            )
+                        if ad_end_at is not None:
+                            agg.ended_last_end_at = (
+                                ad_end_at
+                                if agg.ended_last_end_at is None
+                                else max(agg.ended_last_end_at, ad_end_at)
+                            )
 
             # Distribute ad_hits across observed date range (dedup-aware)
             start_date = (first_seen_at or captured_at).date()
@@ -504,6 +636,14 @@ async def _upsert_campaigns_and_spend(
             campaigns_query = campaigns_query.where(Campaign.channel.notin_(list(excluded_channels)))
         campaigns = (await session.execute(campaigns_query)).scalars().all()
 
+        legacy_methods = ["base_cost_frequency", "catalog_creative_reverse"]
+        legacy_delete = delete(SpendEstimate).where(
+            SpendEstimate.calculation_method.in_(legacy_methods)
+        )
+        if excluded_channels:
+            legacy_delete = legacy_delete.where(SpendEstimate.channel.notin_(list(excluded_channels)))
+        await session.execute(legacy_delete)
+
         # Index by (advertiser_id, channel) — merge old keyword-based campaigns
         campaign_by_key: dict[tuple[int, str], Campaign] = {}
         duplicate_campaigns: list[Campaign] = []
@@ -581,7 +721,24 @@ async def _upsert_campaigns_and_spend(
             campaign.extra_data = {
                 "ad_occurrences": agg.ad_occurrences,
                 "active_days_observed": len(agg.by_day),
+                "view_count_sources": agg.view_count_sources,
+                "total_view_count": agg.total_view_count,
             }
+            if channel in YOUTUBE_CHANNELS:
+                campaign.extra_data.update(
+                    {
+                        "ended_view_count_sources": agg.ended_view_count_sources,
+                        "ended_total_view_count": agg.ended_total_view_count,
+                        "ended_first_start_at": (
+                            agg.ended_first_start_at.isoformat()
+                            if agg.ended_first_start_at else None
+                        ),
+                        "ended_last_end_at": (
+                            agg.ended_last_end_at.isoformat()
+                            if agg.ended_last_end_at else None
+                        ),
+                    }
+                )
 
             # -- Campaign metadata fields --
             if not campaign.start_at:
@@ -601,26 +758,106 @@ async def _upsert_campaigns_and_spend(
 
             await session.execute(delete(SpendEstimate).where(SpendEstimate.campaign_id == campaign.id))
 
+            day_items = sorted(agg.by_day.items())
+            youtube_ended_total = _youtube_ended_total_spend(agg, campaign.channel)
+            youtube_ended_allocation_days = len(day_items) if youtube_ended_total > 0 else 0
+
+            # 동영상 채널: 캠페인 수준 일일 조회수 계산 (by_day 전체 공유)
+            yt_daily_views = (
+                _yt_compute_daily_views(agg, observed_days=len(agg.by_day))
+                if campaign.channel in YOUTUBE_CHANNELS else 0
+            )
+            # 틱톡: extra_data에 view_count 없으면 보수적 기본값
+            tiktok_daily_views = (
+                _yt_compute_daily_views(agg, observed_days=len(agg.by_day))
+                if campaign.channel == "tiktok_ads" else 0
+            )
+
+            # 보수적 모드 판단용 전체 수집량
+            total_hits = agg.ad_occurrences
+
+            # 키워드 검색량 (있으면 활용)
+            dominant_kw = keyword_map.get(campaign.keyword_id) if campaign.keyword_id else None
+            kw_search_volume = int(getattr(dominant_kw, "search_volume", None) or 0)
+            # search_volume은 월 기준 → 일 기준으로 환산
+            if kw_search_volume > 1000:
+                kw_search_volume = kw_search_volume // 30
+            placement_traffic_multiplier = min(
+                2.0,
+                1.0 + max(0, len(agg.placements) - 1) * 0.1,
+            )
+
             # campaign_total: 이 캠페인의 모든 일자별 est_daily_spend 합계 (KRW)
             campaign_total = 0.0
-            for day, day_agg in agg.by_day.items():
+            for day_index, (day, day_agg) in enumerate(day_items):
                 # 인하우스 여부
                 is_day_inhouse = day_agg.inhouse_count > 0 and day_agg.inhouse_count >= day_agg.ad_hits
+
+                # 평균 포지션 계산
+                avg_position = (
+                    sum(day_agg.positions) / len(day_agg.positions)
+                    if day_agg.positions else 2.0
+                )
+
+                # 동영상 일일 조회수 (채널에 따라 분기)
+                daily_view_count = (
+                    yt_daily_views if campaign.channel in YOUTUBE_CHANNELS
+                    else tiktok_daily_views if campaign.channel == "tiktok_ads"
+                    else 0
+                )
 
                 ad_data = {
                     "keyword": "unknown",
                     "is_inhouse": is_day_inhouse or agg.has_inhouse,
+                    "avg_position": avg_position,
+                    "keyword_search_volume": kw_search_volume,
+                    "daily_view_count": daily_view_count,
+                    "ad_hits_total": total_hits,
+                    "placement_traffic_multiplier": placement_traffic_multiplier,
                 }
                 frequency_data = {"ad_hits": day_agg.ad_hits}
 
-                est = estimator_v2.estimate(
-                    channel=campaign.channel,
-                    ad_data=ad_data,
-                    frequency_data=frequency_data,
-                )
+                if (
+                    youtube_ended_total > 0
+                    and youtube_ended_allocation_days > 0
+                    and not ad_data["is_inhouse"]
+                ):
+                    if day_index == youtube_ended_allocation_days - 1:
+                        est_daily_spend = round(youtube_ended_total - campaign_total, 2)
+                    else:
+                        est_daily_spend = round(youtube_ended_total / youtube_ended_allocation_days, 2)
+                    confidence = 0.75
+                    calculation_method = "video_cpv_ended_total"
+                    factors = {
+                        "method": "video_cpv_ended_total",
+                        "cpv": VIDEO_CPV.get(campaign.channel, 50),
+                        "ended_total_views": agg.ended_total_view_count,
+                        "ended_view_count_sources": agg.ended_view_count_sources,
+                        "allocation_days": youtube_ended_allocation_days,
+                        "allocation_method": "observed_days_even_split",
+                        "ad_start_at": (
+                            agg.ended_first_start_at.isoformat()
+                            if agg.ended_first_start_at else None
+                        ),
+                        "ad_end_at": (
+                            agg.ended_last_end_at.isoformat()
+                            if agg.ended_last_end_at else None
+                        ),
+                        "cap_applied": False,
+                        "ad_hits": day_agg.ad_hits,
+                        "ad_hits_total": total_hits,
+                    }
+                else:
+                    est = estimator_v2.estimate(
+                        channel=campaign.channel,
+                        ad_data=ad_data,
+                        frequency_data=frequency_data,
+                    )
 
-                est_daily_spend = est.est_daily_spend
-                confidence = est.confidence
+                    est_daily_spend = est.est_daily_spend
+                    confidence = est.confidence
+                    calculation_method = est.calculation_method
+                    factors = est.factors
 
                 session.add(
                     SpendEstimate(
@@ -629,8 +866,8 @@ async def _upsert_campaigns_and_spend(
                         channel=campaign.channel,
                         est_daily_spend=est_daily_spend,
                         confidence=confidence,
-                        calculation_method=est.calculation_method,
-                        factors=est.factors,
+                        calculation_method=calculation_method,
+                        factors=factors,
                     )
                 )
                 total_estimate_rows += 1
@@ -639,6 +876,18 @@ async def _upsert_campaigns_and_spend(
             # Campaign.total_est_spend: 관측 기간 내 실제 추정 매체비 합계 (KRW)
             # 30일 투영 제거 — 실제 수집된 일별 추정치의 단순 합산
             campaign.total_est_spend = round(campaign_total, 2)
+
+        spend_sum = (
+            select(func.coalesce(func.sum(SpendEstimate.est_daily_spend), 0.0))
+            .where(SpendEstimate.campaign_id == Campaign.id)
+            .scalar_subquery()
+        )
+        campaign_total_update = Campaign.__table__.update().values(total_est_spend=spend_sum)
+        if excluded_channels:
+            campaign_total_update = campaign_total_update.where(
+                Campaign.channel.notin_(list(excluded_channels))
+            )
+        await session.execute(campaign_total_update)
 
         await session.commit()
         return len(touched_campaigns), total_estimate_rows
@@ -865,6 +1114,24 @@ async def _counts() -> tuple[int, int]:
         return int(campaign_count or 0), int(estimate_count or 0)
 
 
+async def _sync_campaign_totals_from_spend_estimates(
+    excluded_channels: set[str] | None = None,
+) -> int:
+    """Keep Campaign.total_est_spend equal to the current spend_estimates sum."""
+    async with async_session() as session:
+        spend_sum = (
+            select(func.coalesce(func.sum(SpendEstimate.est_daily_spend), 0.0))
+            .where(SpendEstimate.campaign_id == Campaign.id)
+            .scalar_subquery()
+        )
+        stmt = Campaign.__table__.update().values(total_est_spend=spend_sum)
+        if excluded_channels:
+            stmt = stmt.where(Campaign.channel.notin_(list(excluded_channels)))
+        result = await session.execute(stmt)
+        await session.commit()
+        return int(result.rowcount or 0)
+
+
 async def rebuild_campaigns_and_spend(active_days: int = 30) -> dict[str, int]:
     """Rebuild campaign and spend tables and return execution stats."""
     excluded_channels = _parse_excluded_channels(
@@ -884,6 +1151,7 @@ async def rebuild_campaigns_and_spend(active_days: int = 30) -> dict[str, int]:
 
     # 크로스채널 캠페인 병합: 같은 광고주 + 같은 상품 → 하나의 캠페인
     merged = await _merge_cross_channel_campaigns()
+    synced_totals = await _sync_campaign_totals_from_spend_estimates(excluded_channels=excluded_channels)
 
     campaign_total, spend_estimates_total = await _counts()
 
@@ -895,6 +1163,7 @@ async def rebuild_campaigns_and_spend(active_days: int = 30) -> dict[str, int]:
         "updated_campaigns": updated_campaigns,
         "inserted_estimates": inserted_estimates,
         "merged_campaigns": merged,
+        "synced_campaign_totals": synced_totals,
         "campaigns_total": campaign_total,
         "spend_estimates_total": spend_estimates_total,
     }

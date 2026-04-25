@@ -19,8 +19,7 @@ from database.models import (
     SpendEstimate,
 )
 
-router = APIRouter(prefix="/api/advertiser-trends", tags=["advertiser-trends"],
-    dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/api/advertiser-trends", tags=["advertiser-trends"])
 
 
 def _now():

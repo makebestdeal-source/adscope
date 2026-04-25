@@ -16,6 +16,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.deps import create_access_token, get_current_user, require_admin, JWT_EXPIRE_HOURS
+from api.pricing import BILLABLE_PLAN_IDS, public_plan_catalog
 from database import get_db
 from database.models import User, UserSession, LoginHistory, PasswordResetToken
 
@@ -53,7 +54,7 @@ class SignupRequest(BaseModel):
     name: str
     company_name: str
     phone: str | None = None
-    plan: str = "lite"  # "lite" or "full"
+    plan: str = "lite"  # "lite" or "full"; enterprise is handled by inquiry.
     plan_period: str = "monthly"  # "monthly" or "yearly"
 
 
@@ -270,52 +271,10 @@ async def register(
     )
 
 
-# ── 기업회원 공개 가입 ──
-
-PLAN_PRICES = {
-    "lite": {"monthly": 49000, "yearly": 490000},
-    "full": {"monthly": 99000, "yearly": 990000},
-}
-
-
 @router.get("/plans")
 async def get_plans():
     """공개 요금제 정보."""
-    return {
-        "plans": [
-            {
-                "id": "lite",
-                "name": "Lite",
-                "description": "광고 정보 열람 (광고 소재/소셜 소재 미포함)",
-                "monthly_price": 49000,
-                "yearly_price": 490000,
-                "vat_excluded": True,
-                "features": [
-                    "광고주 리포트",
-                    "광고비 분석",
-                    "산업별 현황",
-                    "제품/서비스별 분석",
-                    "경쟁사 비교",
-                    "보고서 생성",
-                ],
-            },
-            {
-                "id": "full",
-                "name": "Full",
-                "description": "전체 기능 (광고 소재 + 소셜 소재 포함)",
-                "monthly_price": 99000,
-                "yearly_price": 990000,
-                "vat_excluded": True,
-                "features": [
-                    "Lite 전체 기능 포함",
-                    "광고 소재 갤러리",
-                    "소셜 소재 갤러리",
-                    "소셜 채널 분석",
-                    "보고서 (소셜 포함)",
-                ],
-            },
-        ],
-    }
+    return {"plans": public_plan_catalog()}
 
 
 @router.post("/signup")
@@ -337,7 +296,7 @@ async def signup(
     if not any(c.isalpha() for c in body.password) or not any(c.isdigit() for c in body.password):
         raise HTTPException(status_code=400, detail="비밀번호는 영문과 숫자를 모두 포함해야 합니다.")
 
-    if body.plan not in ("lite", "full"):
+    if body.plan not in BILLABLE_PLAN_IDS:
         raise HTTPException(status_code=400, detail="플랜은 lite 또는 full만 가능합니다")
     if body.plan_period not in ("monthly", "yearly"):
         raise HTTPException(status_code=400, detail="결제 주기는 monthly 또는 yearly만 가능합니다")

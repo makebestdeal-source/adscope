@@ -10,11 +10,46 @@ from loguru import logger
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from database import init_db
+from processor.data_quality_gate import (
+    QualityRule,
+    collect_quality_stats,
+    evaluate_quality_gate,
+    parse_channel_rules,
+    parse_channels,
+)
 from processor.campaign_builder import rebuild_campaigns_and_spend
 
 
 async def main():
     await init_db()
+    if os.getenv("CAMPAIGN_SKIP_QUALITY_GATE", "").lower() not in {"1", "true", "yes"}:
+        channels = parse_channels(os.getenv("DATA_QUALITY_GATE_CHANNELS", ""))
+        rule = QualityRule(
+            min_total=int(os.getenv("DATA_QUALITY_GATE_MIN_TOTAL", "5")),
+            max_missing_url_ratio=float(os.getenv("DATA_QUALITY_GATE_MAX_MISSING_URL", "0.0")),
+            max_generic_advertiser_ratio=float(os.getenv("DATA_QUALITY_GATE_MAX_GENERIC_ADVERTISER", "0.02")),
+            max_missing_creative_ratio=float(os.getenv("DATA_QUALITY_GATE_MAX_MISSING_CREATIVE", "0.05")),
+            max_missing_asset_ratio=float(os.getenv("DATA_QUALITY_GATE_MAX_MISSING_ASSET", "0.05")),
+        )
+        report = evaluate_quality_gate(
+            stats_by_channel=collect_quality_stats(
+                db_path=Path(__file__).resolve().parent.parent / "adscope.db",
+                active_days=int(os.getenv("DATA_QUALITY_GATE_ACTIVE_DAYS", "30")),
+                channels=channels or None,
+            ),
+            default_rule=rule,
+            channel_rules=parse_channel_rules(os.getenv("DATA_QUALITY_GATE_CHANNEL_RULES", "")),
+        )
+        failed = [row for row in report if not row["passed"]]
+        if failed:
+            logger.error(
+                "Campaign rebuild blocked by data quality gate: {}",
+                ", ".join(row["channel"] for row in failed),
+            )
+            for row in failed:
+                logger.error("  {} reasons={}", row["channel"], "; ".join(row["reasons"]))
+            raise SystemExit(2)
+
     logger.info(
         "Campaign rebuild excluded channels: {}",
         os.getenv("CAMPAIGN_EXCLUDED_CHANNELS", "youtube_ads"),

@@ -26,8 +26,7 @@ from database.schemas import (
     TrafficSignalOut,
 )
 
-router = APIRouter(prefix="/api/meta-signals", tags=["meta-signals"],
-    dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/api/meta-signals", tags=["meta-signals"])
 
 
 @router.get("/{advertiser_id}/overview", response_model=MetaSignalOverviewOut)

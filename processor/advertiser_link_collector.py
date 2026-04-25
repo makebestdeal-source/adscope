@@ -32,7 +32,7 @@ _AD_INFRA_DOMAINS: set[str] = {
     "googleapis.com",
     "youtube.com",  # YouTube itself is infra, not a website
     "youtu.be",
-    # Naver
+    # Naver — 플랫폼 페이지 (자사 사이트 아님)
     "ader.naver.com",
     "g.tivan.naver.com",
     "siape.veta.naver.com",
@@ -41,21 +41,44 @@ _AD_INFRA_DOMAINS: set[str] = {
     "naver.com",
     "naver.me",
     "navercorp.com",
+    "shopping.naver.com",
+    "search.naver.com",
+    "m.naver.com",
     # Kakao / Daum
     "tr.ad.daum.net",
     "ad.daum.net",
     "daum.net",
     "kakao.com",
     "kakaocorp.com",
+    "pf.kakao.com",          # 카카오 채널 (자사 사이트 아님)
     # Meta
     "facebook.com",
     "instagram.com",
     "fb.com",
+    "fb.me",
     "fbcdn.net",
     "meta.com",
+    # Meta 광고 리다이렉트 도메인 (1개 URL에 수십 개 광고주 생성 주범)
+    "fb.netshort.com",
+    "fbweb.moboreels.com",
+    "fbweb.moboreader.net",
+    "pages.farsunpteltd.com",
     # TikTok
     "ads.tiktok.com",
     "tiktok.com",
+    # Twitter / X
+    "twitter.com",
+    "x.com",
+    # 단축 URL 서비스 (실제 도메인 아님)
+    "bit.ly",
+    "goo.gl",
+    "t.co",
+    "lnkd.in",
+    "w3.org",
+    # 앱스토어 (자사 사이트 아님)
+    "itunes.apple.com",
+    "apps.apple.com",
+    "play.google.com",
     # General ad trackers
     "criteo.com",
     "criteo.net",
@@ -72,6 +95,26 @@ _AD_INFRA_DOMAINS: set[str] = {
     "akamaized.net",
     "akamai.net",
     "amazonaws.com",
+    # 한국 입점몰 — 브랜드 자사 사이트 아님
+    "oliveyoung.co.kr",
+    "musinsa.com",
+    "wconcept.co.kr",
+    "29cm.co.kr",
+    "interpark.com",
+    "wemakeprice.com",
+    "tmon.co.kr",
+    "ohouse.co.kr",
+    "link.coupang.com",      # 쿠팡 파트너스 링크 (coupang.com 자체는 제외)
+    "ssg.com",
+    "lotteon.com",
+}
+
+_PLATFORM_FALLBACK_WEBSITE_DOMAINS: set[str] = {
+    # Advertiser-operated storefronts. They are not corporate homepages, but
+    # they are useful when the current schema has only one website field.
+    "brand.naver.com",
+    "smartstore.naver.com",
+    "store.naver.com",
 }
 
 # Social platform patterns -> official_channels key
@@ -131,6 +174,34 @@ def _is_ad_infra(domain: str) -> bool:
     return False
 
 
+def _domain_matches(domain: str | None, domains: set[str]) -> bool:
+    if not domain:
+        return False
+    if domain in domains:
+        return True
+    return any(domain.endswith(f".{base}") for base in domains)
+
+
+def _is_platform_fallback_website(domain: str | None) -> bool:
+    """Check advertiser-operated storefront domains usable as last resort."""
+    return _domain_matches(domain, _PLATFORM_FALLBACK_WEBSITE_DOMAINS)
+
+
+def _normalize_website_candidate(url: str, keep_storefront_path: bool = False) -> str | None:
+    if "://" not in url:
+        url = f"https://{url}"
+    domain = _extract_domain(url)
+    if not domain:
+        return None
+    if not keep_storefront_path:
+        return f"https://{domain}"
+    parsed = urlparse(url)
+    first_path = parsed.path.strip("/").split("/", 1)[0]
+    if first_path:
+        return f"https://{domain}/{first_path}"
+    return f"https://{domain}"
+
+
 def _extract_root_domain(url: str) -> str | None:
     """Extract root domain (e.g., 'shop.samsung.com' -> 'samsung.com')."""
     domain = _extract_domain(url)
@@ -148,10 +219,12 @@ def _extract_root_domain(url: str) -> str | None:
 def _clean_url_for_website(url: str) -> str | None:
     """Clean a URL to produce a website root (https://domain.com)."""
     domain = _extract_domain(url)
-    if not domain or _is_ad_infra(domain):
+    if not domain or (_is_ad_infra(domain) and not _is_platform_fallback_website(domain)):
         return None
-    # Build clean website URL
-    return f"https://{domain}"
+    return _normalize_website_candidate(
+        url,
+        keep_storefront_path=_is_platform_fallback_website(domain),
+    )
 
 
 def _extract_social_handles(urls: list[str]) -> dict[str, str]:
@@ -196,7 +269,8 @@ def extract_website_from_ads(
     Returns:
         (website_url, official_channels_dict)
     """
-    candidate_urls: list[str] = []
+    preferred_urls: list[str] = []
+    fallback_urls: list[str] = []
     all_urls: list[str] = []
 
     for row in ad_rows:
@@ -239,24 +313,42 @@ def extract_website_from_ads(
                 all_urls.append(landing_url)
 
         # display_url is the most reliable for naver_search
-        if display_url and not _is_ad_infra(_extract_domain(
-                display_url if "://" in display_url else f"https://{display_url}")):
-            candidate_urls.append(
-                display_url if "://" in display_url else f"https://{display_url}"
-            )
+        if display_url:
+            display_candidate = display_url if "://" in display_url else f"https://{display_url}"
+            display_domain = _extract_domain(display_candidate)
+            if display_domain and not _is_ad_infra(display_domain):
+                normalized = _normalize_website_candidate(display_candidate)
+                if normalized:
+                    preferred_urls.append(normalized)
+            elif _is_platform_fallback_website(display_domain):
+                normalized = _normalize_website_candidate(
+                    display_candidate,
+                    keep_storefront_path=True,
+                )
+                if normalized:
+                    fallback_urls.append(normalized)
 
         # Main URL if not ad infra
-        if url and not _is_ad_infra(_extract_domain(url)):
-            candidate_urls.append(url)
+        if url:
+            url_domain = _extract_domain(url)
+            if url_domain and not _is_ad_infra(url_domain):
+                normalized = _normalize_website_candidate(url)
+                if normalized:
+                    preferred_urls.append(normalized)
+            elif _is_platform_fallback_website(url_domain):
+                normalized = _normalize_website_candidate(url, keep_storefront_path=True)
+                if normalized:
+                    fallback_urls.append(normalized)
 
     # ── Determine website ──
     website: str | None = None
 
-    # Score candidates by frequency (most common domain wins)
+    # Score candidates by frequency. Prefer advertiser-owned domains; use
+    # storefront fallbacks only when no owned-domain signal is available.
     domain_counts: dict[str, tuple[str, int]] = {}
-    for u in candidate_urls:
+    for u in preferred_urls or fallback_urls:
         d = _extract_domain(u)
-        if d and not _is_ad_infra(d):
+        if d and (not _is_ad_infra(d) or _is_platform_fallback_website(d)):
             if d not in domain_counts:
                 domain_counts[d] = (u, 0)
             domain_counts[d] = (domain_counts[d][0], domain_counts[d][1] + 1)
@@ -264,7 +356,7 @@ def extract_website_from_ads(
     if domain_counts:
         # Pick the domain with the highest count
         best_domain = max(domain_counts, key=lambda d: domain_counts[d][1])
-        website = f"https://{best_domain}"
+        website = domain_counts[best_domain][0]
 
     # ── Extract social handles ──
     social_handles = _extract_social_handles(all_urls)
@@ -272,10 +364,12 @@ def extract_website_from_ads(
     return website, social_handles
 
 
-async def collect_advertiser_links(limit: int = 50) -> dict:
+async def collect_advertiser_links(limit: int = 100) -> dict:
     """Collect website/official_channels for advertisers that have none.
 
     Extracts URLs from existing ad_details rows -- no external web requests.
+    Phase 1: website가 없는 광고주 (우선)
+    Phase 2: website는 있지만 official_channels가 비어있는 광고주
 
     Args:
         limit: max number of advertisers to process per run
@@ -286,7 +380,7 @@ async def collect_advertiser_links(limit: int = 50) -> dict:
     stats = {"processed": 0, "website_set": 0, "channels_set": 0}
 
     async with async_session() as session:
-        # Find advertisers with NULL website, ordered by ad_detail count (most ads first)
+        # Phase 1: website가 없는 광고주
         adv_query = (
             select(
                 Advertiser.id,
@@ -365,6 +459,73 @@ async def collect_advertiser_links(limit: int = 50) -> dict:
                 )
 
             stats["processed"] += 1
+
+        # Phase 2: website가 있지만 official_channels가 비어있는 광고주
+        remaining = limit - stats["processed"]
+        if remaining > 0:
+            phase2_query = (
+                select(
+                    Advertiser.id,
+                    Advertiser.name,
+                    Advertiser.website,
+                    Advertiser.official_channels,
+                    func.count(AdDetail.id).label("ad_count"),
+                )
+                .outerjoin(AdDetail, AdDetail.advertiser_id == Advertiser.id)
+                .where(
+                    Advertiser.website.isnot(None),
+                    Advertiser.website != "",
+                    (
+                        Advertiser.official_channels.is_(None)
+                        | (Advertiser.official_channels == "{}")
+                        | (Advertiser.official_channels == "null")
+                        | (Advertiser.official_channels == "")
+                    ),
+                )
+                .group_by(Advertiser.id)
+                .order_by(func.count(AdDetail.id).desc())
+                .limit(remaining)
+            )
+            phase2_rows = (await session.execute(phase2_query)).all()
+
+            for adv_id, adv_name, current_website, current_channels, ad_count in phase2_rows:
+                if ad_count == 0:
+                    continue
+                detail_query = (
+                    select(AdDetail.url, AdDetail.display_url, AdDetail.extra_data)
+                    .where(AdDetail.advertiser_id == adv_id)
+                    .limit(100)
+                )
+                details = (await session.execute(detail_query)).all()
+                ad_rows_data = [
+                    {"url": r[0], "display_url": r[1], "extra_data": r[2]}
+                    for r in details
+                ]
+                _, social_handles = extract_website_from_ads(ad_rows_data)
+                if social_handles:
+                    existing_channels: dict = {}
+                    if current_channels:
+                        if isinstance(current_channels, str):
+                            try:
+                                existing_channels = json.loads(current_channels)
+                            except (json.JSONDecodeError, TypeError):
+                                existing_channels = {}
+                        elif isinstance(current_channels, dict):
+                            existing_channels = current_channels
+                    merged = {**existing_channels}
+                    new_added = False
+                    for platform, handle in social_handles.items():
+                        if platform not in merged:
+                            merged[platform] = handle
+                            new_added = True
+                    if new_added:
+                        await session.execute(
+                            update(Advertiser)
+                            .where(Advertiser.id == adv_id)
+                            .values(official_channels=merged)
+                        )
+                        stats["channels_set"] += 1
+                stats["processed"] += 1
 
         await session.commit()
 
@@ -468,6 +629,9 @@ def extract_website_from_url(url: str | None, display_url: str | None = None) ->
         if "://" not in candidate:
             candidate = f"https://{candidate}"
         domain = _extract_domain(candidate)
-        if domain and not _is_ad_infra(domain):
-            return f"https://{domain}"
+        if domain and (not _is_ad_infra(domain) or _is_platform_fallback_website(domain)):
+            return _normalize_website_candidate(
+                candidate,
+                keep_storefront_path=_is_platform_fallback_website(domain),
+            )
     return None

@@ -12,6 +12,7 @@ Enhanced with:
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import re
@@ -61,7 +62,7 @@ _PERSONA_SEED_KEYWORDS: dict[str, list[str]] = {
 class YouTubeSurfCrawler(BaseCrawler):
     """영상 직접 로드 + doubleclick/googlevideo 네트워크 캡처."""
 
-    channel = "youtube_surf"
+    channel = "youtube_ads"
     keyword_dependent = False
 
     # 광고가 붙는 긴 영상 시드 (8분 이상 — 프리롤+미드롤 광고 확보)
@@ -537,6 +538,7 @@ class YouTubeSurfCrawler(BaseCrawler):
 
             # ── Playwright-level network ad capture ──
             ad_captures: list[dict] = []
+            _ad_network_event = asyncio.Event()
 
             async def _on_network_response(response: Response):
                 url = response.url
@@ -550,6 +552,7 @@ class YouTubeSurfCrawler(BaseCrawler):
                                 ads = _parse_player_ads(data)
                                 if ads:
                                     logger.debug(f"[youtube] player API ads: {len(ads)}")
+                                    _ad_network_event.set()
                                 ad_captures.extend(ads)
                         return
 
@@ -562,6 +565,7 @@ class YouTubeSurfCrawler(BaseCrawler):
                                 ads = _parse_midroll_ads(data)
                                 if ads:
                                     logger.debug(f"[youtube] midroll ads: {len(ads)}")
+                                    _ad_network_event.set()
                                 ad_captures.extend(ads)
                         return
 
@@ -578,11 +582,15 @@ class YouTubeSurfCrawler(BaseCrawler):
                     if 'json' in ct:
                         data = await response.json()
                         ads = _parse_ad_json(data, url)
+                        if ads:
+                            _ad_network_event.set()
                         ad_captures.extend(ads)
                     else:
                         body = await response.text()
                         if len(body) > 20:
                             ads = _parse_ad_text(body, url)
+                            if ads:
+                                _ad_network_event.set()
                             ad_captures.extend(ads)
                 except Exception:
                     pass
@@ -621,12 +629,26 @@ class YouTubeSurfCrawler(BaseCrawler):
             video_urls = list(dict.fromkeys(video_urls))
             logger.debug(f"[{self.channel}] 총 영상 {len(video_urls)}개 (시드 포함)")
 
-            # ── 3) 영상 직접 로드 → 네트워크에서 광고 자동 캡처 ──
-            sampled = random.sample(video_urls, min(self.video_samples, len(video_urls)))
+            # ── 3) 트렌딩 영상 추가 수집 (광고가 많이 붙는 인기 영상) ──
+            try:
+                trending_urls = await self._collect_trending_videos(page)
+                if trending_urls:
+                    # 트렌딩 영상을 우선순위 높게 앞에 추가
+                    for tu in reversed(trending_urls[:5]):
+                        if tu not in video_urls:
+                            video_urls.insert(0, tu)
+                    logger.debug(f"[{self.channel}] 트렌딩 영상 {len(trending_urls)}개 추가")
+            except Exception:
+                pass
 
-            for i, video_url in enumerate(sampled, 1):
+            # ── 4) 서핑: 홈→첫영상→추천영상 체인 따라가기 ──
+            current_url = video_urls[0] if video_urls else self._SEED_VIDEOS[0]
+            visited_urls: set[str] = set()
+
+            for i in range(1, self.video_samples + 1):
                 try:
-                    await page.goto(video_url, wait_until="domcontentloaded")
+                    await page.goto(current_url, wait_until="domcontentloaded")
+                    visited_urls.add(current_url)
                     await self._human_delay(page, 2000)
 
                     # 재생 강제: mute + play (autoplay 보장)
@@ -634,7 +656,6 @@ class YouTubeSurfCrawler(BaseCrawler):
                         await page.evaluate("""() => {
                             const v = document.querySelector('video');
                             if (v) { v.muted = true; v.play().catch(() => {}); }
-                            // 플레이 버튼 클릭 시도
                             const btn = document.querySelector('.ytp-large-play-button, .ytp-play-button, [aria-label*="재생"], [aria-label*="Play"]');
                             if (btn) btn.click();
                         }""")
@@ -646,37 +667,85 @@ class YouTubeSurfCrawler(BaseCrawler):
                     if ad_info:
                         ad_captures.append(ad_info)
 
-                    # 광고 대기 — 5회 체크 (총 ad_wait_ms)
-                    check_interval = self.ad_wait_ms // 5
-                    for check_round in range(5):
-                        await page.wait_for_timeout(check_interval)
-                        dom_ad = await _check_ad_playing(page)
-                        if dom_ad:
-                            ad_captures.append(dom_ad)
-                            logger.info(f"[{self.channel}] [{i}] 인스트림 광고 감지! round={check_round} adv={dom_ad.get('advertiser')}")
-                            # 광고 스크린샷 캡처
-                            try:
-                                ad_ss = await self._capture_ad_element(
-                                    page, page.locator("video").first,
-                                    keyword or "surf", persona.code,
-                                    placement_name=f"yt_instream_{i}_{check_round}",
-                                )
-                                if ad_ss:
-                                    dom_ad["creative_image_path"] = ad_ss
-                            except Exception:
-                                pass
-                            break
+                    # 이벤트 드리븐: 광고 네트워크 응답 또는 6초 중 먼저 오는 것
+                    _ad_network_event.clear()
+                    ad_found_this_video = False
+                    try:
+                        await asyncio.wait_for(_ad_network_event.wait(), timeout=6.0)
+                    except asyncio.TimeoutError:
+                        pass
 
-                    before_count = len(ad_captures)
+                    # 이벤트 수신 후에도 DOM 확인 (프리롤 광고 스크린샷)
+                    dom_ad = await _check_ad_playing(page)
+                    if dom_ad:
+                        ad_captures.append(dom_ad)
+                        ad_found_this_video = True
+                        logger.info(f"[{self.channel}] [{i}] ad detected via DOM")
+                        try:
+                            ad_ss = await self._capture_ad_element(
+                                page, page.locator("video").first,
+                                keyword or "surf", persona.code,
+                                placement_name=f"yt_instream_{i}",
+                            )
+                            if ad_ss:
+                                dom_ad["creative_image_path"] = ad_ss
+                        except Exception:
+                            pass
+                        # 광고 스킵
+                        await page.wait_for_timeout(3000)
+                        try:
+                            await page.evaluate("""() => {
+                                const skip = document.querySelector(
+                                    '.ytp-skip-ad-button, .ytp-ad-skip-button, ' +
+                                    '.ytp-ad-skip-button-modern, [class*="skip"]'
+                                );
+                                if (skip) skip.click();
+                            }""")
+                        except Exception:
+                            pass
+
+                    # 광고 못 찾았으면 영상 잠시 시청 (자연스러운 행동 → 다음 영상 광고 확률 UP)
+                    if not ad_found_this_video:
+                        await page.wait_for_timeout(random.randint(3000, 6000))
+
                     logger.debug(
-                        f"[{self.channel}] [{i}/{len(sampled)}] 영상 완료: {video_url[:60]} "
-                        f"(누적 캡처: {len(ad_captures)}건)"
+                        f"[{self.channel}] [{i}/{self.video_samples}] done: {current_url[:60]} "
+                        f"(captures: {len(ad_captures)}, ad_found={ad_found_this_video})"
                     )
+
+                    # 다음 영상: 추천 영상 사이드바에서 선택 (체인 서핑)
+                    recommended = await _extract_recommended_videos(page)
+                    unseen = [u for u in recommended if u not in visited_urls]
+                    if unseen:
+                        current_url = random.choice(unseen[:5])
+                    else:
+                        # fallback: 아직 방문 안 한 홈페이지 영상 or 시드
+                        remaining = [u for u in video_urls if u not in visited_urls]
+                        if remaining:
+                            current_url = random.choice(remaining)
+                        else:
+                            current_url = random.choice(self._SEED_VIDEOS)
 
                     await page.wait_for_timeout(random.randint(500, 1500))
 
                 except Exception as exc:
-                    logger.debug(f"[{self.channel}] 영상 로드 실패: {exc}")
+                    logger.debug(f"[{self.channel}] video failed: {exc}")
+                    # 실패 시 다른 영상으로
+                    remaining = [u for u in video_urls if u not in visited_urls]
+                    if remaining:
+                        current_url = random.choice(remaining)
+                    else:
+                        current_url = random.choice(self._SEED_VIDEOS)
+
+            # ── 5) Shorts 서핑: 숏츠 사이 광고 캡처 ──
+            shorts_ads_before = len(ad_captures)
+            try:
+                await self._surf_shorts(page, ad_captures, keyword or "surf", persona.code)
+            except Exception as exc:
+                logger.debug(f"[{self.channel}] shorts surf failed: {exc}")
+            shorts_ads = len(ad_captures) - shorts_ads_before
+            if shorts_ads > 0:
+                logger.info(f"[{self.channel}] shorts ads: {shorts_ads}")
 
             # ── 4) Merge CDP captures + build results ──
             # Merge CDP-level ad captures (pagead impressions, stats pings)
@@ -722,6 +791,91 @@ class YouTubeSurfCrawler(BaseCrawler):
             # Close the page but NOT the persistent context
             # (context persists across crawl_keyword calls)
             await page.close()
+
+    # ── Shorts 서핑 ──
+
+    async def _surf_shorts(
+        self, page: Page, ad_captures: list[dict],
+        keyword: str, persona_code: str,
+    ) -> None:
+        """YouTube Shorts를 스와이프하며 사이 광고 캡처.
+
+        Shorts 사이에 나오는 인-피드 광고 (Sponsored 숏츠)와
+        숏츠 전후의 프리롤 광고를 네트워크 캡처로 수집.
+        """
+        shorts_count = max(3, int(os.getenv("YOUTUBE_SHORTS_COUNT", "8")))
+
+        try:
+            # Shorts 피드 진입
+            await page.goto("https://www.youtube.com/shorts", wait_until="domcontentloaded")
+            await page.wait_for_timeout(3000)
+
+            # Shorts 페이지의 첫 번째 쇼츠 링크 찾기
+            shorts_urls = await page.evaluate("""() => {
+                const links = [];
+                for (const a of document.querySelectorAll('a[href*="/shorts/"]')) {
+                    const href = a.href || '';
+                    if (href.includes('/shorts/') && !links.includes(href)) {
+                        links.push(href);
+                        if (links.length >= 5) break;
+                    }
+                }
+                return links;
+            }""")
+
+            if shorts_urls:
+                await page.goto(shorts_urls[0], wait_until="domcontentloaded")
+                await page.wait_for_timeout(2000)
+
+            # 스와이프로 Shorts 넘기기 (아래로 스크롤 = 다음 Shorts)
+            for si in range(shorts_count):
+                # 현재 Shorts 시청 (광고 네트워크 캡처 대기)
+                await page.wait_for_timeout(random.randint(2000, 4000))
+
+                # DOM에서 Shorts 광고 체크 (Sponsored 마크)
+                shorts_ad = await page.evaluate("""() => {
+                    // Sponsored Shorts 감지
+                    const badges = document.querySelectorAll(
+                        '[class*="badge"], [class*="sponsor"], [class*="ad-badge"]'
+                    );
+                    for (const b of badges) {
+                        const text = (b.textContent || '').toLowerCase();
+                        if (text.includes('sponsored') || text.includes('광고') || text.includes('ad')) {
+                            const container = b.closest('[class*="shorts"]') || b.parentElement;
+                            const titleEl = container?.querySelector('[class*="title"], h2, h3');
+                            const channelEl = container?.querySelector('[class*="channel"], [class*="author"]');
+                            return {
+                                ad_text: titleEl?.textContent?.trim() || 'Sponsored Short',
+                                advertiser: channelEl?.textContent?.trim() || null,
+                            };
+                        }
+                    }
+                    return null;
+                }""")
+
+                if shorts_ad:
+                    ad_captures.append({
+                        'advertiser': shorts_ad.get('advertiser'),
+                        'click_url': page.url,
+                        'ad_type': 'shorts_sponsored',
+                        'source': 'shorts_dom',
+                        'ad_text': shorts_ad.get('ad_text'),
+                    })
+                    logger.info(f"[{self.channel}] Shorts ad #{si}: {shorts_ad.get('advertiser')}")
+
+                # 다음 Shorts로 스와이프 (아래 화살표 키 or 스크롤)
+                try:
+                    await page.keyboard.press("ArrowDown")
+                    await page.wait_for_timeout(1000)
+                except Exception:
+                    try:
+                        await page.evaluate("window.scrollBy(0, window.innerHeight)")
+                        await page.wait_for_timeout(1000)
+                    except Exception:
+                        pass
+
+        except Exception as exc:
+            logger.debug(f"[{self.channel}] shorts surf error: {exc}")
 
     # ── 영상 URL 수집 ──
 
@@ -802,6 +956,47 @@ async def _extract_video_links(page: Page, limit: int = 30) -> list[str]:
         }
         return urls;
     }""", limit)
+
+
+async def _extract_recommended_videos(page: Page, limit: int = 10) -> list[str]:
+    """현재 영상 페이지의 추천/관련 영상 URL 수집 (사이드바 + 아래 영상)."""
+    try:
+        return await page.evaluate("""(limit) => {
+            const links = [];
+            const seen = new Set();
+            // 추천 영상 사이드바 (PC) + 아래 영상 (모바일)
+            const selectors = [
+                'ytd-compact-video-renderer a#thumbnail',
+                'ytd-rich-item-renderer a#thumbnail',
+                'ytm-compact-video-renderer a',
+                'a.ytd-thumbnail[href*="/watch"]',
+            ];
+            for (const sel of selectors) {
+                for (const a of document.querySelectorAll(sel)) {
+                    const href = a.href || '';
+                    if (!href.includes('/watch?v=')) continue;
+                    const clean = href.split('&')[0];
+                    if (seen.has(clean)) continue;
+                    seen.add(clean);
+                    links.push(clean);
+                    if (links.length >= limit) return links;
+                }
+            }
+            // fallback: 모든 watch 링크
+            for (const a of document.querySelectorAll('a[href*="/watch?v="]')) {
+                const href = a.href || '';
+                const clean = href.split('&')[0];
+                if (seen.has(clean)) continue;
+                // 현재 영상은 제외
+                if (clean === window.location.href.split('&')[0]) continue;
+                seen.add(clean);
+                links.push(clean);
+                if (links.length >= limit) return links;
+            }
+            return links;
+        }""", limit)
+    except Exception:
+        return []
 
 
 async def _seed_persona_algorithm(page: Page, persona_code: str):
@@ -911,6 +1106,23 @@ def _dig_click_url(val: dict) -> str | None:
             return first.get('baseUrl')
         elif isinstance(first, str):
             return first
+    # adInfoRenderer → adHoverTextButtonRenderer → button
+    for btn_key in ('adInfoRenderer', 'adHoverTextButtonRenderer', 'visitAdvertiserRenderer'):
+        btn = val.get(btn_key, {})
+        if isinstance(btn, dict):
+            btn_ep = btn.get('navigationEndpoint', btn.get('buttonRenderer', {}).get('navigationEndpoint', {}))
+            if isinstance(btn_ep, dict):
+                url_ep = btn_ep.get('urlEndpoint', {})
+                if url_ep.get('url'):
+                    return url_ep['url']
+    # companionAdRenderer → actionButton
+    companion = val.get('companionAdRenderer', val.get('actionCompanionAdRenderer', {}))
+    if isinstance(companion, dict):
+        action_btn = companion.get('actionButton', {}).get('buttonRenderer', {})
+        nav = action_btn.get('navigationEndpoint', {})
+        url_ep = nav.get('urlEndpoint', {})
+        if url_ep.get('url'):
+            return url_ep['url']
     return None
 
 
@@ -919,6 +1131,8 @@ def _dig_advertiser(val: dict) -> str | None:
     # advertiserName 직접
     if val.get('advertiserName'):
         return val['advertiserName']
+    # adVideoId → 광고 비디오 소유자
+    ad_video_owner = val.get('adVideoId')
     # adTitle.runs[0].text
     ad_title = val.get('adTitle', {})
     if isinstance(ad_title, dict):
@@ -1000,12 +1214,36 @@ async def _check_ad_playing(page: Page) -> dict | None:
                 return el ? (el.href || el.getAttribute('href') || null) : null;
             };
 
+            // 광고주명: 여러 셀렉터 시도 (YouTube DOM 변경에 대비)
+            const advName =
+                getText('.ytp-ad-info-dialog-advertiser-name') ||
+                getText('.ytp-ad-player-overlay-instream-info a') ||
+                getText('.ytp-ad-message-text') ||
+                getText('[class*="advertiser"]') ||
+                getText('.ytp-flyout-cta-headline') ||
+                null;
+
+            // CTA 텍스트 + URL
+            const ctaText =
+                getText('.ytp-ad-button-text') ||
+                getText('.ytp-ad-visit-advertiser-button-text') ||
+                getText('.ytp-flyout-cta-text') ||
+                null;
+
+            const adUrl =
+                getHref('a.ytp-ad-button') ||
+                getHref('.ytp-ad-visit-advertiser-link') ||
+                getHref('a.ytp-flyout-cta') ||
+                getHref('.ytp-ad-player-overlay-instream-info a') ||
+                getHref('button.ytp-ad-button') ||
+                null;
+
             return {
                 ad_text: getText('.ytp-ad-text, .ytp-ad-preview-text, .ad-simple-text'),
-                cta_text: getText('.ytp-ad-button-text, .ytp-ad-visit-advertiser-button-text'),
-                advertiser: getText('.ytp-ad-info-dialog-advertiser-name'),
+                cta_text: ctaText,
+                advertiser: advName,
                 skip_text: getText('.ytp-skip-ad-button, .ytp-ad-skip-button-modern'),
-                ad_url: getHref('a.ytp-ad-button, .ytp-ad-visit-advertiser-link, button.ytp-ad-button'),
+                ad_url: adUrl,
             };
         }""")
         if dom_ad:
@@ -1119,6 +1357,46 @@ def _parse_ad_text(body: str, source_url: str) -> list[dict]:
     return ads
 
 
+def _resolve_yt_ad_url(click_url: str | None) -> tuple[str | None, str | None]:
+    """YouTube 광고 클릭 URL에서 실제 랜딩 URL과 도메인을 추출.
+
+    googleadservices.com/pagead/aclk?adurl=REAL_URL 형태의 리다이렉트 해석.
+    Returns: (resolved_url, display_domain)
+    """
+    if not click_url:
+        return None, None
+    try:
+        parsed = urlparse(click_url)
+
+        # googleadservices / doubleclick 리다이렉트 → adurl 파라미터
+        if any(d in (parsed.netloc or '') for d in (
+            'googleadservices.com', 'doubleclick.net',
+            'googlesyndication.com', 'google.com',
+        )):
+            query = parse_qs(parsed.query)
+            for key in ('adurl', 'url', 'r', 'u', 'redirect', 'landing', 'dest'):
+                vals = query.get(key)
+                if vals:
+                    candidate = unquote(vals[0]).strip()
+                    if '%' in candidate:
+                        candidate = unquote(candidate).strip()
+                    if candidate.startswith('http'):
+                        try:
+                            domain = urlparse(candidate).netloc
+                            domain = domain.removeprefix('www.').removeprefix('m.')
+                            return candidate, domain
+                        except Exception:
+                            return candidate, None
+            # adurl 못 찾으면 원본 반환 (트래킹 URL이지만 광고 증거)
+            return click_url, parsed.netloc
+
+        # 일반 URL
+        domain = parsed.netloc.removeprefix('www.').removeprefix('m.')
+        return click_url, domain
+    except Exception:
+        return click_url, None
+
+
 def _build_ads(captures: list[dict]) -> list[dict]:
     """네트워크 캡처를 정규화된 광고 리스트로."""
     ads: list[dict] = []
@@ -1127,7 +1405,7 @@ def _build_ads(captures: list[dict]) -> list[dict]:
     # 실제 광고 소스 (트래킹 URL 필터 스킵 대상)
     REAL_AD_SOURCES = (
         'player_api', 'player_ads', 'midroll_api',
-        'dom_ad_playing', 'ad_slot_detected',
+        'dom_ad_playing', 'ad_slot_detected', 'shorts_dom',
     )
 
     for cap in captures:
@@ -1145,15 +1423,16 @@ def _build_ads(captures: list[dict]) -> list[dict]:
         if source == 'stats_ads':
             continue
 
-        display_url = None
-        if click_url:
-            try:
-                display_url = urlparse(click_url).netloc
-            except Exception:
-                pass
+        # URL 리졸브: googleadservices/doubleclick → 실제 랜딩 URL
+        resolved_url, display_url = _resolve_yt_ad_url(click_url)
 
         if not advertiser and display_url:
-            advertiser = display_url.removeprefix('www.').removeprefix('m.')
+            # 광고 인프라 도메인은 광고주명으로 사용 불가
+            if not any(d in (display_url or '') for d in (
+                'doubleclick.net', 'googlesyndication.com',
+                'youtube.com', 'google.com', 'googleadservices.com',
+            )):
+                advertiser = display_url
 
         # 트래킹 URL만 있는 건 스킵 (실제 광고 소스는 유지)
         if source not in REAL_AD_SOURCES:
@@ -1172,13 +1451,14 @@ def _build_ads(captures: list[dict]) -> list[dict]:
             "advertiser_name": advertiser,
             "ad_text": ad_text or advertiser or "youtube_ad",
             "ad_description": None,
-            "url": click_url,
+            "url": resolved_url,
             "display_url": display_url,
             "position": len(ads) + 1,
             "ad_type": cap.get('ad_type', 'video_preroll'),
             "extra_data": {
                 "source": source,
                 "surf_mode": True,
+                "original_click_url": click_url if click_url != resolved_url else None,
             },
         })
 

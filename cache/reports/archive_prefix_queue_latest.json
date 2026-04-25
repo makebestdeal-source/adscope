@@ -1,0 +1,28 @@
+{
+  "channel": "google_gdn",
+  "months": [
+    "2026-01"
+  ],
+  "batch_size": 1,
+  "candidate_count": 432,
+  "selected_prefixes": [
+    "제"
+  ],
+  "batch": [
+    {
+      "prefix": "제",
+      "pending_months": [
+        "2026-01"
+      ],
+      "approved_count": 117,
+      "deduped_count": 300,
+      "total_count": 417,
+      "month_approved_count": 3,
+      "month_deduped_count": 15,
+      "month_total_count": 18,
+      "has_monthly_history": true,
+      "priority_score": 477,
+      "prefix_order": 257
+    }
+  ]
+}

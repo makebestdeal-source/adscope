@@ -80,6 +80,22 @@ from processor.channel_utils import (
     is_contact as _is_contact,
 )
 
+# ── 접촉 채널별 동시 페르소나 수 (연령/성별 다양성 확보) ──
+# 각 페르소나는 독립 브라우저 세션 → 같은 지면에서 다른 광고 노출
+# NOTE: OOM 방지를 위해 페르소나 수 축소 (2026-03-26)
+CHANNEL_PERSONA_COUNT = {
+    "naver_search": 2,   # 검색: 2명 (3→2)
+    "naver_da": 2,       # DA 서핑: 2명 (3→2)
+    "kakao_da": 1,       # 카카오 DA: 1명 (2→1)
+    "youtube_surf": 2,   # 유튜브 서핑: 2명 (3→2)
+    "google_gdn": 1,     # GDN 서핑: 1명 (2→1)
+    "meta_feed": 1,      # 메타 피드: 1명 (2→1)
+}
+
+# 동시 브라우저 최대 수 (메모리 보호: ~300MB × 2 = ~600MB)
+MAX_BROWSERS = 2
+_browser_sem: asyncio.Semaphore | None = None
+
 
 def _load_adic_top_advertisers() -> list[str]:
     """ADIC 100대 광고주 이름을 DB에서 로드 (YouTube/Google 검색 키워드로 활용)."""
@@ -202,93 +218,88 @@ DEMO_PERSONAS = [code for code, p in PERSONAS.items() if p.targeting_category ==
 CHANNEL_TASKS_BASE = [
     # ── 접촉 측정 (실제 브라우징) ──
 
-    # [1] 네이버 검색 — 시장 1.9조 (최대 키워드 배정, 55개)
+    # [1] 네이버 검색 — 시장 1.9조
+    # 제품/카테고리 키워드 80% + 주요 브랜드 20%
+    # 업종 균등 배분: 생활용품/패션/가전/식품/뷰티 등 일반 소비재 중심
     ("naver_search", [
-        # 금융/보험 (CPC 최고가 업종)
-        "보험", "보험비교", "자동차보험", "실비보험",
-        "대출", "신용대출", "주택담보대출",
-        "신용카드", "적금", "주식", "투자",
-        # 여행/숙박
-        "여행", "호텔", "항공권", "렌터카", "패키지여행",
-        # 자동차
-        "자동차", "SUV", "전기차", "중고차", "수입차",
-        # 부동산/인테리어
-        "아파트", "인테리어", "이사", "부동산", "분양", "원룸",
-        # 교육
-        "영어학원", "코딩교육", "자격증", "공무원학원", "수능", "유아교육",
-        # 건강/뷰티
-        "다이어트", "헬스", "피부관리", "탈모", "성형외과",
-        "화장품", "피부과", "치과",
-        # 쇼핑/생활/가전
-        "가전", "노트북", "냉장고", "정수기", "에어컨", "공기청정기",
-        # 법률/의료
-        "변호사", "병원", "법률상담",
+        # ── 제품/카테고리 키워드 (80%) ──
+        # 생활용품 (일상 소비재)
+        "물티슈", "장갑", "세제", "섬유유연제", "샴푸", "치약",
+        "생수", "휴지", "기저귀", "분유", "마스크", "손세정제",
+        "수건", "빨래건조대", "우산", "칫솔", "면도기", "바디워시",
+        # 패션/의류
+        "여름옷", "반팔티", "원피스", "청바지", "운동화", "샌들",
+        "등산복", "레깅스", "요가복", "골프웨어", "수영복", "패딩",
+        "가방", "지갑", "시계", "선글라스", "모자", "넥타이",
+        "남성정장", "여성구두", "스니커즈", "백팩", "캐리어",
+        # 뷰티/화장품
+        "선크림", "파운데이션", "립스틱", "마스크팩", "로션", "토너",
+        "클렌징폼", "아이크림", "세럼", "향수", "네일", "제모기",
+        "헤어드라이기", "고데기", "염색약", "두피케어",
+        # 가전/디지털
+        "노트북", "냉장고", "에어컨", "공기청정기", "정수기",
+        "세탁기", "건조기", "식기세척기", "로봇청소기", "무선청소기",
+        "이어폰", "블루투스스피커", "모니터", "태블릿", "스마트폰",
+        "선풍기", "제습기", "가습기", "전기밥솥", "안마의자",
+        "전자레인지", "오븐", "믹서기", "에어프라이어", "커피머신",
+        # 가구/인테리어
+        "소파", "침대", "매트리스", "책상", "옷장", "선반",
+        "커튼", "조명", "러그", "수납장", "식탁", "의자",
+        # 식품/음료
+        "라면", "간식", "커피", "우유", "냉동식품", "즉석밥",
+        "건강음료", "다이어트식품", "닭가슴살", "프로틴", "견과류",
+        "김치", "반찬", "과자", "아이스크림", "생선", "정육",
+        # 건강/영양
+        "비타민", "영양제", "유산균", "콜라겐", "단백질",
+        "홍삼", "오메가3", "루테인", "프로바이오틱스", "철분제",
         # 반려동물
-        "반려동물", "강아지사료",
-        # 웨딩/생활
-        "결혼", "웨딩",
-        # 취업/창업
-        "취업", "창업", "프랜차이즈",
-        # 소비자 브랜드 (직접 검색으로 광고 노출)
-        "다이슨", "코웨이", "쿠쿠", "SK매직", "에이스침대", "시몬스",
-        "올리브영", "무신사", "컬리", "오늘의집", "배달의민족", "요기요",
-        "안다르", "젝시믹스", "메가커피", "컴포즈커피", "스타벅스",
-        "삼성전자", "LG전자", "현대자동차", "기아자동차",
-        # 게임사 (업종 과소대표 보정)
-        "넥슨", "크래프톤", "엔씨소프트", "넷마블", "스마일게이트",
-        "카카오게임즈", "펄어비스", "위메이드", "컴투스", "데브시스터즈",
-        "모바일게임", "온라인게임", "PC게임", "게임 사전예약", "게임 다운로드",
-        "게임 순위", "신작게임", "RPG게임", "게임 이벤트",
-        # 외식/프랜차이즈 (업종 보강)
-        "치킨 프랜차이즈", "카페 창업", "배달음식", "맛집", "뷔페",
-        "삼겹살", "족발", "피자", "햄버거", "분식",
-        # 결혼/웨딩 (업종 보강)
-        "웨딩홀", "웨딩박람회", "결혼정보회사", "스드메", "허니문",
-        # 반려동물 (업종 보강)
-        "반려견용품", "고양이사료", "동물병원", "펫보험",
-        # 법률/세무 (업종 보강)
-        "형사변호사", "이혼변호사", "세무사", "법무법인",
-        # 렌탈/구독 (업종 보강)
-        "렌탈", "정수기렌탈", "공기청정기렌탈", "가전렌탈",
-        "현대렌탈케어", "교원웰스", "청호나이스",
-        # IT/플랫폼 (업종 보강)
-        "챗GPT", "AI", "앱개발", "웹개발", "클라우드",
-        # 부동산 세분화
-        "오피스텔", "빌라", "전원주택", "상가임대", "토지매매",
-        # 건강/의료 세분화
-        "임플란트", "교정", "라식라섹", "척추", "관절",
-        "한의원", "한방치료", "통증치료",
-        # TVCF 주요 광고주 (네이버 검색 추가)
-        "에치와이", "넥센타이어", "에코백스", "로보락",
-        "젝시오", "타이틀리스트", "테일러메이드", "캘러웨이골프",
-        "MG새마을금고", "새마을금고", "신한라이프", "현대해상",
-        "HDC현대산업개발", "롯데건설", "효성그룹", "KG모빌리티",
-        "푸라닭치킨", "페리카나", "처갓집양념치킨",
-        # 골프/아웃도어
-        "골프웨어", "골프클럽", "골프공", "골프레슨",
-        "등산복", "아웃도어브랜드", "캠핑장비", "낚시용품",
-        # 보험 세분화
-        "생명보험", "건강보험", "종신보험", "연금보험",
-        "자동차보험비교", "실비보험비교", "암보험", "치매보험",
+        "강아지사료", "고양이사료", "강아지간식", "고양이장난감",
+        "동물병원", "펫보험", "반려동물용품",
+        # 육아/유아
+        "유모차", "아기침대", "카시트", "유아용품", "아기옷",
+        "젖병", "이유식", "아기물티슈", "장난감",
+        # 스포츠/레저
+        "골프채", "골프공", "골프레슨", "캠핑장비", "텐트",
+        "등산화", "낚시용품", "자전거", "헬스장", "필라테스",
+        "요가매트", "덤벨", "런닝머신", "수영", "축구화",
+        # 자동차/용품
+        "자동차", "SUV", "전기차", "중고차", "경차",
+        "블랙박스", "차량용방향제", "타이어", "네비게이션", "장기렌트",
+        # 금융/보험 (편중 방지 — 핵심만)
+        "보험비교", "자동차보험", "실비보험", "대출", "신용카드",
+        # 부동산
+        "아파트", "인테리어", "이사업체", "분양", "원룸",
+        # 여행/숙박
+        "여행", "호텔", "항공권", "렌터카", "펜션", "리조트",
+        # 교육
+        "영어학원", "토익", "자격증", "과외", "온라인강의",
+        # 의료/법률
+        "치과", "임플란트", "피부과", "성형외과", "변호사",
+        # 렌탈/구독
+        "정수기렌탈", "공기청정기렌탈", "가전렌탈",
+        # 외식/배달
+        "배달음식", "맛집", "치킨배달", "피자배달",
+        # 결혼
+        "웨딩홀", "결혼정보", "상조",
+        # 게임
+        "모바일게임", "게임다운로드",
+        # ── 주요 브랜드 (20%) ──
+        "쿠팡", "무신사", "올리브영", "오늘의집", "컬리",
+        "배달의민족", "삼성전자", "LG전자", "다이슨", "코웨이",
+        "현대자동차", "기아", "쏘카", "야놀자", "여기어때",
+        "직방", "당근마켓", "번개장터", "토스", "카카오뱅크",
     ]),
 
-    # [2] 카카오 DA — 시장 1.5조 (전체 Daum/Kakao 지면 순회, 반복 루핑)
-    ("kakao_da", [
-        "main", "news", "entertainment", "finance", "sports",
-        "webtoon", "cafe", "brunch", "kakaopage", "tistory",
-        "beauty", "travel", "auto", "game", "food", "shopping",
-        "kakaotv", "dictionary",
-    ]),
+    # [2] 카카오 DA — 시장 1.5조 (keyword_dependent=False — 키워드 무관, media_urls 전체 순회)
+    # crawl_keyword()가 keyword 무시하고 media_urls[:KAKAO_MAX_MEDIA] 전체 방문
+    # → 키워드 1개로 충분 (반복 루핑은 접촉 채널이므로 round_num으로 자동 처리)
+    ("kakao_da", ["all"]),
 
-    # [3] 네이버 DA — 전체 섹션 순회 (18개 지면, 반복 루핑으로 광고 로테이션 캐치)
-    ("naver_da", [
-        "main", "news", "sports", "entertainment", "finance", "shopping",
-        "realestate", "auto", "living", "movie", "series", "webtoon",
-        "cafe", "kin", "tv", "chzzk", "weather", "blog",
-    ]),
+    # [3] 네이버 DA — 서핑 모드: 1세션에서 18개 지면 + 기사 서브페이지 순회
+    ("naver_da", ["surf"]),
 
-    # [4] GDN — Transparency Center IMAGE, 전체 KR 광고주 프리픽스 검색 (64개)
-    ("google_gdn", _generate_transparency_prefixes()),
+    # [4] GDN — 언론사 서핑 + Transparency Center IMAGE (프리픽스 검색)
+    ("google_gdn", ["surf"] + _generate_transparency_prefixes()),
 
     # [5] 유튜브 서핑 — 시장 1.9조 (영상 직접 로드)
     ("youtube_surf", ["surf"]),
@@ -308,6 +319,9 @@ CHANNEL_TASKS_BASE = [
         [""] * 10  # KR 전체 브라우즈 10회
         + _generate_transparency_prefixes()  # 435개 프리픽스 검색
     )),
+
+    # [8.5] 메타 피드 서핑 — 로그인 후 실제 FB/IG 피드에서 Sponsored 광고 수집
+    ("meta_feed", ["both"]),
 
     # [9] 틱톡 — 시장 0.3조 (카테고리별 Top Ads 수집, 2배 확대)
     ("tiktok_ads", ["", "게임", "뷰티", "패션", "음식", "반려동물", "교육", "여행"]),
@@ -352,10 +366,11 @@ CHANNEL_TASKS_BASE = [
 
 
 def build_persona_tasks():
-    """페르소나별 채널 태스크 생성. 접촉 채널은 전체 12 페르소나 순환, 카탈로그는 1회.
+    """페르소나별 채널 태스크 생성 — 접촉 채널은 다수 페르소나 동시 투입.
 
-    접촉 채널마다 2~3개 페르소나를 배정하여 모든 연령대(10~60대)가 커버되도록 한다.
-    실행마다 persona_idx가 달라지므로 여러 번 실행 시 모든 페르소나가 골고루 사용됨.
+    CHANNEL_PERSONA_COUNT에 따라 접촉 채널마다 2~3개 페르소나를 배정.
+    12개 인구통계 페르소나를 셔플하여 연령/성별 다양성 최대화.
+    카탈로그 채널은 페르소나 무관 1회 수집.
     """
     tasks = []  # (channel, persona_code, device_type, keywords)
 
@@ -367,25 +382,28 @@ def build_persona_tasks():
     for channel, keywords in catalog_tasks:
         tasks.append((channel, None, "pc", keywords))
 
-    # ── 접촉 채널: 각 채널에 페르소나 1개만 배정 (시간 절약) ──
+    # ── 접촉 채널: 채널별 N개 페르소나 동시 배정 ──
     shuffled_personas = list(DEMO_PERSONAS)
     random.shuffle(shuffled_personas)
     persona_idx = 0
 
-    # DA 채널은 모바일웹 강제 (PC보다 광고 노출이 훨씬 많음)
-    FORCE_MOBILE_CHANNELS = {"naver_da", "kakao_da"}
+    # DA/피드 채널은 모바일웹 강제 (PC보다 광고 노출이 훨씬 많음)
+    FORCE_MOBILE_CHANNELS = {"naver_da", "kakao_da", "meta_feed"}
 
     for channel, keywords in contact_tasks:
-        if persona_idx >= len(shuffled_personas):
-            persona_idx = 0
-        code = shuffled_personas[persona_idx]
-        persona = PERSONAS[code]
-        if channel in FORCE_MOBILE_CHANNELS:
-            device = "mobile"
-        else:
-            device = "mobile" if "mobile" in persona.primary_device else "pc"
-        tasks.append((channel, code, device, keywords))
-        persona_idx += 1
+        n_personas = CHANNEL_PERSONA_COUNT.get(channel, 1)
+        for _ in range(n_personas):
+            if persona_idx >= len(shuffled_personas):
+                persona_idx = 0
+                random.shuffle(shuffled_personas)  # 한 바퀴 돌면 재셔플
+            code = shuffled_personas[persona_idx]
+            persona = PERSONAS[code]
+            if channel in FORCE_MOBILE_CHANNELS:
+                device = "mobile"
+            else:
+                device = "mobile" if "mobile" in persona.primary_device else "pc"
+            tasks.append((channel, code, device, keywords))
+            persona_idx += 1
 
     return tasks
 
@@ -514,6 +532,66 @@ async def save_to_db(channel_name, result, keyword_text, persona_code, device_ty
         return snap.id
 
 
+def _detect_adb_device() -> str | None:
+    """ADB 연결된 Android 디바이스 serial 반환. 없으면 None."""
+    try:
+        from crawler.mobile.adb_client import ADBClient
+        devices = ADBClient.list_devices()
+        if devices:
+            serial = devices[0].get("serial")
+            logger.info(f"[mobile] ADB 디바이스 감지: {serial}")
+            return serial
+    except Exception:
+        pass
+    return None
+
+
+async def crawl_mobile_apps(device_serial: str, deadline: float) -> list[dict]:
+    """ADB 디바이스로 Instagram + Naver 앱 광고 수집.
+
+    mitmproxy가 없으면 조용히 스킵.
+    deadline까지 남은 시간 내에서 수집.
+    """
+    try:
+        import importlib
+        mitmproxy_module = importlib.util.find_spec("mitmproxy")
+        if not mitmproxy_module:
+            logger.info("[mobile] mitmproxy 미설치 — 앱 수집 스킵 (pip install mitmproxy)")
+            return []
+    except Exception:
+        return []
+
+    remaining = deadline - time.time()
+    if remaining < 60:
+        return []
+
+    mobile_results = []
+    per_app_sec = min(90, int(remaining / 2))
+
+    try:
+        from crawler.mobile.instagram_app import InstagramAppCrawler
+        ig_crawler = InstagramAppCrawler(device_serial=device_serial)
+        ig_result = await ig_crawler.crawl(duration_sec=per_app_sec)
+        if ig_result.get("ads"):
+            mobile_results.append(ig_result)
+            logger.info(f"[mobile_instagram] {len(ig_result['ads'])}건 수집")
+    except Exception as exc:
+        logger.warning(f"[mobile_instagram] 수집 실패: {exc}")
+
+    if time.time() < deadline - 60:
+        try:
+            from crawler.mobile.naver_app import NaverAppCrawler
+            naver_crawler = NaverAppCrawler(device_serial=device_serial)
+            naver_result = await naver_crawler.crawl(duration_sec=per_app_sec)
+            if naver_result.get("ads"):
+                mobile_results.append(naver_result)
+                logger.info(f"[mobile_naver] {len(naver_result['ads'])}건 수집")
+        except Exception as exc:
+            logger.warning(f"[mobile_naver] 수집 실패: {exc}")
+
+    return mobile_results
+
+
 def _get_crawler_cls(channel_name):
     from crawler.naver_da import NaverDACrawler
     from crawler.naver_search import NaverSearchCrawler
@@ -522,6 +600,7 @@ def _get_crawler_cls(channel_name):
     from crawler.youtube_ads import YouTubeAdsCrawler
     from crawler.youtube_surf import YouTubeSurfCrawler
     from crawler.meta_library import MetaLibraryCrawler
+    from crawler.meta_feed_surf import MetaFeedSurfCrawler
     from crawler.tiktok_ads import TikTokAdsCrawler
     from crawler.naver_shopping import NaverShoppingCrawler
     from crawler.google_search_ads import GoogleSearchAdsCrawler
@@ -535,6 +614,7 @@ def _get_crawler_cls(channel_name):
         "youtube_ads": YouTubeAdsCrawler,
         "youtube_surf": YouTubeSurfCrawler,
         "meta": MetaLibraryCrawler,
+        "meta_feed": MetaFeedSurfCrawler,
         "tiktok_ads": TikTokAdsCrawler,
         "naver_shopping": NaverShoppingCrawler,
     }[channel_name]
@@ -546,12 +626,21 @@ CHANNEL_TIMEOUT = {
     "youtube_ads": 720,          # 360→720 (2배)
     "youtube_surf": 720,         # 360→720 (2배)
     "meta": 720,                 # 360→720 (2배)
-    "naver_da": 360,             # 180→360 (2배)
+    "naver_da": 900,             # 18개 지면 + 기사 서브페이지 서핑
+    "kakao_da": 600,             # 16개 미디어 순회 (각 ~11초 × 16 = ~176초 + 여유)
+    "meta_feed": 480,            # FB + IG 피드 서핑 (25스크롤 × 2플랫폼)
 }
 
 
 async def crawl_channel(channel_name, persona_code, device_type, keywords, deadline):
-    """단일 채널: 키워드 순회하며 deadline까지 최대한 수집. staging 경유."""
+    """단일 채널+페르소나: 키워드 순회하며 deadline까지 최대한 수집. staging 경유.
+
+    브라우저 세마포어로 동시 브라우저 인스턴스 수를 MAX_BROWSERS로 제한.
+    """
+    global _browser_sem
+    if _browser_sem is None:
+        _browser_sem = asyncio.Semaphore(MAX_BROWSERS)
+
     cls = _get_crawler_cls(channel_name)
     # 카탈로그 채널은 페르소나 없음 — 크롤링 시 기본 프로필 사용
     persona = PERSONAS.get(persona_code, PERSONAS["M30"]) if persona_code else PERSONAS["M30"]
@@ -588,11 +677,13 @@ async def crawl_channel(channel_name, persona_code, device_type, keywords, deadl
 
             t0 = time.time()
             try:
-                async with cls() as crawler:
-                    result = await asyncio.wait_for(
-                        crawler.crawl_keyword(kw, persona, device),
-                        timeout=min(remaining, per_kw_timeout),
-                    )
+                # 세마포어: 동시 브라우저 수 MAX_BROWSERS 이하로 제한
+                async with _browser_sem:
+                    async with cls() as crawler:
+                        result = await asyncio.wait_for(
+                            crawler.crawl_keyword(kw, persona, device),
+                            timeout=min(remaining, per_kw_timeout),
+                        )
                 ads = result.get("ads", [])
                 total_ads += len(ads)
 
@@ -640,28 +731,100 @@ async def crawl_channel(channel_name, persona_code, device_type, keywords, deadl
 async def main():
     await init_db()
 
+    persona_tasks = build_persona_tasks()
+    contact_count = sum(1 for ch, p, d, kw in persona_tasks if p is not None)
+    catalog_count = len(persona_tasks) - contact_count
+    unique_personas = len(set(p for _, p, _, _ in persona_tasks if p))
+
+    # ADB 디바이스 감지 (모바일 앱 수집 가능 여부)
+    adb_serial = _detect_adb_device()
+
     print("=" * 60)
-    print("  AdScope Parallel Crawl (10 min limit)")
+    print(f"  AdScope Parallel Crawl -- {len(persona_tasks)} tasks")
+    print(f"  Contact: {contact_count} (x{unique_personas} personas) | Catalog: {catalog_count}")
+    print(f"  Max browsers: {MAX_BROWSERS} | Timeout: {TOTAL_TIMEOUT}s")
+    if adb_serial:
+        print(f"  Mobile ADB: {adb_serial} (Instagram + Naver app crawl)")
     print("=" * 60)
 
     deadline = time.time() + TOTAL_TIMEOUT
     t_start = time.time()
 
-    # 페르소나별 태스크 생성 + 전체 동시 실행 (10개 채널 모두 batch 1)
-    MAX_CONCURRENT = 10
-    persona_tasks = build_persona_tasks()
+    # ── 웨이브 실행: 카탈로그(headless) 먼저, 접촉(headful) 나중에 ──
+    # 전부 동시에 띄우면 메모리 폭발 + 브라우저 크래시 발생
+    catalog_tasks = [(ch, p, d, kw) for ch, p, d, kw in persona_tasks if ch not in CONTACT_CHANNELS]
+    contact_tasks = [(ch, p, d, kw) for ch, p, d, kw in persona_tasks if ch in CONTACT_CHANNELS]
+
     results = []
-    for i in range(0, len(persona_tasks), MAX_CONCURRENT):
-        batch = persona_tasks[i:i + MAX_CONCURRENT]
-        tasks = []
-        for channel, persona_code, device, keywords in batch:
-            print(f"  Starting {channel} [{persona_code}/{device}] ({len(keywords)} kw)...", flush=True)
-            tasks.append(crawl_channel(channel, persona_code, device, keywords, deadline))
-        batch_results = await asyncio.gather(*tasks, return_exceptions=True)
-        results.extend(batch_results)
-        if time.time() > deadline:
-            print("  [!] Deadline reached, skipping remaining batches", flush=True)
-            break
+
+    # Wave 1: 카탈로그 (headless, 가벼움 — 3개씩 배치, OOM 방지)
+    if catalog_tasks:
+        MAX_CATALOG_BATCH = 3
+        print(f"\n  == Wave 1: Catalog ({len(catalog_tasks)} tasks, {MAX_CATALOG_BATCH}/batch) ==", flush=True)
+        for ci in range(0, len(catalog_tasks), MAX_CATALOG_BATCH):
+            if time.time() >= deadline:
+                print("  [!] Deadline reached during Wave 1", flush=True)
+                break
+            cat_batch = catalog_tasks[ci:ci + MAX_CATALOG_BATCH]
+            wave1 = []
+            for channel, persona_code, device, keywords in cat_batch:
+                print(f"  Starting {channel} [{persona_code}/{device}] ({len(keywords)} kw)...", flush=True)
+                wave1.append(crawl_channel(channel, persona_code, device, keywords, deadline))
+            wave1_results = await asyncio.gather(*wave1, return_exceptions=True)
+            results.extend(wave1_results)
+            # 배치 간 메모리 정리
+            if ci + MAX_CATALOG_BATCH < len(catalog_tasks):
+                import gc; gc.collect()
+                await asyncio.sleep(2)
+
+    if time.time() >= deadline:
+        print("  [!] Deadline reached after Wave 1", flush=True)
+    else:
+        # Wave 2: 접촉 (headful, 무거움 — 3개씩 배치 실행, OOM 방지)
+        MAX_CONTACT_BATCH = 3
+        print(f"\n  == Wave 2: Contact ({len(contact_tasks)} tasks, {MAX_CONTACT_BATCH}/batch) ==", flush=True)
+        for i in range(0, len(contact_tasks), MAX_CONTACT_BATCH):
+            if time.time() >= deadline:
+                print("  [!] Deadline reached, skipping remaining contact batches", flush=True)
+                break
+            batch = contact_tasks[i:i + MAX_CONTACT_BATCH]
+            wave2 = []
+            for channel, persona_code, device, keywords in batch:
+                print(f"  Starting {channel} [{persona_code}/{device}] ({len(keywords)} kw)...", flush=True)
+                wave2.append(crawl_channel(channel, persona_code, device, keywords, deadline))
+            batch_results = await asyncio.gather(*wave2, return_exceptions=True)
+            results.extend(batch_results)
+            # 배치 간 5초 쿨다운 + GC (메모리 정리 시간)
+            if i + MAX_CONTACT_BATCH < len(contact_tasks):
+                import gc; gc.collect()
+                await asyncio.sleep(5)
+
+    # Wave 3: 모바일 앱 수집 (ADB 연결 시)
+    if adb_serial and time.time() < deadline:
+        print(f"\n  == Wave 3: Mobile App ({adb_serial}) ==", flush=True)
+        mobile_results = await crawl_mobile_apps(adb_serial, deadline)
+        for mob_result in mobile_results:
+            channel = mob_result.get("channel", "mobile")
+            ads = mob_result.get("ads", [])
+            if ads:
+                try:
+                    from database import async_session
+                    async with async_session() as session:
+                        batch_id, staged = await save_to_staging(
+                            session, channel, mob_result, "surf", "mobile", "android"
+                        )
+                    async with async_session() as session:
+                        wp = await wash_and_promote(session, batch_id)
+                    p = wp["promote"]
+                    promoted_n = p.get("promoted", 0)
+                    dedup_n = p.get("deduped", 0)
+                    dedup_str = f"/{dedup_n}dup" if dedup_n else ""
+                    print(f"  [+] {channel}: {len(ads)} ads -> {promoted_n} new{dedup_str}", flush=True)
+                    results.append({"channel": channel, "persona": "mobile", "total_ads": len(ads), "promoted": promoted_n, "errors": []})
+                except Exception as e:
+                    print(f"  [!] {channel} DB 저장 실패: {str(e)[:120]}", flush=True)
+        if not mobile_results:
+            print("  (no mobile ads collected or mitmproxy not available)", flush=True)
 
     # 결과 요약
     elapsed_total = time.time() - t_start
@@ -671,6 +834,8 @@ async def main():
 
     grand_total = 0
     grand_promoted = 0
+    # 채널별 합산
+    channel_summary = {}
     for r in results:
         if isinstance(r, Exception):
             print(f"  [X] Exception: {str(r)[:100]}")
@@ -682,8 +847,26 @@ async def main():
         errs = len(r["errors"])
         grand_total += ads
         grand_promoted += promoted
+
+        if ch not in channel_summary:
+            channel_summary[ch] = {"ads": 0, "promoted": 0, "personas": [], "errors": 0}
+        channel_summary[ch]["ads"] += ads
+        channel_summary[ch]["promoted"] += promoted
+        channel_summary[ch]["errors"] += errs
+        if persona:
+            channel_summary[ch]["personas"].append(persona)
+
         status = "OK" if promoted > 0 else ("ERR" if errs > 0 else "EMPTY")
         print(f"  {ch:20s} | {(persona or '-'):4s} | {ads:4d} ads | {promoted:4d} promoted | {errs} errors | {status}")
+
+    # 채널별 합산 요약
+    print(f"\n  {'─' * 58}")
+    print(f"  {'CHANNEL':20s} | {'PERSONAS':12s} | {'ADS':>5s} | {'PROMOTED':>8s}")
+    print(f"  {'─' * 58}")
+    for ch, s in sorted(channel_summary.items()):
+        p_str = ",".join(s["personas"]) if s["personas"] else "-"
+        print(f"  {ch:20s} | {p_str:12s} | {s['ads']:5d} | {s['promoted']:8d}")
+    print(f"  {'─' * 58}")
 
     print(f"\n  TOTAL: {grand_total} collected -> {grand_promoted} promoted to live DB")
 

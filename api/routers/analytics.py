@@ -28,7 +28,6 @@ from processor.sov_analyzer import (
 router = APIRouter(
     prefix="/api/analytics",
     tags=["analytics"],
-    dependencies=[Depends(get_current_user)],
 )
 
 

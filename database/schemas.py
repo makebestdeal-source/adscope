@@ -188,6 +188,19 @@ class CampaignOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class CampaignCreativeItem(BaseModel):
+    id: int
+    advertiser_name_raw: str | None = None
+    ad_text: str | None = None
+    ad_type: str | None = None
+    creative_image_path: str | None = None
+    url: str | None = None
+    channel: str
+    captured_at: datetime
+    extra_data: dict | None = None
+    model_config = ConfigDict(from_attributes=True)
+
+
 class CampaignDetailOut(CampaignOut):
     campaign_name: str | None = None
     objective: str | None = None
@@ -200,6 +213,9 @@ class CampaignDetailOut(CampaignOut):
     creative_ids: list[int] | None = None
     status: str | None = None
     enrichment_status: str | None = None
+    advertiser_name: str | None = None
+    advertiser_exists: bool = False
+    creatives: list[CampaignCreativeItem] = []
 
 
 class CampaignUpdateIn(BaseModel):

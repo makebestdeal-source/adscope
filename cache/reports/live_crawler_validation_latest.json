@@ -1,0 +1,479 @@
+[
+  {
+    "channel": "naver_search",
+    "status": "ok",
+    "keyword": "대출",
+    "device": "mobile",
+    "captured_at": "2026-04-24 01:35:03.666199+00:00",
+    "total_ads": 5,
+    "missing": {
+      "advertiser_name": {
+        "missing": 0,
+        "present": 5,
+        "missing_pct": 0.0
+      },
+      "ad_text": {
+        "missing": 0,
+        "present": 5,
+        "missing_pct": 0.0
+      },
+      "url": {
+        "missing": 0,
+        "present": 5,
+        "missing_pct": 0.0
+      },
+      "display_url": {
+        "missing": 0,
+        "present": 5,
+        "missing_pct": 0.0
+      },
+      "ad_placement": {
+        "missing": 0,
+        "present": 5,
+        "missing_pct": 0.0
+      }
+    },
+    "sample": [
+      {
+        "advertiser_name": "바로바빌론",
+        "ad_text": "바로바빌론  newdaesaeloan.com/     간편하게 받는 소액대출",
+        "url": "https://ader.naver.com/v1/twyM4UET_DSfOTz_kF2rrOwMLBIFCR5qEH5SSotrPkQRDIXtEom1dbqnaAkTV3xbJKg76g1lNX-d_N0Th6YjiKbARNrJ3LWMZWYxUST-cZs-SSOScyhnLQ8wQWAWyiHWQgkfYC6syYUl9DDSc6yLkNSvr33qv5jry7cbVeXcJCOvyKEzkG2Bi52-W8AKuxw6oHdnoUHHjUylXrKmNJwaFexx41Mt5lLYA-JoWPJpJHHj9ZU3CEyojimGnfrF52W2YixDhMQuLV1596KYlMWWZY7PmJmpXFz31bPOmxrqdP4WYIHXd25lMVhbKMe-2Z5r0pPp9gXvbSvyVqeEh2bXg9Q6JDoKu_3wFM7n7v4kkl9ls4i5sAIJkly3s57hRQ7I-ehJl8ft6kmAn5hJ3Cg7yPwplwxQ_9WVZCWhraYSScrvwWqkAIrLNd3gP6_baPNBC_Ark25XkCjjCtcuAjf9j3-QIqSly-K6xjq1G4k3gPn15el8esXCq345LZFdF8c8?c=mnaver.search.plsearch&t=0",
+        "display_url": "newdaesaeloan.com",
+        "ad_placement": "naver_powerlink",
+        "ad_type": "powerlink"
+      },
+      {
+        "advertiser_name": "NH농협캐피탈",
+        "ad_text": "NH농협캐피탈  m.nhcapital.co.kr     NH농협캐피탈 스탁론  최대한도 3억원!  상환기간 최대 8년!",
+        "url": "https://ader.naver.com/v1/ghH9bOaEW3r3g44kUAExk39_z8yNTwQqE1JCp4zqPgBirw5qh4KKYo0nX-86RMD-v0Rfd5h1VnglqEnRhUVPOjepQisMaLOO0ztQ2027U9PoBuuRsdYM_pU8-MckO_BPzg-w17Fi-fjARSAg6aS72p-iAvgGZ_j4oHqfquC5_Nma6qnkL3EuOX7KdEFhrahu92_TuOFG_JiUw5kg0bv45QE_gQvp6ZqxF_eJu4z_WuAeyzHYwyQxYYcT49FKhti1pziedBqci9aOdsytau0e9bx6rxFIhYvUq9Zi1nhB9rlBtJMtgf1T_VxrYAYWvrtsyHbEaju0qrTA2Eeo80OAudfRtdAIk8u06S77IhsdZI87JZkMkIceJrHwwq6-I2ZcJMhA0ajNciEB_bYkSlFJ59PA7Mienj79UpJvcwzLa9G4x0RaDg3R5KqJhQa-h4BHWoEpnD-7rpW_ttWYeAML3aA6n5gPEQrC4EaLtr7S08B16TphrydYIDsJkQ981fSKzi0E78JZJ3Abhlvt3L2Kk-57TlIqDr-KFqVWVuUuQFi3d3sMG4z4Lf3Vc95eU9RNKINIg9QNBKBbr88sFwWNATANXnlHzWAy_9GSFu8zKp0GCvQdE5S_RJl9hSA6LVMoy0xV0Atbc_rulbJupFARfsgrUNfmQ7fL-Op4D9KvwAZ2YC1Hj3wbIuSjm7wV8GsbyOlqEjWJO7oi7DAFw1uGWvDsJABZVG6efMD0YZNlBh0=?c=mnaver.search.plsearch&t=0",
+        "display_url": "m.nhcapital.co.kr",
+        "ad_placement": "naver_powerlink",
+        "ad_type": "powerlink"
+      }
+    ]
+  },
+  {
+    "channel": "naver_da",
+    "status": "ok",
+    "keyword": "main",
+    "device": "pc",
+    "captured_at": "2026-04-24 01:36:31.029851+00:00",
+    "total_ads": 2,
+    "missing": {
+      "advertiser_name": {
+        "missing": 0,
+        "present": 2,
+        "missing_pct": 0.0
+      },
+      "ad_text": {
+        "missing": 0,
+        "present": 2,
+        "missing_pct": 0.0
+      },
+      "url": {
+        "missing": 0,
+        "present": 2,
+        "missing_pct": 0.0
+      },
+      "display_url": {
+        "missing": 0,
+        "present": 2,
+        "missing_pct": 0.0
+      },
+      "ad_placement": {
+        "missing": 0,
+        "present": 2,
+        "missing_pct": 0.0
+      }
+    },
+    "sample": [
+      {
+        "advertiser_name": "전국농부들",
+        "ad_text": "당일 조업으로 신선한 특품 새조개",
+        "url": "https://farm-people.com",
+        "display_url": "farm-people.com",
+        "ad_placement": "naver_main",
+        "ad_type": "banner"
+      },
+      {
+        "advertiser_name": "물컹슈즈",
+        "ad_text": "발볼 넓은 신발 찾으셨나요? 물컹슈즈는 발을 조이지 않습니다.",
+        "url": "https://smartstore.naver.com",
+        "display_url": "smartstore.naver.com",
+        "ad_placement": "naver_main",
+        "ad_type": "banner"
+      }
+    ]
+  },
+  {
+    "channel": "naver_shopping",
+    "status": "ok",
+    "keyword": "에어팟",
+    "device": "pc",
+    "captured_at": "2026-04-24 01:36:40.806147+00:00",
+    "total_ads": 2,
+    "missing": {
+      "advertiser_name": {
+        "missing": 0,
+        "present": 2,
+        "missing_pct": 0.0
+      },
+      "ad_text": {
+        "missing": 0,
+        "present": 2,
+        "missing_pct": 0.0
+      },
+      "url": {
+        "missing": 0,
+        "present": 2,
+        "missing_pct": 0.0
+      },
+      "display_url": {
+        "missing": 0,
+        "present": 2,
+        "missing_pct": 0.0
+      },
+      "ad_placement": {
+        "missing": 0,
+        "present": 2,
+        "missing_pct": 0.0
+      }
+    },
+    "sample": [
+      {
+        "advertiser_name": "리팟",
+        "ad_text": "리팟 repods.co.kr 에어팟 한쪽구매,리퍼 서비스 글로벌리퍼 횟수50만대 이상 리퍼에어팟 구매는 리팟 128,000원 56,000원 56,000원 86,000원 72,000원 86,000원 134,000원 54,000원 다",
+        "url": "https://ad.search.naver.com/search.naver?where=ad&query=%EC%97%90%EC%96%B4%ED%8C%9F&referenceId=jPr56lqostGssd0TjoR-504658",
+        "display_url": "repods.co.kr",
+        "ad_placement": "naver_shopping_search",
+        "ad_type": "naver_shopping_ad"
+      },
+      {
+        "advertiser_name": "리팟",
+        "ad_text": "리팟 repods.co.kr 에어팟 한쪽구매,리퍼 서비스 글로벌리퍼 횟수50만대 이상 리퍼에어팟 구매는 리팟 128,000원 56,000원 56,000원 86,000원 72,000원 86,000원 134,000원 54,000원",
+        "url": "https://ad.search.naver.com/search.naver?where=ad&query=%EC%97%90%EC%96%B4%ED%8C%9F&referenceId=jPr56lqostGssd0TjoR-504658",
+        "display_url": "repods.co.kr",
+        "ad_placement": "naver_shopping_search",
+        "ad_type": "naver_shopping_ad"
+      }
+    ]
+  },
+  {
+    "channel": "kakao_da",
+    "status": "ok",
+    "keyword": "qa",
+    "device": "mobile",
+    "captured_at": "2026-04-24 01:36:56.069088+00:00",
+    "total_ads": 18,
+    "missing": {
+      "advertiser_name": {
+        "missing": 14,
+        "present": 4,
+        "missing_pct": 77.78
+      },
+      "ad_text": {
+        "missing": 0,
+        "present": 18,
+        "missing_pct": 0.0
+      },
+      "url": {
+        "missing": 0,
+        "present": 18,
+        "missing_pct": 0.0
+      },
+      "display_url": {
+        "missing": 0,
+        "present": 18,
+        "missing_pct": 0.0
+      },
+      "ad_placement": {
+        "missing": 0,
+        "present": 18,
+        "missing_pct": 0.0
+      }
+    },
+    "sample": [
+      {
+        "advertiser_name": null,
+        "ad_text": "kakao_banner_ad",
+        "url": "https://ka.ad.daum.net/click/http://www.sangjang.kr?utm_source=kakao&utm_medium=keyword&utm_campaign=PREMIUM_LINK&k_campaign=4364590213663&k_adgroup=1340086&k_media=PREMIUM_LINK_CONTENT&k_creative=122381678&k_creativelink=122381678&k_rank=1&kclid=8OEqZquff3tIgSsLYrMsmKSZnQ3YoKzWvS32jYvGHOI0Z2bhprUHkBTP5mU0j1P9b90I0gAsD4ajUOPlkodHu_-0RlNVbxcEJZXJkznvLUU/Tpn9jrMaHHPsWmxn2b6D508U2k5vCvXskSuhCNbAMwxl39Arew036gqyUN5bGeqFg4zG0XHaC4bEyJAjfRgrP5pp-S3P4OIMom-37NmckxS9NorttJpUfgtg3bFIXzvrm9sxDDeHGM-wxo6cMzcByo_USiWJqaHvZp05fC6PY2dDmIO4Ta0ahuM6RAXLPE1RHa_h5SEypRw1CgnTJ11OaOk0IhsRyJUdcTwY5eiIkm4hzqPmcw29lCTECkox8gjbBjI-PhtlPA0T8ZMZFD7Q_Ez2LwbXrI0m7HhENCHMbdLOFnptgavN07cTAb0PVodPnsjzQcVg83eGp7dY_ijSjeHszJ6Ztc5A7N5FjKFGwAxPaoMn2dfBw45-aq9cPDLGJLVzeXm41fj9d3MKBZC3dgBFJ9Rkt9bGf2dXnqVw07xOfLu3Yg2IKWcUdHhSfcSTNYuoD9eSP9H5cWGsvICjTyySxwIE5983untGXnUZ6Z1GHjfDOQXAt_2xRuSumS72jo7o_XZUs5xia0FVvf7JlTZlpZ-AN_RkRJI9CG_4g3Vo3XTfbrI-fDhbNBn43OVZ0BiRwB2avBFwcD1RYweevRZcdxRq?p=39tj3xYn7CowLcoL0E2H1ABL7MZdINsyx5fa2lw4FaI&rd={\"adunit_type_seq\":1439,\"banner_adunit_type_seq\":1439,\"native_adunit_type_seq\":1437,\"template_seq\":91}",
+        "display_url": "ka.ad.daum.net",
+        "ad_placement": "kakao_main",
+        "ad_type": "kakao_banner"
+      },
+      {
+        "advertiser_name": "아이클타임",
+        "ad_text": "중1인데 키가 이렇게 크다고?",
+        "url": "https://newsyg.kr/icleka11/",
+        "display_url": "newsyg.kr",
+        "ad_placement": "kakao_main",
+        "ad_type": "kakao_native"
+      }
+    ]
+  },
+  {
+    "channel": "google_gdn",
+    "status": "ok",
+    "keyword": "보험",
+    "device": "pc",
+    "captured_at": "2026-04-24 01:37:50.981023+00:00",
+    "total_ads": 31,
+    "missing": {
+      "advertiser_name": {
+        "missing": 0,
+        "present": 31,
+        "missing_pct": 0.0
+      },
+      "ad_text": {
+        "missing": 0,
+        "present": 31,
+        "missing_pct": 0.0
+      },
+      "url": {
+        "missing": 0,
+        "present": 31,
+        "missing_pct": 0.0
+      },
+      "display_url": {
+        "missing": 0,
+        "present": 31,
+        "missing_pct": 0.0
+      },
+      "ad_placement": {
+        "missing": 0,
+        "present": 31,
+        "missing_pct": 0.0
+      }
+    },
+    "sample": [
+      {
+        "advertiser_name": "보험20년",
+        "ad_text": "유병자보험 재발암판례. 우려했던일이 현…",
+        "url": "https://www.youtube.com/channel/UCsS4J-pkU4oUDYI_5tmo6iA",
+        "display_url": "youtube.com",
+        "ad_placement": "google_ads_transparency",
+        "ad_type": "gdn_display"
+      },
+      {
+        "advertiser_name": "튼튼이보험",
+        "ad_text": "불필요특약 제외한 태아보험",
+        "url": "http://pf.kakao.com/_WjPxkG",
+        "display_url": "pf.kakao.com",
+        "ad_placement": "google_ads_transparency",
+        "ad_type": "gdn_display"
+      }
+    ]
+  },
+  {
+    "channel": "google_search_ads",
+    "status": "ok",
+    "keyword": "보험",
+    "device": "pc",
+    "captured_at": "2026-04-24 01:42:34.459582+00:00",
+    "total_ads": 10,
+    "missing": {
+      "advertiser_name": {
+        "missing": 0,
+        "present": 10,
+        "missing_pct": 0.0
+      },
+      "ad_text": {
+        "missing": 0,
+        "present": 10,
+        "missing_pct": 0.0
+      },
+      "url": {
+        "missing": 0,
+        "present": 10,
+        "missing_pct": 0.0
+      },
+      "display_url": {
+        "missing": 0,
+        "present": 10,
+        "missing_pct": 0.0
+      },
+      "ad_placement": {
+        "missing": 0,
+        "present": 10,
+        "missing_pct": 0.0
+      }
+    },
+    "sample": [
+      {
+        "advertiser_name": "보험20년",
+        "ad_text": "유병자보험 재발암판례. 우려했던일이 현…",
+        "url": "https://www.youtube.com/channel/UCsS4J-pkU4oUDYI_5tmo6iA",
+        "display_url": "youtube.com",
+        "ad_placement": "google_search",
+        "ad_type": "google_search_text"
+      },
+      {
+        "advertiser_name": "튼튼이보험",
+        "ad_text": "불필요특약 제외한 태아보험",
+        "url": "http://pf.kakao.com/_WjPxkG",
+        "display_url": "pf.kakao.com",
+        "ad_placement": "google_search",
+        "ad_type": "google_search_text"
+      }
+    ]
+  },
+  {
+    "channel": "youtube_ads",
+    "status": "ok",
+    "keyword": "보험",
+    "device": "pc",
+    "captured_at": "2026-04-24 01:44:41.714216+00:00",
+    "total_ads": 37,
+    "missing": {
+      "advertiser_name": {
+        "missing": 0,
+        "present": 37,
+        "missing_pct": 0.0
+      },
+      "ad_text": {
+        "missing": 0,
+        "present": 37,
+        "missing_pct": 0.0
+      },
+      "url": {
+        "missing": 0,
+        "present": 37,
+        "missing_pct": 0.0
+      },
+      "display_url": {
+        "missing": 0,
+        "present": 37,
+        "missing_pct": 0.0
+      },
+      "ad_placement": {
+        "missing": 0,
+        "present": 37,
+        "missing_pct": 0.0
+      }
+    },
+    "sample": [
+      {
+        "advertiser_name": "보험20년",
+        "ad_text": "유병자보험 재발암판례. 우려했던일이 현…",
+        "url": "https://www.youtube.com/channel/UCsS4J-pkU4oUDYI_5tmo6iA",
+        "display_url": "youtube.com",
+        "ad_placement": "google_ads_transparency",
+        "ad_type": "youtube_transparency"
+      },
+      {
+        "advertiser_name": "튼튼이보험",
+        "ad_text": "불필요특약 제외한 태아보험",
+        "url": "http://pf.kakao.com/_WjPxkG",
+        "display_url": "pf.kakao.com",
+        "ad_placement": "google_ads_transparency",
+        "ad_type": "youtube_transparency"
+      }
+    ]
+  },
+  {
+    "channel": "tiktok_ads",
+    "status": "ok",
+    "keyword": "lip",
+    "device": "pc",
+    "captured_at": "2026-04-24 01:49:31.447549+00:00",
+    "total_ads": 13,
+    "missing": {
+      "advertiser_name": {
+        "missing": 11,
+        "present": 2,
+        "missing_pct": 84.62
+      },
+      "ad_text": {
+        "missing": 0,
+        "present": 13,
+        "missing_pct": 0.0
+      },
+      "url": {
+        "missing": 0,
+        "present": 13,
+        "missing_pct": 0.0
+      },
+      "display_url": {
+        "missing": 0,
+        "present": 13,
+        "missing_pct": 0.0
+      },
+      "ad_placement": {
+        "missing": 0,
+        "present": 13,
+        "missing_pct": 0.0
+      }
+    },
+    "sample": [
+      {
+        "advertiser_name": null,
+        "ad_text": "Customer installation feedback video is here! Contact us if you'd like the same pool.#swimspafactory #swimspa #swimpool #hottub #spatub",
+        "url": "https://ads.tiktok.com/business/creativecenter/inspiration/topads/pc/en?modal_id=7615868481573060626",
+        "display_url": "ads.tiktok.com",
+        "ad_placement": "tiktok_top_ads",
+        "ad_type": "tiktok_creative_center"
+      },
+      {
+        "advertiser_name": null,
+        "ad_text": "John Summit is such a hottie 😍 #dayzerofestival #johnsummit #bali #housemusic #uluwatu",
+        "url": "https://ads.tiktok.com/business/creativecenter/inspiration/topads/pc/en?modal_id=7615893835109793810",
+        "display_url": "ads.tiktok.com",
+        "ad_placement": "tiktok_top_ads",
+        "ad_type": "tiktok_creative_center"
+      }
+    ]
+  },
+  {
+    "channel": "meta",
+    "status": "ok",
+    "keyword": "대출",
+    "device": "pc",
+    "captured_at": "2026-04-24 01:49:52.884444+00:00",
+    "total_ads": 14,
+    "missing": {
+      "advertiser_name": {
+        "missing": 0,
+        "present": 14,
+        "missing_pct": 0.0
+      },
+      "ad_text": {
+        "missing": 0,
+        "present": 14,
+        "missing_pct": 0.0
+      },
+      "url": {
+        "missing": 0,
+        "present": 14,
+        "missing_pct": 0.0
+      },
+      "display_url": {
+        "missing": 0,
+        "present": 14,
+        "missing_pct": 0.0
+      },
+      "ad_placement": {
+        "missing": 0,
+        "present": 14,
+        "missing_pct": 0.0
+      }
+    },
+    "sample": [
+      {
+        "advertiser_name": "단비 꿀팁",
+        "ad_text": "0:00 / 0:56",
+        "url": "https://ollocdam.com/product/detail.html?product_no=45&utm_source=meta&utm_medium=paid_social&utm_campaign=5TC&utm_content=110S4&ad_code=5TC_110S4",
+        "display_url": "ollocdam.com",
+        "ad_placement": "meta_ads_library",
+        "ad_type": "social_library"
+      },
+      {
+        "advertiser_name": "정보퀸",
+        "ad_text": "0:00 / 0:30",
+        "url": "https://www.daegun-coe-u.co.kr/?utm=meta112",
+        "display_url": "www.daegun-coe-u.co.kr",
+        "ad_placement": "meta_ads_library",
+        "ad_type": "social_library"
+      }
+    ]
+  }
+]

@@ -1,0 +1,3244 @@
+{
+  "generated_at": "2026-04-25 12:18:33",
+  "db_path": "C:\\Users\\user\\Desktop\\adscopre\\adscope.db",
+  "recent_days": 90,
+  "adic_year": 2024,
+  "summary": {
+    "top_n": 100,
+    "collection_gap_count": 49,
+    "collection_gap_amount": 139179999.0,
+    "collection_gap_amount_pct": 41.88
+  },
+  "channel_summary": [
+    {
+      "channel": "naver_search",
+      "channel_label": "Naver Search",
+      "weighted_gap_amount": 136545460.0,
+      "gap_advertiser_count": 49,
+      "recent_live_advertiser_count": 2093,
+      "recent_live_ad_count": 14302,
+      "top_examples": [
+        "기업은행",
+        "KB금융지주",
+        "지온메디텍",
+        "하나금융그룹",
+        "명인제약"
+      ],
+      "top_industries": [
+        {
+          "industry": "(미분류)",
+          "weighted_gap_amount": 89328335.0
+        },
+        {
+          "industry": "금융/보험",
+          "weighted_gap_amount": 22358338.0
+        },
+        {
+          "industry": "IT/통신",
+          "weighted_gap_amount": 12760547.0
+        },
+        {
+          "industry": "제약/헬스케어",
+          "weighted_gap_amount": 5741148.0
+        }
+      ]
+    },
+    {
+      "channel": "google_search_ads",
+      "channel_label": "Google Search",
+      "weighted_gap_amount": 92134490.0,
+      "gap_advertiser_count": 49,
+      "recent_live_advertiser_count": 1347,
+      "recent_live_ad_count": 9284,
+      "top_examples": [
+        "KB금융지주",
+        "지온메디텍",
+        "하나금융그룹",
+        "기업은행",
+        "명인제약"
+      ],
+      "top_industries": [
+        {
+          "industry": "(미분류)",
+          "weighted_gap_amount": 62529834.0
+        },
+        {
+          "industry": "금융/보험",
+          "weighted_gap_amount": 13239895.0
+        },
+        {
+          "industry": "IT/통신",
+          "weighted_gap_amount": 8385464.0
+        },
+        {
+          "industry": "제약/헬스케어",
+          "weighted_gap_amount": 4018804.0
+        }
+      ]
+    },
+    {
+      "channel": "meta",
+      "channel_label": "Meta",
+      "weighted_gap_amount": 65920588.0,
+      "gap_advertiser_count": 47,
+      "recent_live_advertiser_count": 1805,
+      "recent_live_ad_count": 5150,
+      "top_examples": [
+        "기업은행",
+        "오뚜기",
+        "지온메디텍",
+        "하나금융그룹",
+        "국민은행"
+      ],
+      "top_industries": [
+        {
+          "industry": "(미분류)",
+          "weighted_gap_amount": 44664168.0
+        },
+        {
+          "industry": "금융/보험",
+          "weighted_gap_amount": 10499022.0
+        },
+        {
+          "industry": "IT/통신",
+          "weighted_gap_amount": 3874824.0
+        },
+        {
+          "industry": "식품/음료",
+          "weighted_gap_amount": 3149146.0
+        }
+      ]
+    },
+    {
+      "channel": "google_gdn",
+      "channel_label": "Google GDN",
+      "weighted_gap_amount": 42310557.0,
+      "gap_advertiser_count": 47,
+      "recent_live_advertiser_count": 1574,
+      "recent_live_ad_count": 6377,
+      "top_examples": [
+        "KB금융지주",
+        "지온메디텍",
+        "하나금융그룹",
+        "국민은행",
+        "기업은행"
+      ],
+      "top_industries": [
+        {
+          "industry": "(미분류)",
+          "weighted_gap_amount": 31264917.0
+        },
+        {
+          "industry": "금융/보험",
+          "weighted_gap_amount": 6017212.0
+        },
+        {
+          "industry": "IT/통신",
+          "weighted_gap_amount": 3215742.0
+        },
+        {
+          "industry": "공공기관",
+          "weighted_gap_amount": 1182856.0
+        }
+      ]
+    },
+    {
+      "channel": "naver_da",
+      "channel_label": "Naver DA",
+      "weighted_gap_amount": 22393487.0,
+      "gap_advertiser_count": 40,
+      "recent_live_advertiser_count": 407,
+      "recent_live_ad_count": 4932,
+      "top_examples": [
+        "한국토지주택공사",
+        "지온메디텍",
+        "하나금융그룹",
+        "명인제약",
+        "국민은행"
+      ],
+      "top_industries": [
+        {
+          "industry": "(미분류)",
+          "weighted_gap_amount": 17865667.0
+        },
+        {
+          "industry": "공공기관",
+          "weighted_gap_amount": 3379590.0
+        },
+        {
+          "industry": "제약/헬스케어",
+          "weighted_gap_amount": 1148230.0
+        }
+      ]
+    },
+    {
+      "channel": "youtube_ads",
+      "channel_label": "YouTube",
+      "weighted_gap_amount": 20648207.0,
+      "gap_advertiser_count": 10,
+      "recent_live_advertiser_count": 736,
+      "recent_live_ad_count": 2799,
+      "top_examples": [
+        "KB금융지주",
+        "기업은행",
+        "명인제약",
+        "SK텔레콤",
+        "인포벨"
+      ],
+      "top_industries": [
+        {
+          "industry": "금융/보험",
+          "weighted_gap_amount": 9370963.0
+        },
+        {
+          "industry": "IT/통신",
+          "weighted_gap_amount": 5970084.0
+        },
+        {
+          "industry": "제약/헬스케어",
+          "weighted_gap_amount": 2870574.0
+        },
+        {
+          "industry": "식품/음료",
+          "weighted_gap_amount": 1574573.0
+        }
+      ]
+    },
+    {
+      "channel": "naver_shopping",
+      "channel_label": "Naver Shopping",
+      "weighted_gap_amount": 2116291.0,
+      "gap_advertiser_count": 2,
+      "recent_live_advertiser_count": 158,
+      "recent_live_ad_count": 541,
+      "top_examples": [
+        "SK하이닉스",
+        "인포벨"
+      ],
+      "top_industries": [
+        {
+          "industry": "가전/전자",
+          "weighted_gap_amount": 1231448.0
+        },
+        {
+          "industry": "IT/통신",
+          "weighted_gap_amount": 884843.0
+        }
+      ]
+    },
+    {
+      "channel": "kakao_da",
+      "channel_label": "Kakao DA",
+      "weighted_gap_amount": 675918.0,
+      "gap_advertiser_count": 1,
+      "recent_live_advertiser_count": 141,
+      "recent_live_ad_count": 2674,
+      "top_examples": [
+        "한국토지주택공사"
+      ],
+      "top_industries": [
+        {
+          "industry": "공공기관",
+          "weighted_gap_amount": 675918.0
+        }
+      ]
+    }
+  ],
+  "targets": [
+    {
+      "advertiser_name": "기업은행",
+      "adic_amount": 8340308,
+      "industry": "금융/보험",
+      "website": "https://ibk.co.kr",
+      "official_channel_keys": [
+        "facebook",
+        "instagram",
+        "youtube"
+      ],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 87.4,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "peer 금융/보험: 123/150 advertisers observed recently",
+            "website present",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 51.93,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "peer 금융/보험: 17/150 advertisers observed recently",
+            "official channel hint: instagram",
+            "official channel hint: facebook"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 42.6,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "peer 금융/보험: 27/150 advertisers observed recently",
+            "website present",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "youtube_ads",
+          "channel_label": "YouTube",
+          "score": 40.0,
+          "recent_live_advertiser_count": 736,
+          "recent_live_ad_count": 2799,
+          "reasons": [
+            "peer 금융/보험: 15/150 advertisers observed recently",
+            "official channel hint: youtube",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 19.93,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "peer 금융/보험: 17/150 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "KB금융지주",
+      "adic_amount": 7802025,
+      "industry": "금융/보험",
+      "website": "kbfg.com",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 87.4,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "peer 금융/보험: 123/150 advertisers observed recently",
+            "website present",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 42.6,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "peer 금융/보험: 27/150 advertisers observed recently",
+            "website present",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "youtube_ads",
+          "channel_label": "YouTube",
+          "score": 24.0,
+          "recent_live_advertiser_count": 736,
+          "recent_live_ad_count": 2799,
+          "reasons": [
+            "peer 금융/보험: 15/150 advertisers observed recently",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 19.93,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "peer 금융/보험: 17/150 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 19.93,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "peer 금융/보험: 17/150 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "지온메디텍",
+      "adic_amount": 6064870,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "하나금융그룹",
+      "adic_amount": 6060566,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "명인제약",
+      "adic_amount": 5741148,
+      "industry": "제약/헬스케어",
+      "website": "https://myungin.com",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 77.02,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "peer 제약/헬스케어: 142/207 advertisers observed recently",
+            "website present",
+            "industry boost: 제약/헬스케어"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 35.44,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "peer 제약/헬스케어: 22/207 advertisers observed recently",
+            "website present",
+            "industry boost: 제약/헬스케어"
+          ]
+        },
+        {
+          "channel": "youtube_ads",
+          "channel_label": "YouTube",
+          "score": 22.4,
+          "recent_live_advertiser_count": 736,
+          "recent_live_ad_count": 2799,
+          "reasons": [
+            "peer 제약/헬스케어: 13/207 advertisers observed recently",
+            "industry boost: 제약/헬스케어"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 22.14,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "peer 제약/헬스케어: 30/207 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 21.73,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "peer 제약/헬스케어: 14/207 advertisers observed recently",
+            "industry boost: 제약/헬스케어"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "국민은행",
+      "adic_amount": 5669183,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "SK텔레콤",
+      "adic_amount": 5601735,
+      "industry": "IT/통신",
+      "website": "sktelecom.com",
+      "official_channel_keys": [
+        "instagram",
+        "youtube"
+      ],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 70.82,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "peer IT/통신: 52/85 advertisers observed recently",
+            "website present",
+            "industry boost: IT/통신"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 42.0,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "peer IT/통신: 17/85 advertisers observed recently",
+            "website present",
+            "industry boost: IT/통신"
+          ]
+        },
+        {
+          "channel": "youtube_ads",
+          "channel_label": "YouTube",
+          "score": 35.76,
+          "recent_live_advertiser_count": 736,
+          "recent_live_ad_count": 2799,
+          "reasons": [
+            "peer IT/통신: 7/85 advertisers observed recently",
+            "official channel hint: youtube",
+            "industry boost: IT/통신"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 28.76,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "peer IT/통신: 7/85 advertisers observed recently",
+            "official channel hint: instagram"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 18.76,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "peer IT/통신: 7/85 advertisers observed recently",
+            "industry boost: IT/통신"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "인포벨",
+      "adic_amount": 4424217,
+      "industry": "IT/통신",
+      "website": "infobell.co.kr",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 70.82,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "peer IT/통신: 52/85 advertisers observed recently",
+            "website present",
+            "industry boost: IT/통신"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 42.0,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "peer IT/통신: 17/85 advertisers observed recently",
+            "website present",
+            "industry boost: IT/통신"
+          ]
+        },
+        {
+          "channel": "youtube_ads",
+          "channel_label": "YouTube",
+          "score": 19.76,
+          "recent_live_advertiser_count": 736,
+          "recent_live_ad_count": 2799,
+          "reasons": [
+            "peer IT/통신: 7/85 advertisers observed recently",
+            "industry boost: IT/통신"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 18.76,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "peer IT/통신: 7/85 advertisers observed recently",
+            "industry boost: IT/통신"
+          ]
+        },
+        {
+          "channel": "naver_shopping",
+          "channel_label": "Naver Shopping",
+          "score": 18.24,
+          "recent_live_advertiser_count": 158,
+          "recent_live_ad_count": 541,
+          "reasons": [
+            "peer IT/통신: 10/85 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "귀뚜라미냉난방기술연구소",
+      "adic_amount": 4051745,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "하림산업",
+      "adic_amount": 3787368,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "우주텍",
+      "adic_amount": 3729706,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "카카오뱅크",
+      "adic_amount": 3714401,
+      "industry": "금융/보험",
+      "website": "https://kakaobank.com",
+      "official_channel_keys": [
+        "facebook",
+        "instagram",
+        "youtube"
+      ],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 87.4,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "peer 금융/보험: 123/150 advertisers observed recently",
+            "website present",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 51.93,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "peer 금융/보험: 17/150 advertisers observed recently",
+            "official channel hint: instagram",
+            "official channel hint: facebook"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 42.6,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "peer 금융/보험: 27/150 advertisers observed recently",
+            "website present",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "youtube_ads",
+          "channel_label": "YouTube",
+          "score": 40.0,
+          "recent_live_advertiser_count": 736,
+          "recent_live_ad_count": 2799,
+          "reasons": [
+            "peer 금융/보험: 15/150 advertisers observed recently",
+            "official channel hint: youtube",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 19.93,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "peer 금융/보험: 17/150 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "한국토지주택공사",
+      "adic_amount": 3379590,
+      "industry": "공공기관",
+      "website": "https://lh.or.kr",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 57.55,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "peer 공공기관: 7/11 advertisers observed recently",
+            "industry boost: 공공기관"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 30.73,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "peer 공공기관: 2/11 advertisers observed recently",
+            "website present",
+            "industry boost: 공공기관"
+          ]
+        },
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 25.36,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "peer 공공기관: 1/11 advertisers observed recently",
+            "website present",
+            "industry boost: 공공기관"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 14.73,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "peer 공공기관: 2/11 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "kakao_da",
+          "channel_label": "Kakao DA",
+          "score": 13.36,
+          "recent_live_advertiser_count": 141,
+          "recent_live_ad_count": 2674,
+          "reasons": [
+            "peer 공공기관: 1/11 advertisers observed recently",
+            "industry boost: 공공기관"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "서울특별시",
+      "adic_amount": 3169765,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "오뚜기",
+      "adic_amount": 3149146,
+      "industry": "식품/음료",
+      "website": "ottogi.co.kr",
+      "official_channel_keys": [
+        "facebook",
+        "instagram",
+        "youtube"
+      ],
+      "recommended_channels": [
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 69.83,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "peer 식품/음료: 27/106 advertisers observed recently",
+            "official channel hint: instagram",
+            "official channel hint: facebook"
+          ]
+        },
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 53.08,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "peer 식품/음료: 41/106 advertisers observed recently",
+            "website present",
+            "industry boost: 식품/음료"
+          ]
+        },
+        {
+          "channel": "youtube_ads",
+          "channel_label": "YouTube",
+          "score": 42.92,
+          "recent_live_advertiser_count": 736,
+          "recent_live_ad_count": 2799,
+          "reasons": [
+            "peer 식품/음료: 12/106 advertisers observed recently",
+            "official channel hint: youtube",
+            "industry boost: 식품/음료"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 36.23,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "peer 식품/음료: 17/106 advertisers observed recently",
+            "website present",
+            "industry boost: 식품/음료"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 25.21,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "peer 식품/음료: 20/106 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "기세",
+      "adic_amount": 3075053,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "스픽이지랩스코리아",
+      "adic_amount": 2758342,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "SK이노베이션",
+      "adic_amount": 2734595,
+      "industry": "IT/통신",
+      "website": "skinnovation.com",
+      "official_channel_keys": [
+        "facebook",
+        "instagram",
+        "youtube"
+      ],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 70.82,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "peer IT/통신: 52/85 advertisers observed recently",
+            "website present",
+            "industry boost: IT/통신"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 44.76,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "peer IT/통신: 7/85 advertisers observed recently",
+            "official channel hint: instagram",
+            "official channel hint: facebook"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 42.0,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "peer IT/통신: 17/85 advertisers observed recently",
+            "website present",
+            "industry boost: IT/통신"
+          ]
+        },
+        {
+          "channel": "youtube_ads",
+          "channel_label": "YouTube",
+          "score": 35.76,
+          "recent_live_advertiser_count": 736,
+          "recent_live_ad_count": 2799,
+          "reasons": [
+            "peer IT/통신: 7/85 advertisers observed recently",
+            "official channel hint: youtube",
+            "industry boost: IT/통신"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 18.76,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "peer IT/통신: 7/85 advertisers observed recently",
+            "industry boost: IT/통신"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "사회복지공동모금회",
+      "adic_amount": 2682330,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "새마을금고중앙회",
+      "adic_amount": 2501604,
+      "industry": "금융/보험",
+      "website": "https://kfcc.co.kr",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 87.4,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "peer 금융/보험: 123/150 advertisers observed recently",
+            "website present",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 42.6,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "peer 금융/보험: 27/150 advertisers observed recently",
+            "website present",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "youtube_ads",
+          "channel_label": "YouTube",
+          "score": 24.0,
+          "recent_live_advertiser_count": 736,
+          "recent_live_ad_count": 2799,
+          "reasons": [
+            "peer 금융/보험: 15/150 advertisers observed recently",
+            "industry boost: 금융/보험"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 19.93,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "peer 금융/보험: 17/150 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 19.93,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "peer 금융/보험: 17/150 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "SK하이닉스",
+      "adic_amount": 2462895,
+      "industry": "가전/전자",
+      "website": "https://skhynix.com",
+      "official_channel_keys": [
+        "facebook",
+        "instagram",
+        "youtube"
+      ],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 86.88,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "peer 가전/전자: 90/107 advertisers observed recently",
+            "website present",
+            "industry boost: 가전/전자"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 44.27,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "peer 가전/전자: 5/107 advertisers observed recently",
+            "official channel hint: instagram",
+            "official channel hint: facebook"
+          ]
+        },
+        {
+          "channel": "naver_shopping",
+          "channel_label": "Naver Shopping",
+          "score": 36.08,
+          "recent_live_advertiser_count": 158,
+          "recent_live_ad_count": 541,
+          "reasons": [
+            "peer 가전/전자: 20/107 advertisers observed recently",
+            "industry hint: 가전/전자",
+            "industry boost: 가전/전자"
+          ]
+        },
+        {
+          "channel": "youtube_ads",
+          "channel_label": "YouTube",
+          "score": 33.93,
+          "recent_live_advertiser_count": 736,
+          "recent_live_ad_count": 2799,
+          "reasons": [
+            "peer 가전/전자: 6/107 advertisers observed recently",
+            "official channel hint: youtube",
+            "industry boost: 가전/전자"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 27.58,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "peer 가전/전자: 7/107 advertisers observed recently",
+            "website present",
+            "industry boost: 가전/전자"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "롯데지주",
+      "adic_amount": 2405487,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "월트디즈니",
+      "adic_amount": 2310224,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "교촌F&B",
+      "adic_amount": 2219099,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "프랭크에프앤비",
+      "adic_amount": 2154675,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "비케이알",
+      "adic_amount": 2135580,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "린나이코리아",
+      "adic_amount": 2022905,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "파라미타",
+      "adic_amount": 1989226,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "신영증권",
+      "adic_amount": 1942825,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "리치몬드코리아*",
+      "adic_amount": 1926050,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "신용협동조합",
+      "adic_amount": 1864858,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "애플",
+      "adic_amount": 1797292,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "투썸플레이스",
+      "adic_amount": 1766310,
+      "industry": "",
+      "website": "twosome.co.kr",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 29.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "website present",
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 22.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "website present",
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "대원제약",
+      "adic_amount": 1728338,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "헤일리온코리아",
+      "adic_amount": 1649910,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "한국엠에스디",
+      "adic_amount": 1604363,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "LGU플러스",
+      "adic_amount": 1582195,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "샤크닌자",
+      "adic_amount": 1576812,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "한화생명보험",
+      "adic_amount": 1531331,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "이노리어",
+      "adic_amount": 1517856,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "제이엔비",
+      "adic_amount": 1498332,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "롯데아사히주류",
+      "adic_amount": 1457391,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "한국산업은행",
+      "adic_amount": 1456489,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "한국주택금융공사",
+      "adic_amount": 1377119,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "저출산고령사회위원회",
+      "adic_amount": 1376666,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "GS칼텍스",
+      "adic_amount": 1369850,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "올데이프레쉬",
+      "adic_amount": 1366332,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "보건복지부",
+      "adic_amount": 1329878,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    },
+    {
+      "advertiser_name": "열심히*",
+      "adic_amount": 1322014,
+      "industry": "",
+      "website": "",
+      "official_channel_keys": [],
+      "recommended_channels": [
+        {
+          "channel": "naver_search",
+          "channel_label": "Naver Search",
+          "score": 21.04,
+          "recent_live_advertiser_count": 2093,
+          "recent_live_ad_count": 14302,
+          "reasons": [
+            "global fallback: 2093 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_search_ads",
+          "channel_label": "Google Search",
+          "score": 14.81,
+          "recent_live_advertiser_count": 1347,
+          "recent_live_ad_count": 9284,
+          "reasons": [
+            "global fallback: 1347 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "meta",
+          "channel_label": "Meta",
+          "score": 13.81,
+          "recent_live_advertiser_count": 1805,
+          "recent_live_ad_count": 5150,
+          "reasons": [
+            "global fallback: 1805 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "google_gdn",
+          "channel_label": "Google GDN",
+          "score": 12.33,
+          "recent_live_advertiser_count": 1574,
+          "recent_live_ad_count": 6377,
+          "reasons": [
+            "global fallback: 1574 advertisers observed recently"
+          ]
+        },
+        {
+          "channel": "naver_da",
+          "channel_label": "Naver DA",
+          "score": 11.84,
+          "recent_live_advertiser_count": 407,
+          "recent_live_ad_count": 4932,
+          "reasons": [
+            "global fallback: 407 advertisers observed recently"
+          ]
+        }
+      ]
+    }
+  ]
+}

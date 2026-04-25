@@ -30,8 +30,7 @@ from database.schemas import (
     ReactionTimeseriesOut,
 )
 
-router = APIRouter(prefix="/api/impact", tags=["impact"],
-    dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/api/impact", tags=["impact"])
 logger = logging.getLogger(__name__)
 
 
@@ -180,7 +179,6 @@ async def get_product_reactions(
     product_id: int,
     metric_type: str | None = None,
     days: int = Query(30, ge=1, le=365),
-    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     cutoff = datetime.utcnow() - timedelta(days=days)
@@ -202,7 +200,6 @@ async def get_product_reactions(
 @router.get("/by-advertiser/{advertiser_id}")
 async def get_impact_by_advertiser(
     advertiser_id: int,
-    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """Get all launch products and their latest scores for an advertiser."""

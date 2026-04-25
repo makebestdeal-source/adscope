@@ -11,6 +11,7 @@ import unicodedata
 from dataclasses import dataclass
 from enum import Enum
 
+from processor.entity_label_quality import LabelQuality, validate_entity_label
 from processor.korean_filter import has_foreign_script, clean_advertiser_name as _clean_adv_name
 
 
@@ -66,13 +67,22 @@ NON_AD_ELEMENTS = {
     "네이버 해피빈", "네이버해피빈", "해피빈", "네이버 해피빈 가볼까",
     # 카카오/구글 UI
     "카카오 로그인", "구글 로그인", "로그인",
-    # 검색결과 UI 텍스트 / CTA (광고주 아님)
-    "더보기", "더알아보기", "더 알아보기", "접기", "관련뉴스", "이미지검색",
-    "검색해보세요", "검색해 보세요", "가볼까",
+    # CTA 버튼 텍스트 (광고주 아님)
+    "Learn More", "Shop Now", "더보기", "더알아보기", "더 알아보기",
+    "접기", "관련뉴스", "이미지검색", "검색해보세요", "검색해 보세요", "가볼까",
     "지도", "쇼핑", "뉴스", "사전", "블로그",
     # 크롤러 기본값/플레이스홀더
     "unknown_advertiser", "gdn_display_ad", "display_ad",
     "youtube_video_ad", "youtube_promoted",
+    # 단독 플랫폼명 (광고주가 아닌 플랫폼 자체)
+    "네이버", "카카오", "유튜브", "인스타그램", "페이스북", "틱톡",
+    "메타", "구글",
+    # Meta 광고 라이브러리 UI 텍스트 (광고주 아님)
+    "Meta 광고 라이브러리", "광고 라이브러리", "광고 라이브러리 보고서",
+    "광고 라이브러리 API", "브랜디드 콘텐츠", "Ad Library",
+    "Ads Library", "Ad Library Report", "Ad Library API",
+    "Branded Content", "Unknown", "brand",
+    "blog",
 }
 
 # URL/도메인 패턴
@@ -115,10 +125,43 @@ _NAVER_PAY_PREFIXES = [
 # 숫자/코드만 있는 이름 (예: "Fmx-0205-10", "NDP_SF")
 _CODE_ONLY = re.compile(r"^[A-Z0-9_-]{3,}$", re.IGNORECASE)
 
+# Meta 라이브러리 ID 패턴 (예: "라이브러리 ID: 576434418048307")
+_LIBRARY_ID = re.compile(r"라이브러리\s*ID\s*[:：]?\s*\d+", re.IGNORECASE)
+
+# 템플릿 미치환 변수 (예: "관절보궁 {product}", "Brand {name}")
+_TEMPLATE_VAR = re.compile(r"\{[^}]*\}")
+
+# 저작권 표시 (예: "© 2025", "(c) 2024", "Copyright 2025")
+_COPYRIGHT = re.compile(r"(?:©|\(c\)|Copyright)\s*\d{4}", re.IGNORECASE)
+
+# 네이버페이 인하우스 prefix 포함 여부 (짧은 버전 포함)
+_NAVER_PAY_RE = re.compile(r"^네이버페이", re.IGNORECASE)
+
 # 문장형 광고주명 (주어+서술어 패턴, 종결어미로 끝남)
 _SENTENCE_ENDINGS = re.compile(
     r"(입니다|합니다|하세요|습니다|됩니다|드립니다|있습|보세요|알아보기|확인!?)$"
 )
+
+# 의문문 광고 카피 (? 또는 ？로 끝나는 것)
+_QUESTION_ENDING = re.compile(r"[?？]\s*$")
+
+# 순수 알파벳 1~2글자 약어 (gf, gg, gt, zb 등 — 브랜드명으로 너무 짧음)
+_SHORT_ALPHA_ONLY = re.compile(r"^[a-zA-Z]{1,2}$")
+_SHORT_BRAND_ALLOWLIST = {"KT", "LG", "SK", "CJ", "KB", "NH", "DB", "GS"}
+
+# 소문자알파벳 + 숫자 혼합 아이디형 (hjm2154, abc123 등)
+_USERNAME_ID = re.compile(r"^[a-z]{2,8}[0-9]{2,}$")
+
+# 광고 카피형 — 공백 포함 + 구어체 관형형/조사 패턴
+# "언니들의 쌈뽕한 추천템", "셀럽들의 뷰티레시피", "헤어나올 수 없는 꿀팁"
+_AD_COPY_PARTICLE = re.compile(
+    r"(?:들의|없는|있는|없어|있어|해주는|해드리는|알려주는)\s+"
+    r"|^\s*광고없는\s+"
+    r"|^\s*찐\s+"
+)
+
+# 미완성 중괄호 정리 (닫히지 않은 {  — 예: "고론진 {", "마가보감 {")
+_UNCLOSED_BRACE = re.compile(r"\s*\{[^}]*$")
 
 # URL이 결합된 광고주명에서 URL 부분을 분리
 # 패턴: "브랜드명  domain.com", "브랜드명  m.domain.com/path"
@@ -180,6 +223,10 @@ def validate_name(name: str | None) -> VerificationResult:
         if parts and len(parts[0]) >= MIN_NAME_LENGTH:
             stripped = parts[0].strip()
 
+    # 미완성 중괄호 제거 (예: "고론진 {", "마가보감 {")
+    if _UNCLOSED_BRACE.search(stripped):
+        stripped = _UNCLOSED_BRACE.sub("", stripped).strip()
+
     # blog.naver.com URL을 광고주명에서 제거
     stripped = re.sub(r"\s*blog\.naver\.com/\S*", "", stripped).strip()
     stripped = re.sub(r"\s*smartstore\.naver\.com/\S*", "", stripped).strip()
@@ -215,6 +262,58 @@ def validate_name(name: str | None) -> VerificationResult:
     sanitized = _clean_adv_name(stripped)
     if sanitized and sanitized != stripped:
         stripped = sanitized
+
+    label_check = validate_entity_label(stripped, field="advertiser")
+    if label_check.quality == LabelQuality.INVALID:
+        return VerificationResult(
+            original_name=name,
+            quality=NameQuality.REJECTED,
+            confidence=ConfidenceLevel.INVALID,
+            rejection_reason=label_check.reason,
+        )
+
+    # Meta 라이브러리 ID 텍스트 ("라이브러리 ID: 576434418048307")
+    if _LIBRARY_ID.search(stripped):
+        return VerificationResult(
+            original_name=name,
+            quality=NameQuality.REJECTED,
+            confidence=ConfidenceLevel.INVALID,
+            rejection_reason="meta_library_id",
+        )
+
+    # 템플릿 미치환 변수 ("관절보궁 {product}")
+    if _TEMPLATE_VAR.search(stripped):
+        stripped = _TEMPLATE_VAR.sub("", stripped).strip()
+        if len(stripped) < MIN_NAME_LENGTH:
+            return VerificationResult(
+                original_name=name,
+                quality=NameQuality.REJECTED,
+                confidence=ConfidenceLevel.INVALID,
+                rejection_reason="template_variable",
+            )
+
+    # 저작권 표시 ("© 2025", "(c) 2024")
+    if _COPYRIGHT.search(stripped):
+        return VerificationResult(
+            original_name=name,
+            quality=NameQuality.REJECTED,
+            confidence=ConfidenceLevel.INVALID,
+            rejection_reason="copyright_text",
+        )
+
+    # 네이버페이 인하우스 prefix (짧은 버전: "네이버페이 브랜드명" 형태)
+    if _NAVER_PAY_RE.match(stripped):
+        # 뒤에 실제 브랜드명이 있으면 추출, 없으면 reject
+        after = _NAVER_PAY_RE.sub("", stripped).strip()
+        if len(after) >= MIN_NAME_LENGTH and not _NAVER_PAY_RE.match(after):
+            stripped = after
+        else:
+            return VerificationResult(
+                original_name=name,
+                quality=NameQuality.REJECTED,
+                confidence=ConfidenceLevel.INVALID,
+                rejection_reason="naver_pay_inhouse",
+            )
 
     # 광고시스템 해시
     if _HASH_PATTERN.match(stripped):
@@ -313,6 +412,45 @@ def validate_name(name: str | None) -> VerificationResult:
             quality=NameQuality.REJECTED,
             confidence=ConfidenceLevel.INVALID,
             rejection_reason="sentence_name",
+        )
+
+    # 의문문 광고 카피 (? ？로 끝나는 것 — "왜안먹거?", "아직도 돈 못 싸?" 등)
+    if _QUESTION_ENDING.search(stripped):
+        return VerificationResult(
+            original_name=name,
+            quality=NameQuality.REJECTED,
+            confidence=ConfidenceLevel.INVALID,
+            rejection_reason="question_ad_copy",
+        )
+
+    # 순수 알파벳 1~2글자 약어 (gf, gg, gt, zb 등)
+    if _SHORT_ALPHA_ONLY.match(stripped):
+        if stripped.upper() in _SHORT_BRAND_ALLOWLIST:
+            stripped = stripped.upper()
+        else:
+            return VerificationResult(
+                original_name=name,
+                quality=NameQuality.REJECTED,
+                confidence=ConfidenceLevel.INVALID,
+                rejection_reason="too_short_alpha",
+            )
+
+    # 소문자알파벳+숫자 아이디형 (hjm2154, abc0101 등)
+    if _USERNAME_ID.match(stripped):
+        return VerificationResult(
+            original_name=name,
+            quality=NameQuality.REJECTED,
+            confidence=ConfidenceLevel.INVALID,
+            rejection_reason="username_id",
+        )
+
+    # 광고 카피형 — 공백 포함 + 구어체 관형형/조사 패턴 (길이 7자+)
+    if len(stripped) >= 7 and " " in stripped and _AD_COPY_PARTICLE.search(stripped):
+        return VerificationResult(
+            original_name=name,
+            quality=NameQuality.REJECTED,
+            confidence=ConfidenceLevel.INVALID,
+            rejection_reason="ad_copy_particle",
         )
 
     # 통과 → 정규화

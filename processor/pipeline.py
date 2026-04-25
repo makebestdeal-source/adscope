@@ -40,12 +40,14 @@ async def _get_persona_id(session: AsyncSession, persona_code: str) -> int | Non
         _persona_cache[persona_code] = p_id
     return p_id
 from processor.ad_classifier import classify_ad
+from processor.advertiser_name_cleaner import clean_name_for_pipeline
 from processor.advertiser_verifier import NameQuality, verify_advertiser_name
 from processor.normalizer import NormalizedSnapshot, normalize_crawl_result
 from processor.korean_filter import is_korean_ad, clean_advertiser_name
 from processor.creative_hasher import compute_creative_hash, compute_text_hash
 from processor.extra_data_normalizer import normalize_extra_data
 from processor.ad_product_classifier import classify_ad_product
+from processor.channel_utils import requires_creative_asset
 from processor.dedup import find_existing_ad, update_seen
 from processor.landing_cache import get_cached_brand, cache_landing_result, _extract_domain
 
@@ -145,10 +147,45 @@ async def save_crawl_result(session: AsyncSession, raw: dict) -> AdSnapshot | No
     session.add(snapshot)
     await session.flush()
 
+    # ── 라이브러리 채널: URL 없는 광고주 → 네이버 검색으로 공식사이트 폴백 ──
+    _LIBRARY_CHANNELS = {"meta", "youtube_ads", "tiktok_ads", "google_gdn", "google_search_ads"}
+    _FAKE_FALLBACK_HOSTS = {"adstransparency.google.com", "ads.tiktok.com"}
+
+    if save_channel in _LIBRARY_CHANNELS:
+        def _needs_url_resolve(ad) -> bool:
+            if not ad.url or not ad.url.strip():
+                return True
+            try:
+                from urllib.parse import urlparse as _urlparse
+                host = _urlparse(ad.url).netloc.lower()
+                return any(fh in host for fh in _FAKE_FALLBACK_HOSTS)
+            except Exception:
+                return False
+
+        names_needing_urls = set()
+        for ad in normalized.ads:
+            if _needs_url_resolve(ad) and ad.advertiser_name:
+                names_needing_urls.add(ad.advertiser_name.strip())
+
+        if names_needing_urls:
+            from processor.url_resolver import resolve_urls_batch
+            resolved_map = await resolve_urls_batch(list(names_needing_urls))
+            for ad in normalized.ads:
+                if _needs_url_resolve(ad) and ad.advertiser_name:
+                    resolved_url = resolved_map.get(ad.advertiser_name.strip())
+                    if resolved_url:
+                        ad.extra_data = {
+                            **(ad.extra_data or {}),
+                            "url_source": "naver_search_fallback",
+                            "original_url": ad.url,
+                        }
+                        ad.url = resolved_url
+
     # AdDetail 생성 + Phase 3 분류 + 광고주명 검증
     rejected_count = 0
     korean_filtered = 0
     no_url_filtered = 0
+    missing_creative_filtered = 0
     inhouse_filtered = 0
     for ad in normalized.ads:
         # URL 필수: 광고주 URL 없으면 광고주 식별 불가 → 제외
@@ -156,14 +193,26 @@ async def save_crawl_result(session: AsyncSession, raw: dict) -> AdSnapshot | No
             no_url_filtered += 1
             continue
 
+        if requires_creative_asset(normalized.channel):
+            creative_path = getattr(ad, "creative_image_path", None)
+            if not creative_path or not str(creative_path).strip():
+                missing_creative_filtered += 1
+                continue
+
         # 한글 필터: 한국 시장 광고만 저장 (접촉형 채널은 면제)
         if not is_korean_ad(ad.ad_text, ad.advertiser_name, ad.brand, ad.ad_description,
                             channel=normalized.channel):
             korean_filtered += 1
             continue
 
-        # 광고주명 검증
-        name_verification = verify_advertiser_name(ad.advertiser_name)
+        # 광고주명 검증 전, UI/도메인 노이즈를 먼저 정리해 실제 브랜드 후보를 복원
+        cleaned_name = clean_name_for_pipeline(
+            ad.advertiser_name or "",
+            ad_text=ad.ad_text,
+            display_url=getattr(ad, "display_url", None),
+            click_url=ad.url,
+        ) if ad.advertiser_name else ad.advertiser_name
+        name_verification = verify_advertiser_name(cleaned_name or ad.advertiser_name)
         original_name = ad.advertiser_name
 
         if name_verification.quality == NameQuality.REJECTED:
@@ -177,6 +226,8 @@ async def save_crawl_result(session: AsyncSession, raw: dict) -> AdSnapshot | No
             }
         elif name_verification.cleaned_name:
             ad.advertiser_name = name_verification.cleaned_name
+        elif cleaned_name:
+            ad.advertiser_name = cleaned_name
 
         verification_status, verification_source, extra_data = _resolve_verification_fields(
             normalized.channel,
@@ -220,6 +271,7 @@ async def save_crawl_result(session: AsyncSession, raw: dict) -> AdSnapshot | No
         existing_id = await find_existing_ad(
             session, normalized.channel, c_hash,
             ad.advertiser_name, ad.ad_text, ad.url,
+            ad.creative_image_path,
         )
         if existing_id:
             await update_seen(session, existing_id, normalized.captured_at)

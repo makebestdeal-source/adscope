@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 
 from database import async_session
 from database.models import AdDetail, AdSnapshot, Advertiser
@@ -35,6 +35,10 @@ def _obscure(name: str) -> str:
     return name[0] + "●" * (len(name) - 1)
 
 
+def _active_ad_filter():
+    return or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected")
+
+
 @router.get("/stats")
 async def get_public_stats():
     """Public summary stats — no authentication required.
@@ -48,7 +52,7 @@ async def get_public_stats():
     async with async_session() as session:
         # ── 전체 카운트 ──
         total_ads = (
-            await session.scalar(select(func.count()).select_from(AdDetail))
+            await session.scalar(select(func.count()).select_from(AdDetail).where(_active_ad_filter()))
         ) or 0
         total_advertisers = (
             await session.scalar(select(func.count()).select_from(Advertiser))
@@ -59,15 +63,18 @@ async def get_public_stats():
                 .join(AdSnapshot, AdSnapshot.id == AdDetail.snapshot_id)
                 .where(AdSnapshot.captured_at >= cutoff_7d)
                 .where(AdDetail.advertiser_id.isnot(None))
+                .where(_active_ad_filter())
             )
         ) or 0
 
         # ── 채널별 30일 수집 현황 ──
         channel_rows = await session.execute(
-            select(AdSnapshot.channel, func.count().label("cnt"))
+            select(AdSnapshot.channel, func.count(AdDetail.id).label("cnt"))
+            .join(AdDetail, AdDetail.snapshot_id == AdSnapshot.id)
             .where(AdSnapshot.captured_at >= cutoff_30d)
+            .where(_active_ad_filter())
             .group_by(AdSnapshot.channel)
-            .order_by(func.count().desc())
+            .order_by(func.count(AdDetail.id).desc())
         )
         by_channel = {row.channel: row.cnt for row in channel_rows}
 
@@ -80,6 +87,7 @@ async def get_public_stats():
             .join(AdDetail, AdDetail.advertiser_id == Advertiser.id)
             .join(AdSnapshot, AdSnapshot.id == AdDetail.snapshot_id)
             .where(AdSnapshot.captured_at >= cutoff_7d)
+            .where(_active_ad_filter())
             .group_by(Advertiser.id, Advertiser.name)
             .order_by(func.count(AdDetail.id).desc())
             .limit(10)

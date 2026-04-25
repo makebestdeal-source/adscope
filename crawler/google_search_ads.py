@@ -23,6 +23,10 @@ from crawler.personas.profiles import PersonaProfile
 
 # youtube_ads.py 파서 재사용
 from crawler.youtube_ads import (
+    _clean_transparency_text,
+    _display_domain_for_url,
+    _enrich_creatives_from_preview,
+    _normalize_external_landing_url,
     _parse_suggestions,
     _parse_creatives,
     MAX_ADVERTISERS,
@@ -39,6 +43,22 @@ ADS_TRANSPARENCY_URL = (
 # 구글 검색광고 전용 설정
 GS_MAX_ADVERTISERS = max(1, int(os.getenv("GS_ADS_MAX_ADVERTISERS", "10")))
 GS_MAX_ADS = max(1, int(os.getenv("GS_ADS_MAX_ADS", "40")))
+
+
+def _date_range_suffix() -> str:
+    """환경변수 CRAWL_DATE_* 에서 날짜 범위 URL 파라미터 생성."""
+    sy = os.getenv("CRAWL_DATE_START_YEAR")
+    sm = os.getenv("CRAWL_DATE_START_MONTH")
+    sd = os.getenv("CRAWL_DATE_START_DAY", "1")
+    ey = os.getenv("CRAWL_DATE_END_YEAR")
+    em = os.getenv("CRAWL_DATE_END_MONTH")
+    ed = os.getenv("CRAWL_DATE_END_DAY")
+    if sy and sm and ey and em and ed:
+        return (
+            f"&startDate.year={sy}&startDate.month={sm}&startDate.day={sd}"
+            f"&endDate.year={ey}&endDate.month={em}&endDate.day={ed}"
+        )
+    return ""
 
 
 class GoogleSearchAdsCrawler(BaseCrawler):
@@ -137,7 +157,7 @@ class GoogleSearchAdsCrawler(BaseCrawler):
                 creative_data.clear()
                 adv_url = (
                     f"https://adstransparency.google.com/"
-                    f"advertiser/{adv['id']}?region=KR&format=TEXT"
+                    f"advertiser/{adv['id']}?region=KR&format=TEXT{_date_range_suffix()}"
                 )
                 try:
                     await page.goto(adv_url, wait_until="domcontentloaded")
@@ -163,6 +183,7 @@ class GoogleSearchAdsCrawler(BaseCrawler):
                 await page.wait_for_timeout(2000)
 
             # 5) 정규화
+            await _enrich_creatives_from_preview(all_creatives, limit=max(40, GS_MAX_ADS * 2))
             ads = self._normalize_creatives(all_creatives, keyword)
             logger.info(
                 "[{}] '{}' -> {} ads (raw: {})",
@@ -211,12 +232,13 @@ class GoogleSearchAdsCrawler(BaseCrawler):
 
             advertiser = cr.get("advertiser_name")
             adv_id = cr.get("advertiser_id") or cid
-            adv_url = None
-            if advertiser:
-                adv_url = (
-                    f"https://adstransparency.google.com/"
-                    f"advertiser/{adv_id}?region=KR"
-                )
+            # 실제 랜딩 URL만 사용 — 없으면 None (투명성 센터 URL 넣지 않음)
+            adv_url = _normalize_external_landing_url(cr.get("landing_url"))
+            ad_text = _clean_transparency_text(cr.get("text_content"))
+            if not adv_url or not ad_text:
+                continue
+
+            display_domain = _display_domain_for_url(adv_url)
 
             extra_data = {
                 "detection_method": "ads_transparency_rpc",
@@ -226,14 +248,16 @@ class GoogleSearchAdsCrawler(BaseCrawler):
                 "end_ts": cr.get("end_ts"),
                 "search_keyword": keyword,
                 "platform": "google_search",
+                "preview_url": cr.get("preview_url"),
+                "image_url": cr.get("image_url"),
             }
 
             ads.append({
                 "advertiser_name": advertiser,
-                "ad_text": f"google_search_{cr.get('format_type', 'text')}",
+                "ad_text": ad_text,
                 "ad_description": None,
                 "url": adv_url,
-                "display_url": "adstransparency.google.com",
+                "display_url": display_domain,
                 "position": len(ads) + 1,
                 "ad_type": "google_search_text",
                 "ad_placement": "google_search",

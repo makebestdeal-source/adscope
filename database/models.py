@@ -1595,6 +1595,27 @@ class DartFinancial(Base):
 # ---------------------------------------------
 # 35. 광고비 배분 추정 (DART -> 채널별 월별)
 # ---------------------------------------------
+# ─────────────────────────────────────────────
+# TVCF 공인 광고주 풀 (known_advertisers)
+# ─────────────────────────────────────────────
+class KnownAdvertiser(Base):
+    __tablename__ = "known_advertisers"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(200), nullable=False, unique=True)  # 한글/영문 광고주명
+    name_en = Column(String(200))                            # 영문명
+    website = Column(String(500))                            # 공식 웹사이트
+    source = Column(String(50), default="tvcf")              # 출처: tvcf / manual
+    tvcf_doc_count = Column(Integer, default=0)              # TVCF 광고 편수 (인지도 지표)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (
+        Index("ix_known_advertisers_name", "name"),
+        Index("ix_known_advertisers_website", "website"),
+    )
+
+
 class SpendAllocation(Base):
     __tablename__ = "spend_allocations"
 

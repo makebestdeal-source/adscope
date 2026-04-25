@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   BarChart, Bar, XAxis, YAxis,
   Tooltip, Legend, ResponsiveContainer, ReferenceLine, ComposedChart, Area, Line,
@@ -10,9 +10,12 @@ import {
 } from "recharts";
 import {
   api,
+  type CampaignCreative,
   type CampaignDetail,
   type CampaignEffect,
 } from "@/lib/api";
+import { isAuthenticated } from "@/lib/auth";
+import { parseImagePath } from "@/lib/image-utils";
 import { formatSpend } from "@/lib/constants";
 
 /* ── 상수 ── */
@@ -67,7 +70,12 @@ export default function CampaignDetailPage() {
   const campaignId = Number(id);
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [authed, setAuthed] = useState(false);
   const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    setAuthed(isAuthenticated());
+  }, []);
 
   // Data fetching
   const { data: detail } = useQuery({
@@ -185,10 +193,21 @@ export default function CampaignDetailPage() {
             )}
           </div>
         </div>
-        {effect?.advertiser_name && (
+        {(detail.advertiser_name || effect?.advertiser_name) && (
           <div className="text-right">
             <p className="text-sm text-gray-500">광고주</p>
-            <p className="font-semibold text-gray-800">{effect.advertiser_name}</p>
+            {detail.advertiser_exists ? (
+              <button
+                onClick={() => router.push(`/advertisers/${detail.advertiser_id}`)}
+                className="font-semibold text-indigo-700 hover:underline"
+              >
+                {detail.advertiser_name || effect?.advertiser_name}
+              </button>
+            ) : (
+              <p className="font-semibold text-gray-800">
+                {detail.advertiser_name || effect?.advertiser_name}
+              </p>
+            )}
           </div>
         )}
       </div>
@@ -293,14 +312,14 @@ export default function CampaignDetailPage() {
       <div className="bg-white rounded-xl shadow p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-800">캠페인 상세</h2>
-          {!editing ? (
+          {!editing && authed ? (
             <button
               onClick={startEdit}
               className="text-sm text-indigo-600 hover:text-indigo-800"
             >
               편집
             </button>
-          ) : (
+          ) : editing ? (
             <div className="flex gap-2">
               <button
                 onClick={() => updateMut.mutate(editForm)}
@@ -316,6 +335,8 @@ export default function CampaignDetailPage() {
                 취소
               </button>
             </div>
+          ) : (
+            <span className="text-xs text-gray-400">비회원은 읽기 전용으로 열람할 수 있습니다.</span>
           )}
         </div>
 
@@ -417,13 +438,19 @@ export default function CampaignDetailPage() {
       {/* ── Section 5: Linked Creatives ── */}
       {detail.creative_ids && detail.creative_ids.length > 0 && (
         <div className="bg-white rounded-xl shadow p-5">
-          <h2 className="text-lg font-semibold text-gray-800 mb-3">
-            연결 소재 ({detail.creative_ids.length}건)
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            연결 소재 ({detail.creative_ids.length}건
+            {detail.creative_ids.length > 20 && ", 최대 20건 표시"})
           </h2>
-          <p className="text-sm text-gray-500">
-            Ad Detail IDs: {detail.creative_ids.slice(0, 20).join(", ")}
-            {detail.creative_ids.length > 20 && ` 외 ${detail.creative_ids.length - 20}건`}
-          </p>
+          {detail.creatives.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {detail.creatives.map((c) => (
+                <CreativeCard key={c.id} creative={c} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400">소재 정보를 불러올 수 없습니다.</p>
+          )}
         </div>
       )}
     </div>
@@ -566,6 +593,55 @@ function LiftCard({
           <Bar dataKey="value" fill={color} radius={[0, 4, 4, 0]} />
         </BarChart>
       </ResponsiveContainer>
+    </div>
+  );
+}
+
+const TEXT_AD_CHANNELS = new Set(["naver_search", "google_search_ads"]);
+
+function CreativeCard({ creative }: { creative: CampaignCreative }) {
+  const parsed = parseImagePath(creative.creative_image_path);
+  const [imgError, setImgError] = useState(false);
+  const showImage = parsed && !imgError;
+  const isText = TEXT_AD_CHANNELS.has(creative.channel);
+
+  const domain = (() => {
+    try { return new URL(creative.url || "").hostname.replace("www.", ""); }
+    catch { return creative.url || ""; }
+  })();
+
+  return (
+    <div className="rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+      <div className="relative aspect-[4/3] bg-gray-100">
+        {isText ? (
+          <div className={`w-full h-full flex flex-col justify-center p-2 ${
+            creative.channel === "naver_search" ? "bg-[#f0f8ff]" : "bg-[#f8fff0]"
+          }`}>
+            <p className="text-[10px] text-gray-500 truncate">{domain}</p>
+            <p className="text-xs font-semibold text-gray-800 line-clamp-2 mt-0.5">
+              {creative.ad_text || "-"}
+            </p>
+          </div>
+        ) : showImage ? (
+          <img
+            src={parsed.url}
+            alt={creative.advertiser_name_raw || "creative"}
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-gray-400 text-xs">이미지 없음</span>
+          </div>
+        )}
+      </div>
+      <div className="p-2">
+        <p className="text-[10px] text-gray-500 truncate">{creative.channel}</p>
+        {creative.ad_text && (
+          <p className="text-xs text-gray-700 line-clamp-2 mt-0.5">{creative.ad_text}</p>
+        )}
+      </div>
     </div>
   );
 }

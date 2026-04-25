@@ -88,7 +88,7 @@ MEDIA_TARGETS: list[MediaTarget] = [
     MediaTarget("kakao_da", "Daum Finance", "https://finance.daum.net/", "secondary", 4),
     MediaTarget("kakao_da", "Daum Sports", "https://sports.daum.net/", "secondary", 5),
     MediaTarget("kakao_da", "Daum Entertainment", "https://entertain.daum.net/", "secondary", 6),
-    MediaTarget("kakao_da", "KakaoView", "https://v.daum.net/", "secondary", 7),
+    # v.daum.net 제거 (404 → 서비스 종료)
     # shopping.daum.net 제거 (DNS 미존재 → ERR_NAME_NOT_RESOLVED)
     # 대체: 카카오 네트워크 파트너 앱 웹사이트
     MediaTarget("kakao_da", "Ohou (오늘의집)", "https://ohou.se/", "secondary", 8),
@@ -102,7 +102,7 @@ MEDIA_TARGETS: list[MediaTarget] = [
     MediaTarget("kakao_da", "ZigZag", "https://zigzag.kr/", "extended", 14),
     MediaTarget("kakao_da", "Ohou Projects", "https://ohou.se/projects", "extended", 15),
     MediaTarget("kakao_da", "Ohou Store", "https://ohou.se/store", "extended", 16),
-    MediaTarget("kakao_da", "Daum Auto", "https://auto.daum.net/", "extended", 17),
+    # auto.daum.net 제거 (DNS 미존재 → ERR_NAME_NOT_RESOLVED)
     MediaTarget("kakao_da", "KakaoTV", "https://tv.kakao.com/", "extended", 18),
     MediaTarget("kakao_da", "Daum Dictionary", "https://dic.daum.net/", "extended", 19),
 ]

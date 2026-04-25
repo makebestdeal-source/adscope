@@ -19,7 +19,7 @@ def _normalize_image_path(path: str) -> str | None:
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
-from api.deps import get_current_user, require_admin, require_paid
+from api.deps import get_current_user, require_admin
 from sqlalchemy import cast, func, or_, select, String
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -53,7 +53,6 @@ router = APIRouter(
     prefix="/api/advertisers",
     tags=["advertisers"],
     redirect_slashes=False,
-    dependencies=[Depends(get_current_user)],
 )
 
 KST = timezone(timedelta(hours=9))
@@ -150,19 +149,14 @@ async def top_advertisers(
 
     query = (
         select(
-            AdDetail.advertiser_name_raw,
+            Advertiser.name,
             func.count(AdDetail.id).label("ad_count"),
         )
-        .join(AdSnapshot)
+        .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+        .join(Advertiser, AdDetail.advertiser_id == Advertiser.id)
         .where(AdSnapshot.captured_at >= cutoff)
-        .where(AdDetail.advertiser_name_raw.isnot(None))
-        .where(AdDetail.advertiser_name_raw != "")
-        .where(func.lower(AdDetail.advertiser_name_raw).notin_(_NON_ADVERTISER_NAMES))
-        .where(~AdDetail.advertiser_name_raw.like("m.%.%"))
-        .where(~AdDetail.advertiser_name_raw.like("www.%"))
-        .where(~AdDetail.advertiser_name_raw.like("tr.ad.%"))
-        .where(~AdDetail.advertiser_name_raw.like("%://%"))
-        .group_by(AdDetail.advertiser_name_raw)
+        .where(AdDetail.advertiser_id.isnot(None))
+        .group_by(Advertiser.id, Advertiser.name)
         .order_by(func.count(AdDetail.id).desc())
         .limit(limit)
     )
@@ -603,6 +597,7 @@ async def media_breakdown(
             AdSnapshot.captured_at >= cutoff_utc,
             AdDetail.creative_image_path.isnot(None),
             AdDetail.creative_image_path != "",
+            or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected"),
         )
         .order_by(AdSnapshot.captured_at.desc())
         .limit(20)
@@ -1169,12 +1164,23 @@ async def advertiser_spend_report(
     channel_data: dict[str, dict] = {}
     daily_data: dict[str, float] = {}
 
+    def _ensure_channel_data(ch: str) -> dict:
+        if ch not in channel_data:
+            channel_data[ch] = {
+                "est_spend": 0.0,
+                "ad_count": 0,
+                "spend_row_count": 0,
+                "keywords": [],
+                "_keyword_set": set(),
+                "is_active": False,
+            }
+        return channel_data[ch]
+
     for est in estimates:
         ch = est.channel
-        if ch not in channel_data:
-            channel_data[ch] = {"est_spend": 0.0, "ad_count": 0, "keywords": set(), "is_active": False}
-        channel_data[ch]["est_spend"] += est.est_daily_spend
-        channel_data[ch]["ad_count"] += 1
+        data = _ensure_channel_data(ch)
+        data["est_spend"] += est.est_daily_spend
+        data["spend_row_count"] += 1
 
         day_str = est.date.strftime("%Y-%m-%d")
         daily_data[day_str] = daily_data.get(day_str, 0.0) + est.est_daily_spend
@@ -1182,41 +1188,87 @@ async def advertiser_spend_report(
     # 캠페인에서 키워드/활성 상태 보강
     for campaign in campaigns:
         ch = campaign.channel
-        if ch in channel_data:
-            if campaign.is_active:
-                channel_data[ch]["is_active"] = True
+        data = _ensure_channel_data(ch)
+        if campaign.is_active:
+            data["is_active"] = True
+
+    # 광고 스냅샷에서 실제 채널별 광고 수와 키워드 셋 보강
+    keyword_result = await db.execute(
+        select(
+            AdSnapshot.channel,
+            Keyword.keyword,
+            func.count(AdDetail.id).label("ad_count"),
+            func.max(AdSnapshot.captured_at).label("last_seen"),
+        )
+        .select_from(AdDetail)
+        .join(AdSnapshot, AdSnapshot.id == AdDetail.snapshot_id)
+        .join(Keyword, Keyword.id == AdSnapshot.keyword_id)
+        .where(
+            AdDetail.advertiser_id.in_(list(target_ids)),
+            AdSnapshot.captured_at >= cutoff,
+            Keyword.keyword.isnot(None),
+            Keyword.keyword != "",
+            or_(
+                AdDetail.verification_status.is_(None),
+                AdDetail.verification_status != "rejected",
+            ),
+        )
+        .group_by(AdSnapshot.channel, Keyword.keyword)
+        .order_by(
+            AdSnapshot.channel,
+            func.count(AdDetail.id).desc(),
+            func.max(AdSnapshot.captured_at).desc(),
+        )
+    )
+    for ch, keyword, ad_count, _last_seen in keyword_result.all():
+        if not ch or not keyword:
+            continue
+        data = _ensure_channel_data(ch)
+        data["ad_count"] += int(ad_count or 0)
+        if keyword not in data["_keyword_set"]:
+            data["_keyword_set"].add(keyword)
+            if len(data["keywords"]) < 10:
+                data["keywords"].append(keyword)
 
     # 위치 분포 (ad_details에서)
-    if campaign_ids:
-        position_result = await db.execute(
-            select(
-                AdSnapshot.channel,
-                AdDetail.position_zone,
-                func.count(AdDetail.id),
-            )
-            .join(AdSnapshot, AdSnapshot.id == AdDetail.snapshot_id)
-            .where(
-                AdDetail.advertiser_id.in_(list(target_ids)),
-                AdSnapshot.captured_at >= cutoff,
-            )
-            .group_by(AdSnapshot.channel, AdDetail.position_zone)
+    position_result = await db.execute(
+        select(
+            AdSnapshot.channel,
+            AdDetail.position_zone,
+            func.count(AdDetail.id),
         )
-        for ch, zone, cnt in position_result.all():
-            if ch in channel_data and zone:
-                if "position_distribution" not in channel_data[ch]:
-                    channel_data[ch]["position_distribution"] = {}
-                channel_data[ch]["position_distribution"][zone] = cnt
+        .join(AdSnapshot, AdSnapshot.id == AdDetail.snapshot_id)
+        .where(
+            AdDetail.advertiser_id.in_(list(target_ids)),
+            AdSnapshot.captured_at >= cutoff,
+            or_(
+                AdDetail.verification_status.is_(None),
+                AdDetail.verification_status != "rejected",
+            ),
+        )
+        .group_by(AdSnapshot.channel, AdDetail.position_zone)
+    )
+    for ch, zone, cnt in position_result.all():
+        if ch and zone:
+            data = _ensure_channel_data(ch)
+            if "position_distribution" not in data:
+                data["position_distribution"] = {}
+            data["position_distribution"][zone] = cnt
 
     # 응답 구성
     total_spend = sum(cd["est_spend"] for cd in channel_data.values())
 
     by_channel = []
-    for ch, data in sorted(channel_data.items(), key=lambda kv: -kv[1]["est_spend"]):
+    for ch, data in sorted(
+        channel_data.items(),
+        key=lambda kv: (-kv[1]["est_spend"], -kv[1].get("ad_count", 0)),
+    ):
         by_channel.append(ChannelSpendSummary(
             channel=ch,
             est_spend=round(data["est_spend"], 2),
-            ad_count=data["ad_count"],
+            ad_count=data["ad_count"] or data.get("spend_row_count", 0),
             position_distribution=data.get("position_distribution", {}),
+            top_keywords=data["keywords"],
             is_active=data["is_active"],
         ))
 
@@ -1354,7 +1406,7 @@ async def get_advertiser(advertiser_id: int, db: AsyncSession = Depends(get_db))
     advertiser = result.scalar_one_or_none()
     if not advertiser:
         raise HTTPException(status_code=404, detail="광고주를 찾을 수 없습니다")
-    return advertiser
+    return await _build_tree(db, advertiser)
 
 
 @router.get("/{advertiser_id}/campaigns", response_model=list[CampaignOut])

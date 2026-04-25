@@ -15,13 +15,14 @@ from typing import Any
 from loguru import logger
 from playwright.async_api import async_playwright, Response
 
+from crawler.cookie_utils import load_ig_cookies
+
 # Keywords that indicate ad/sponsored content
 _AD_KEYWORDS_KO = ["협찬", "PPL", "광고", "제공"]
 _AD_KEYWORDS_EN = ["#ad", "#sponsored", "paid partnership", "sponsored"]
 _ALL_AD_KEYWORDS = _AD_KEYWORDS_KO + _AD_KEYWORDS_EN
 
 _ROOT = Path(__file__).resolve().parent.parent
-_IG_COOKIES_PATH = _ROOT / "ig_cookies.json"
 
 
 class BrandChannelMonitor:
@@ -41,34 +42,7 @@ class BrandChannelMonitor:
 
     @staticmethod
     def _load_ig_cookies() -> list[dict]:
-        """Load Instagram cookies from ig_cookies.json."""
-        if not _IG_COOKIES_PATH.exists():
-            logger.warning(f"Instagram cookies not found: {_IG_COOKIES_PATH}")
-            return []
-        try:
-            raw = json.loads(_IG_COOKIES_PATH.read_text(encoding="utf-8"))
-            cookies = []
-            for c in raw:
-                cookie = {
-                    "name": c["name"],
-                    "value": c["value"],
-                    "domain": c.get("domain", ".instagram.com"),
-                    "path": c.get("path", "/"),
-                }
-                if c.get("expires") and c["expires"] > 0:
-                    cookie["expires"] = c["expires"]
-                if c.get("httpOnly") is not None:
-                    cookie["httpOnly"] = c["httpOnly"]
-                if c.get("secure") is not None:
-                    cookie["secure"] = c["secure"]
-                if c.get("sameSite"):
-                    cookie["sameSite"] = c["sameSite"]
-                cookies.append(cookie)
-            logger.info(f"Loaded {len(cookies)} Instagram cookies for brand monitor")
-            return cookies
-        except Exception as e:
-            logger.warning(f"Failed to load Instagram cookies: {e}")
-            return []
+        return load_ig_cookies("brand_monitor")
 
     async def stop(self):
         if self._ig_page:
@@ -496,6 +470,8 @@ class BrandChannelMonitor:
         if like_count is None:
             like_count = node.get("edge_media_preview_like", {}).get("count")
 
+        comment_count = node.get("edge_media_to_comment", {}).get("count")
+
         is_video = node.get("is_video", False)
         thumbnail_url = node.get("thumbnail_src", "") or node.get("display_url", "")
 
@@ -505,6 +481,7 @@ class BrandChannelMonitor:
             "timestamp": timestamp,
             "upload_date": upload_date,
             "like_count": like_count,
+            "comment_count": comment_count,
             "thumbnail_url": thumbnail_url,
             "is_video": is_video,
             "content_type": "reel" if is_video else "post",
@@ -522,6 +499,7 @@ class BrandChannelMonitor:
             upload_date = datetime.fromtimestamp(timestamp, tz=timezone.utc).isoformat()
 
         like_count = item.get("like_count")
+        comment_count = item.get("comment_count")
         is_video = item.get("media_type", 1) == 2
 
         thumbnail_url = ""
@@ -536,6 +514,7 @@ class BrandChannelMonitor:
             "timestamp": timestamp,
             "upload_date": upload_date,
             "like_count": like_count,
+            "comment_count": comment_count,
             "thumbnail_url": thumbnail_url,
             "is_video": is_video,
             "content_type": "reel" if is_video else "post",

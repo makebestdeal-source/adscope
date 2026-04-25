@@ -19,8 +19,7 @@ from database.models import (
     TrafficSignal,
 )
 
-router = APIRouter(prefix="/api/campaign-effect", tags=["campaign-effect"],
-    dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/api/campaign-effect", tags=["campaign-effect"])
 
 KST = timezone(timedelta(hours=9))
 

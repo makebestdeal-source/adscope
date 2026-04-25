@@ -7,6 +7,7 @@ Core pattern to clean:
 """
 import re
 import logging
+from urllib.parse import urlparse
 from database import async_session
 from sqlalchemy import text
 
@@ -54,6 +55,53 @@ _DOMAIN_BRAND_MAP: dict[str, str] = {
 _PLATFORM_STRIPS = [
     "네이버톡톡", "네이버 톡톡", "카카오톡 상담", "카카오톡상담",
 ]
+
+_CONTEXT_NOISE_PATTERNS = [
+    r"네이버\s*로그인",
+    r"네이버\s*아이디로\s*로그인이\s*가능합니다\.?",
+    r"서비스\s*자세히\s*보기",
+    r"네이버페이",
+    r"KEYWORDAD",
+]
+
+_GENERIC_CONTEXT_TOKENS = {
+    "ad",
+    "ader",
+    "blog",
+    "brand",
+    "keywordad",
+    "learn more",
+    "learnmore",
+    "smartstore",
+}
+
+_GENERIC_CONTEXT_HOSTS = {
+    "ader.naver.com",
+    "blog.naver.com",
+    "brand.naver.com",
+    "smartstore.naver.com",
+    "tr.ad.daum.net",
+}
+
+_STRUCTURED_CONTEXT_RE = re.compile(
+    r"\s{2,}|\t|https?://|[a-zA-Z0-9가-힣._-]+\.(?:com|co\.kr|kr|net|org|shop|store|biz|app)(?:/|\b)",
+    re.IGNORECASE,
+)
+_CONTEXT_DOMAIN_HINT_RE = re.compile(
+    r"https?://|[a-zA-Z0-9가-힣._-]+\.(?:com|co\.kr|kr|net|org|shop|store|biz|app)(?:/|\b)",
+    re.IGNORECASE,
+)
+_AD_TEXT_BRANDLIKE_RE = re.compile(
+    r"(?:\uc758\uc6d0|\uce58\uacfc|\ubcd1\uc6d0|\ud55c\uc758\uc6d0|\ud559\uc6d0|\uc544\uce74\ub370\ubbf8|"
+    r"\ub80c\ud2b8\uce74|\uce68\ub300|\ubc31\ud654\uc810|\uc2a4\ud1a0\uc5b4|\uacf5\uc2dd|\ub2f7\ucef4|"
+    r"\ubcf4\ud5d8|\uc740\ud589|\uce74\ub4dc|\uc0dd\uba85|\uc99d\uad8c|\uc1fc\ud551|\ubab0|\ub9c8\ud2b8)",
+    re.IGNORECASE,
+)
+_AD_TEXT_QUERYLIKE_RE = re.compile(
+    r"(?:\uc6d4\uc138|\uc804\uc138|\uae08\uc561|\uac00\uaca9|\uacac\uc801|\ud6c4\uae30|\ub9cc\ub09c\uc370|"
+    r"\uc785\uc810\ud558\ub824\uba74|\uc785\uc810|\ud328\ud0a4\uc9c0|\ucd94\ucc9c\ud15c|\ucd94\ucc9c|\ub300\uc138)",
+    re.IGNORECASE,
+)
 
 # Ad copy markers — if name contains these AND is long, it's likely ad copy
 _AD_COPY_MARKERS = [
@@ -250,7 +298,135 @@ def _extract_brand_name(name: str) -> str | None:
     return cleaned  # Return as-is if no cleanup needed
 
 
-def clean_name_for_pipeline(raw_name: str) -> str:
+def _extract_host(value: str | None) -> str:
+    if not value:
+        return ""
+    candidate = value.strip()
+    if not candidate:
+        return ""
+    if not re.match(r"^[a-z]+://", candidate, re.IGNORECASE):
+        candidate = f"https://{candidate.lstrip('/')}"
+    try:
+        return urlparse(candidate).netloc.lower()
+    except ValueError:
+        return ""
+
+
+def _normalize_context_token(value: str | None) -> str:
+    if not value:
+        return ""
+    return re.sub(r"[^0-9a-z가-힣]", "", value.strip().lower())
+
+
+def _looks_like_generic_context(
+    value: str | None,
+    display_url: str | None = None,
+    click_url: str | None = None,
+) -> bool:
+    token = _normalize_context_token(value)
+    if not token:
+        return True
+    if token in {_normalize_context_token(item) for item in _GENERIC_CONTEXT_TOKENS}:
+        return True
+
+    display_host = _extract_host(display_url)
+    click_host = _extract_host(click_url)
+
+    if token == "kakao" and click_host == "tr.ad.daum.net":
+        return True
+    if token == "ader" and click_host == "ader.naver.com":
+        return True
+    if token == "blog" and (display_host == "blog.naver.com" or click_host == "ader.naver.com"):
+        return True
+
+    if value:
+        lowered = value.strip().lower()
+        if lowered in _GENERIC_CONTEXT_HOSTS:
+            return True
+
+    return False
+
+
+def _strip_context_noise(text: str) -> str:
+    cleaned = text
+    for pattern in _CONTEXT_NOISE_PATTERNS:
+        cleaned = re.sub(pattern, " ", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    return cleaned
+
+
+def _extract_part_candidate(
+    text: str,
+    display_url: str | None = None,
+    click_url: str | None = None,
+) -> str | None:
+    parts = [part.strip() for part in re.split(r"\s{2,}|\t", text) if part and part.strip()]
+    for part in parts:
+        if _looks_like_generic_context(part, display_url=display_url, click_url=click_url):
+            continue
+        if _DOMAIN_RE.fullmatch(part) or re.match(r"^(https?://|www\.)", part, re.IGNORECASE):
+            continue
+        stripped = _strip_context_noise(part)
+        if not stripped:
+            continue
+        if _looks_like_generic_context(stripped, display_url=display_url, click_url=click_url):
+            continue
+        return stripped
+    return None
+
+
+def _needs_context_fallback(
+    raw_name: str,
+    display_url: str | None = None,
+    click_url: str | None = None,
+) -> bool:
+    stripped = (raw_name or "").strip()
+    if not stripped:
+        return False
+    if _looks_like_generic_context(stripped, display_url=display_url, click_url=click_url):
+        return True
+    if re.search(r"네이버\s*로그인|네이버페이|KEYWORDAD", stripped, re.IGNORECASE):
+        return True
+    if any(host in stripped.lower() for host in _GENERIC_CONTEXT_HOSTS):
+        return True
+    return False
+
+
+def _is_structured_context_text(text: str | None) -> bool:
+    if not text:
+        return False
+    return bool(_STRUCTURED_CONTEXT_RE.search(text))
+
+
+def _has_domain_hint(text: str | None) -> bool:
+    if not text:
+        return False
+    return bool(_CONTEXT_DOMAIN_HINT_RE.search(text))
+
+
+def _looks_brand_like_ad_text(text: str | None) -> bool:
+    if not text:
+        return False
+    cleaned = _strip_context_noise(text)
+    if not cleaned:
+        return False
+    if len(cleaned) > 40:
+        return False
+    if "?" in cleaned or "？" in cleaned:
+        return False
+    if _AD_TEXT_QUERYLIKE_RE.search(cleaned):
+        return False
+    if _AD_TEXT_BRANDLIKE_RE.search(cleaned):
+        return True
+    return "/" in cleaned or "," in cleaned
+
+
+def clean_name_for_pipeline(
+    raw_name: str,
+    ad_text: str | None = None,
+    display_url: str | None = None,
+    click_url: str | None = None,
+) -> str:
     """Quick name cleaning for use in the ingest pipeline.
 
     Called when creating/updating advertisers to prevent dirty names from entering DB.
@@ -258,12 +434,43 @@ def clean_name_for_pipeline(raw_name: str) -> str:
     if not raw_name or len(raw_name) < 2:
         return raw_name or ""
 
+    use_context_fallback = _needs_context_fallback(
+        raw_name,
+        display_url=display_url,
+        click_url=click_url,
+    )
+
     # Fast path: short names are likely clean
-    if len(raw_name) <= 15 and not _DOMAIN_RE.search(raw_name):
+    if len(raw_name) <= 15 and not _DOMAIN_RE.search(raw_name) and not use_context_fallback:
         return raw_name.strip()
 
-    brand = _extract_brand_name(raw_name)
-    return brand if brand and len(brand) >= 2 else raw_name.strip()[:30]
+    sources = [raw_name]
+    if use_context_fallback and ad_text:
+        if _has_domain_hint(ad_text) or _looks_brand_like_ad_text(ad_text):
+            sources.append(ad_text)
+
+    for source in sources:
+        if not source:
+            continue
+        candidate = _extract_part_candidate(
+            source,
+            display_url=display_url,
+            click_url=click_url,
+        )
+        prepared = candidate or _strip_context_noise(source)
+        brand = _extract_brand_name(prepared)
+        if brand and len(brand) >= 2:
+            cleaned = brand.strip()
+            if not _looks_like_generic_context(
+                cleaned,
+                display_url=display_url,
+                click_url=click_url,
+            ):
+                return cleaned
+
+    fallback = _strip_context_noise(raw_name) or raw_name.strip()
+    brand = _extract_brand_name(fallback)
+    return brand if brand and len(brand) >= 2 else fallback[:30]
 
 
 async def clean_advertiser_names() -> dict:

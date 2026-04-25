@@ -21,6 +21,14 @@ _DEFAULT_COOKIE_DIR = os.path.join(os.path.dirname(__file__), "..", "cookie_data
 class CookieStore:
     """파일 기반 쿠키 영속화 스토어."""
 
+    # SHARED 쿠키 fallback 매핑 (channel → SHARED 파일명)
+    _SHARED_FALLBACK = {
+        "meta_feed": "meta_login.json",
+        "instagram": "meta_login.json",
+        "instagram_mobile": "meta_login.json",
+        "kakao_da": "kakao_login.json",
+    }
+
     def __init__(self, cookie_dir: str | None = None):
         self.cookie_dir = Path(cookie_dir or os.getenv("COOKIE_STORE_DIR", _DEFAULT_COOKIE_DIR))
         self.max_age_days = int(os.getenv("COOKIE_MAX_AGE_DAYS", "30"))
@@ -28,26 +36,50 @@ class CookieStore:
     def _path(self, persona_code: str, channel: str) -> Path:
         return self.cookie_dir / persona_code / f"{channel}.json"
 
+    def _shared_path(self, channel: str) -> Path | None:
+        """SHARED fallback 쿠키 경로. 매핑 없으면 None."""
+        filename = self._SHARED_FALLBACK.get(channel)
+        if not filename:
+            return None
+        return self.cookie_dir / "SHARED" / filename
+
     def load(self, persona_code: str, channel: str) -> list[dict]:
-        """저장된 쿠키 로드. 없거나 만료되면 빈 리스트 반환."""
+        """저장된 쿠키 로드. 없거나 만료되면 SHARED fallback 시도."""
         path = self._path(persona_code, channel)
+        cookies = self._load_file(path, persona_code, channel)
+        if cookies:
+            return cookies
+
+        # SHARED fallback
+        shared = self._shared_path(channel)
+        if shared and shared.exists():
+            cookies = self._load_file(shared, "SHARED", channel)
+            if cookies:
+                logger.debug("[cookie-store] {} {} SHARED fallback: {}개", persona_code, channel, len(cookies))
+                return cookies
+
+        return []
+
+    def _load_file(self, path: Path, label: str, channel: str) -> list[dict]:
+        """단일 쿠키 파일 로드."""
         if not path.exists():
             return []
 
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
-            updated_at = datetime.fromisoformat(data.get("updated_at", "2000-01-01"))
+            ts_key = data.get("updated_at") or data.get("captured_at") or "2000-01-01"
+            updated_at = datetime.fromisoformat(ts_key)
             age_days = (datetime.now(UTC) - updated_at).days
             if age_days > self.max_age_days:
-                logger.debug("[cookie-store] {} {} 만료 ({}일), 삭제", persona_code, channel, age_days)
+                logger.debug("[cookie-store] {} {} 만료 ({}일), 삭제", label, channel, age_days)
                 path.unlink(missing_ok=True)
                 return []
 
             cookies = data.get("cookies", [])
-            logger.debug("[cookie-store] {} {} 로드: {}개 쿠키", persona_code, channel, len(cookies))
+            logger.debug("[cookie-store] {} {} 로드: {}개 쿠키", label, channel, len(cookies))
             return cookies
         except Exception as e:
-            logger.warning("[cookie-store] {} {} 로드 실패: {}", persona_code, channel, e)
+            logger.warning("[cookie-store] {} {} 로드 실패: {}", label, channel, e)
             return []
 
     def save(self, persona_code: str, channel: str, cookies: list[dict]):

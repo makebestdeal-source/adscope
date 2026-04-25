@@ -5,8 +5,9 @@ DOMParser로 파싱하여 파워링크/비즈사이트 광고를 추출한다.
 DOM 셀렉터 직접 조회 대신 캡처된 응답 본문을 파싱.
 """
 
+import re
 from datetime import datetime, timezone
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 from loguru import logger
 from playwright.async_api import Page, Response
@@ -14,6 +15,155 @@ from playwright.async_api import Page, Response
 from crawler.base_crawler import BaseCrawler
 from crawler.personas.device_config import DeviceConfig
 from crawler.personas.profiles import PersonaProfile
+from processor.advertiser_name_cleaner import clean_name_for_pipeline
+
+
+_DOMAIN_HINT_RE = re.compile(
+    r"((?:https?://)?(?:www\.|m\.)?[A-Za-z0-9가-힣][A-Za-z0-9가-힣._-]*\."
+    r"(?:com|co\.kr|kr|net|org|io|shop|store|biz|app)(?:/\S*)?)",
+    re.IGNORECASE,
+)
+_SEARCH_INFRA_HOSTS = {
+    "ader.naver.com",
+    "adcr.naver.com",
+    "search.naver.com",
+    "searchad.naver.com",
+    "ad.naver.com",
+    "adsystem.naver.com",
+    "siape.veta.naver.com",
+    "blog.naver.com",
+    "brand.naver.com",
+    "smartstore.naver.com",
+}
+_GENERIC_ADV_TOKENS = {
+    "ader",
+    "blog",
+    "map",
+    "naver",
+    "naverlogin",
+    "naverpay",
+    "keywordad",
+}
+
+
+def _extract_host(value: str | None) -> str | None:
+    if not value:
+        return None
+    candidate = value.strip()
+    if not candidate:
+        return None
+    if not re.match(r"^[a-z]+://", candidate, re.IGNORECASE):
+        candidate = f"https://{candidate.lstrip('/')}"
+    try:
+        host = urlparse(candidate).netloc.lower()
+    except ValueError:
+        return None
+    if not host:
+        return None
+    return host.removeprefix("www.")
+
+
+def _normalize_display_url(value: str | None) -> str | None:
+    host = _extract_host(value)
+    if not host or host in _SEARCH_INFRA_HOSTS:
+        return None
+    return host
+
+
+def _extract_domain_hint(value: str | None) -> str | None:
+    if not value:
+        return None
+    match = _DOMAIN_HINT_RE.search(value)
+    if not match:
+        return None
+    return _normalize_display_url(match.group(1))
+
+
+def _normalize_generic_token(value: str | None) -> str:
+    if not value:
+        return ""
+    return re.sub(r"[^0-9a-z가-힣]", "", value.lower())
+
+
+def _looks_generic_advertiser(value: str | None) -> bool:
+    token = _normalize_generic_token(value)
+    if not token:
+        return True
+    if token in _GENERIC_ADV_TOKENS:
+        return True
+    return token.startswith("naverlogin") or token.startswith("naverpay")
+
+
+def _brand_hint_from_display_url(value: str | None) -> str:
+    host = _normalize_display_url(value)
+    if not host:
+        return ""
+    host = host.removeprefix("m.").removeprefix("www.")
+    hint = clean_name_for_pipeline(host, display_url=host, click_url=host).strip()
+    if hint and not _looks_generic_advertiser(hint):
+        return hint
+    return host.split(".")[0].strip()
+
+
+def _brand_hint_from_raw_name(value: str | None) -> str:
+    if not value:
+        return ""
+    parts = [part.strip() for part in re.split(r"\s{2,}|\t", value) if part and part.strip()]
+    if len(parts) < 2:
+        return ""
+    for part in parts[1:]:
+        if _extract_domain_hint(part):
+            continue
+        hint = clean_name_for_pipeline(part, ad_text=part).strip()
+        if hint and not _looks_generic_advertiser(hint):
+            return hint
+    return ""
+
+
+def _default_search_placement(ad_type: str | None) -> str | None:
+    if ad_type == "powerlink":
+        return "naver_powerlink"
+    if ad_type == "bizsite":
+        return "naver_bizsite"
+    return None
+
+
+def _normalize_extracted_search_ad(ad: dict) -> dict:
+    raw_name = (ad.get("advertiser_name") or "").strip()
+    click_url = ad.get("url")
+    display_url = (
+        _normalize_display_url(ad.get("display_url"))
+        or _extract_domain_hint(raw_name)
+        or _extract_domain_hint(ad.get("ad_text"))
+        or _normalize_display_url(click_url)
+    )
+
+    cleaned_name = clean_name_for_pipeline(
+        raw_name,
+        ad_text=ad.get("ad_text"),
+        display_url=display_url,
+        click_url=click_url,
+    ).strip()
+    if not cleaned_name or _looks_generic_advertiser(cleaned_name):
+        raw_hint = _brand_hint_from_raw_name(raw_name)
+        if raw_hint:
+            cleaned_name = raw_hint
+    if (not cleaned_name or _looks_generic_advertiser(cleaned_name)) and display_url:
+        cleaned_name = _brand_hint_from_display_url(display_url)
+
+    if cleaned_name:
+        ad["advertiser_name"] = cleaned_name[:200]
+    if display_url:
+        ad["display_url"] = display_url
+    if not ad.get("ad_placement"):
+        placement = _default_search_placement(ad.get("ad_type"))
+        if placement:
+            ad["ad_placement"] = placement
+    return ad
+
+
+def _normalize_extracted_search_ads(ads: list[dict]) -> list[dict]:
+    return [_normalize_extracted_search_ad(ad) for ad in ads]
 
 
 class NaverSearchCrawler(BaseCrawler):
@@ -87,8 +237,16 @@ class NaverSearchCrawler(BaseCrawler):
                     self.channel, len(ads),
                 )
 
-                # 검색광고는 텍스트 전용 — 이미지 캡처 생략
-                # (이미지/텍스트 불일치 방지, 사용자 요청 2/25)
+                ads = _normalize_extracted_search_ads(ads)
+                await self._capture_ad_list_items(
+                    page,
+                    ads,
+                    keyword=keyword,
+                    persona_code=persona.code,
+                    is_mobile=device.is_mobile,
+                )
+
+                # 광고 카드 영역만 캡처해 텍스트/카드 대응을 유지한다.
             else:
                 logger.warning(
                     "[{}] no search response captured, 0 ads",
@@ -129,12 +287,47 @@ class NaverSearchCrawler(BaseCrawler):
                     '네이버 로그인', '네이버로그인', '네이버 톡톡',
                     '네이버톡톡', '네이버페이', 'NAVER', ''
                 ];
+                const STRIP_PREFIXES = ['네이버페이'];
+                function stripPrefix(name) {
+                    if (!name) return name;
+                    for (const pfx of STRIP_PREFIXES) {
+                        if (name.startsWith(pfx) && name.length > pfx.length) {
+                            return name.slice(pfx.length).trim();
+                        }
+                    }
+                    return name;
+                }
                 function inferPurpose(url) {
                     if (!url) return 'awareness';
                     const u = url.toLowerCase();
                     if (/shop|buy|purchase|order|cart|product|store|mall/.test(u)) return 'commerce';
                     if (/event|promo|coupon|sale|discount/.test(u)) return 'event';
                     return 'awareness';
+                }
+                function resolveUrl(href, displayUrl) {
+                    if (!href || href.startsWith('javascript:') || href === '#') {
+                        if (displayUrl) {
+                            return displayUrl.startsWith('http') ? displayUrl : 'https://' + displayUrl;
+                        }
+                        return null;
+                    }
+                    if (href.includes('ader.naver.com') || href.includes('adcr.naver.com') || href.includes('siape.veta')) {
+                        try {
+                            const u = new URL(href);
+                            for (const key of ['r', 'u', 'url', 'target', 'eu']) {
+                                const val = u.searchParams.get(key);
+                                if (val) {
+                                    let decoded = decodeURIComponent(val);
+                                    if (decoded.includes('%')) decoded = decodeURIComponent(decoded);
+                                    if (decoded.startsWith('http')) return decoded;
+                                }
+                            }
+                        } catch(e) {}
+                        if (displayUrl) {
+                            return displayUrl.startsWith('http') ? displayUrl : 'https://' + displayUrl;
+                        }
+                    }
+                    return href;
                 }
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
@@ -192,13 +385,14 @@ class NaverSearchCrawler(BaseCrawler):
 
                         if (title) {
                             results.push({
-                                advertiser_name: advName,
+                                advertiser_name: stripPrefix(advName),
                                 ad_text: title,
                                 ad_description: desc,
-                                url: href,
+                                url: resolveUrl(href, displayUrl),
                                 display_url: displayUrl,
                                 position: results.length + 1,
                                 ad_type: 'powerlink',
+                                ad_placement: 'naver_powerlink',
                                 ad_product_name: '파워링크',
                                 ad_format_type: 'search',
                                 campaign_purpose: inferPurpose(href),
@@ -256,13 +450,14 @@ class NaverSearchCrawler(BaseCrawler):
 
                         if (title) {
                             results.push({
-                                advertiser_name: advName,
+                                advertiser_name: stripPrefix(advName),
                                 ad_text: title,
                                 ad_description: desc,
-                                url: href,
+                                url: resolveUrl(href, null),
                                 display_url: null,
                                 position: results.length + 1,
                                 ad_type: 'bizsite',
+                                ad_placement: 'naver_bizsite',
                                 ad_product_name: '비즈사이트',
                                 ad_format_type: 'search',
                                 campaign_purpose: inferPurpose(href),
@@ -297,12 +492,47 @@ class NaverSearchCrawler(BaseCrawler):
                     '네이버톡톡', '네이버페이', 'NAVER', '네이버',
                     '더보기', ''
                 ];
+                const STRIP_PREFIXES = ['네이버페이'];
+                function stripPrefix(name) {
+                    if (!name) return name;
+                    for (const pfx of STRIP_PREFIXES) {
+                        if (name.startsWith(pfx) && name.length > pfx.length) {
+                            return name.slice(pfx.length).trim();
+                        }
+                    }
+                    return name;
+                }
                 function inferPurpose(url) {
                     if (!url) return 'awareness';
                     const u = url.toLowerCase();
                     if (/shop|buy|purchase|order|cart|product|store|mall/.test(u)) return 'commerce';
                     if (/event|promo|coupon|sale|discount/.test(u)) return 'event';
                     return 'awareness';
+                }
+                function resolveUrl(href, displayUrl) {
+                    if (!href || href.startsWith('javascript:') || href === '#') {
+                        if (displayUrl) {
+                            return displayUrl.startsWith('http') ? displayUrl : 'https://' + displayUrl;
+                        }
+                        return null;
+                    }
+                    if (href.includes('ader.naver.com') || href.includes('adcr.naver.com') || href.includes('siape.veta')) {
+                        try {
+                            const u = new URL(href);
+                            for (const key of ['r', 'u', 'url', 'target', 'eu']) {
+                                const val = u.searchParams.get(key);
+                                if (val) {
+                                    let decoded = decodeURIComponent(val);
+                                    if (decoded.includes('%')) decoded = decodeURIComponent(decoded);
+                                    if (decoded.startsWith('http')) return decoded;
+                                }
+                            }
+                        } catch(e) {}
+                        if (displayUrl) {
+                            return displayUrl.startsWith('http') ? displayUrl : 'https://' + displayUrl;
+                        }
+                    }
+                    return href;
                 }
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
@@ -378,7 +608,7 @@ class NaverSearchCrawler(BaseCrawler):
                             advertiser_name: advName,
                             ad_text: title.substring(0, 200),
                             ad_description: null,
-                            url: href,
+                            url: resolveUrl(href, null),
                             display_url: null,
                             position: results.length + 1,
                             ad_type: 'powerlink',
@@ -499,7 +729,7 @@ class NaverSearchCrawler(BaseCrawler):
                         ad_text: title.substring(0, 200),
                         ad_description: desc
                             ? desc.substring(0, 200) : null,
-                        url: href,
+                        url: resolveUrl(href, displayUrl),
                         display_url: displayUrl,
                         position: results.length + 1,
                         ad_type: 'powerlink',

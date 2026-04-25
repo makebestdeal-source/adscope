@@ -50,23 +50,31 @@ async def test_rebuild_campaigns_uses_default_excluded_channels(monkeypatch):
     async def fake_counts():
         return 6, 7
 
+    async def fake_sync(excluded_channels=None):
+        calls["sync"] = excluded_channels
+        return 8
+
     monkeypatch.setattr(campaign_builder, "_delete_excluded_campaign_data", fake_delete)
     monkeypatch.setattr(campaign_builder, "_backfill_advertiser_ids", fake_backfill_ids)
     monkeypatch.setattr(campaign_builder, "_backfill_advertiser_industries", fake_backfill_industries)
     monkeypatch.setattr(campaign_builder, "_upsert_campaigns_and_spend", fake_upsert)
+    monkeypatch.setattr(campaign_builder, "_sync_campaign_totals_from_spend_estimates", fake_sync)
     monkeypatch.setattr(campaign_builder, "_counts", fake_counts)
 
     stats = await campaign_builder.rebuild_campaigns_and_spend(active_days=9)
 
-    assert calls["delete"] == {"youtube_ads"}
-    assert calls["industry"] == {"youtube_ads"}
-    assert calls["upsert"] == (9, {"youtube_ads"})
+    assert calls["delete"] == set()
+    assert calls["industry"] == set()
+    assert calls["upsert"] == (9, set())
     assert stats == {
+        "names_cleaned": 0,
         "linked_details": 2,
         "created_advertisers": 1,
         "industry_backfilled": 3,
         "updated_campaigns": 4,
         "inserted_estimates": 5,
+        "merged_campaigns": 0,
+        "synced_campaign_totals": 8,
         "campaigns_total": 6,
         "spend_estimates_total": 7,
     }
@@ -95,10 +103,15 @@ async def test_rebuild_campaigns_respects_env_excluded_channels(monkeypatch):
     async def fake_counts():
         return 0, 0
 
+    async def fake_sync(excluded_channels=None):
+        calls["sync"] = excluded_channels
+        return 0
+
     monkeypatch.setattr(campaign_builder, "_delete_excluded_campaign_data", fake_delete)
     monkeypatch.setattr(campaign_builder, "_backfill_advertiser_ids", fake_backfill_ids)
     monkeypatch.setattr(campaign_builder, "_backfill_advertiser_industries", fake_backfill_industries)
     monkeypatch.setattr(campaign_builder, "_upsert_campaigns_and_spend", fake_upsert)
+    monkeypatch.setattr(campaign_builder, "_sync_campaign_totals_from_spend_estimates", fake_sync)
     monkeypatch.setattr(campaign_builder, "_counts", fake_counts)
 
     await campaign_builder.rebuild_campaigns_and_spend(active_days=5)
@@ -106,3 +119,4 @@ async def test_rebuild_campaigns_respects_env_excluded_channels(monkeypatch):
     assert calls["delete"] == {"google_gdn", "kakao_da"}
     assert calls["industry"] == {"google_gdn", "kakao_da"}
     assert calls["upsert"] == (5, {"google_gdn", "kakao_da"})
+    assert calls["sync"] == {"google_gdn", "kakao_da"}

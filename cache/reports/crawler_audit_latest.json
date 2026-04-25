@@ -1,0 +1,1678 @@
+{
+  "overview": {
+    "generated_at": "2026-04-24 10:34:35",
+    "db_path": "C:\\Users\\user\\Desktop\\adscopre\\adscope.db",
+    "scheduler_disabled": true,
+    "scheduler_disabled_updated_at": "2026-04-10 22:01:26",
+    "channels_audited": 9,
+    "raw_sample_size_per_channel": 25,
+    "latest_live_crawl_at": "2026-04-23 13:52:17.090522",
+    "latest_staging_created_at": "2026-04-23 13:52:17.179089",
+    "staging_status_totals": {
+      "deduped": 138216,
+      "quarantine": 33722,
+      "approved": 11275,
+      "rejected": 486,
+      "pending": 132
+    },
+    "runtime_blockers": [
+      "scheduler_disabled_flag",
+      "playwright_launch_failures_in_scheduler_log"
+    ]
+  },
+  "expected_fields": {
+    "base_crawler_minimum": [
+      "keyword",
+      "persona_code",
+      "device",
+      "channel",
+      "captured_at",
+      "screenshot_path",
+      "ads[].advertiser_name",
+      "ads[].ad_text",
+      "ads[].url",
+      "ads[].position",
+      "ads[].ad_type",
+      "ads[].extra_data"
+    ],
+    "raw_core_fields_checked": [
+      "advertiser_name",
+      "ad_text",
+      "url",
+      "display_url",
+      "ad_type",
+      "ad_placement",
+      "ad_product_name",
+      "ad_format_type",
+      "campaign_purpose"
+    ],
+    "gallery_required_fields": [
+      "advertiser_name",
+      "ad_text",
+      "ad_type",
+      "url"
+    ],
+    "research_sheet_required_fields": [
+      "advertiser_name",
+      "ad_placement"
+    ],
+    "naver_shopping_extra_fields": [
+      "keyword",
+      "price",
+      "shopping_category"
+    ]
+  },
+  "log_summary": {
+    "log_exists": true,
+    "playwright_launch_failures": {
+      "naver_search": 70,
+      "naver_da": 76,
+      "youtube_ads": 76,
+      "meta": 56,
+      "google_gdn": 78,
+      "kakao_da": 82,
+      "naver_shopping": 84,
+      "google_search_ads": 84,
+      "tiktok_ads": 88
+    },
+    "circuit_open_events": {
+      "naver_search": 72,
+      "naver_da": 72,
+      "youtube_ads": 72,
+      "google_gdn": 72,
+      "kakao_da": 72,
+      "naver_shopping": 74,
+      "google_search_ads": 74,
+      "tiktok_ads": 76,
+      "meta": 41
+    },
+    "latest_crawl_finished": {
+      "ads": 0,
+      "errors": 1676,
+      "saved": 0,
+      "line": "21:57:12 | INFO    | [schedule] crawl finished: M60 / pc / 60  ũ3 - keywords 1676, ads 0, errors 1676, saved 0"
+    }
+  },
+  "channels": [
+    {
+      "channel": "naver_search",
+      "crawler_class": "crawler.naver_search.NaverSearchCrawler",
+      "verdict": "broken",
+      "verdict_reasons": [
+        "live data is older than 7 days",
+        "recent raw rows are missing advertiser or placement",
+        "automatic scheduler is disabled",
+        "scheduler log shows Playwright launch failures"
+      ],
+      "snapshot_health": {
+        "snapshot_count": 3982,
+        "live_ad_count": 14406,
+        "live_advertiser_count": 2093,
+        "first_captured_at": "2026-02-15 15:33:23.751501",
+        "last_captured_at": "2026-04-13 09:31:38.130890",
+        "last_captured_age_days": 11.04
+      },
+      "latest_batch": {
+        "batch_id": "5fe83748-8d1c-464a-95f8-e9a7801cfc9c",
+        "batch_started_at": "2026-04-13 09:31:38.207893",
+        "batch_finished_at": "2026-04-13 09:31:38.207897",
+        "batch_age_days": 11.04,
+        "total_rows": 4,
+        "status_counts": {
+          "approved": 4
+        },
+        "top_rejection_reasons": [
+          {
+            "reason": "name_rejected:ad_system_domain:ader.naver.com",
+            "count": 1
+          },
+          {
+            "reason": "name_rejected:non_ad_element",
+            "count": 1
+          }
+        ]
+      },
+      "recent_raw": {
+        "sample_size": 25,
+        "field_completeness": {
+          "advertiser_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 24,
+            "present": 1,
+            "present_pct": 4.0,
+            "missing_pct": 96.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 25,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "ad_product_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          }
+        },
+        "status_counts": {
+          "approved": 25
+        },
+        "top_rejection_reasons": [
+          {
+            "reason": "name_rejected:ad_system_domain:ader.naver.com",
+            "count": 6
+          },
+          {
+            "reason": "name_rejected:non_ad_element",
+            "count": 1
+          },
+          {
+            "reason": "name_rejected:url_or_domain",
+            "count": 1
+          }
+        ],
+        "gallery_ready_pct": 100.0,
+        "research_ready_pct": 0.0
+      },
+      "live_completeness": {
+        "total_rows": 14406,
+        "fields": {
+          "advertiser_name_raw": {
+            "missing": 8,
+            "present": 14398,
+            "present_pct": 99.94,
+            "missing_pct": 0.06
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 14406,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_description": {
+            "missing": 3021,
+            "present": 11385,
+            "present_pct": 79.03,
+            "missing_pct": 20.97
+          },
+          "url": {
+            "missing": 0,
+            "present": 14406,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 3757,
+            "present": 10649,
+            "present_pct": 73.92,
+            "missing_pct": 26.08
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 14406,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 409,
+            "present": 13997,
+            "present_pct": 97.16,
+            "missing_pct": 2.84
+          },
+          "ad_product_name": {
+            "missing": 13956,
+            "present": 450,
+            "present_pct": 3.12,
+            "missing_pct": 96.88
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 14406,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 14406,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "creative_image_path": {
+            "missing": 14406,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          }
+        }
+      },
+      "code_note": "Core search fields are extracted directly from SERP HTML. Bizsite path intentionally leaves display_url empty.",
+      "log_summary": {
+        "playwright_launch_failures": 70,
+        "circuit_open_events": 72
+      }
+    },
+    {
+      "channel": "naver_da",
+      "crawler_class": "crawler.naver_da.NaverDACrawler",
+      "verdict": "degraded",
+      "verdict_reasons": [
+        "automatic scheduler is disabled",
+        "scheduler log shows Playwright launch failures"
+      ],
+      "snapshot_health": {
+        "snapshot_count": 1038,
+        "live_ad_count": 4947,
+        "live_advertiser_count": 407,
+        "first_captured_at": "2026-02-15 15:33:21.413253",
+        "last_captured_at": "2026-04-21 00:31:42.617433",
+        "last_captured_age_days": 3.42
+      },
+      "latest_batch": {
+        "batch_id": "b03902fa-94bd-4bcd-b8e5-5686c4efd233",
+        "batch_started_at": "2026-04-21 00:31:42.745140",
+        "batch_finished_at": "2026-04-21 00:31:42.745162",
+        "batch_age_days": 3.42,
+        "total_rows": 20,
+        "status_counts": {
+          "deduped": 20
+        },
+        "top_rejection_reasons": []
+      },
+      "recent_raw": {
+        "sample_size": 25,
+        "field_completeness": {
+          "advertiser_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          }
+        },
+        "status_counts": {
+          "deduped": 25
+        },
+        "top_rejection_reasons": [],
+        "gallery_ready_pct": 100.0,
+        "research_ready_pct": 100.0
+      },
+      "live_completeness": {
+        "total_rows": 4947,
+        "fields": {
+          "advertiser_name_raw": {
+            "missing": 1,
+            "present": 4946,
+            "present_pct": 99.98,
+            "missing_pct": 0.02
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 4947,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_description": {
+            "missing": 4947,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 4947,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 4947,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 4947,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 4947,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 4540,
+            "present": 407,
+            "present_pct": 8.23,
+            "missing_pct": 91.77
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 4947,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 4947,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "creative_image_path": {
+            "missing": 1006,
+            "present": 3941,
+            "present_pct": 79.66,
+            "missing_pct": 20.34
+          }
+        }
+      },
+      "code_note": "Display crawler resolves click/adomain URLs before promotion and skips ads without a final URL.",
+      "log_summary": {
+        "playwright_launch_failures": 76,
+        "circuit_open_events": 72
+      }
+    },
+    {
+      "channel": "google_gdn",
+      "crawler_class": "crawler.google_gdn.GoogleGDNCrawler",
+      "verdict": "degraded",
+      "verdict_reasons": [
+        "automatic scheduler is disabled",
+        "scheduler log shows Playwright launch failures"
+      ],
+      "snapshot_health": {
+        "snapshot_count": 1380,
+        "live_ad_count": 6380,
+        "live_advertiser_count": 1574,
+        "first_captured_at": "2026-02-22 18:43:24.041388",
+        "last_captured_at": "2026-04-23 13:52:17.090522",
+        "last_captured_age_days": 0.86
+      },
+      "latest_batch": {
+        "batch_id": "92d17335-f0ae-4c45-b711-a44ace6b6320",
+        "batch_started_at": "2026-04-23 13:52:17.179086",
+        "batch_finished_at": "2026-04-23 13:52:17.179089",
+        "batch_age_days": 0.86,
+        "total_rows": 2,
+        "status_counts": {
+          "approved": 2
+        },
+        "top_rejection_reasons": []
+      },
+      "recent_raw": {
+        "sample_size": 25,
+        "field_completeness": {
+          "advertiser_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          }
+        },
+        "status_counts": {
+          "approved": 22,
+          "deduped": 3
+        },
+        "top_rejection_reasons": [],
+        "gallery_ready_pct": 100.0,
+        "research_ready_pct": 100.0
+      },
+      "live_completeness": {
+        "total_rows": 6380,
+        "fields": {
+          "advertiser_name_raw": {
+            "missing": 0,
+            "present": 6380,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 6380,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_description": {
+            "missing": 6380,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 6380,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 6380,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 6380,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 6380,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 4108,
+            "present": 2272,
+            "present_pct": 35.61,
+            "missing_pct": 64.39
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 6380,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 6380,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "creative_image_path": {
+            "missing": 80,
+            "present": 6300,
+            "present_pct": 98.75,
+            "missing_pct": 1.25
+          }
+        }
+      },
+      "code_note": "Transparency crawl uses placeholder text/display domain; image quality improves only after preview download.",
+      "log_summary": {
+        "playwright_launch_failures": 78,
+        "circuit_open_events": 72
+      }
+    },
+    {
+      "channel": "google_search_ads",
+      "crawler_class": "crawler.google_search_ads.GoogleSearchAdsCrawler",
+      "verdict": "degraded",
+      "verdict_reasons": [
+        "automatic scheduler is disabled",
+        "scheduler log shows Playwright launch failures"
+      ],
+      "snapshot_health": {
+        "snapshot_count": 1368,
+        "live_ad_count": 9296,
+        "live_advertiser_count": 1347,
+        "first_captured_at": "2026-02-20 15:06:47.045206",
+        "last_captured_at": "2026-04-23 09:23:56.534978",
+        "last_captured_age_days": 1.05
+      },
+      "latest_batch": {
+        "batch_id": "0b58d8bc-fa82-462b-a27a-9cd4a9e31ff7",
+        "batch_started_at": "2026-04-23 09:23:56.617797",
+        "batch_finished_at": "2026-04-23 09:23:56.617799",
+        "batch_age_days": 1.05,
+        "total_rows": 2,
+        "status_counts": {
+          "deduped": 2
+        },
+        "top_rejection_reasons": []
+      },
+      "recent_raw": {
+        "sample_size": 25,
+        "field_completeness": {
+          "advertiser_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          }
+        },
+        "status_counts": {
+          "deduped": 25
+        },
+        "top_rejection_reasons": [],
+        "gallery_ready_pct": 100.0,
+        "research_ready_pct": 100.0
+      },
+      "live_completeness": {
+        "total_rows": 9296,
+        "fields": {
+          "advertiser_name_raw": {
+            "missing": 0,
+            "present": 9296,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 9296,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_description": {
+            "missing": 9296,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 9296,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 9296,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 9296,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 9296,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 5212,
+            "present": 4084,
+            "present_pct": 43.93,
+            "missing_pct": 56.07
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 9296,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 9296,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "creative_image_path": {
+            "missing": 9296,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          }
+        }
+      },
+      "code_note": "Crawler only trusts transparency landing_url. If landing_url is absent, URL/display_url stay empty and washing quarantines the row.",
+      "log_summary": {
+        "playwright_launch_failures": 84,
+        "circuit_open_events": 74
+      }
+    },
+    {
+      "channel": "kakao_da",
+      "crawler_class": "crawler.kakao_da.KakaoDACrawler",
+      "verdict": "broken",
+      "verdict_reasons": [
+        "live data is older than 21 days",
+        "recent raw rows are missing advertiser or placement",
+        "automatic scheduler is disabled",
+        "scheduler log shows Playwright launch failures"
+      ],
+      "snapshot_health": {
+        "snapshot_count": 482,
+        "live_ad_count": 2753,
+        "live_advertiser_count": 141,
+        "first_captured_at": "2026-02-15 15:34:22.458101",
+        "last_captured_at": "2026-03-26 13:49:25.730143",
+        "last_captured_age_days": 28.86
+      },
+      "latest_batch": {
+        "batch_id": "75944b3d-9c3f-430f-8f03-4bc22627389c",
+        "batch_started_at": "2026-03-24 13:49:22.086251",
+        "batch_finished_at": "2026-03-24 13:49:22.086364",
+        "batch_age_days": 30.86,
+        "total_rows": 57,
+        "status_counts": {
+          "pending": 57
+        },
+        "top_rejection_reasons": []
+      },
+      "recent_raw": {
+        "sample_size": 25,
+        "field_completeness": {
+          "advertiser_name": {
+            "missing": 7,
+            "present": 18,
+            "present_pct": 72.0,
+            "missing_pct": 28.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 25,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "ad_product_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          }
+        },
+        "status_counts": {
+          "pending": 25
+        },
+        "top_rejection_reasons": [],
+        "gallery_ready_pct": 72.0,
+        "research_ready_pct": 0.0
+      },
+      "live_completeness": {
+        "total_rows": 2753,
+        "fields": {
+          "advertiser_name_raw": {
+            "missing": 0,
+            "present": 2753,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 2753,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_description": {
+            "missing": 2753,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 2753,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 2753,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 2753,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 2753,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 2753,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 2753,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 2753,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "creative_image_path": {
+            "missing": 751,
+            "present": 2002,
+            "present_pct": 72.72,
+            "missing_pct": 27.28
+          }
+        }
+      },
+      "code_note": "Advertiser name often falls back to profile/domain heuristics, which is fragile on SDK banner/native payloads.",
+      "log_summary": {
+        "playwright_launch_failures": 82,
+        "circuit_open_events": 72
+      }
+    },
+    {
+      "channel": "youtube_ads",
+      "crawler_class": "crawler.youtube_ads.YouTubeAdsCrawler",
+      "verdict": "degraded",
+      "verdict_reasons": [
+        "automatic scheduler is disabled",
+        "scheduler log shows Playwright launch failures"
+      ],
+      "snapshot_health": {
+        "snapshot_count": 1012,
+        "live_ad_count": 2783,
+        "live_advertiser_count": 731,
+        "first_captured_at": "2026-02-16 07:04:11.963302",
+        "last_captured_at": "2026-04-23 13:36:36.518144",
+        "last_captured_age_days": 0.87
+      },
+      "latest_batch": {
+        "batch_id": "f39a5882-b4ce-4308-80fe-60a7941603bc",
+        "batch_started_at": "2026-04-23 13:36:36.609031",
+        "batch_finished_at": "2026-04-23 13:36:36.609049",
+        "batch_age_days": 0.87,
+        "total_rows": 18,
+        "status_counts": {
+          "approved": 13,
+          "deduped": 5
+        },
+        "top_rejection_reasons": []
+      },
+      "recent_raw": {
+        "sample_size": 25,
+        "field_completeness": {
+          "advertiser_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          }
+        },
+        "status_counts": {
+          "approved": 17,
+          "deduped": 8
+        },
+        "top_rejection_reasons": [],
+        "gallery_ready_pct": 100.0,
+        "research_ready_pct": 100.0
+      },
+      "live_completeness": {
+        "total_rows": 2783,
+        "fields": {
+          "advertiser_name_raw": {
+            "missing": 0,
+            "present": 2783,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 2783,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_description": {
+            "missing": 2726,
+            "present": 57,
+            "present_pct": 2.05,
+            "missing_pct": 97.95
+          },
+          "url": {
+            "missing": 0,
+            "present": 2783,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 2783,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 2783,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 2783,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 1943,
+            "present": 840,
+            "present_pct": 30.18,
+            "missing_pct": 69.82
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 2783,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 2783,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "creative_image_path": {
+            "missing": 55,
+            "present": 2728,
+            "present_pct": 98.02,
+            "missing_pct": 1.98
+          }
+        }
+      },
+      "code_note": "Transparency video rows depend on landing_url from Google payload; many rows end up with no usable destination URL.",
+      "log_summary": {
+        "playwright_launch_failures": 76,
+        "circuit_open_events": 72
+      }
+    },
+    {
+      "channel": "meta",
+      "crawler_class": "crawler.meta_library.MetaLibraryCrawler",
+      "verdict": "degraded",
+      "verdict_reasons": [
+        "automatic scheduler is disabled",
+        "scheduler log shows Playwright launch failures"
+      ],
+      "snapshot_health": {
+        "snapshot_count": 1143,
+        "live_ad_count": 5374,
+        "live_advertiser_count": 1805,
+        "first_captured_at": "2026-02-15 15:34:06.024495",
+        "last_captured_at": "2026-04-23 13:40:05.291938",
+        "last_captured_age_days": 0.87
+      },
+      "latest_batch": {
+        "batch_id": "d947d272-0e1c-4555-a836-b9aef021cf4a",
+        "batch_started_at": "2026-04-23 13:40:05.345378",
+        "batch_finished_at": "2026-04-23 13:40:05.345378",
+        "batch_age_days": 0.87,
+        "total_rows": 1,
+        "status_counts": {
+          "deduped": 1
+        },
+        "top_rejection_reasons": []
+      },
+      "recent_raw": {
+        "sample_size": 25,
+        "field_completeness": {
+          "advertiser_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "url": {
+            "missing": 2,
+            "present": 23,
+            "present_pct": 92.0,
+            "missing_pct": 8.0
+          },
+          "display_url": {
+            "missing": 2,
+            "present": 23,
+            "present_pct": 92.0,
+            "missing_pct": 8.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          }
+        },
+        "status_counts": {
+          "deduped": 19,
+          "rejected": 4,
+          "quarantine": 2
+        },
+        "top_rejection_reasons": [
+          {
+            "reason": "name_rejected:meta_library_id",
+            "count": 7
+          },
+          {
+            "reason": "korean_filter_fail",
+            "count": 4
+          },
+          {
+            "reason": "missing_or_invalid_url",
+            "count": 2
+          }
+        ],
+        "gallery_ready_pct": 92.0,
+        "research_ready_pct": 100.0
+      },
+      "live_completeness": {
+        "total_rows": 5374,
+        "fields": {
+          "advertiser_name_raw": {
+            "missing": 1303,
+            "present": 4071,
+            "present_pct": 75.75,
+            "missing_pct": 24.25
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 5374,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_description": {
+            "missing": 5374,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 5374,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 110,
+            "present": 5264,
+            "present_pct": 97.95,
+            "missing_pct": 2.05
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 5374,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 271,
+            "present": 5103,
+            "present_pct": 94.96,
+            "missing_pct": 5.04
+          },
+          "ad_product_name": {
+            "missing": 3727,
+            "present": 1647,
+            "present_pct": 30.65,
+            "missing_pct": 69.35
+          },
+          "campaign_purpose": {
+            "missing": 271,
+            "present": 5103,
+            "present_pct": 94.96,
+            "missing_pct": 5.04
+          },
+          "ad_format_type": {
+            "missing": 271,
+            "present": 5103,
+            "present_pct": 94.96,
+            "missing_pct": 5.04
+          },
+          "creative_image_path": {
+            "missing": 3403,
+            "present": 1971,
+            "present_pct": 36.68,
+            "missing_pct": 63.32
+          }
+        }
+      },
+      "code_note": "Rows with missing URL are still emitted and later filtered in washing. Creative screenshots depend on card-level capture success.",
+      "log_summary": {
+        "playwright_launch_failures": 56,
+        "circuit_open_events": 41
+      }
+    },
+    {
+      "channel": "tiktok_ads",
+      "crawler_class": "crawler.tiktok_ads.TikTokAdsCrawler",
+      "verdict": "broken",
+      "verdict_reasons": [
+        "recent raw rows are not gallery-ready",
+        "recent raw rows are missing advertiser or placement",
+        "recent raw rows are often missing advertiser_name",
+        "automatic scheduler is disabled"
+      ],
+      "snapshot_health": {
+        "snapshot_count": 186,
+        "live_ad_count": 38,
+        "live_advertiser_count": 17,
+        "first_captured_at": "2026-02-19 14:52:34.592850",
+        "last_captured_at": "2026-04-23 13:42:15.936374",
+        "last_captured_age_days": 0.87
+      },
+      "latest_batch": {
+        "batch_id": "88834b23-bf69-431c-b77c-6b62b82f0c00",
+        "batch_started_at": "2026-04-23 13:42:16.006610",
+        "batch_finished_at": "2026-04-23 13:42:16.006613",
+        "batch_age_days": 0.87,
+        "total_rows": 3,
+        "status_counts": {
+          "deduped": 3
+        },
+        "top_rejection_reasons": []
+      },
+      "recent_raw": {
+        "sample_size": 25,
+        "field_completeness": {
+          "advertiser_name": {
+            "missing": 16,
+            "present": 9,
+            "present_pct": 36.0,
+            "missing_pct": 64.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 25,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          }
+        },
+        "status_counts": {
+          "deduped": 25
+        },
+        "top_rejection_reasons": [],
+        "gallery_ready_pct": 36.0,
+        "research_ready_pct": 36.0
+      },
+      "live_completeness": {
+        "total_rows": 38,
+        "fields": {
+          "advertiser_name_raw": {
+            "missing": 13,
+            "present": 25,
+            "present_pct": 65.79,
+            "missing_pct": 34.21
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 38,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_description": {
+            "missing": 38,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 38,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 38,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 38,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 38,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 23,
+            "present": 15,
+            "present_pct": 39.47,
+            "missing_pct": 60.53
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 38,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 38,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "creative_image_path": {
+            "missing": 5,
+            "present": 33,
+            "present_pct": 86.84,
+            "missing_pct": 13.16
+          }
+        }
+      },
+      "code_note": "Advertiser extraction is weak and fallback URL can be a Creative Center modal rather than the real landing page.",
+      "log_summary": {
+        "playwright_launch_failures": 88,
+        "circuit_open_events": 76
+      }
+    },
+    {
+      "channel": "naver_shopping",
+      "crawler_class": "crawler.naver_shopping.NaverShoppingCrawler",
+      "verdict": "broken",
+      "verdict_reasons": [
+        "live data is older than 21 days",
+        "recent raw rows are not gallery-ready",
+        "recent raw rows are missing advertiser or placement",
+        "recent raw rows are mostly missing URL"
+      ],
+      "snapshot_health": {
+        "snapshot_count": 1400,
+        "live_ad_count": 554,
+        "live_advertiser_count": 158,
+        "first_captured_at": "2026-02-19 15:22:40.464622",
+        "last_captured_at": "2026-03-24 13:48:06.681839",
+        "last_captured_age_days": 30.87
+      },
+      "latest_batch": {
+        "batch_id": "3dc73cac-234a-4e11-b6c8-432a12a3a02b",
+        "batch_started_at": "2026-03-24 09:27:19.555232",
+        "batch_finished_at": "2026-03-24 09:27:19.555233",
+        "batch_age_days": 31.05,
+        "total_rows": 2,
+        "status_counts": {
+          "quarantine": 2
+        },
+        "top_rejection_reasons": [
+          {
+            "reason": "missing_or_invalid_url",
+            "count": 2
+          }
+        ]
+      },
+      "recent_raw": {
+        "sample_size": 4,
+        "field_completeness": {
+          "advertiser_name": {
+            "missing": 4,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 4,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "url": {
+            "missing": 4,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 4,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 4,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 4,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 0,
+            "present": 4,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 4,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 4,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          }
+        },
+        "status_counts": {
+          "quarantine": 4
+        },
+        "top_rejection_reasons": [
+          {
+            "reason": "missing_or_invalid_url",
+            "count": 4
+          }
+        ],
+        "gallery_ready_pct": 0.0,
+        "research_ready_pct": 0.0,
+        "shopping_sheet_ready_pct": 0.0
+      },
+      "live_completeness": {
+        "total_rows": 554,
+        "fields": {
+          "advertiser_name_raw": {
+            "missing": 0,
+            "present": 554,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_text": {
+            "missing": 0,
+            "present": 554,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_description": {
+            "missing": 554,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "url": {
+            "missing": 0,
+            "present": 554,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "display_url": {
+            "missing": 0,
+            "present": 554,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_type": {
+            "missing": 0,
+            "present": 554,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_placement": {
+            "missing": 0,
+            "present": 554,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_product_name": {
+            "missing": 554,
+            "present": 0,
+            "present_pct": 0.0,
+            "missing_pct": 100.0
+          },
+          "campaign_purpose": {
+            "missing": 0,
+            "present": 554,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "ad_format_type": {
+            "missing": 0,
+            "present": 554,
+            "present_pct": 100.0,
+            "missing_pct": 0.0
+          },
+          "creative_image_path": {
+            "missing": 14,
+            "present": 540,
+            "present_pct": 97.47,
+            "missing_pct": 2.53
+          }
+        }
+      },
+      "code_note": "Shopping rows rely on mall/store metadata and adcr resolution; missing mall info weakens advertiser quality.",
+      "log_summary": {
+        "playwright_launch_failures": 84,
+        "circuit_open_events": 74
+      }
+    }
+  ]
+}

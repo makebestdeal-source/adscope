@@ -1,0 +1,42 @@
+{
+  "files.watcherExclude": {
+    "**/*.db": true,
+    "**/*.db-shm": true,
+    "**/*.db-wal": true,
+    "**/*.db.gz": true,
+    "**/stored_images/**": true,
+    "**/node_modules/**": true,
+    "**/.wrangler/**": true,
+    "**/cookie_data/**": true,
+    "**/.archive_checkpoints/**": true
+  },
+  "files.exclude": {
+    "**/*.db": true,
+    "**/*.db.gz": true,
+    "**/*.db-shm": true,
+    "**/*.db-wal": true,
+    "**/stored_images/**": true,
+    "**/merged_db*": true,
+    "**/server_db*": true,
+    "**/.wrangler/**": true
+  },
+  "search.exclude": {
+    "**/stored_images/**": true,
+    "**/*.db": true,
+    "**/node_modules/**": true,
+    "**/cookie_data/**": true
+  },
+  "git.autorefresh": false,
+  "git.decorations.enabled": false,
+  "files.maxMemoryForLargeFilesMB": 512,
+  "python.analysis.indexing": false,
+  "python.analysis.autoSearchPaths": false,
+  "python.analysis.diagnosticMode": "openFilesOnly",
+  "python.analysis.exclude": [
+    "**/stored_images/**",
+    "**/cookie_data/**",
+    "**/node_modules/**",
+    "**/scripts/**",
+    "**/.wrangler/**"
+  ]
+}

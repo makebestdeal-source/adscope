@@ -7,10 +7,9 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Query
 from sqlalchemy import func, select, desc
 
-from api.deps import get_current_user
 from database import async_session
 from database.models import (
     Advertiser,
@@ -21,7 +20,6 @@ from database.models import (
 router = APIRouter(
     prefix="/api/social-ranking",
     tags=["social-ranking"],
-    dependencies=[Depends(get_current_user)],
 )
 
 

@@ -1,0 +1,85 @@
+{
+  "started_at": "2026-04-26 01:22:04",
+  "finished_at": "2026-04-26 01:22:04",
+  "channels": [
+    "naver_search",
+    "naver_da",
+    "naver_shopping",
+    "kakao_da"
+  ],
+  "cycles": 1,
+  "task_timeout": 1200,
+  "completed_tasks": 4,
+  "skipped_tasks": 0,
+  "failures": [],
+  "tasks": [
+    {
+      "cycle": 1,
+      "channel": "naver_search",
+      "before": {
+        "rows": 14707,
+        "advertisers": 2139
+      },
+      "latest_before": "2026-04-25 10:06:42.337009",
+      "status": "ok",
+      "exit_code": 0,
+      "after": {
+        "rows": 14848,
+        "advertisers": 2155
+      },
+      "latest_after": "2026-04-25 15:19:35.856070",
+      "delta_rows": 141
+    },
+    {
+      "cycle": 1,
+      "channel": "naver_da",
+      "before": {
+        "rows": 4994,
+        "advertisers": 429
+      },
+      "latest_before": "2026-04-25 10:27:01.190414",
+      "status": "ok",
+      "exit_code": 0,
+      "after": {
+        "rows": 5019,
+        "advertisers": 440
+      },
+      "latest_after": "2026-04-25 15:39:34.015702",
+      "delta_rows": 25
+    },
+    {
+      "cycle": 1,
+      "channel": "naver_shopping",
+      "before": {
+        "rows": 562,
+        "advertisers": 159
+      },
+      "latest_before": "2026-04-25 10:48:29.845261",
+      "status": "ok",
+      "exit_code": 0,
+      "after": {
+        "rows": 562,
+        "advertisers": 159
+      },
+      "latest_after": "2026-04-25 16:01:03.267511",
+      "delta_rows": 0
+    },
+    {
+      "cycle": 1,
+      "channel": "kakao_da",
+      "before": {
+        "rows": 1405,
+        "advertisers": 150
+      },
+      "latest_before": "2026-04-25 11:06:21.954994",
+      "status": "ok",
+      "exit_code": 0,
+      "after": {
+        "rows": 1426,
+        "advertisers": 153
+      },
+      "latest_after": "2026-04-25 16:18:26.139362",
+      "delta_rows": 21
+    }
+  ]
+}

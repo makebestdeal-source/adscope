@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   api,
@@ -19,6 +19,7 @@ import {
 import { formatChannel, formatSpend, CHANNEL_COLORS } from "@/lib/constants";
 import { toImageUrl } from "@/lib/image-utils";
 import { AdvertiserDownloadDropdown, authDownload } from "@/components/DownloadButtons";
+import { isAuthenticated } from "@/lib/auth";
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, LineChart, Line,
@@ -1309,6 +1310,11 @@ function ScopeDownloadPanel() {
 export default function ReportsPage() {
   const [config, setConfig] = useState<ReportConfig>(DEFAULT_CONFIG);
   const [generating, setGenerating] = useState(false);
+  const [authed, setAuthed] = useState(false);
+
+  useEffect(() => {
+    setAuthed(isAuthenticated());
+  }, []);
 
   const handleGenerate = () => {
     if (!config.advertiserId) return;
@@ -1370,6 +1376,12 @@ export default function ReportsPage() {
 
         {/* Scope별 Raw Data 다운로드 */}
         <ScopeDownloadPanel />
+
+        {!authed && (
+          <div className="mt-4 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-900">
+            비회원도 보고서 구성과 공개 데이터는 열람할 수 있습니다. Raw Data Excel과 광고 소재 다운로드는 로그인 후 유료 가입 상태에서 사용할 수 있습니다.
+          </div>
+        )}
 
         {/* 구분선 */}
         <div className="my-8 flex items-center gap-3">
@@ -1508,6 +1520,12 @@ export default function ReportsPage() {
           </>
         )}
       </div>
+
+      {!authed && (
+        <div className="mb-6 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-900 print:hidden">
+          비회원은 보고서 내용을 미리 볼 수 있습니다. Excel 내보내기와 광고 소재 다운로드는 로그인 후 유료 가입 상태에서 사용할 수 있습니다.
+        </div>
+      )}
 
       <ReportView config={config} />
     </div>

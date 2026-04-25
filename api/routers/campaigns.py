@@ -16,10 +16,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.deps import get_current_user, require_paid
 from database import get_db
 from database.models import (
-    Advertiser, Campaign, CampaignLift, JourneyEvent, SpendEstimate,
+    AdDetail, AdSnapshot, Advertiser, Campaign, CampaignLift, JourneyEvent, SpendEstimate,
 )
 from database.schemas import (
-    CampaignDetailOut, CampaignEffectOut, CampaignLiftOut,
+    CampaignCreativeItem, CampaignDetailOut, CampaignEffectOut, CampaignLiftOut,
     CampaignOut, CampaignUpdateIn, JourneyEventOut, SpendEstimateOut,
 )
 
@@ -27,7 +27,6 @@ router = APIRouter(
     prefix="/api/campaigns",
     tags=["campaigns"],
     redirect_slashes=False,
-    dependencies=[Depends(get_current_user)],
 )
 
 
@@ -221,11 +220,73 @@ async def get_campaign_detail(campaign_id: int, db: AsyncSession = Depends(get_d
 
     total_est_spend = 캠페인 누적 추정 매체비 (KRW). Campaign 테이블 컬럼.
     """
-    result = await db.execute(select(Campaign).where(Campaign.id == campaign_id))
-    campaign = result.scalar_one_or_none()
-    if not campaign:
+    result = await db.execute(
+        select(Campaign, Advertiser.name)
+        .outerjoin(Advertiser, Campaign.advertiser_id == Advertiser.id)
+        .where(Campaign.id == campaign_id)
+    )
+    row = result.first()
+    if not row:
         raise HTTPException(status_code=404, detail="Campaign not found")
-    return campaign
+    campaign, advertiser_name = row
+
+    # 연결 소재 조회 (최대 20건)
+    creatives: list[CampaignCreativeItem] = []
+    if campaign.creative_ids:
+        ids = campaign.creative_ids[:20]
+        cr_result = await db.execute(
+            select(
+                AdDetail.id,
+                AdDetail.advertiser_name_raw,
+                AdDetail.ad_text,
+                AdDetail.ad_type,
+                AdDetail.creative_image_path,
+                AdDetail.url,
+                AdDetail.extra_data,
+                AdSnapshot.channel,
+                AdSnapshot.captured_at,
+            )
+            .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+            .where(AdDetail.id.in_(ids))
+        )
+        import json
+        for row2 in cr_result.all():
+            extra = row2.extra_data
+            if isinstance(extra, str):
+                try:
+                    extra = json.loads(extra)
+                except Exception:
+                    extra = None
+            creatives.append(CampaignCreativeItem(
+                id=row2.id,
+                advertiser_name_raw=row2.advertiser_name_raw,
+                ad_text=row2.ad_text,
+                ad_type=row2.ad_type,
+                creative_image_path=row2.creative_image_path,
+                url=row2.url,
+                extra_data=extra,
+                channel=row2.channel,
+                captured_at=row2.captured_at,
+            ))
+
+    # advertiser JOIN 실패 시 → ad_details에서 advertiser_name_raw 폴백
+    advertiser_exists = advertiser_name is not None
+    if not advertiser_name and campaign.creative_ids:
+        fb = await db.execute(
+            select(AdDetail.advertiser_name_raw)
+            .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+            .where(AdDetail.id.in_(campaign.creative_ids[:5]))
+            .limit(1)
+        )
+        fb_row = fb.first()
+        if fb_row:
+            advertiser_name = fb_row[0]
+
+    out = CampaignDetailOut.model_validate(campaign)
+    out.advertiser_name = advertiser_name
+    out.advertiser_exists = advertiser_exists
+    out.creatives = creatives
+    return out
 
 
 @router.get("/{campaign_id}/journey", response_model=list[JourneyEventOut])
@@ -370,6 +431,7 @@ async def get_campaign_spend(
 async def update_campaign(
     campaign_id: int,
     body: CampaignUpdateIn,
+    _current_user = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """캠페인 메타데이터 수동 편집."""

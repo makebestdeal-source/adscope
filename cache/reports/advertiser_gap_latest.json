@@ -1,0 +1,4115 @@
+{
+  "generated_at": "2026-04-25 12:18:33",
+  "db_path": "C:\\Users\\user\\Desktop\\adscopre\\adscope.db",
+  "recent_days": 90,
+  "adic_year": 2024,
+  "summary": {
+    "top_n": 100,
+    "recent_covered_count": 50,
+    "recent_covered_pct": 50.0,
+    "recent_covered_amount": 190840023,
+    "recent_covered_amount_pct": 57.42,
+    "gap_count": 50,
+    "gap_amount": 141524449,
+    "gap_amount_pct": 42.58
+  },
+  "bucket_summary": [
+    {
+      "bucket": "covered_recent",
+      "advertiser_count": 50,
+      "total_amount": 190840023,
+      "amount_share_pct": 57.42
+    },
+    {
+      "bucket": "collection_gap",
+      "advertiser_count": 49,
+      "total_amount": 139179999,
+      "amount_share_pct": 41.88
+    },
+    {
+      "bucket": "pipeline_quality_gap",
+      "advertiser_count": 1,
+      "total_amount": 2344450,
+      "amount_share_pct": 0.71
+    }
+  ],
+  "industry_summary": [
+    {
+      "industry": "미분류",
+      "advertiser_count": 100,
+      "recent_covered_count": 50,
+      "gap_count": 50,
+      "total_amount": 332364472,
+      "gap_amount": 141524449,
+      "recent_coverage_pct": 50.0,
+      "gap_amount_share_pct": 42.58
+    }
+  ],
+  "mobile_quality": {
+    "device_count": 1,
+    "app_count": 1,
+    "exposure_count": 12,
+    "last_observed_at": "2026-03-24T10:12:58.136249+00:00",
+    "last_observed_age_days": 31.71,
+    "missing_advertiser_id_count": 12,
+    "missing_advertiser_id_pct": 100.0,
+    "missing_creative_url_count": 12,
+    "missing_creative_url_pct": 100.0,
+    "missing_click_url_count": 12,
+    "missing_click_url_pct": 100.0,
+    "rejected_name_count": 0,
+    "rejected_name_pct": 0.0,
+    "rejected_name_examples": [],
+    "by_app": [
+      {
+        "app_name": "naver",
+        "count": 12
+      }
+    ]
+  },
+  "targets": [
+    {
+      "advertiser_name": "삼성전자",
+      "adic_amount": 12400100.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "exact",
+        "mobile": "none"
+      },
+      "live_total_count": 2,
+      "live_recent_count": 2,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_da",
+          "count": 1
+        },
+        {
+          "channel": "naver_shopping",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_da",
+          "recent_count": 1
+        },
+        {
+          "channel": "naver_shopping",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 7,
+      "staging_statuses": [
+        {
+          "status": "deduped",
+          "count": 6
+        },
+        {
+          "status": "approved",
+          "count": 1
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-21 00:20:08.726986",
+      "last_signal_age_days": 4.5,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "삼성전자"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "삼성전자"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "코웨이",
+      "adic_amount": 10503270.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "contains",
+        "mobile": "none"
+      },
+      "live_total_count": 63,
+      "live_recent_count": 63,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_da",
+          "count": 31
+        },
+        {
+          "channel": "naver_search",
+          "count": 21
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 6
+        },
+        {
+          "channel": "naver_shopping",
+          "count": 5
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_da",
+          "recent_count": 31
+        },
+        {
+          "channel": "naver_search",
+          "recent_count": 21
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 6
+        },
+        {
+          "channel": "naver_shopping",
+          "recent_count": 5
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 1,
+      "staging_statuses": [
+        {
+          "status": "approved",
+          "count": 1
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 08:38:32.002295",
+      "last_signal_age_days": 12.15,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "코웨이"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "코웨이공식몰  center.cowaymall.co.kr"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "동서식품",
+      "adic_amount": 9815871.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 8,
+      "live_recent_count": 8,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 8
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 8
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-21 15:36:59.128936",
+      "last_signal_age_days": 34.86,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "동서식품"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "미래에셋증권",
+      "adic_amount": 8867656.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 31,
+      "live_recent_count": 31,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 18
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 7
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 5
+        },
+        {
+          "channel": "meta",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 18
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 7
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 5
+        },
+        {
+          "channel": "meta",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-22 05:17:50.143196",
+      "last_signal_age_days": 34.29,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "미래에셋증권"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "우리은행",
+      "adic_amount": 8352941.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 96,
+      "live_recent_count": 96,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 93
+        },
+        {
+          "channel": "meta",
+          "count": 3
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 93
+        },
+        {
+          "channel": "meta",
+          "recent_count": 3
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 16:57:41.028385",
+      "last_signal_age_days": 36.81,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "우리은행"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "기업은행",
+      "adic_amount": 8340308.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "LG전자",
+      "adic_amount": 8194182.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "contains",
+        "mobile": "none"
+      },
+      "live_total_count": 191,
+      "live_recent_count": 191,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 90
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 44
+        },
+        {
+          "channel": "google_gdn",
+          "count": 33
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 14
+        },
+        {
+          "channel": "naver_shopping",
+          "count": 10
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 90
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 44
+        },
+        {
+          "channel": "google_gdn",
+          "recent_count": 33
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 14
+        },
+        {
+          "channel": "naver_shopping",
+          "recent_count": 10
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 1,
+      "staging_statuses": [
+        {
+          "status": "approved",
+          "count": 1
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 09:08:05.548056",
+      "last_signal_age_days": 12.13,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "LG전자"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "LG전자  lge.co.kr"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "KB금융지주",
+      "adic_amount": 7802025.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "주영엔에스",
+      "adic_amount": 7135547.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "contains",
+        "mobile": "none"
+      },
+      "live_total_count": 18,
+      "live_recent_count": 18,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 18
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 18
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 4,
+      "staging_statuses": [
+        {
+          "status": "approved",
+          "count": 4
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 08:53:07.396205",
+      "last_signal_age_days": 12.14,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "주영엔에스"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "네이버페이        주영엔에스  brand.naver.com/jyns"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "삼성생명보험",
+      "adic_amount": 6972545.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 129,
+      "live_recent_count": 129,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 60
+        },
+        {
+          "channel": "google_gdn",
+          "count": 39
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 30
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 60
+        },
+        {
+          "channel": "google_gdn",
+          "recent_count": 39
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 30
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 14:49:30.307819",
+      "last_signal_age_days": 36.9,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "삼성생명보험"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "한국인삼공사",
+      "adic_amount": 6668124.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 98,
+      "live_recent_count": 98,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "youtube_ads",
+          "count": 98
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "youtube_ads",
+          "recent_count": 98
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-21 14:51:52.123701",
+      "last_signal_age_days": 34.89,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "한국인삼공사"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "삼성화재",
+      "adic_amount": 6545436.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "contains",
+        "mobile": "none"
+      },
+      "live_total_count": 600,
+      "live_recent_count": 600,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 324
+        },
+        {
+          "channel": "google_gdn",
+          "count": 148
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 122
+        },
+        {
+          "channel": "naver_search",
+          "count": 6
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 324
+        },
+        {
+          "channel": "google_gdn",
+          "recent_count": 148
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 122
+        },
+        {
+          "channel": "naver_search",
+          "recent_count": 6
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 483,
+      "staging_statuses": [
+        {
+          "status": "deduped",
+          "count": 395
+        },
+        {
+          "status": "quarantine",
+          "count": 88
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 09:14:42.153527",
+      "last_signal_age_days": 12.13,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "삼성화재"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "삼성화재 N잡크루"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "신한금융지주회사",
+      "adic_amount": 6404980.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 40,
+      "live_recent_count": 40,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "youtube_ads",
+          "count": 40
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "youtube_ads",
+          "recent_count": 40
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-02-23 11:34:12.481116",
+      "last_signal_age_days": 61.03,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "신한금융지주회사"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "지온메디텍",
+      "adic_amount": 6064870.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "하나금융그룹",
+      "adic_amount": 6060566.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "KT",
+      "adic_amount": 5808051.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 44,
+      "live_recent_count": 44,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 43
+        },
+        {
+          "channel": "naver_shopping",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 43
+        },
+        {
+          "channel": "naver_shopping",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-21 14:48:23.665431",
+      "last_signal_age_days": 34.9,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "KT"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "명인제약",
+      "adic_amount": 5741148.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "국민은행",
+      "adic_amount": 5669183.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "SK텔레콤",
+      "adic_amount": 5601735.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "LG",
+      "adic_amount": 5192697.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 1,
+      "live_recent_count": 1,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "meta",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "meta",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-02-25 16:14:15.955986",
+      "last_signal_age_days": 58.84,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "LG"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "동국제약",
+      "adic_amount": 4883002.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "exact",
+        "mobile": "none"
+      },
+      "live_total_count": 96,
+      "live_recent_count": 96,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_da",
+          "count": 70
+        },
+        {
+          "channel": "google_gdn",
+          "count": 10
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 9
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 4
+        },
+        {
+          "channel": "naver_search",
+          "count": 3
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_da",
+          "recent_count": 70
+        },
+        {
+          "channel": "google_gdn",
+          "recent_count": 10
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 9
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 4
+        },
+        {
+          "channel": "naver_search",
+          "recent_count": 3
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 3,
+      "staging_statuses": [
+        {
+          "status": "deduped",
+          "count": 3
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-23 14:27:22.265530",
+      "last_signal_age_days": 32.91,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "동국제약"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "동국제약"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "인포벨",
+      "adic_amount": 4424217.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "한국피앤지",
+      "adic_amount": 4073060.0,
+      "industry": "",
+      "match_modes": {
+        "live": "contains",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 105,
+      "live_recent_count": 105,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "youtube_ads",
+          "count": 105
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "youtube_ads",
+          "recent_count": 105
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-02-24 19:39:07.370130",
+      "last_signal_age_days": 59.69,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "한국피앤지판매"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "귀뚜라미냉난방기술연구소",
+      "adic_amount": 4051745.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "천재교과서",
+      "adic_amount": 3846362.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 18,
+      "live_recent_count": 18,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 18
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 18
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-02-23 15:46:47.699077",
+      "last_signal_age_days": 60.86,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "천재교과서"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "하림산업",
+      "adic_amount": 3787368.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "우주텍",
+      "adic_amount": 3729706.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "카카오뱅크",
+      "adic_amount": 3714401.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "시몬스",
+      "adic_amount": 3650893.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 8,
+      "live_recent_count": 8,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 7
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 7
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-28 14:10:48.034242",
+      "last_signal_age_days": 27.92,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "시몬스"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "맥도날드",
+      "adic_amount": 3559789.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 42,
+      "live_recent_count": 42,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "youtube_ads",
+          "count": 42
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "youtube_ads",
+          "recent_count": 42
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-02-24 19:34:50.904428",
+      "last_signal_age_days": 59.7,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "맥도날드"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "씨제이올리브영",
+      "adic_amount": 3413596.0,
+      "industry": "",
+      "match_modes": {
+        "live": "contains",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 24,
+      "live_recent_count": 24,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 22
+        },
+        {
+          "channel": "tiktok_ads",
+          "count": 2
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 22
+        },
+        {
+          "channel": "tiktok_ads",
+          "recent_count": 2
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 07:47:37.324745",
+      "last_signal_age_days": 12.19,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "올리브영"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "한국토지주택공사",
+      "adic_amount": 3379590.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "트립닷컴",
+      "adic_amount": 3304947.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "contains",
+        "mobile": "none"
+      },
+      "live_total_count": 26,
+      "live_recent_count": 26,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 26
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 26
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 6,
+      "staging_statuses": [
+        {
+          "status": "deduped",
+          "count": 6
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-28 14:10:10.029381",
+      "last_signal_age_days": 27.92,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "트립닷컴"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "lldailytrip 페이지는 트립닷컴과(와) 함께합니다"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "신한은행",
+      "adic_amount": 3266712.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 2,
+      "live_recent_count": 2,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "youtube_ads",
+          "count": 2
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "youtube_ads",
+          "recent_count": 2
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 15:07:55.538737",
+      "last_signal_age_days": 36.88,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "신한은행"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "서울특별시",
+      "adic_amount": 3169765.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "장스푸드",
+      "adic_amount": 3153481.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 16,
+      "live_recent_count": 16,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_gdn",
+          "count": 14
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 2
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_gdn",
+          "recent_count": 14
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 2
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 15:05:07.307815",
+      "last_signal_age_days": 36.88,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "장스푸드"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "오뚜기",
+      "adic_amount": 3149146.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "(주)하나은행",
+      "adic_amount": 3120406.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "exact",
+        "mobile": "none"
+      },
+      "live_total_count": 82,
+      "live_recent_count": 82,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 82
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 82
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 5,
+      "staging_statuses": [
+        {
+          "status": "quarantine",
+          "count": 5
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 09:06:55.490703",
+      "last_signal_age_days": 12.13,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "하나은행"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "하나은행"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "기세",
+      "adic_amount": 3075053.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "어댑트",
+      "adic_amount": 3005684.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "exact",
+        "mobile": "none"
+      },
+      "live_total_count": 83,
+      "live_recent_count": 83,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_da",
+          "count": 62
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 12
+        },
+        {
+          "channel": "google_gdn",
+          "count": 6
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 3
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_da",
+          "recent_count": 62
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 12
+        },
+        {
+          "channel": "google_gdn",
+          "recent_count": 6
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 3
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 1008,
+      "staging_statuses": [
+        {
+          "status": "deduped",
+          "count": 910
+        },
+        {
+          "status": "quarantine",
+          "count": 98
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 08:41:37.819371",
+      "last_signal_age_days": 12.15,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "어댑트"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "어댑트"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "현대자동차",
+      "adic_amount": 2816361.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 214,
+      "live_recent_count": 214,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 213
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 213
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 16:46:47.212569",
+      "last_signal_age_days": 36.81,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "현대자동차"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "스픽이지랩스코리아",
+      "adic_amount": 2758342.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "SK이노베이션",
+      "adic_amount": 2734595.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "사회복지공동모금회",
+      "adic_amount": 2682330.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "세라젬",
+      "adic_amount": 2633692.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 77,
+      "live_recent_count": 77,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_gdn",
+          "count": 64
+        },
+        {
+          "channel": "meta",
+          "count": 9
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 4
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_gdn",
+          "recent_count": 64
+        },
+        {
+          "channel": "meta",
+          "recent_count": 9
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 4
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-21 15:47:08.089607",
+      "last_signal_age_days": 34.86,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "세라젬"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "익수제약",
+      "adic_amount": 2525077.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "exact",
+        "mobile": "none"
+      },
+      "live_total_count": 17,
+      "live_recent_count": 17,
+      "live_retroactive_count": 1,
+      "live_channels": [
+        {
+          "channel": "google_gdn",
+          "count": 11
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 3
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 2
+        },
+        {
+          "channel": "meta",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_gdn",
+          "recent_count": 11
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 3
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 2
+        },
+        {
+          "channel": "meta",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 2,
+      "staging_statuses": [
+        {
+          "status": "approved",
+          "count": 2
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 08:58:01.481732",
+      "last_signal_age_days": 12.14,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "익수제약"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "익수제약"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "새마을금고중앙회",
+      "adic_amount": 2501604.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "SK하이닉스",
+      "adic_amount": 2462895.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "롯데지주",
+      "adic_amount": 2405487.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "홈플러스",
+      "adic_amount": 2394014.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 8,
+      "live_recent_count": 8,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_gdn",
+          "count": 4
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 4
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_gdn",
+          "recent_count": 4
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 4
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 16:01:42.018332",
+      "last_signal_age_days": 36.85,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "홈플러스"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "KB캐피탈",
+      "adic_amount": 2391151.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "contains",
+        "mobile": "none"
+      },
+      "live_total_count": 6,
+      "live_recent_count": 6,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_gdn",
+          "count": 2
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 2
+        },
+        {
+          "channel": "naver_search",
+          "count": 2
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_gdn",
+          "recent_count": 2
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 2
+        },
+        {
+          "channel": "naver_search",
+          "recent_count": 2
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 1,
+      "staging_statuses": [
+        {
+          "status": "approved",
+          "count": 1
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 07:40:23.173344",
+      "last_signal_age_days": 12.19,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "KB캐피탈"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "KB캐피탈공식제휴사  kbcar-rent.com"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "농심",
+      "adic_amount": 2382281.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 8,
+      "live_recent_count": 8,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_gdn",
+          "count": 4
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 4
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_gdn",
+          "recent_count": 4
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 4
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-21 15:23:46.337261",
+      "last_signal_age_days": 34.87,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "농심"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "어린이재단",
+      "adic_amount": 2380159.0,
+      "industry": "",
+      "match_modes": {
+        "live": "contains",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 1,
+      "live_recent_count": 1,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "meta",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "meta",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-23 09:09:36.371639",
+      "last_signal_age_days": 33.13,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "초록우산 어린이재단_Childfund"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "국민건강보험공단",
+      "adic_amount": 2344450.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "contains",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 2,
+      "staging_statuses": [
+        {
+          "status": "quarantine",
+          "count": 2
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 08:53:52.736149",
+      "last_signal_age_days": 12.14,
+      "gap_bucket": "pipeline_quality_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "국민건강보험"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "월트디즈니",
+      "adic_amount": 2310224.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "삼양홀딩스",
+      "adic_amount": 2236796.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 41,
+      "live_recent_count": 41,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 41
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 41
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 15:27:55.477161",
+      "last_signal_age_days": 36.87,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "삼양홀딩스"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "교촌F&B",
+      "adic_amount": 2219099.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "고려은단헬스케어",
+      "adic_amount": 2169807.0,
+      "industry": "",
+      "match_modes": {
+        "live": "contains",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 6,
+      "live_recent_count": 6,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 5
+        },
+        {
+          "channel": "naver_da",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 5
+        },
+        {
+          "channel": "naver_da",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-28 14:18:37.369146",
+      "last_signal_age_days": 27.92,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "고려은단"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "프랭크에프앤비",
+      "adic_amount": 2154675.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "비케이알",
+      "adic_amount": 2135580.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "기아",
+      "adic_amount": 2132008.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 14,
+      "live_recent_count": 14,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_da",
+          "count": 14
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_da",
+          "recent_count": 14
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-02-23 11:37:02.770614",
+      "last_signal_age_days": 61.03,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "기아"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "린나이코리아",
+      "adic_amount": 2022905.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "파라미타",
+      "adic_amount": 1989226.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "한국피자헛",
+      "adic_amount": 1954778.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 44,
+      "live_recent_count": 44,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 43
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 43
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-02-28 04:30:17.218442",
+      "last_signal_age_days": 56.33,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "한국피자헛"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "신영증권",
+      "adic_amount": 1942825.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "리치몬드코리아*",
+      "adic_amount": 1926050.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "신용협동조합",
+      "adic_amount": 1864858.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "한국존슨앤드존슨",
+      "adic_amount": 1818198.0,
+      "industry": "",
+      "match_modes": {
+        "live": "contains",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 209,
+      "live_recent_count": 209,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "youtube_ads",
+          "count": 199
+        },
+        {
+          "channel": "google_gdn",
+          "count": 10
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "youtube_ads",
+          "recent_count": 199
+        },
+        {
+          "channel": "google_gdn",
+          "recent_count": 10
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-21 15:43:14.980169",
+      "last_signal_age_days": 34.86,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "한국존슨앤드존슨비전",
+        "한국존슨앤드존슨판매"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "애플",
+      "adic_amount": 1797292.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "투썸플레이스",
+      "adic_amount": 1766310.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "대원제약",
+      "adic_amount": 1728338.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "동아제약",
+      "adic_amount": 1707034.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "contains",
+        "mobile": "none"
+      },
+      "live_total_count": 1,
+      "live_recent_count": 1,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 1,
+      "staging_statuses": [
+        {
+          "status": "approved",
+          "count": 1
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 08:16:06.549458",
+      "last_signal_age_days": 12.17,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "동아제약"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "네이버페이        동아제약  brand.naver.com/dapharm"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "헤일리온코리아",
+      "adic_amount": 1649910.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "밀리의서재",
+      "adic_amount": 1639584.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 87,
+      "live_recent_count": 87,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_gdn",
+          "count": 80
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 5
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 2
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_gdn",
+          "recent_count": 80
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 5
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 2
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 14:44:45.685172",
+      "last_signal_age_days": 36.9,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "밀리의 서재"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "롯데웰푸드",
+      "adic_amount": 1633873.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "contains",
+        "mobile": "none"
+      },
+      "live_total_count": 3,
+      "live_recent_count": 3,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 3
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 3
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 1,
+      "staging_statuses": [
+        {
+          "status": "approved",
+          "count": 1
+        }
+      ],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 09:25:17.455377",
+      "last_signal_age_days": 12.12,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "롯데웰푸드"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [
+        "네이버페이        롯데웰푸드  brand.naver.com/lottewellfood"
+      ],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "한글과컴퓨터",
+      "adic_amount": 1610419.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 38,
+      "live_recent_count": 38,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "youtube_ads",
+          "count": 36
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 2
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "youtube_ads",
+          "recent_count": 36
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 2
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 14:38:44.921166",
+      "last_signal_age_days": 36.9,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "한글과컴퓨터"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "한국엠에스디",
+      "adic_amount": 1604363.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "LGU플러스",
+      "adic_amount": 1582195.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "샤크닌자",
+      "adic_amount": 1576812.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "아웃백스테이크하우스",
+      "adic_amount": 1554172.0,
+      "industry": "",
+      "match_modes": {
+        "live": "contains",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 4,
+      "live_recent_count": 4,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 4
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 4
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-28 14:37:27.983670",
+      "last_signal_age_days": 27.9,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "백스테이"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "미디어윌네트웍스",
+      "adic_amount": 1541082.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 16,
+      "live_recent_count": 16,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "youtube_ads",
+          "count": 12
+        },
+        {
+          "channel": "google_gdn",
+          "count": 2
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 2
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "youtube_ads",
+          "recent_count": 12
+        },
+        {
+          "channel": "google_gdn",
+          "recent_count": 2
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 2
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-20 18:49:10.852842",
+      "last_signal_age_days": 35.73,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "미디어윌네트웍스"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "한화생명보험",
+      "adic_amount": 1531331.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "이노리어",
+      "adic_amount": 1517856.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "제이엔비",
+      "adic_amount": 1498332.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "쿠쿠전자",
+      "adic_amount": 1480082.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 22,
+      "live_recent_count": 22,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "youtube_ads",
+          "count": 19
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 3
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "youtube_ads",
+          "recent_count": 19
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 3
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-21 16:02:16.544402",
+      "last_signal_age_days": 34.84,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "쿠쿠전자"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "롯데아사히주류",
+      "adic_amount": 1457391.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "한국산업은행",
+      "adic_amount": 1456489.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "웰빙푸드",
+      "adic_amount": 1453845.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 24,
+      "live_recent_count": 24,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_gdn",
+          "count": 19
+        },
+        {
+          "channel": "google_search_ads",
+          "count": 3
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 2
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_gdn",
+          "recent_count": 19
+        },
+        {
+          "channel": "google_search_ads",
+          "recent_count": 3
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 2
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-20 18:49:53.336274",
+      "last_signal_age_days": 35.73,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "웰빙푸드"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "아모레퍼시픽",
+      "adic_amount": 1434395.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 145,
+      "live_recent_count": 145,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "youtube_ads",
+          "count": 145
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "youtube_ads",
+          "recent_count": 145
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-02-23 15:06:28",
+      "last_signal_age_days": 60.88,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "아모레퍼시픽"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "대한항공",
+      "adic_amount": 1388495.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 129,
+      "live_recent_count": 129,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 80
+        },
+        {
+          "channel": "google_gdn",
+          "count": 43
+        },
+        {
+          "channel": "naver_search",
+          "count": 6
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 80
+        },
+        {
+          "channel": "google_gdn",
+          "recent_count": 43
+        },
+        {
+          "channel": "naver_search",
+          "recent_count": 6
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 16:39:32.151951",
+      "last_signal_age_days": 36.82,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "대한항공"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "메가스터디교육",
+      "adic_amount": 1378470.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 221,
+      "live_recent_count": 221,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 212
+        },
+        {
+          "channel": "google_gdn",
+          "count": 9
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 212
+        },
+        {
+          "channel": "google_gdn",
+          "recent_count": 9
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 16:15:16.927819",
+      "last_signal_age_days": 36.84,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "메가스터디교육"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "한국주택금융공사",
+      "adic_amount": 1377119.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "저출산고령사회위원회",
+      "adic_amount": 1376666.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "글락소스미스클라인",
+      "adic_amount": 1370463.0,
+      "industry": "",
+      "match_modes": {
+        "live": "exact",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 106,
+      "live_recent_count": 106,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 105
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 105
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 16:34:51.756970",
+      "last_signal_age_days": 36.82,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "글락소스미스클라인"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "현대자동차그룹",
+      "adic_amount": 1370135.0,
+      "industry": "",
+      "match_modes": {
+        "live": "contains",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 214,
+      "live_recent_count": 214,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "google_search_ads",
+          "count": 213
+        },
+        {
+          "channel": "youtube_ads",
+          "count": 1
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "google_search_ads",
+          "recent_count": 213
+        },
+        {
+          "channel": "youtube_ads",
+          "recent_count": 1
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-03-19 16:46:47.212569",
+      "last_signal_age_days": 36.81,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "현대자동차"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "GS칼텍스",
+      "adic_amount": 1369850.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "올데이프레쉬",
+      "adic_amount": 1366332.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "보건복지부",
+      "adic_amount": 1329878.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "열심히*",
+      "adic_amount": 1322014.0,
+      "industry": "",
+      "match_modes": {
+        "live": "none",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 0,
+      "live_recent_count": 0,
+      "live_retroactive_count": 0,
+      "live_channels": [],
+      "live_recent_channels": [],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": null,
+      "last_signal_age_days": null,
+      "gap_bucket": "collection_gap",
+      "matched_live_names": [],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    },
+    {
+      "advertiser_name": "한국타이어앤테크놀로지",
+      "adic_amount": 1304320.0,
+      "industry": "",
+      "match_modes": {
+        "live": "contains",
+        "unresolved_live": "none",
+        "staging": "none",
+        "mobile": "none"
+      },
+      "live_total_count": 2,
+      "live_recent_count": 2,
+      "live_retroactive_count": 0,
+      "live_channels": [
+        {
+          "channel": "naver_search",
+          "count": 2
+        }
+      ],
+      "live_recent_channels": [
+        {
+          "channel": "naver_search",
+          "recent_count": 2
+        }
+      ],
+      "unresolved_live_count": 0,
+      "unresolved_live_channels": [],
+      "staging_total_count": 0,
+      "staging_statuses": [],
+      "mobile_total_count": 0,
+      "mobile_apps": [],
+      "last_signal_at": "2026-04-13 08:36:57.713627",
+      "last_signal_age_days": 12.15,
+      "gap_bucket": "covered_recent",
+      "matched_live_names": [
+        "한국타이어"
+      ],
+      "matched_unresolved_names": [],
+      "matched_staging_names": [],
+      "matched_mobile_names": []
+    }
+  ]
+}

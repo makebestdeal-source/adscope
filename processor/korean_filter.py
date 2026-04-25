@@ -17,7 +17,9 @@ _FOREIGN_SCRIPT_RE = re.compile(
     r'\u0600-\u06FF'    # Arabic
     r'\u0E00-\u0E7F'    # Thai
     r'\u0400-\u04FF'    # Cyrillic
-    r'\u0900-\u097F]'   # Devanagari
+    r'\u0900-\u097F'    # Devanagari
+    r'\u3040-\u309F'    # Hiragana (Japanese)
+    r'\u30A0-\u30FF]'   # Katakana (Japanese)
 )
 
 # Zero-width characters
@@ -69,6 +71,22 @@ _INFRA_KEYWORDS = {
     'ader.naver', 'ad.search', 'doubleclick', 'googlesyndication',
 }
 
+# 한국 성씨 (상위 100개)
+_KR_SURNAMES = set(
+    '김이박최정강조윤장임한오서신권황안송류홍전고문양손배백허유남심노하곽성차주'
+    '우구신임나전민유진지엄채원천방공강현변함배염양변여추도소석선설마길연위표명'
+    '기반왕금옥육인맹제모탁국편'
+)
+
+
+def _is_person_name(name: str) -> bool:
+    """2~3글자 한글이고 첫 글자가 한국 성씨이면 개인 이름으로 판단."""
+    if not name or len(name) < 2 or len(name) > 3:
+        return False
+    if not re.fullmatch(r'[가-힣]{2,3}', name):
+        return False
+    return name[0] in _KR_SURNAMES
+
 # Prefix noise from naver landing pages
 _NAVER_PREFIX_RE = re.compile(
     r'^(?:네이버로그인|네이버페이|네이버파이낸셜)\s*',
@@ -95,6 +113,10 @@ def clean_advertiser_name(name: str | None) -> str | None:
     # Reject ad infrastructure names
     name_lower = name.lower()
     if any(kw in name_lower for kw in _INFRA_KEYWORDS):
+        return None
+
+    # Reject Korean person names (2-3 char with surname)
+    if _is_person_name(name.strip()):
         return None
 
     # Remove naver login/pay prefixes

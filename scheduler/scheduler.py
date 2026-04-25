@@ -186,6 +186,11 @@ class AdScopeScheduler:
         # 서킷브레이커: 연속 실패 추적 (채널 -> 연속실패횟수)
         self._channel_fail_count: dict[str, int] = {}
         self._circuit_breaker_threshold = _env_int("CIRCUIT_BREAKER_THRESHOLD", default=5, minimum=2)
+        # 서킷브레이커 자동 리셋: 쿨다운 후 half-open 허용
+        self._channel_fail_time: dict[str, datetime] = {}  # 채널별 서킷 오픈 시각
+        self._circuit_breaker_cooldown_minutes = _env_int(
+            "CIRCUIT_BREAKER_COOLDOWN_MINUTES", default=30, minimum=5,
+        )
         self._retry_max = _env_int("CRAWL_RETRY_MAX", default=2, minimum=0)
         logger.info("[schedule] crawl channels: {}", ", ".join(self.crawl_channels))
 
@@ -205,6 +210,44 @@ class AdScopeScheduler:
             )
         )
         logger.info(f"Loaded {len(self._keywords)} keywords")
+
+        # 쇼핑 전용 키워드 로딩
+        self._shopping_keywords = self._load_shopping_keywords()
+
+    def _load_shopping_keywords(self) -> list[str]:
+        """Load shopping-specific keywords from DB or seed file."""
+        # 1차: DB shopping_keywords 테이블에서 로딩
+        try:
+            import sqlite3
+            db_path = os.getenv("SQLITE_PATH", "adscope.db")
+            conn = sqlite3.connect(db_path)
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT keyword FROM shopping_keywords WHERE is_active = 1 ORDER BY priority, id"
+            )
+            kws = [row[0] for row in cur.fetchall()]
+            conn.close()
+            if kws:
+                logger.info(f"Loaded {len(kws)} shopping keywords from DB")
+                return kws
+        except Exception:
+            pass
+
+        # 2차: seed 파일에서 로딩
+        seed_path = Path("database/seed_data/shopping_keywords.json")
+        if not seed_path.exists():
+            logger.warning("Shopping keyword seed file not found")
+            return []
+        with open(seed_path, encoding="utf-8") as f:
+            data = json.load(f)
+        keywords: list[str] = []
+        for group in data:
+            for kw in group.get("keywords", []):
+                kw = kw.strip()
+                if kw and kw not in keywords:
+                    keywords.append(kw)
+        logger.info(f"Loaded {len(keywords)} shopping keywords from seed file")
+        return keywords
 
     def _resolve_keywords(self) -> list[str]:
         """Compose final keyword set for current run."""
@@ -263,6 +306,40 @@ class AdScopeScheduler:
             )
             logger.info("[schedule] Social stats scheduled daily at 02:30")
 
+        # ── Shopping product collection (03:30) ──
+
+        # 쇼핑 상품 데이터 수집: 매일 03:30 (키워드 검색 → 상품 스냅샷)
+        if _env_bool("ENABLE_SHOPPING_PRODUCT", default=True):
+            self.scheduler.add_job(
+                self._run_shopping_product_collection,
+                CronTrigger(hour=3, minute=30, timezone="Asia/Seoul"),
+                id="shopping_product_daily",
+                replace_existing=True,
+            )
+            logger.info("[schedule] Shopping product collection scheduled daily at 03:30")
+
+        # ── News & Search Trend collection (03:45 ~ 04:00) ──
+
+        # 뉴스 수집: 매일 03:45 (광고주별 뉴스 기사 수집)
+        if _env_bool("ENABLE_NEWS_COLLECTOR", default=True):
+            self.scheduler.add_job(
+                self._run_news_collector,
+                CronTrigger(hour=3, minute=45, timezone="Asia/Seoul"),
+                id="news_collector_daily",
+                replace_existing=True,
+            )
+            logger.info("[schedule] News collector scheduled daily at 03:45")
+
+        # 검색 트렌드: 매일 03:55 (DataLab 검색 지수 수집)
+        if _env_bool("ENABLE_SEARCH_TREND", default=True):
+            self.scheduler.add_job(
+                self._run_search_trend_collector,
+                CronTrigger(hour=3, minute=55, timezone="Asia/Seoul"),
+                id="search_trend_daily",
+                replace_existing=True,
+            )
+            logger.info("[schedule] Search trend collector scheduled daily at 03:55")
+
         # ── Meta-signal jobs (04:00 ~ 05:30) ──
 
         # SmartStore meta-signal: 매일 04:00 + 16:00 (재고 델타용 2회)
@@ -280,6 +357,26 @@ class AdScopeScheduler:
                 replace_existing=True,
             )
             logger.info("[schedule] SmartStore signal scheduled daily at 04:00 + 16:00")
+
+        # Social category ranking: 매일 04:15 (소셜 활동 기반 산업별 랭킹)
+        if _env_bool("ENABLE_SOCIAL_RANKING", default=True):
+            self.scheduler.add_job(
+                self._run_social_ranking,
+                CronTrigger(hour=4, minute=15, timezone="Asia/Seoul"),
+                id="social_ranking_daily",
+                replace_existing=True,
+            )
+            logger.info("[schedule] Social ranking scheduled daily at 04:15")
+
+        # Shopping category ranking: 매일 04:20 (쇼핑 카테고리별 스토어 랭킹)
+        if _env_bool("ENABLE_SHOPPING_RANKING", default=True):
+            self.scheduler.add_job(
+                self._run_shopping_ranking,
+                CronTrigger(hour=4, minute=20, timezone="Asia/Seoul"),
+                id="shopping_ranking_daily",
+                replace_existing=True,
+            )
+            logger.info("[schedule] Shopping ranking scheduled daily at 04:20")
 
         # Traffic signal: 매일 04:30
         if _env_bool("ENABLE_TRAFFIC_SIGNAL", default=True):
@@ -374,6 +471,16 @@ class AdScopeScheduler:
             replace_existing=True,
         )
         logger.info("[schedule] Advertiser link collector scheduled daily at 07:30")
+
+        # 소셜 채널 자동 탐색: 매일 08:00 (웹사이트 스크래핑으로 소셜 링크 발굴)
+        if _env_bool("ENABLE_SOCIAL_DISCOVERY", default=True):
+            self.scheduler.add_job(
+                self._run_social_channel_discovery,
+                CronTrigger(hour=8, minute=0, timezone="Asia/Seoul"),
+                id="social_channel_discovery_daily",
+                replace_existing=True,
+            )
+            logger.info("[schedule] Social channel discovery scheduled daily at 08:00")
 
         # LII: Media source mention crawl: 매 30분
         if _env_bool("ENABLE_LII_CRAWL", default=True):
@@ -535,25 +642,44 @@ class AdScopeScheduler:
 
         results: list[dict] = []
         for channel in self.crawl_channels:
-            # 서킷브레이커: 연속 N회 실패한 채널은 스킵
+            # 서킷브레이커: 연속 N회 실패한 채널은 스킵 (쿨다운 후 half-open 허용)
             fail_count = self._channel_fail_count.get(channel, 0)
+            half_open = False
             if fail_count >= self._circuit_breaker_threshold:
-                logger.warning(
-                    "[schedule] circuit breaker OPEN for {} ({} consecutive failures, threshold {}). "
-                    "Skipping. Reset with CIRCUIT_BREAKER_THRESHOLD env or restart.",
-                    channel, fail_count, self._circuit_breaker_threshold,
+                opened_at = self._channel_fail_time.get(channel)
+                elapsed = (datetime.now(UTC) - opened_at).total_seconds() / 60 if opened_at else float("inf")
+                if elapsed < self._circuit_breaker_cooldown_minutes:
+                    remaining = self._circuit_breaker_cooldown_minutes - elapsed
+                    logger.warning(
+                        "[schedule] circuit breaker OPEN for {} ({} consecutive failures). "
+                        "Half-open retry in {:.0f}m. Skipping.",
+                        channel, fail_count, remaining,
+                    )
+                    continue
+                # 쿨다운 경과 -> half-open: 1회 재시도 허용
+                logger.info(
+                    "[schedule] circuit breaker HALF-OPEN for {} (cooldown {}m elapsed). Allowing 1 retry.",
+                    channel, self._circuit_breaker_cooldown_minutes,
                 )
-                continue
+                half_open = True
 
             crawler_cls = SUPPORTED_CRAWLER_MAP[channel]
             logger.info("[schedule] channel start: {}", channel)
             is_keyword_dependent = getattr(crawler_cls, "keyword_dependent", True)
-            channel_keywords = _limit_keywords_for_channel(
-                job_keywords=job_keywords,
-                channel=channel,
-                crawler_cls=crawler_cls,
-                channel_keyword_limits=self.channel_keyword_limits,
-            )
+            # naver_shopping은 쇼핑 전용 키워드 사용
+            if channel == "naver_shopping" and self._shopping_keywords:
+                channel_keywords = list(self._shopping_keywords)
+                logger.info(
+                    "[schedule] naver_shopping using {} shopping-specific keywords",
+                    len(channel_keywords),
+                )
+            else:
+                channel_keywords = _limit_keywords_for_channel(
+                    job_keywords=job_keywords,
+                    channel=channel,
+                    crawler_cls=crawler_cls,
+                    channel_keyword_limits=self.channel_keyword_limits,
+                )
             channel_min_interval = _resolve_min_interval_for_channel(
                 channel=channel,
                 is_keyword_dependent=is_keyword_dependent,
@@ -589,7 +715,13 @@ class AdScopeScheduler:
                     if channel_min_interval > 0:
                         self._channel_last_run_at[channel] = datetime.now(UTC)
                     # 성공 → 서킷브레이커 카운트 리셋
+                    if half_open:
+                        logger.info(
+                            "[schedule] circuit breaker CLOSED for {} (half-open retry succeeded)",
+                            channel,
+                        )
                     self._channel_fail_count[channel] = 0
+                    self._channel_fail_time.pop(channel, None)
                     last_exc = None
                     break
                 except Exception as exc:
@@ -605,7 +737,15 @@ class AdScopeScheduler:
 
             if last_exc is not None:
                 # 모든 재시도 실패 → 서킷브레이커 카운트 증가
-                self._channel_fail_count[channel] = fail_count + 1
+                new_fail_count = fail_count + 1
+                self._channel_fail_count[channel] = new_fail_count
+                if new_fail_count >= self._circuit_breaker_threshold:
+                    self._channel_fail_time[channel] = datetime.now(UTC)
+                    logger.warning(
+                        "[schedule] circuit breaker OPENED for {} (fail count: {}). "
+                        "Auto-retry after {}m cooldown.",
+                        channel, new_fail_count, self._circuit_breaker_cooldown_minutes,
+                    )
                 logger.exception("[schedule] channel failed after %d attempts: %s", 1 + self._retry_max, channel)
                 now = datetime.now(UTC)
                 results.extend(
@@ -912,6 +1052,38 @@ class AdScopeScheduler:
 
     # ── Meta-signal tasks ──
 
+    async def _run_news_collector(self):
+        """Daily news article collection for advertisers via Naver News API."""
+        try:
+            from processor.news_collector import collect_news_mentions
+            stats = await collect_news_mentions(max_advertisers=500, articles_per_brand=10)
+            logger.info("[schedule] News collector done: %s", stats)
+        except Exception:
+            logger.exception("[schedule] News collector failed")
+
+    async def _run_search_trend_collector(self):
+        """Daily search trend collection from Naver DataLab."""
+        try:
+            from processor.search_trend_collector import collect_search_trends
+            stats = await collect_search_trends(max_advertisers=100, days=30)
+            logger.info("[schedule] Search trend collector done: %s", stats)
+
+            # 검색 트렌드 수집 후 소셜 임팩트 점수 재계산
+            from processor.social_impact_scorer import calculate_social_impact_scores
+            impact_stats = await calculate_social_impact_scores()
+            logger.info("[schedule] Social impact recalculated: %s", impact_stats)
+        except Exception:
+            logger.exception("[schedule] Search trend collector failed")
+
+    async def _run_shopping_product_collection(self):
+        """Daily shopping product data collection from Naver Shopping search."""
+        try:
+            from processor.shopping_product_collector import collect_shopping_products
+            stats = await collect_shopping_products(batch_size=50)
+            logger.info("[schedule] Shopping product collection done: %s", stats)
+        except Exception:
+            logger.exception("[schedule] Shopping product collection failed")
+
     async def _run_smartstore_signal(self):
         """Daily SmartStore meta-signal collection + sales estimation."""
         try:
@@ -960,6 +1132,24 @@ class AdScopeScheduler:
             logger.info("[schedule] News collection done: %s", stats)
         except Exception:
             logger.exception("[schedule] News collection failed")
+
+    async def _run_social_ranking(self):
+        """Daily social category ranking calculation."""
+        try:
+            from processor.social_ranking_calculator import calculate_social_rankings
+            stats = await calculate_social_rankings()
+            logger.info("[schedule] Social ranking done: %s", stats)
+        except Exception:
+            logger.exception("[schedule] Social ranking failed")
+
+    async def _run_shopping_ranking(self):
+        """Daily shopping category ranking calculation."""
+        try:
+            from processor.shopping_ranking_calculator import calculate_shopping_rankings
+            stats = await calculate_shopping_rankings()
+            logger.info("[schedule] Shopping ranking done: %s", stats)
+        except Exception:
+            logger.exception("[schedule] Shopping ranking failed")
 
     async def _run_social_impact_score(self):
         """Daily social impact score calculation."""
@@ -1010,10 +1200,19 @@ class AdScopeScheduler:
         """Daily advertiser website/social link extraction from ad_details."""
         try:
             from processor.advertiser_link_collector import collect_advertiser_links
-            stats = await collect_advertiser_links(limit=100)
+            stats = await collect_advertiser_links(limit=200)
             logger.info("[schedule] Advertiser link collector done: %s", stats)
         except Exception:
             logger.exception("[schedule] Advertiser link collector failed")
+
+    async def _run_social_channel_discovery(self):
+        """Daily social channel discovery via website scraping."""
+        try:
+            from processor.social_channel_discoverer import discover_social_channels
+            stats = await discover_social_channels(limit=100)
+            logger.info("[schedule] Social channel discovery done: %s", stats)
+        except Exception:
+            logger.exception("[schedule] Social channel discovery failed")
 
     async def _run_lii_media_crawl(self):
         """LII: Crawl mentions from registered media sources (RSS/YouTube/HTML)."""

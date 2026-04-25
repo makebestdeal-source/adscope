@@ -1,0 +1,1480 @@
+{
+  "generated_at": "2026-04-25 12:18:33",
+  "db_path": "C:\\Users\\user\\Desktop\\adscopre\\adscope.db",
+  "recent_days": 90,
+  "adic_year": 2024,
+  "overall": {
+    "ad_details": 46605,
+    "ad_snapshots": 12028,
+    "advertisers": 6091,
+    "campaigns": 8336,
+    "spend_estimates": 45541,
+    "users": 12,
+    "last_crawl_at": "2026-04-24 13:06:15.671865",
+    "last_crawl_age_days": 0.97
+  },
+  "quality_overall": {
+    "total_ad_details": 46605,
+    "missing_advertiser_id": 490,
+    "missing_advertiser_name": 1325,
+    "missing_creative_image": 29033,
+    "missing_display_url": 3867,
+    "missing_ad_description": 35132,
+    "missing_advertiser_id_pct": 1.05,
+    "missing_advertiser_name_pct": 2.84,
+    "missing_creative_image_pct": 62.3,
+    "missing_display_url_pct": 8.3,
+    "missing_ad_description_pct": 75.38
+  },
+  "staging_status": {
+    "deduped": 138259,
+    "quarantine": 33722,
+    "approved": 11318,
+    "rejected": 486,
+    "pending": 132
+  },
+  "channels": [
+    {
+      "channel": "naver_search",
+      "snapshot_count": 3982,
+      "live_ad_count": 14406,
+      "live_advertiser_count": 2093,
+      "first_seen_at": "2026-02-15 15:33:23.751501",
+      "last_seen_at": "2026-04-13 09:31:38.130890",
+      "last_seen_age_days": 12.12,
+      "recent_snapshot_count": 3982,
+      "recent_advertiser_count": 2093,
+      "retroactive_ad_count": 0,
+      "staging_total_count": 502,
+      "staging_pending_count": 0,
+      "staging_quarantine_count": 0,
+      "staging_deduped_count": 92,
+      "missing_advertiser_id": 104,
+      "missing_advertiser_name": 8,
+      "missing_creative_image": 14406,
+      "missing_display_url": 3757,
+      "missing_advertiser_id_pct": 0.72,
+      "missing_creative_image_pct": 100.0
+    },
+    {
+      "channel": "naver_shopping",
+      "snapshot_count": 1400,
+      "live_ad_count": 554,
+      "live_advertiser_count": 158,
+      "first_seen_at": "2026-02-19 15:22:40.464622",
+      "last_seen_at": "2026-03-24 13:48:06.681839",
+      "last_seen_age_days": 31.94,
+      "recent_snapshot_count": 1400,
+      "recent_advertiser_count": 158,
+      "retroactive_ad_count": 0,
+      "staging_total_count": 4,
+      "staging_pending_count": 0,
+      "staging_quarantine_count": 4,
+      "staging_deduped_count": 0,
+      "missing_advertiser_id": 13,
+      "missing_advertiser_name": 0,
+      "missing_creative_image": 14,
+      "missing_display_url": 0,
+      "missing_advertiser_id_pct": 2.35,
+      "missing_creative_image_pct": 2.53
+    },
+    {
+      "channel": "google_gdn",
+      "snapshot_count": 1389,
+      "live_ad_count": 6394,
+      "live_advertiser_count": 1574,
+      "first_seen_at": "2026-02-22 18:43:24.041388",
+      "last_seen_at": "2026-04-24 13:06:15.671865",
+      "last_seen_age_days": 0.97,
+      "recent_snapshot_count": 1389,
+      "recent_advertiser_count": 1574,
+      "retroactive_ad_count": 1131,
+      "staging_total_count": 75151,
+      "staging_pending_count": 0,
+      "staging_quarantine_count": 0,
+      "staging_deduped_count": 70671,
+      "missing_advertiser_id": 17,
+      "missing_advertiser_name": 0,
+      "missing_creative_image": 94,
+      "missing_display_url": 0,
+      "missing_advertiser_id_pct": 0.27,
+      "missing_creative_image_pct": 1.47
+    },
+    {
+      "channel": "google_search_ads",
+      "snapshot_count": 1383,
+      "live_ad_count": 9297,
+      "live_advertiser_count": 1347,
+      "first_seen_at": "2026-02-20 15:06:47.045206",
+      "last_seen_at": "2026-04-24 13:00:37.900715",
+      "last_seen_age_days": 0.97,
+      "recent_snapshot_count": 1383,
+      "recent_advertiser_count": 1347,
+      "retroactive_ad_count": 2223,
+      "staging_total_count": 52616,
+      "staging_pending_count": 1,
+      "staging_quarantine_count": 10005,
+      "staging_deduped_count": 40067,
+      "missing_advertiser_id": 13,
+      "missing_advertiser_name": 0,
+      "missing_creative_image": 9297,
+      "missing_display_url": 0,
+      "missing_advertiser_id_pct": 0.14,
+      "missing_creative_image_pct": 100.0
+    },
+    {
+      "channel": "meta",
+      "snapshot_count": 1143,
+      "live_ad_count": 5374,
+      "live_advertiser_count": 1805,
+      "first_seen_at": "2026-02-15 15:34:06.024495",
+      "last_seen_at": "2026-04-23 13:40:05.291938",
+      "last_seen_age_days": 1.94,
+      "recent_snapshot_count": 1143,
+      "recent_advertiser_count": 1805,
+      "retroactive_ad_count": 1126,
+      "staging_total_count": 8178,
+      "staging_pending_count": 74,
+      "staging_quarantine_count": 617,
+      "staging_deduped_count": 3613,
+      "missing_advertiser_id": 224,
+      "missing_advertiser_name": 1303,
+      "missing_creative_image": 3403,
+      "missing_display_url": 110,
+      "missing_advertiser_id_pct": 4.17,
+      "missing_creative_image_pct": 63.32
+    },
+    {
+      "channel": "naver_da",
+      "snapshot_count": 1038,
+      "live_ad_count": 4947,
+      "live_advertiser_count": 407,
+      "first_seen_at": "2026-02-15 15:33:21.413253",
+      "last_seen_at": "2026-04-21 00:31:42.617433",
+      "last_seen_age_days": 4.49,
+      "recent_snapshot_count": 1038,
+      "recent_advertiser_count": 407,
+      "retroactive_ad_count": 0,
+      "staging_total_count": 4933,
+      "staging_pending_count": 0,
+      "staging_quarantine_count": 0,
+      "staging_deduped_count": 4844,
+      "missing_advertiser_id": 15,
+      "missing_advertiser_name": 1,
+      "missing_creative_image": 1006,
+      "missing_display_url": 0,
+      "missing_advertiser_id_pct": 0.3,
+      "missing_creative_image_pct": 20.34
+    },
+    {
+      "channel": "youtube_ads",
+      "snapshot_count": 1025,
+      "live_ad_count": 2811,
+      "live_advertiser_count": 736,
+      "first_seen_at": "2026-02-16 07:04:11.963302",
+      "last_seen_at": "2026-04-24 12:37:53.426131",
+      "last_seen_age_days": 0.99,
+      "recent_snapshot_count": 1025,
+      "recent_advertiser_count": 736,
+      "retroactive_ad_count": 201,
+      "staging_total_count": 42265,
+      "staging_pending_count": 0,
+      "staging_quarantine_count": 23094,
+      "staging_deduped_count": 18768,
+      "missing_advertiser_id": 12,
+      "missing_advertiser_name": 0,
+      "missing_creative_image": 57,
+      "missing_display_url": 0,
+      "missing_advertiser_id_pct": 0.43,
+      "missing_creative_image_pct": 2.03
+    },
+    {
+      "channel": "kakao_da",
+      "snapshot_count": 482,
+      "live_ad_count": 2753,
+      "live_advertiser_count": 141,
+      "first_seen_at": "2026-02-15 15:34:22.458101",
+      "last_seen_at": "2026-03-26 13:49:25.730143",
+      "last_seen_age_days": 29.94,
+      "recent_snapshot_count": 482,
+      "recent_advertiser_count": 141,
+      "retroactive_ad_count": 0,
+      "staging_total_count": 59,
+      "staging_pending_count": 57,
+      "staging_quarantine_count": 2,
+      "staging_deduped_count": 0,
+      "missing_advertiser_id": 79,
+      "missing_advertiser_name": 0,
+      "missing_creative_image": 751,
+      "missing_display_url": 0,
+      "missing_advertiser_id_pct": 2.87,
+      "missing_creative_image_pct": 27.28
+    },
+    {
+      "channel": "tiktok_ads",
+      "snapshot_count": 186,
+      "live_ad_count": 38,
+      "live_advertiser_count": 17,
+      "first_seen_at": "2026-02-19 14:52:34.592850",
+      "last_seen_at": "2026-04-23 13:42:15.936374",
+      "last_seen_age_days": 1.94,
+      "recent_snapshot_count": 186,
+      "recent_advertiser_count": 17,
+      "retroactive_ad_count": 5,
+      "staging_total_count": 209,
+      "staging_pending_count": 0,
+      "staging_quarantine_count": 0,
+      "staging_deduped_count": 204,
+      "missing_advertiser_id": 13,
+      "missing_advertiser_name": 13,
+      "missing_creative_image": 5,
+      "missing_display_url": 0,
+      "missing_advertiser_id_pct": 34.21,
+      "missing_creative_image_pct": 13.16
+    }
+  ],
+  "retroactive_breakdown": [
+    {
+      "archive_source": "google_transparency",
+      "count": 3555
+    },
+    {
+      "archive_source": "meta_library",
+      "count": 1126
+    },
+    {
+      "archive_source": "tiktok_creative",
+      "count": 5
+    }
+  ],
+  "mobile_panel": {
+    "overall": {
+      "device_count": 13,
+      "exposure_count": 12,
+      "last_observed_at": "2026-03-24T10:12:58.136249+00:00",
+      "last_observed_age_days": 31.71
+    },
+    "by_app": [
+      {
+        "app_name": "naver",
+        "count": 12
+      }
+    ]
+  },
+  "adic_coverage": {
+    "top_n": 100,
+    "exact_all_time": 100,
+    "contains_all_time": 0,
+    "covered_all_time": 100,
+    "exact_recent": 42,
+    "contains_recent": 8,
+    "covered_recent": 50,
+    "coverage_all_time_pct": 100.0,
+    "coverage_recent_pct": 50.0,
+    "top_advertisers": [
+      {
+        "advertiser_name": "삼성전자",
+        "adic_total_amount": 12400100.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "코웨이",
+        "adic_total_amount": 10503270.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "동서식품",
+        "adic_total_amount": 9815871.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "미래에셋증권",
+        "adic_total_amount": 8867656.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "우리은행",
+        "adic_total_amount": 8352941.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "기업은행",
+        "adic_total_amount": 8340308.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "LG전자",
+        "adic_total_amount": 8194182.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "KB금융지주",
+        "adic_total_amount": 7802025.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "주영엔에스",
+        "adic_total_amount": 7135547.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "삼성생명보험",
+        "adic_total_amount": 6972545.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "한국인삼공사",
+        "adic_total_amount": 6668124.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "삼성화재",
+        "adic_total_amount": 6545436.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "신한금융지주회사",
+        "adic_total_amount": 6404980.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "지온메디텍",
+        "adic_total_amount": 6064870.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "하나금융그룹",
+        "adic_total_amount": 6060566.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "KT",
+        "adic_total_amount": 5808051.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "명인제약",
+        "adic_total_amount": 5741148.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "국민은행",
+        "adic_total_amount": 5669183.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "SK텔레콤",
+        "adic_total_amount": 5601735.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "LG",
+        "adic_total_amount": 5192697.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "동국제약",
+        "adic_total_amount": 4883002.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "인포벨",
+        "adic_total_amount": 4424217.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "한국피앤지",
+        "adic_total_amount": 4073060.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "contains"
+      },
+      {
+        "advertiser_name": "귀뚜라미냉난방기술연구소",
+        "adic_total_amount": 4051745.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "천재교과서",
+        "adic_total_amount": 3846362.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "하림산업",
+        "adic_total_amount": 3787368.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "우주텍",
+        "adic_total_amount": 3729706.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "카카오뱅크",
+        "adic_total_amount": 3714401.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "시몬스",
+        "adic_total_amount": 3650893.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "맥도날드",
+        "adic_total_amount": 3559789.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "씨제이올리브영",
+        "adic_total_amount": 3413596.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "contains"
+      },
+      {
+        "advertiser_name": "한국토지주택공사",
+        "adic_total_amount": 3379590.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "트립닷컴",
+        "adic_total_amount": 3304947.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "신한은행",
+        "adic_total_amount": 3266712.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "서울특별시",
+        "adic_total_amount": 3169765.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "장스푸드",
+        "adic_total_amount": 3153481.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "오뚜기",
+        "adic_total_amount": 3149146.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "(주)하나은행",
+        "adic_total_amount": 3120406.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "기세",
+        "adic_total_amount": 3075053.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "어댑트",
+        "adic_total_amount": 3005684.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "현대자동차",
+        "adic_total_amount": 2816361.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "스픽이지랩스코리아",
+        "adic_total_amount": 2758342.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "SK이노베이션",
+        "adic_total_amount": 2734595.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "사회복지공동모금회",
+        "adic_total_amount": 2682330.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "세라젬",
+        "adic_total_amount": 2633692.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "익수제약",
+        "adic_total_amount": 2525077.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "새마을금고중앙회",
+        "adic_total_amount": 2501604.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "SK하이닉스",
+        "adic_total_amount": 2462895.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "롯데지주",
+        "adic_total_amount": 2405487.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "홈플러스",
+        "adic_total_amount": 2394014.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "KB캐피탈",
+        "adic_total_amount": 2391151.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "농심",
+        "adic_total_amount": 2382281.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "어린이재단",
+        "adic_total_amount": 2380159.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "contains"
+      },
+      {
+        "advertiser_name": "국민건강보험공단",
+        "adic_total_amount": 2344450.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "월트디즈니",
+        "adic_total_amount": 2310224.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "삼양홀딩스",
+        "adic_total_amount": 2236796.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "교촌F&B",
+        "adic_total_amount": 2219099.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "고려은단헬스케어",
+        "adic_total_amount": 2169807.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "contains"
+      },
+      {
+        "advertiser_name": "프랭크에프앤비",
+        "adic_total_amount": 2154675.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "비케이알",
+        "adic_total_amount": 2135580.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "기아",
+        "adic_total_amount": 2132008.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "린나이코리아",
+        "adic_total_amount": 2022905.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "파라미타",
+        "adic_total_amount": 1989226.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "한국피자헛",
+        "adic_total_amount": 1954778.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "신영증권",
+        "adic_total_amount": 1942825.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "리치몬드코리아*",
+        "adic_total_amount": 1926050.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "신용협동조합",
+        "adic_total_amount": 1864858.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "한국존슨앤드존슨",
+        "adic_total_amount": 1818198.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "contains"
+      },
+      {
+        "advertiser_name": "애플",
+        "adic_total_amount": 1797292.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "투썸플레이스",
+        "adic_total_amount": 1766310.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "대원제약",
+        "adic_total_amount": 1728338.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "동아제약",
+        "adic_total_amount": 1707034.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "헤일리온코리아",
+        "adic_total_amount": 1649910.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "밀리의서재",
+        "adic_total_amount": 1639584.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "롯데웰푸드",
+        "adic_total_amount": 1633873.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "한글과컴퓨터",
+        "adic_total_amount": 1610419.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "한국엠에스디",
+        "adic_total_amount": 1604363.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "LGU플러스",
+        "adic_total_amount": 1582195.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "샤크닌자",
+        "adic_total_amount": 1576812.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "아웃백스테이크하우스",
+        "adic_total_amount": 1554172.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "contains"
+      },
+      {
+        "advertiser_name": "미디어윌네트웍스",
+        "adic_total_amount": 1541082.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "한화생명보험",
+        "adic_total_amount": 1531331.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "이노리어",
+        "adic_total_amount": 1517856.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "제이엔비",
+        "adic_total_amount": 1498332.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "쿠쿠전자",
+        "adic_total_amount": 1480082.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "롯데아사히주류",
+        "adic_total_amount": 1457391.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "한국산업은행",
+        "adic_total_amount": 1456489.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "웰빙푸드",
+        "adic_total_amount": 1453845.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "아모레퍼시픽",
+        "adic_total_amount": 1434395.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "대한항공",
+        "adic_total_amount": 1388495.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "메가스터디교육",
+        "adic_total_amount": 1378470.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "한국주택금융공사",
+        "adic_total_amount": 1377119.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "저출산고령사회위원회",
+        "adic_total_amount": 1376666.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "글락소스미스클라인",
+        "adic_total_amount": 1370463.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "exact"
+      },
+      {
+        "advertiser_name": "현대자동차그룹",
+        "adic_total_amount": 1370135.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "contains"
+      },
+      {
+        "advertiser_name": "GS칼텍스",
+        "adic_total_amount": 1369850.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "올데이프레쉬",
+        "adic_total_amount": 1366332.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "보건복지부",
+        "adic_total_amount": 1329878.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "열심히*",
+        "adic_total_amount": 1322014.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "한국타이어앤테크놀로지",
+        "adic_total_amount": 1304320.0,
+        "covered_all_time": true,
+        "covered_recent": true,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "contains"
+      }
+    ],
+    "missing_all_time": [],
+    "missing_recent": [
+      {
+        "advertiser_name": "기업은행",
+        "adic_total_amount": 8340308.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "KB금융지주",
+        "adic_total_amount": 7802025.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "지온메디텍",
+        "adic_total_amount": 6064870.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "하나금융그룹",
+        "adic_total_amount": 6060566.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "명인제약",
+        "adic_total_amount": 5741148.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "국민은행",
+        "adic_total_amount": 5669183.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "SK텔레콤",
+        "adic_total_amount": 5601735.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "인포벨",
+        "adic_total_amount": 4424217.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "귀뚜라미냉난방기술연구소",
+        "adic_total_amount": 4051745.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "하림산업",
+        "adic_total_amount": 3787368.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "우주텍",
+        "adic_total_amount": 3729706.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "카카오뱅크",
+        "adic_total_amount": 3714401.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "한국토지주택공사",
+        "adic_total_amount": 3379590.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "서울특별시",
+        "adic_total_amount": 3169765.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "오뚜기",
+        "adic_total_amount": 3149146.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "기세",
+        "adic_total_amount": 3075053.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "스픽이지랩스코리아",
+        "adic_total_amount": 2758342.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "SK이노베이션",
+        "adic_total_amount": 2734595.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "사회복지공동모금회",
+        "adic_total_amount": 2682330.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "새마을금고중앙회",
+        "adic_total_amount": 2501604.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "SK하이닉스",
+        "adic_total_amount": 2462895.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "롯데지주",
+        "adic_total_amount": 2405487.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "국민건강보험공단",
+        "adic_total_amount": 2344450.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "월트디즈니",
+        "adic_total_amount": 2310224.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "교촌F&B",
+        "adic_total_amount": 2219099.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "프랭크에프앤비",
+        "adic_total_amount": 2154675.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "비케이알",
+        "adic_total_amount": 2135580.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "린나이코리아",
+        "adic_total_amount": 2022905.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "파라미타",
+        "adic_total_amount": 1989226.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "신영증권",
+        "adic_total_amount": 1942825.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "리치몬드코리아*",
+        "adic_total_amount": 1926050.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "신용협동조합",
+        "adic_total_amount": 1864858.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "애플",
+        "adic_total_amount": 1797292.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "투썸플레이스",
+        "adic_total_amount": 1766310.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "대원제약",
+        "adic_total_amount": 1728338.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "헤일리온코리아",
+        "adic_total_amount": 1649910.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "한국엠에스디",
+        "adic_total_amount": 1604363.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "LGU플러스",
+        "adic_total_amount": 1582195.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "샤크닌자",
+        "adic_total_amount": 1576812.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "한화생명보험",
+        "adic_total_amount": 1531331.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "이노리어",
+        "adic_total_amount": 1517856.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "제이엔비",
+        "adic_total_amount": 1498332.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "롯데아사히주류",
+        "adic_total_amount": 1457391.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "한국산업은행",
+        "adic_total_amount": 1456489.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "한국주택금융공사",
+        "adic_total_amount": 1377119.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "저출산고령사회위원회",
+        "adic_total_amount": 1376666.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "GS칼텍스",
+        "adic_total_amount": 1369850.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "올데이프레쉬",
+        "adic_total_amount": 1366332.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "보건복지부",
+        "adic_total_amount": 1329878.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      },
+      {
+        "advertiser_name": "열심히*",
+        "adic_total_amount": 1322014.0,
+        "covered_all_time": true,
+        "covered_recent": false,
+        "all_time_match_mode": "exact",
+        "recent_match_mode": "none"
+      }
+    ]
+  }
+}

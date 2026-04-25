@@ -90,6 +90,55 @@ async def init_db():
         await _ensure_oauth_columns(conn)
         await _ensure_toss_payment_columns(conn)
         await _ensure_researchad_schema_columns(conn)
+        # ── 자동 스키마 동기화: models.py에 컬럼 추가 시 수동 migration 불필요 ──
+        await _auto_sync_model_columns(conn)
+
+
+async def _auto_sync_model_columns(conn):
+    """models.py 정의와 실제 DB 스키마를 비교해 빠진 컬럼을 자동으로 추가한다.
+
+    새 컬럼을 models.py에 추가했을 때 _ensure_* 함수를 따로 작성하지 않아도
+    서버 재시작 시 자동으로 ALTER TABLE ... ADD COLUMN ... 이 실행된다.
+    PRIMARY KEY / UNIQUE 컬럼은 ALTER TABLE 제약으로 건너뛴다.
+    """
+    _type_map = {
+        "Integer": "INTEGER",
+        "BigInteger": "INTEGER",
+        "SmallInteger": "INTEGER",
+        "Boolean": "INTEGER",
+        "Float": "REAL",
+        "Numeric": "REAL",
+        "String": "TEXT",
+        "Text": "TEXT",
+        "Unicode": "TEXT",
+        "UnicodeText": "TEXT",
+        "DateTime": "DATETIME",
+        "Date": "DATE",
+        "Time": "TIME",
+        "JSON": "JSON",
+        "LargeBinary": "BLOB",
+    }
+
+    for table_name, table in Base.metadata.tables.items():
+        try:
+            rows = await conn.exec_driver_sql(f"PRAGMA table_info({table_name})")
+            existing = {row[1] for row in rows.fetchall()}
+        except Exception:
+            continue
+
+        if not existing:
+            continue  # 테이블 자체가 없으면 create_all이 처리함
+
+        for col in table.columns:
+            if col.name in existing or col.primary_key:
+                continue
+            sqlite_type = _type_map.get(type(col.type).__name__, "TEXT")
+            try:
+                await conn.exec_driver_sql(
+                    f"ALTER TABLE {table_name} ADD COLUMN {col.name} {sqlite_type}"
+                )
+            except Exception:
+                pass  # 이미 존재하거나 기타 제약 → 무시
 
 
 async def _ensure_oauth_columns(conn):
@@ -278,6 +327,8 @@ async def _ensure_dart_columns(conn):
     for col, typ in [
         ("dart_ad_expense", "REAL"),
         ("dart_fiscal_year", "TEXT"),
+        ("corp_code", "TEXT"),
+        ("dart_matched_at", "DATETIME"),
     ]:
         if col not in existing:
             try:

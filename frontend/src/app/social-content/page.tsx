@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { fetchApi } from "@/lib/api";
+import { fetchPublicApi } from "@/lib/api";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from "recharts";
 
 interface ContentItem {
@@ -72,7 +72,7 @@ export default function SocialContentPage() {
   const { data, isLoading } = useQuery<ContentAnalysis>({
     queryKey: ["social-content", days, platform],
     queryFn: () =>
-      fetchApi(`/brand-channels/content-analysis?days=${days}&platform=${platform === "all" ? "" : platform}`),
+      fetchPublicApi(`/brand-channels/content-analysis?days=${days}&platform=${platform === "all" ? "" : platform}`),
   });
 
   const filteredRecent = (data?.recent ?? []).filter(

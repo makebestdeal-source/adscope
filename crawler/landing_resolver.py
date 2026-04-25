@@ -18,6 +18,7 @@ _INFRA_HOSTS = {
     "google.com", "google.co.kr", "gstatic.com", "googleapis.com",
     "googletagmanager.com", "google-analytics.com",
     "facebook.com", "facebook.net", "fbcdn.net",
+    "ad.daum.net", "tr.ad.daum.net", "adfit.kakao.com", "kakaoad", "track.kakao.com",
     "youtube.com", "youtu.be", "t.co", "bit.ly",
 }
 

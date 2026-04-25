@@ -75,6 +75,12 @@ def test_valid_english():
     assert r.quality == NameQuality.VALID
 
 
+def test_valid_short_known_brand():
+    r = validate_name("KT")
+    assert r.quality == NameQuality.VALID
+    assert r.cleaned_name == "KT"
+
+
 # ── 정규화 ──
 
 def test_normalize_corp_suffix():

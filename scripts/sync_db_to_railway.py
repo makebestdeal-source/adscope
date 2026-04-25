@@ -13,14 +13,60 @@ import sys
 from pathlib import Path
 
 import requests
+from dotenv import load_dotenv
 from loguru import logger
 
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from processor.data_quality_gate import (
+    QualityRule,
+    collect_quality_stats,
+    evaluate_quality_gate,
+    parse_channel_rules,
+    parse_channels,
+)
+
 DB_PATH = ROOT / "adscope.db"
 GZ_PATH = ROOT / "adscope.db.gz"
 
-RAILWAY_URL = "https://adscope.kr/api/_upload_data"
-SECRET = "adscope-migrate-2026"
+load_dotenv(ROOT / ".env")
+
+RAILWAY_URL = os.getenv("MIGRATION_UPLOAD_URL", "https://api.adscope.kr/api/_upload_data")
+SECRET = os.getenv("MIGRATION_SECRET", "")
+
+
+def _check_quality_gate() -> bool:
+    if os.getenv("DEPLOY_SKIP_QUALITY_GATE", "").lower() in {"1", "true", "yes"}:
+        return True
+
+    report = evaluate_quality_gate(
+        stats_by_channel=collect_quality_stats(
+            db_path=DB_PATH,
+            active_days=int(os.getenv("DATA_QUALITY_GATE_ACTIVE_DAYS", "30")),
+            channels=parse_channels(os.getenv("DATA_QUALITY_GATE_CHANNELS", "")) or None,
+        ),
+        default_rule=QualityRule(
+            min_total=int(os.getenv("DATA_QUALITY_GATE_MIN_TOTAL", "5")),
+            max_missing_url_ratio=float(os.getenv("DATA_QUALITY_GATE_MAX_MISSING_URL", "0.0")),
+            max_generic_advertiser_ratio=float(os.getenv("DATA_QUALITY_GATE_MAX_GENERIC_ADVERTISER", "0.02")),
+            max_missing_creative_ratio=float(os.getenv("DATA_QUALITY_GATE_MAX_MISSING_CREATIVE", "0.05")),
+            max_missing_asset_ratio=float(os.getenv("DATA_QUALITY_GATE_MAX_MISSING_ASSET", "0.05")),
+        ),
+        channel_rules=parse_channel_rules(os.getenv("DATA_QUALITY_GATE_CHANNEL_RULES", "")),
+    )
+    failed = [row for row in report if not row["passed"]]
+    if not failed:
+        return True
+
+    logger.error(
+        "Deploy blocked by data quality gate: {}",
+        ", ".join(row["channel"] for row in failed),
+    )
+    for row in failed:
+        logger.error("  {} reasons={}", row["channel"], "; ".join(row["reasons"]))
+    return False
 
 
 def compress_db() -> float:
@@ -34,6 +80,9 @@ def compress_db() -> float:
 
 def upload_to_railway() -> bool:
     """Upload compressed DB to Railway. Returns True on success."""
+    if not SECRET:
+        logger.error("MIGRATION_SECRET is not configured")
+        return False
     try:
         with open(GZ_PATH, "rb") as f:
             resp = requests.post(
@@ -57,6 +106,8 @@ def sync() -> bool:
     """Compress + upload. Returns True on success."""
     if not DB_PATH.exists():
         logger.error("DB not found: {}", DB_PATH)
+        return False
+    if not _check_quality_gate():
         return False
 
     size_mb = compress_db()

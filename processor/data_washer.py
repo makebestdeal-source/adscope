@@ -4,7 +4,9 @@ Crawled ads go through staging_ads first, get washed (validated/filtered),
 and only approved ads are promoted to the live ad_details table.
 """
 
+import hashlib
 import os
+import re
 import uuid
 from datetime import datetime, timedelta
 from typing import Any
@@ -22,12 +24,15 @@ from processor.advertiser_verifier import NameQuality, verify_advertiser_name
 from processor.advertiser_link_collector import extract_website_from_url
 from processor.creative_hasher import compute_creative_hash, compute_text_hash
 from processor.extra_data_normalizer import normalize_extra_data
-from processor.channel_utils import is_contact as _is_contact
+from processor.channel_utils import is_contact as _is_contact, requires_creative_asset
 from processor.dedup import find_existing_ad, update_seen
 from crawler.personas.profiles import PERSONAS
 
 
 AUTO_PROMOTE = os.getenv("STAGING_AUTO_PROMOTE", "true").lower() in ("1", "true", "yes")
+
+_IMG_SRC_RE = re.compile(r"""<img[^>]+src=["']([^"']+)["']""", re.IGNORECASE)
+_TAG_RE = re.compile(r"<[^>]+>")
 
 
 # ── Wash rules ──
@@ -37,6 +42,31 @@ def _validate_url(url: str | None) -> bool:
     if not url or not url.strip():
         return False
     return url.startswith(("http://", "https://")) and len(url) < 2000
+
+
+def _validate_creative_asset(ad: dict, channel: str) -> bool:
+    """Non-search channels must keep a matched creative asset path."""
+    if not requires_creative_asset(channel):
+        return True
+    creative_path = ad.get("creative_image_path")
+    if creative_path and str(creative_path).strip():
+        return True
+
+    extra = ad.get("extra_data") or {}
+    if _is_archive_like_ad(ad, channel):
+        return any(
+            extra.get(key)
+            for key in (
+                "original_image_url",
+                "preview_url",
+                "creative_video_url",
+                "creative_id",
+                "ad_id",
+                "material_id",
+            )
+        )
+
+    return False
 
 
 def _validate_timestamp(captured_at: Any) -> bool:
@@ -50,6 +80,106 @@ def _validate_timestamp(captured_at: Any) -> bool:
             return False
     now = datetime.utcnow()
     return now - timedelta(days=7) <= captured_at <= now + timedelta(hours=1)
+
+
+def _extract_embedded_image_url(ad_text: str | None) -> str | None:
+    """Extract creative image URL from HTML-only archive payloads."""
+    if not ad_text or "<img" not in ad_text.lower():
+        return None
+    match = _IMG_SRC_RE.search(ad_text)
+    if not match:
+        return None
+    url = (match.group(1) or "").strip()
+    return url if url.startswith(("http://", "https://")) else None
+
+
+def _is_image_only_html(ad_text: str | None) -> bool:
+    if not ad_text or "<img" not in ad_text.lower():
+        return False
+    plain = _TAG_RE.sub(" ", ad_text).replace("&nbsp;", " ").strip()
+    return not plain
+
+
+def _is_archive_like_ad(ad: dict, channel: str) -> bool:
+    extra = ad.get("extra_data") or {}
+    if ad.get("archive_source"):
+        return True
+    if extra.get("detection_method") == "ads_transparency_rpc":
+        return True
+    verification_source = (
+        ad.get("verification_source")
+        or extra.get("verification_source")
+        or ""
+    ).strip().lower()
+    return verification_source == "meta_ads_library"
+
+
+def _archive_identity(extra: dict) -> str | None:
+    for key in ("creative_id", "ad_id", "material_id", "page_id"):
+        value = extra.get(key)
+        if value:
+            return str(value)
+    return None
+
+
+def _has_archive_minimum_signal(ad: dict, channel: str) -> bool:
+    if not _is_archive_like_ad(ad, channel):
+        return False
+
+    extra = ad.get("extra_data") or {}
+    advertiser_name = ad.get("advertiser_name")
+    if not advertiser_name:
+        return False
+
+    identity = _archive_identity(extra)
+    start_hint = (
+        extra.get("ad_start_date")
+        or extra.get("start_ts")
+        or ad.get("ad_delivery_start")
+    )
+    creative_hint = (
+        extra.get("original_image_url")
+        or extra.get("preview_url")
+        or extra.get("creative_video_url")
+    )
+    return bool(identity or (start_hint and creative_hint))
+
+
+def _compute_archive_fingerprint(
+    channel: str,
+    advertiser_name: str | None,
+    ad: dict,
+) -> str | None:
+    if not _is_archive_like_ad(ad, channel):
+        return None
+
+    extra = ad.get("extra_data") or {}
+    identity = _archive_identity(extra)
+    if not identity and not any(
+        extra.get(key)
+        for key in ("original_image_url", "preview_url", "creative_video_url")
+    ):
+        return None
+
+    parts = [
+        channel or "",
+        (advertiser_name or ad.get("advertiser_name") or "").strip().lower(),
+        identity or "",
+        str(extra.get("ad_start_date") or ad.get("ad_delivery_start") or ""),
+        str(extra.get("ad_end_date") or ad.get("ad_delivery_end") or ""),
+        str(extra.get("format_type") or ad.get("ad_format_type") or ""),
+        str(
+            extra.get("original_image_url")
+            or extra.get("preview_url")
+            or extra.get("creative_video_url")
+            or ""
+        ),
+        (ad.get("ad_text") or "").strip()[:200],
+    ]
+    combined = "|".join(parts)
+    if not combined.replace("|", ""):
+        return None
+    return hashlib.sha256(combined.encode("utf-8")).hexdigest()
 
 
 def wash_single_ad(ad: dict, channel: str) -> dict:
@@ -74,7 +204,13 @@ def wash_single_ad(ad: dict, channel: str) -> dict:
     # 2. Advertiser name verification
     resolved_name = adv_name
     if adv_name:
-        vr = verify_advertiser_name(adv_name)
+        candidate_name = clean_name_for_pipeline(
+            adv_name,
+            ad_text=ad_text,
+            display_url=ad.get("display_url"),
+            click_url=ad.get("url"),
+        )
+        vr = verify_advertiser_name(candidate_name or adv_name)
         if vr.quality == NameQuality.REJECTED:
             reasons.append(f"name_rejected:{vr.rejection_reason}")
             score -= 0.3
@@ -82,24 +218,47 @@ def wash_single_ad(ad: dict, channel: str) -> dict:
         elif vr.quality == NameQuality.CLEANED:
             resolved_name = vr.cleaned_name
             score -= 0.05
+        else:
+            resolved_name = vr.cleaned_name or candidate_name or adv_name
 
-    # 3. URL validation (URL 필수 — 없으면 광고주 식별 불가)
+    # 3. Normalize archive hints before validation.
+    raw_extra = ad.get("extra_data") or {}
+    ad["extra_data"] = normalize_extra_data(raw_extra, channel)
+
+    embedded_image_url = _extract_embedded_image_url(ad_text)
+    if embedded_image_url:
+        ad["extra_data"].setdefault("original_image_url", embedded_image_url)
+        if _is_image_only_html(ad_text):
+            ad["ad_text"] = None
+            ad_text = None
+
+    # 4. URL validation (archive/library rows may not expose landing URLs)
     url = ad.get("url")
     if not _validate_url(url):
-        reasons.append("missing_or_invalid_url")
-        score -= 0.5
+        if _has_archive_minimum_signal(ad, channel):
+            reasons.append("archive_missing_landing_url")
+            score -= 0.05
+        else:
+            reasons.append("missing_or_invalid_url")
+            score -= 0.5
 
-    # 4. Text length sanity
+    if not _validate_creative_asset(ad, channel):
+        reasons.append("missing_creative_asset")
+        score -= 0.45
+
+    # 5. Text length sanity
     if ad_text and len(ad_text) > 5000:
         reasons.append("text_too_long")
         score -= 0.1
 
-    # 5. Extra data normalization (enrich, not reject)
-    raw_extra = ad.get("extra_data") or {}
-    ad["extra_data"] = normalize_extra_data(raw_extra, channel)
-
     # 6. Creative hash
     c_hash = compute_creative_hash(ad.get("creative_image_path"))
+    if not c_hash:
+        c_hash = _compute_archive_fingerprint(
+            channel,
+            resolved_name or adv_name,
+            ad,
+        )
     if not c_hash:
         c_hash = compute_text_hash(adv_name, ad_text, url)
     ad["_creative_hash"] = c_hash
@@ -148,6 +307,16 @@ async def save_to_staging(
     else:
         captured_at = datetime.utcnow()
 
+    def _serialize(obj):
+        """datetime 등 JSON 비직렬화 객체를 문자열로 변환."""
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        if isinstance(obj, dict):
+            return {k: _serialize(v) for k, v in obj.items()}
+        if isinstance(obj, list):
+            return [_serialize(v) for v in obj]
+        return obj
+
     for ad in ads:
         staging = StagingAd(
             batch_id=batch_id,
@@ -157,7 +326,7 @@ async def save_to_staging(
             device=device_type,
             page_url=result.get("page_url", ""),
             captured_at=captured_at,
-            raw_payload=ad,
+            raw_payload=_serialize(ad),
             status="pending",
         )
         session.add(staging)
@@ -194,12 +363,10 @@ async def wash_batch(session: AsyncSession, batch_id: str) -> dict:
         row.resolved_advertiser_name = wash.get("resolved_name")
         row.processed_at = datetime.utcnow()
 
-        # Store washed extra_data and hash back
-        if "_creative_hash" in ad:
-            payload = dict(row.raw_payload)
-            payload["_creative_hash"] = ad["_creative_hash"]
-            payload["extra_data"] = ad.get("extra_data", {})
-            row.raw_payload = payload
+        # Persist normalized payload so promote stage can reuse archive hints.
+        payload = dict(ad)
+        payload["extra_data"] = ad.get("extra_data", {})
+        row.raw_payload = payload
 
         stats[wash["status"]] += 1
 
@@ -286,6 +453,16 @@ async def promote_approved(session: AsyncSession, batch_id: str) -> dict:
                 adv_name = clean_name_for_pipeline(adv_name)
 
             c_hash = ad.get("_creative_hash")
+            if not c_hash:
+                c_hash = compute_creative_hash(ad.get("creative_image_path"))
+            if not c_hash:
+                c_hash = _compute_archive_fingerprint(
+                    row.channel,
+                    adv_name,
+                    ad,
+                )
+            if not c_hash:
+                c_hash = compute_text_hash(adv_name, ad.get("ad_text"), ad.get("url"))
 
             # Dedup check: if same ad already exists in this channel, just update seen_count
             existing_id = await find_existing_ad(
@@ -324,12 +501,24 @@ async def promote_approved(session: AsyncSession, batch_id: str) -> dict:
                 persona_id=persona_row.id,
                 advertiser_id=advertiser_id,
                 advertiser_name_raw=adv_name,
+                brand=ad.get("brand"),
                 ad_text=ad.get("ad_text"),
                 ad_description=ad.get("ad_description"),
                 position=ad.get("position"),
                 url=ad.get("url"),
                 display_url=ad.get("display_url"),
                 ad_type=ad.get("ad_type"),
+                ad_placement=ad.get("ad_placement"),
+                ad_format_type=ad.get("ad_format_type"),
+                campaign_purpose=ad.get("campaign_purpose"),
+                ad_product_name=ad.get("ad_product_name"),
+                product_name=ad.get("product_name"),
+                product_category=ad.get("product_category"),
+                position_zone=ad.get("position_zone"),
+                promotion_type=ad.get("promotion_type"),
+                retargeting_network=ad.get("retargeting_network"),
+                ad_marker_type=ad.get("ad_marker_type"),
+                model_name=ad.get("model_name"),
                 verification_status=ad.get("verification_status"),
                 verification_source=ad.get("verification_source"),
                 creative_image_path=ad.get("creative_image_path"),
@@ -339,6 +528,10 @@ async def promote_approved(session: AsyncSession, batch_id: str) -> dict:
                 first_seen_at=row.captured_at or now,
                 last_seen_at=row.captured_at or now,
                 seen_count=1,
+                ad_delivery_start=ad.get("ad_delivery_start"),
+                ad_delivery_end=ad.get("ad_delivery_end"),
+                archive_source=ad.get("archive_source"),
+                is_retroactive=bool(ad.get("archive_source")),
             )
             session.add(detail)
             await session.flush()

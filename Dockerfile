@@ -6,9 +6,11 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc libpq-dev supervisor curl && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+# Install API runtime dependencies. Crawler/OCR-only packages stay in
+# requirements.txt for local collection, but are intentionally excluded from
+# the production API image to keep Railway deploys fast and reliable.
+COPY requirements.api.txt ./
+RUN pip install --no-cache-dir -r requirements.api.txt
 
 # Copy source code
 COPY . .

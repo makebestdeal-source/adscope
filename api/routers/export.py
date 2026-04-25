@@ -13,7 +13,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
-from sqlalchemy import func, select
+from sqlalchemy import false, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.deps import get_current_user, require_paid, require_plan
@@ -30,6 +30,11 @@ from database.models import (
     SmartStoreTrackedProduct,
     SpendEstimate,
     User,
+)
+from processor.channel_utils import (
+    GALLERY_EXCLUDED_CHANNELS,
+    get_gallery_ad_channels,
+    normalize_channel_for_display,
 )
 
 router = APIRouter(
@@ -243,11 +248,18 @@ async def export_gallery(
         .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
         .where(AdSnapshot.captured_at >= date_from)
         .where(AdSnapshot.captured_at <= date_to)
+        .where(~AdSnapshot.channel.in_(GALLERY_EXCLUDED_CHANNELS))
         .order_by(AdSnapshot.captured_at.desc())
     )
 
     if channel:
-        query = query.where(AdSnapshot.channel == channel)
+        ad_channels = get_gallery_ad_channels(channel)
+        if not ad_channels:
+            query = query.where(false())
+        elif len(ad_channels) == 1:
+            query = query.where(AdSnapshot.channel == next(iter(ad_channels)))
+        else:
+            query = query.where(AdSnapshot.channel.in_(ad_channels))
     if advertiser_id:
         query = query.where(AdDetail.advertiser_id == advertiser_id)
 
@@ -262,7 +274,7 @@ async def export_gallery(
     for r in rows_raw:
         rows.append([
             _kst_str(r[0]),
-            _safe(r[1]),
+            _safe(normalize_channel_for_display(r[1])),
             _safe(r[2]),
             _safe(r[3]),
             _safe(r[4]),
@@ -664,10 +676,17 @@ async def export_gallery_xlsx(
         .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
         .where(AdSnapshot.captured_at >= date_from)
         .where(AdSnapshot.captured_at <= date_to)
+        .where(~AdSnapshot.channel.in_(GALLERY_EXCLUDED_CHANNELS))
         .order_by(AdSnapshot.captured_at.desc())
     )
     if channel:
-        query = query.where(AdSnapshot.channel == channel)
+        ad_channels = get_gallery_ad_channels(channel)
+        if not ad_channels:
+            query = query.where(false())
+        elif len(ad_channels) == 1:
+            query = query.where(AdSnapshot.channel == next(iter(ad_channels)))
+        else:
+            query = query.where(AdSnapshot.channel.in_(ad_channels))
     if advertiser_id:
         query = query.where(AdDetail.advertiser_id == advertiser_id)
 
@@ -684,7 +703,7 @@ async def export_gallery_xlsx(
 
     for r in rows_raw:
         ws.append([
-            _kst_str(r[0]), _safe(r[1]), _safe(r[2]), _safe(r[3]),
+            _kst_str(r[0]), _safe(normalize_channel_for_display(r[1])), _safe(r[2]), _safe(r[3]),
             _safe(r[4]), _safe(r[5]), _safe(r[6]), _safe(r[7]),
         ])
 

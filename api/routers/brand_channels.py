@@ -15,8 +15,7 @@ from database import get_db
 from database.models import Advertiser, BrandChannelContent, User
 from database.schemas import BrandChannelContentOut, BrandChannelSummary
 
-router = APIRouter(prefix="/api/brand-channels", tags=["brand-channels"],
-    dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/api/brand-channels", tags=["brand-channels"])
 
 
 def _fix_thumbnail(row) -> BrandChannelContentOut:

@@ -3,15 +3,16 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { PLAN_CATALOG, formatKrw } from "@/lib/plans";
 
-const PLAN_NAMES: Record<string, string> = { lite: "Lite", full: "Full" };
+const PLAN_NAMES: Record<string, string> = { lite: PLAN_CATALOG.lite.name, full: PLAN_CATALOG.full.name };
 const PLAN_PRICES: Record<string, Record<string, number>> = {
-  lite: { monthly: 49000, yearly: 490000 },
-  full: { monthly: 99000, yearly: 990000 },
+  lite: { monthly: PLAN_CATALOG.lite.monthly!, yearly: PLAN_CATALOG.lite.yearly! },
+  full: { monthly: PLAN_CATALOG.full.monthly!, yearly: PLAN_CATALOG.full.yearly! },
 };
 
 function fmt(n: number) {
-  return n.toLocaleString("ko-KR");
+  return formatKrw(n);
 }
 
 /** Validate Korean phone number format: 010-XXXX-XXXX or 01012345678 */

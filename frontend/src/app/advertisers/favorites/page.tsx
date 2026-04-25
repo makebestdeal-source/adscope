@@ -3,7 +3,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, FavoriteAdvertiser } from "@/lib/api";
 import { formatSpend } from "@/lib/constants";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { isAuthenticated } from "@/lib/auth";
 import Link from "next/link";
 
 const CATEGORIES = [
@@ -33,13 +34,19 @@ const CATEGORY_LABEL: Record<string, string> = {
 
 export default function FavoritesPage() {
   const queryClient = useQueryClient();
+  const [authed, setAuthed] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [noteText, setNoteText] = useState("");
 
+  useEffect(() => {
+    setAuthed(isAuthenticated());
+  }, []);
+
   const { data: favorites, isLoading } = useQuery({
     queryKey: ["favorites", activeCategory],
     queryFn: () => api.getFavorites(activeCategory),
+    enabled: authed,
   });
 
   const removeMutation = useMutation({
@@ -83,6 +90,36 @@ export default function FavoritesPage() {
     if (a.is_pinned !== b.is_pinned) return a.is_pinned ? -1 : 1;
     return (a.advertiser_name || "").localeCompare(b.advertiser_name || "");
   });
+
+  if (!authed) {
+    return (
+      <div className="p-6 lg:p-8 max-w-4xl animate-fade-in">
+        <div className="bg-white rounded-xl border border-gray-200 p-10 shadow-sm text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">나의 광고주</h1>
+          <p className="text-sm text-gray-600">
+            즐겨찾기, 분류, 메모 기능은 로그인 후 사용할 수 있습니다.
+          </p>
+          <p className="text-xs text-gray-400 mt-2">
+            비회원은 공개 화면을 먼저 둘러보고, 로그인 후 개인 모니터링 목록을 이어서 관리할 수 있습니다.
+          </p>
+          <div className="mt-5 flex items-center justify-center gap-2">
+            <Link
+              href="/advertisers"
+              className="px-4 py-2 bg-adscope-500 text-white text-sm font-medium rounded-lg hover:bg-adscope-600 transition-colors"
+            >
+              광고주 보기
+            </Link>
+            <Link
+              href="/login"
+              className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              로그인
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">

@@ -21,6 +21,7 @@ CONTACT_CHANNELS: set[str] = {
     "kakao_da",
     "google_gdn",
     "youtube_surf",
+    "meta_feed",
 }
 
 # ── Catalog channels (ad library / transparency center → 광고 소재) ──
@@ -46,7 +47,7 @@ DUAL_PLATFORM_MAP: dict[str, dict[str, str | list[str]]] = {
 # ── Media category mapping (channel -> category key) ──
 MEDIA_CATEGORIES: dict[str, list[str]] = {
     "video": ["youtube_ads", "youtube_surf"],
-    "social": ["meta"],
+    "social": ["meta", "meta_feed"],
     "portal": ["naver_search", "naver_da"],
     "search": ["google_search_ads"],
     "network": ["google_gdn", "kakao_da"],
@@ -70,6 +71,7 @@ CHANNEL_DISPLAY_NAMES: dict[str, str] = {
     "youtube_ads": "유튜브 광고",
     "youtube_surf": "유튜브 광고",
     "meta": "Meta",
+    "meta_feed": "Meta 피드",
     "tiktok_ads": "틱톡 광고",
     "naver_shopping": "네이버 쇼핑",
     "google_search_ads": "구글 검색광고",
@@ -77,6 +79,10 @@ CHANNEL_DISPLAY_NAMES: dict[str, str] = {
 
 # ── Search channels (text-only, no thumbnail in gallery) ──
 SEARCH_CHANNELS: set[str] = {"naver_search", "google_search_ads"}
+
+# Channels that must ship with a matched creative asset file.
+# Search ads are intentionally text-only and are excluded.
+CREATIVE_REQUIRED_CHANNELS: set[str] = ALL_CHANNELS - SEARCH_CHANNELS
 
 # ── Channel -> benchmark key (for spend_reverse_estimator) ──
 CHANNEL_TO_BENCHMARK_KEY: dict[str, str] = {
@@ -145,15 +151,22 @@ def get_dual_channels(platform: str) -> dict | None:
     return DUAL_PLATFORM_MAP.get(platform)
 
 
+def requires_creative_asset(channel: str) -> bool:
+    """True if the channel should have a locally matched creative asset."""
+    return channel in CREATIVE_REQUIRED_CHANNELS
+
+
 # ── Meta family channels (all → meta) ──
 META_CHANNELS: set[str] = {
-    "meta", "facebook", "instagram", "facebook_contact",
+    "meta", "meta_feed", "facebook", "instagram", "facebook_contact",
     "messenger", "audience_network",
 }
 
 # ── Display channel normalization ──
 CHANNEL_DISPLAY_NORMALIZE: dict[str, str] = {
+    "youtube": "youtube_ads",
     "youtube_surf": "youtube_ads",
+    "meta_feed": "meta",
     "facebook": "meta",
     "instagram": "meta",
     "facebook_contact": "meta",
@@ -165,3 +178,45 @@ CHANNEL_DISPLAY_NORMALIZE: dict[str, str] = {
 def normalize_channel_for_display(channel: str) -> str:
     """Normalize channel name for frontend display (merge variants)."""
     return CHANNEL_DISPLAY_NORMALIZE.get(channel, channel)
+
+
+# Channels hidden from the ad-creative gallery. They can still be collected and
+# used elsewhere, but their current creative assets are too weak for gallery UX.
+GALLERY_EXCLUDED_CHANNELS: set[str] = {"naver_shopping"}
+
+GALLERY_AD_CHANNEL_GROUPS: dict[str, set[str]] = {
+    "youtube": {"youtube_ads", "youtube_surf"},
+    "youtube_ads": {"youtube_ads", "youtube_surf"},
+    "youtube_surf": {"youtube_ads", "youtube_surf"},
+    "meta": {"meta", "meta_feed", "facebook", "instagram"},
+    "meta_feed": {"meta", "meta_feed", "facebook", "instagram"},
+    "facebook": {"meta", "meta_feed", "facebook", "instagram"},
+    "instagram": {"meta", "meta_feed", "facebook", "instagram"},
+}
+
+GALLERY_SOCIAL_PLATFORM_GROUPS: dict[str, set[str]] = {
+    "youtube": {"youtube"},
+    "youtube_ads": {"youtube"},
+    "youtube_surf": {"youtube"},
+    "meta": {"meta", "instagram", "facebook"},
+    "meta_feed": {"meta", "instagram", "facebook"},
+    "facebook": {"meta", "instagram", "facebook"},
+    "instagram": {"meta", "instagram", "facebook"},
+}
+
+
+def get_gallery_ad_channels(channel: str | None) -> set[str] | None:
+    """Return DB ad channels for a gallery filter, or None for no filter."""
+    if not channel:
+        return None
+    channels = GALLERY_AD_CHANNEL_GROUPS.get(channel, {channel})
+    return {ch for ch in channels if ch not in GALLERY_EXCLUDED_CHANNELS}
+
+
+def get_gallery_social_platforms(channel: str | None) -> set[str] | None:
+    """Return social content platforms for a gallery filter, or None for no filter."""
+    if not channel:
+        return None
+    if channel in GALLERY_EXCLUDED_CHANNELS:
+        return set()
+    return GALLERY_SOCIAL_PLATFORM_GROUPS.get(channel, set())

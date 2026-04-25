@@ -29,7 +29,6 @@ router = APIRouter(
     prefix="/api/industries",
     tags=["industries"],
     redirect_slashes=False,
-    dependencies=[Depends(get_current_user)],
 )
 
 

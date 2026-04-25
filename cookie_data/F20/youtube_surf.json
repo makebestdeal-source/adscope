@@ -1,7 +1,7 @@
 {
   "persona_code": "F20",
   "channel": "youtube_surf",
-  "updated_at": "2026-02-28T04:22:32.131251+00:00",
+  "updated_at": "2026-03-24T13:50:03.807297+00:00",
   "cookie_count": 8,
   "cookies": [
     {
@@ -19,7 +19,7 @@
       "value": "tz=Asia.Seoul&hl=ko&gl=KR",
       "domain": ".youtube.com",
       "path": "/",
-      "expires": 1806812532.109819,
+      "expires": 1808920175.35128,
       "httpOnly": false,
       "secure": true,
       "sameSite": "Lax"
@@ -29,14 +29,14 @@
       "value": "1",
       "domain": ".youtube.com",
       "path": "/",
-      "expires": 1772254070.575743,
+      "expires": 1774361426.979886,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "YSC",
-      "value": "Gw45Z7Y8xew",
+      "value": "5w4xoHOvgaQ",
       "domain": ".youtube.com",
       "path": "/",
       "expires": -1,
@@ -46,40 +46,40 @@
     },
     {
       "name": "VISITOR_INFO1_LIVE",
-      "value": "3g9Rwkm1HcY",
+      "value": "MGp-k8IeDMA",
       "domain": ".youtube.com",
       "path": "/",
-      "expires": 1787804529.461454,
+      "expires": 1789912173.91207,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "VISITOR_PRIVACY_METADATA",
-      "value": "CgJLUhIEGgAgMg%3D%3D",
+      "value": "CgJLUhIEGgAgXA%3D%3D",
       "domain": ".youtube.com",
       "path": "/",
-      "expires": 1787804529.46157,
+      "expires": 1789912173.912181,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "IDE",
-      "value": "AHWqTUkTO5-SDn-3I5bABrRE25yNeMh8_Ky1r9MZ7YZtA20ku8bSXd8WHQdO9ctf",
+      "value": "AHWqTUmuNb4h-awqta0rFOpAkmMWAcUN03rdqg-x_lEnLzHfucNR-rCScnqzLbtG",
       "domain": ".doubleclick.net",
       "path": "/",
-      "expires": 1806812347.78439,
+      "expires": 1808919714.449024,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "CONSISTENCY",
-      "value": "AAsGu9mAY0c3dM_4iWYPmut7OcHtHLCs4rFLAgnoS6kTPJZbhoE_t6bC4Xeo_cgDgyduEd6m5LbUoh-sNSz2gMaZ2HaUQKHiAZGhdk000DHKP3j_81hi4GR1-LmHW8JIW_yQlFaA_8t6QNaDt0x6VAw",
+      "value": "AG2Tqf_F-lwIrX_qPV4eCQeQhi5IvQds0_6rlomCBYl9S4V59zb6r7hN3mfMjyEBaBgIkMmCRxxhusTGVMvqw5qnKeGT9g5XFEK6Rv3wOWcux9hutwuZnLRo6vyw8_h1R6Umpp-iT4vDTGBydA4e1g",
       "domain": ".youtube.com",
       "path": "/",
-      "expires": 1772253132,
+      "expires": 1774360344,
       "httpOnly": false,
       "secure": true,
       "sameSite": "Lax"
