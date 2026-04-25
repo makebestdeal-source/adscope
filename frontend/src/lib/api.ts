@@ -1019,7 +1019,7 @@ export const api = {
 
   getIndustryLandscape: (industryId: number, days = 30) =>
     fetchApi<IndustryLandscape>(
-      `/competitors/industry/${industryId}/landscape?days=${days}`
+      `/industries/${industryId}/landscape?days=${days}`
     ),
 
   // Industries

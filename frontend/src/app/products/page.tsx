@@ -524,9 +524,13 @@ export default function ProductsPage() {
                     ))}
                   </div>
                 </div>
-              ) : advertisers ? (
+              ) : advertisers && advertisers.length > 0 ? (
                 <AdvertiserRankTable advertisers={advertisers} />
-              ) : null}
+              ) : advertisers === undefined ? null : (
+                <div className="bg-white rounded-xl border border-gray-200 p-8 text-center shadow-sm">
+                  <p className="text-sm text-gray-400">해당 카테고리의 광고주 데이터가 없습니다</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

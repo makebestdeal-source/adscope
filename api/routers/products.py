@@ -38,6 +38,7 @@ async def _count_ads_for_category(
 ) -> int:
     """Count ad_details linked to a category (by product_category_id or product_category text match)."""
     cutoff = _now_kst() - timedelta(days=days)
+    cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
 
     # product_category_id FK match
     fk_count = await db.execute(
@@ -59,7 +60,7 @@ async def _count_ads_for_category(
             .where(
                 AdDetail.product_category == cat_name,
                 AdDetail.product_category_id.is_(None),
-                AdSnapshot.captured_at >= cutoff.replace(tzinfo=None),
+                AdSnapshot.captured_at >= cutoff_utc,
             )
         )
         count += text_count.scalar() or 0
@@ -72,6 +73,7 @@ async def _count_advertisers_for_category(
 ) -> int:
     """Count unique advertisers for a category."""
     cutoff = _now_kst() - timedelta(days=days)
+    cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
 
     # FK match (기간 필터 동일 적용 — 목록 API와 카운트 일치)
     fk_result = await db.execute(
@@ -80,7 +82,7 @@ async def _count_advertisers_for_category(
         .where(
             AdDetail.product_category_id == category_id,
             AdDetail.advertiser_id.isnot(None),
-            AdSnapshot.captured_at >= cutoff.replace(tzinfo=None),
+            AdSnapshot.captured_at >= cutoff_utc,
         )
     )
     fk_count = fk_result.scalar() or 0
@@ -98,7 +100,7 @@ async def _count_advertisers_for_category(
                 AdDetail.product_category == cat_name,
                 AdDetail.product_category_id.is_(None),
                 AdDetail.advertiser_id.isnot(None),
-                AdSnapshot.captured_at >= cutoff.replace(tzinfo=None),
+                AdSnapshot.captured_at >= cutoff_utc,
             )
         )
         fk_count += text_result.scalar() or 0
@@ -217,6 +219,7 @@ async def get_category_detail(
 
     # Estimated spend for this category
     cutoff = _now_kst() - timedelta(days=days)
+    cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
     # Get advertiser IDs for this category
     all_category_ids = [category.id] + [c.id for c in children]
     adv_ids_result = await db.execute(
@@ -234,7 +237,7 @@ async def get_category_detail(
             .join(Campaign, SpendEstimate.campaign_id == Campaign.id)
             .where(
                 Campaign.advertiser_id.in_(adv_ids),
-                SpendEstimate.date >= cutoff.replace(tzinfo=None),
+                SpendEstimate.date >= cutoff_utc,
             )
         )
         est_spend = spend_result.scalar() or 0.0
@@ -270,6 +273,8 @@ async def get_category_advertisers(
         raise HTTPException(status_code=404, detail="Category not found")
 
     cutoff = _now_kst() - timedelta(days=days)
+    # Convert KST to UTC for DB comparison
+    cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
 
     # Include child categories
     child_result = await db.execute(
@@ -288,7 +293,7 @@ async def get_category_advertisers(
         .where(
             AdDetail.product_category_id.in_(all_cat_ids),
             AdDetail.advertiser_id.isnot(None),
-            AdSnapshot.captured_at >= cutoff.replace(tzinfo=None),
+            AdSnapshot.captured_at >= cutoff_utc,
         )
         .group_by(AdDetail.advertiser_id)
         .order_by(func.count(AdDetail.id).desc())
@@ -314,7 +319,7 @@ async def get_category_advertisers(
             AdDetail.product_category.in_(all_cat_names),
             AdDetail.product_category_id.is_(None),
             AdDetail.advertiser_id.isnot(None),
-            AdSnapshot.captured_at >= cutoff.replace(tzinfo=None),
+            AdSnapshot.captured_at >= cutoff_utc,
         )
         .group_by(AdDetail.advertiser_id)
         .order_by(func.count(AdDetail.id).desc())
