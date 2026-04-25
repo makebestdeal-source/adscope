@@ -677,6 +677,7 @@ function GalleryCard({
         day: "numeric",
       })
     : "";
+  const dateLabelSuffix = isSocial ? " 게시" : " 집행";
 
   const showImage = parsed && !imgError;
 

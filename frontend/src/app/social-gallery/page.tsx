@@ -258,6 +258,8 @@ function SocialCard({ item, onClick, selectMode = false, selected = false }: { i
   const dateStr = displayDate
     ? new Date(displayDate).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })
     : "";
+  const hasUploadDate = !!displayDate;
+  const dateSuffix = "";
 
   // Content link (YouTube/Instagram original post)
   const contentUrl = item.url;

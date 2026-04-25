@@ -426,6 +426,8 @@ export interface GalleryItem {
   brand: string | null;
   channel: string;
   captured_at: string | null;
+  ad_delivery_start?: string | null;
+  ad_delivery_end?: string | null;
   source?: "ads" | "social";
   view_count?: number | null;
   like_count?: number | null;
