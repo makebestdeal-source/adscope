@@ -12,7 +12,7 @@ screenshots/
 backups/
 logs/
 *.log
-# adscope.db  -- 배포 시 포함 필요
+adscope.db
 adscope.db-journal
 adscope.db-wal
 .claude/
