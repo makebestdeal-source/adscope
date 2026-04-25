@@ -3,7 +3,7 @@
 import { useQuery, useQueries, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { api, AdvertiserTreeNode, MediaCategoryBreakdown, ChannelBreakdown, MetaSignalOverview, ActivityScorePoint, SocialImpactOverview, SocialImpactTimelinePoint, NewsMention, FavoriteAdvertiser, LIIAdvertiserImpact, CampaignDetail } from "@/lib/api";
+import { api, AdvertiserTreeNode, MediaCategoryBreakdown, ChannelBreakdown, MetaSignalOverview, ActivityScorePoint, SocialImpactOverview, SocialImpactTimelinePoint, NewsMention, FavoriteAdvertiser, LIIAdvertiserImpact, CampaignDetail, CasualCompetitiveSummary } from "@/lib/api";
 import {
   formatChannel,
   formatSpend,
@@ -16,6 +16,7 @@ import { ExportDropdown } from "@/components/ExportDropdown";
 import { AdvertiserDownloadDropdown } from "@/components/DownloadButtons";
 import { toImageUrl } from "@/lib/image-utils";
 import { useState, useMemo, useRef, useEffect } from "react";
+import { isAuthenticated } from "@/lib/auth";
 import {
   BarChart,
   Bar,
@@ -55,6 +56,17 @@ const OBJECTIVE_KO: Record<string, { label: string; color: string }> = {
   retention: { label: "리텐션", color: "bg-teal-100 text-teal-700" },
 };
 
+type AdvertiserKeyword = {
+  keyword_id: number;
+  keyword: string;
+  channels: string[];
+  impression_count: number;
+  first_seen: string | null;
+  last_seen: string | null;
+  monthly_search_vol: number | null;
+  naver_cpc: number | null;
+};
+
 function AdvertiserTree({
   node,
   currentId,
@@ -92,6 +104,11 @@ export default function AdvertiserDetailPage() {
   const params = useParams();
   const id = Number(params.id);
   const [days, setDays] = useState(30);
+  const [authed, setAuthed] = useState(false);
+
+  useEffect(() => {
+    setAuthed(isAuthenticated());
+  }, []);
 
   const { data: report, isLoading: reportLoading } = useQuery({
     queryKey: ["advertiserSpendReport", id, days],
@@ -111,6 +128,18 @@ export default function AdvertiserDetailPage() {
     enabled: !!id,
   });
 
+  const { data: keywordSet, isLoading: keywordsLoading } = useQuery({
+    queryKey: ["advertiserKeywords", id, days],
+    queryFn: () => api.getAdvertiserKeywords(id, days),
+    enabled: !!id,
+  });
+
+  const { data: casualSummary } = useQuery<CasualCompetitiveSummary>({
+    queryKey: ["casualCompetitiveSummary", id, days],
+    queryFn: () => api.getCasualCompetitiveSummary(id, days),
+    enabled: !!id,
+  });
+
   const [monthlyPeriod, setMonthlyPeriod] = useState(6);
   const { data: monthlySpend } = useQuery({
     queryKey: ["advertiserMonthlySpend", id, monthlyPeriod],
@@ -121,37 +150,37 @@ export default function AdvertiserDetailPage() {
   const { data: metaSignal } = useQuery({
     queryKey: ["metaSignalOverview", id],
     queryFn: () => api.getMetaSignalOverview(id),
-    enabled: !!id,
+    enabled: !!id && authed,
   });
 
   const { data: activityTimeline } = useQuery({
     queryKey: ["metaSignalActivity", id, days],
     queryFn: () => api.getMetaSignalActivity(id, days),
-    enabled: !!id,
+    enabled: !!id && authed,
   });
 
   const { data: socialImpact } = useQuery({
     queryKey: ["socialImpactOverview", id],
     queryFn: () => api.getSocialImpactOverview(id),
-    enabled: !!id,
+    enabled: !!id && authed,
   });
 
   const { data: socialTimeline } = useQuery({
     queryKey: ["socialImpactTimeline", id, days],
     queryFn: () => api.getSocialImpactTimeline(id, days),
-    enabled: !!id,
+    enabled: !!id && authed,
   });
 
   const { data: newsItems } = useQuery({
     queryKey: ["socialImpactNews", id],
     queryFn: () => api.getSocialImpactNews(id, 30),
-    enabled: !!id,
+    enabled: !!id && authed,
   });
 
   const { data: launchImpacts } = useQuery<LIIAdvertiserImpact[]>({
     queryKey: ["launchImpact", id],
     queryFn: () => api.getImpactByAdvertiser(id),
-    enabled: !!id,
+    enabled: !!id && authed,
   });
 
   // Fetch campaign details for all active campaigns
@@ -164,7 +193,7 @@ export default function AdvertiserDetailPage() {
     queries: activeCampaignIds.map((cid) => ({
       queryKey: ["campaignDetail", cid],
       queryFn: () => api.getCampaignDetail(cid),
-      enabled: !!cid,
+      enabled: !!cid && authed,
       staleTime: 5 * 60 * 1000,
     })),
   });
@@ -188,6 +217,7 @@ export default function AdvertiserDetailPage() {
   const { data: favoritesData } = useQuery({
     queryKey: ["favorites"],
     queryFn: () => api.getFavorites(),
+    enabled: authed,
   });
 
   const currentFav = useMemo(() => {
@@ -285,6 +315,19 @@ export default function AdvertiserDetailPage() {
     }));
   }, [report]);
 
+  const keywordRows = useMemo<AdvertiserKeyword[]>(
+    () => keywordSet?.keywords ?? [],
+    [keywordSet]
+  );
+  const keywordImpressionTotal = useMemo(
+    () => keywordRows.reduce((sum, kw) => sum + (kw.impression_count || 0), 0),
+    [keywordRows]
+  );
+  const keywordChannelCount = useMemo(
+    () => new Set(keywordRows.flatMap((kw) => kw.channels || [])).size,
+    [keywordRows]
+  );
+
   if (isLoading) {
     return (
       <div className="p-6 lg:p-8 max-w-7xl">
@@ -346,6 +389,7 @@ export default function AdvertiserDetailPage() {
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-gray-900">{advName}</h1>
             {/* Favorite button with dropdown */}
+            {authed && (
             <div className="relative" ref={favDropdownRef}>
               <button
                 onClick={() => setShowFavDropdown(!showFavDropdown)}
@@ -427,6 +471,7 @@ export default function AdvertiserDetailPage() {
                 </div>
               )}
             </div>
+            )}
           </div>
           <div className="flex items-center gap-3 mt-1.5 flex-wrap">
             {advType && (
@@ -464,6 +509,12 @@ export default function AdvertiserDetailPage() {
           <PeriodSelector days={days} onDaysChange={setDays} />
         </div>
       </div>
+
+      {!authed && (
+        <div className="mb-6 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-900">
+          비회원도 기본 광고주 분석을 열람할 수 있습니다. 엑셀 내보내기와 소재 다운로드는 유료 가입 후 사용할 수 있습니다.
+        </div>
+      )}
 
       {/* Tree */}
       {tree && tree.children && tree.children.length > 0 && (
@@ -538,6 +589,243 @@ export default function AdvertiserDetailPage() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Casual competitive read */}
+      {casualSummary && (
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100 flex items-start justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-base font-semibold text-gray-900">
+                  경쟁 흐름
+                </h2>
+                <span className="text-[11px] font-medium text-gray-500 bg-gray-100 rounded px-2 py-0.5">
+                  {casualSummary.data_basis}
+                </span>
+              </div>
+              <p className="text-sm text-gray-700 mt-1">
+                {casualSummary.headline}
+              </p>
+            </div>
+            <span className="text-xs text-gray-400 whitespace-nowrap">
+              최근 {casualSummary.period_days}일
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
+            <div className="p-5">
+              <p className="text-xs font-semibold text-gray-500 mb-3">
+                많이 잡힌 키워드
+              </p>
+              {casualSummary.top_keywords.length > 0 ? (
+                <div className="flex gap-2 flex-wrap">
+                  {casualSummary.top_keywords.slice(0, 6).map((kw) => (
+                    <span
+                      key={kw.keyword_id}
+                      className="rounded-full bg-slate-50 border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700"
+                    >
+                      {kw.keyword}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400">아직 키워드가 적습니다.</p>
+              )}
+            </div>
+
+            <div className="p-5">
+              <p className="text-xs font-semibold text-gray-500 mb-3">
+                같이 보이는 광고주
+              </p>
+              {casualSummary.top_competitors.length > 0 ? (
+                <div className="space-y-2.5">
+                  {casualSummary.top_competitors.slice(0, 4).map((item) => (
+                    <div key={item.advertiser_id}>
+                      <Link
+                        href={`/advertisers/${item.advertiser_id}`}
+                        className="text-sm font-medium text-gray-900 hover:text-adscope-600"
+                      >
+                        {item.advertiser_name}
+                      </Link>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {item.note}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400">겹치는 광고주가 적습니다.</p>
+              )}
+            </div>
+
+            <div className="p-5">
+              <p className="text-xs font-semibold text-gray-500 mb-3">
+                채널 느낌
+              </p>
+              {casualSummary.channel_mix.length > 0 ? (
+                <div className="space-y-2.5">
+                  {casualSummary.channel_mix.slice(0, 4).map((item) => (
+                    <div key={item.channel}>
+                      <div className="flex items-center justify-between text-xs mb-1">
+                        <span className="font-medium text-gray-700">
+                          {item.channel_label}
+                        </span>
+                        <span className="text-gray-400 tabular-nums">
+                          {item.share}%
+                        </span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-adscope-500"
+                          style={{ width: `${Math.max(item.share, 4)}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400">채널 데이터가 적습니다.</p>
+              )}
+            </div>
+
+            <div className="p-5">
+              <p className="text-xs font-semibold text-gray-500 mb-3">
+                소재 문구
+              </p>
+              {casualSummary.message_terms.length > 0 ? (
+                <div className="flex gap-2 flex-wrap">
+                  {casualSummary.message_terms.slice(0, 7).map((item) => (
+                    <span
+                      key={item.term}
+                      className="rounded bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700"
+                    >
+                      {item.term}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400">문구 신호가 적습니다.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="px-6 py-3 bg-slate-50 border-t border-gray-100">
+            <div className="flex gap-2 flex-wrap">
+              {casualSummary.quick_reads.slice(0, 3).map((text) => (
+                <span key={text} className="text-xs text-slate-600">
+                  {text}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Advertiser keyword set */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-base font-semibold text-gray-900">
+              키워드 셋
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              {keywordRows.length.toLocaleString()}개 키워드 · {keywordImpressionTotal.toLocaleString()}건 노출 · {keywordChannelCount.toLocaleString()}개 채널
+            </p>
+          </div>
+          {(report?.by_channel ?? []).some((ch) => (ch.top_keywords ?? []).length > 0) && (
+            <div className="hidden lg:flex items-center gap-2 flex-wrap justify-end max-w-xl">
+              {(report?.by_channel ?? []).slice(0, 4).map((ch) => (
+                <div key={ch.channel} className="flex items-center gap-1.5">
+                  <span
+                    className={`text-[10px] font-medium px-2 py-0.5 rounded ${
+                      CHANNEL_BADGE_COLORS[ch.channel] ?? "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    {formatChannel(ch.channel)}
+                  </span>
+                  <span className="text-[11px] text-gray-500 truncate max-w-[180px]">
+                    {(ch.top_keywords ?? []).slice(0, 3).join(", ")}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {keywordRows.length > 0 ? (
+          <div className="p-6">
+            <div className="flex gap-2 flex-wrap mb-5">
+              {keywordRows.slice(0, 18).map((kw) => (
+                <span
+                  key={`chip-${kw.keyword_id}`}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 border border-slate-200 px-3 py-1 text-xs font-medium text-slate-700"
+                >
+                  {kw.keyword}
+                  <span className="text-[10px] text-slate-400 tabular-nums">
+                    {kw.impression_count.toLocaleString()}
+                  </span>
+                </span>
+              ))}
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 text-xs font-semibold text-gray-500">
+                    <th className="py-2 pr-4 text-left">키워드</th>
+                    <th className="py-2 px-4 text-left">채널</th>
+                    <th className="py-2 px-4 text-right">노출</th>
+                    <th className="py-2 px-4 text-right">월 검색량</th>
+                    <th className="py-2 px-4 text-right">CPC</th>
+                    <th className="py-2 pl-4 text-right">최근</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {keywordRows.slice(0, 12).map((kw) => (
+                    <tr key={kw.keyword_id} className="text-gray-700">
+                      <td className="py-2.5 pr-4 font-medium text-gray-900 whitespace-nowrap">
+                        {kw.keyword}
+                      </td>
+                      <td className="py-2.5 px-4">
+                        <div className="flex gap-1 flex-wrap">
+                          {kw.channels.map((ch) => (
+                            <span
+                              key={`${kw.keyword_id}-${ch}`}
+                              className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
+                                CHANNEL_BADGE_COLORS[ch] ?? "bg-gray-100 text-gray-600"
+                              }`}
+                            >
+                              {formatChannel(ch)}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="py-2.5 px-4 text-right tabular-nums">
+                        {kw.impression_count.toLocaleString()}
+                      </td>
+                      <td className="py-2.5 px-4 text-right tabular-nums text-gray-500">
+                        {kw.monthly_search_vol != null
+                          ? kw.monthly_search_vol.toLocaleString()
+                          : "-"}
+                      </td>
+                      <td className="py-2.5 px-4 text-right tabular-nums text-gray-500">
+                        {kw.naver_cpc != null ? `${kw.naver_cpc.toLocaleString()}원` : "-"}
+                      </td>
+                      <td className="py-2.5 pl-4 text-right text-gray-500 whitespace-nowrap">
+                        {kw.last_seen ?? "-"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          <p className="px-6 py-10 text-sm text-gray-400 text-center">
+            {keywordsLoading ? "키워드 집계 중" : "키워드 데이터 없음"}
+          </p>
+        )}
       </div>
 
       {/* Charts row: Donut + Channel bar */}
@@ -844,9 +1132,9 @@ export default function AdvertiserDetailPage() {
                       {ad.ad_text}
                     </p>
                   )}
-                  {ad.captured_at && (
+                  {ad.ad_delivery_start && (
                     <p className="text-[10px] text-gray-400 mt-1">
-                      {ad.captured_at.slice(0, 10)}
+                      집행 시작 {ad.ad_delivery_start.slice(0, 10)}
                     </p>
                   )}
                 </div>

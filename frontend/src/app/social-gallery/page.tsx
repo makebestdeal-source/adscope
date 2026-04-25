@@ -4,7 +4,6 @@ import { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api, type GalleryItem } from "@/lib/api";
 import { toImageUrl } from "@/lib/image-utils";
-import { PlanGate } from "@/components/PlanGate";
 import { ExportDropdown } from "@/components/ExportDropdown";
 import { GallerySelectionDownload } from "@/components/DownloadButtons";
 
@@ -28,7 +27,7 @@ function formatLikeCount(n: number | null | undefined): string {
 }
 
 export default function SocialGalleryPage() {
-  return <PlanGate><SocialGalleryContent /></PlanGate>;
+  return <SocialGalleryContent />;
 }
 
 function SocialGalleryContent() {
@@ -72,7 +71,7 @@ function SocialGalleryContent() {
   const { data, isLoading } = useQuery({
     queryKey: ["social-gallery", queryParams],
     queryFn: () =>
-      api.getGallery(queryParams as Parameters<typeof api.getGallery>[0]),
+      api.getPublicGallery(queryParams as Parameters<typeof api.getGallery>[0]),
     refetchInterval: 5 * 60 * 1000, // 5분마다 자동 갱신
   });
 
@@ -255,13 +254,10 @@ function SocialCard({ item, onClick, selectMode = false, selected = false }: { i
     ? { label: "메타", cls: "bg-blue-100 text-blue-800" }
     : { label: item.channel, cls: "bg-gray-100 text-gray-700" };
 
-  // Prefer upload_date (original publish date); fall back to captured_at (crawl date)
-  const hasUploadDate = !!item.upload_date;
-  const displayDate = item.upload_date || item.captured_at;
+  const displayDate = item.upload_date;
   const dateStr = displayDate
     ? new Date(displayDate).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })
     : "";
-  const dateSuffix = hasUploadDate ? "" : " (수집일)";
 
   // Content link (YouTube/Instagram original post)
   const contentUrl = item.url;
@@ -422,11 +418,9 @@ function SocialModal({ item, onClose }: { item: GalleryItem; onClose: () => void
             {item.like_count != null && (
               <span>좋아요 {formatLikeCount(item.like_count)}</span>
             )}
-            {(item.upload_date || item.captured_at) && (
+            {item.upload_date && (
               <span>
-                {item.upload_date
-                  ? `게시일 ${new Date(item.upload_date).toLocaleDateString("ko-KR")}`
-                  : `${new Date(item.captured_at!).toLocaleDateString("ko-KR")} (수집일)`}
+                {`게시일 ${new Date(item.upload_date).toLocaleDateString("ko-KR")}`}
               </span>
             )}
           </div>

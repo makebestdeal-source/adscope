@@ -1,31 +1,49 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { useQuery, useIsFetching } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { api, type GalleryItem } from "@/lib/api";
 import { CHANNEL_LABELS, CHANNEL_BADGE_COLORS } from "@/lib/constants";
-import { parseImagePath, type ParsedImagePath, type AtlasCoords } from "@/lib/image-utils";
-import { PlanGate } from "@/components/PlanGate";
+import { parseImagePath } from "@/lib/image-utils";
 import { DataFreshness } from "@/components/DataFreshness";
 import { ExportDropdown } from "@/components/ExportDropdown";
-import { GallerySelectionDownload, DownloadButton } from "@/components/DownloadButtons";
+import { GallerySelectionDownload } from "@/components/DownloadButtons";
 
 const ALL_CHANNELS = [
   "naver_search",
   "naver_da",
-  "naver_shopping",
   "google_search_ads",
   "google_gdn",
   "youtube_ads",
-  "youtube_surf",
   "meta",
-  "meta_feed",
   "kakao_da",
   "tiktok_ads",
 ];
 
+const KEYWORD_AD_CHANNELS = new Set(["naver_search", "google_search_ads"]);
+
+function isKeywordMaterial(item: GalleryItem) {
+  return (
+    item.material_type === "keyword_text" ||
+    KEYWORD_AD_CHANNELS.has(item.channel)
+  );
+}
+
+function getKeywordLabel(item: GalleryItem) {
+  return item.keyword || item.search_keyword || null;
+}
+
+function getDisplayDate(item: GalleryItem, options?: Intl.DateTimeFormatOptions) {
+  const dateValue = item.source === "social"
+    ? (item.upload_date || item.captured_at)
+    : item.captured_at;
+  return dateValue
+    ? new Date(dateValue).toLocaleDateString("ko-KR", options)
+    : "";
+}
+
 export default function GalleryPage() {
-  return <PlanGate><GalleryContent /></PlanGate>;
+  return <GalleryContent />;
 }
 
 function GalleryContent() {
@@ -100,6 +118,12 @@ function GalleryContent() {
     return data.items.filter((item) => selectedChannels.has(item.channel));
   }, [data?.items, selectedChannels]);
 
+  const visibleItems = filteredItems;
+  const selectableImageCount = useMemo(
+    () => visibleItems.filter((item) => !isKeywordMaterial(item)).length,
+    [visibleItems]
+  );
+
   const totalItems = data?.total ?? 0;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
@@ -160,6 +184,10 @@ function GalleryContent() {
           onRefresh={() => refetch()}
           isRefreshing={isLoading}
         />
+      </div>
+
+      <div className="mb-6 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-900">
+        비회원도 광고 소재를 둘러볼 수 있습니다. 내보내기와 이미지 다운로드는 유료 가입 후 사용할 수 있습니다.
       </div>
 
       {/* Filters */}
@@ -280,7 +308,7 @@ function GalleryContent() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <p className="text-sm text-gray-500">
-            총 <span className="font-semibold text-gray-900">{totalItems.toLocaleString()}</span>개 소재
+            <span className="font-semibold text-gray-900">{visibleItems.length.toLocaleString()}</span> / {totalItems.toLocaleString()}개 소재
           </p>
           <ExportDropdown
             csvUrl="/api/export/gallery"
@@ -288,10 +316,13 @@ function GalleryContent() {
           />
           <button
             onClick={() => { setSelectMode(!selectMode); if (selectMode) clearSelection(); }}
+            disabled={selectableImageCount === 0}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border rounded-lg transition-colors ${
               selectMode
                 ? "text-white bg-indigo-600 border-indigo-600"
-                : "text-gray-600 bg-white border-gray-200 hover:bg-gray-50"
+                : selectableImageCount === 0
+                  ? "text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed"
+                  : "text-gray-600 bg-white border-gray-200 hover:bg-gray-50"
             }`}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
@@ -366,7 +397,7 @@ function GalleryContent() {
             다시 시도
           </button>
         </div>
-      ) : filteredItems.length === 0 ? (
+      ) : visibleItems.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
           <svg
             viewBox="0 0 24 24"
@@ -381,19 +412,27 @@ function GalleryContent() {
               strokeLinejoin="round"
             />
           </svg>
-          <p className="text-sm text-gray-500">이미지가 있는 광고 소재가 없습니다</p>
+          <p className="text-sm text-gray-500">
+            표시할 광고 소재가 없습니다
+          </p>
           <p className="text-xs text-gray-400 mt-1">필터 조건을 변경해 보세요</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredItems.map((item) => (
-            <GalleryCard
-              key={item.id}
-              item={item}
-              onClick={() => selectMode ? toggleSelect(Number(item.id)) : setModalItem(item)}
-              selectMode={selectMode}
-              selected={selectedIds.has(Number(item.id))}
-            />
+          {visibleItems.map((item) => (
+            isKeywordMaterial(item) ? (
+              <div key={item.id} className="col-span-2 md:col-span-3 lg:col-span-4">
+                <KeywordMaterialCard item={item} />
+              </div>
+            ) : (
+              <GalleryCard
+                key={item.id}
+                item={item}
+                onClick={() => selectMode ? toggleSelect(Number(item.id)) : setModalItem(item)}
+                selectMode={selectMode}
+                selected={selectedIds.has(Number(item.id))}
+              />
+            )
           ))}
         </div>
       )}
@@ -433,19 +472,78 @@ const TEXT_AD_CHANNELS = new Set(["naver_search", "google_search_ads"]);
 
 function TextAdCard({ item }: { item: GalleryItem }) {
   const isNaver = item.channel === "naver_search";
-  const domain = item.url ? (() => { try { return new URL(item.url).hostname.replace(/^www\./, ""); } catch { return item.url; } })() : null;
+  // 구글 Transparency Center URL/도메인 제외
+  const isGoogleTransparency = item.url?.includes("adstransparency.google.com");
+  const displayUrl = isGoogleTransparency ? null : item.url;
+  const rawDomain = displayUrl
+    ? (() => { try { return new URL(displayUrl).hostname.replace(/^www\./, ""); } catch { return displayUrl; } })()
+    : (item.display_url || null);
+  const domain = rawDomain?.includes("adstransparency") ? null : rawDomain;
+  // "google_search_N" 패턴은 실제 광고 텍스트가 아님 → 광고주명 폴백
+  const isFormatPlaceholder = /^(google_search|youtube_transparency)_\d+$/.test(item.ad_text || "");
+  const adText = isFormatPlaceholder ? null : item.ad_text;
   return (
     <div className={`flex flex-col justify-center h-full px-3 py-3 text-left ${isNaver ? "bg-[#f0f8ff]" : "bg-[#f8fff0]"}`}>
       {domain && (
         <p className={`text-[10px] mb-1 truncate font-medium ${isNaver ? "text-green-700" : "text-green-600"}`}>{domain}</p>
       )}
       <p className={`text-xs font-semibold leading-snug mb-1 line-clamp-2 ${isNaver ? "text-blue-700" : "text-blue-600"}`}>
-        {item.ad_text || item.advertiser_name_raw || "(텍스트 없음)"}
+        {adText || item.advertiser_name_raw || "(광고 제목 미제공)"}
       </p>
       <p className="text-[10px] text-gray-500 line-clamp-2">
-        {item.url || ""}
+        {displayUrl || ""}
       </p>
     </div>
+  );
+}
+
+function KeywordMaterialCard({ item }: { item: GalleryItem }) {
+  const badgeColor =
+    CHANNEL_BADGE_COLORS[item.channel] ?? "bg-gray-100 text-gray-700";
+  const channelLabel = CHANNEL_LABELS[item.channel] ?? item.channel_raw ?? item.channel;
+  const keyword = getKeywordLabel(item);
+  const dateStr = getDisplayDate(item, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  const copy = item.ad_text || item.advertiser_name_raw || "광고 문구 미제공";
+
+  return (
+    <article className="rounded-2xl border border-emerald-100 bg-white shadow-sm overflow-hidden">
+      <div className="border-l-4 border-emerald-500 p-5">
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${badgeColor}`}>
+            {channelLabel}
+          </span>
+          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">
+            키워드 소재
+          </span>
+          {keyword && (
+            <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700">
+              검색어: {keyword}
+            </span>
+          )}
+          {dateStr && (
+            <span className="ml-auto text-xs text-gray-400">{dateStr}</span>
+          )}
+        </div>
+
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-gray-500 mb-2">
+            {item.advertiser_name_raw || "광고주 미상"}
+          </p>
+          <p className="text-xl font-bold leading-relaxed text-gray-950 whitespace-pre-line">
+            {copy}
+          </p>
+          {item.ad_type && (
+            <p className="mt-4 text-xs text-gray-500">
+              유형: <span className="font-medium text-gray-700">{item.ad_type}</span>
+            </p>
+          )}
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -571,15 +669,14 @@ function GalleryCard({
   const channelLabel = CHANNEL_LABELS[item.channel] ?? item.channel;
 
   const isSocial = item.source === "social";
-  // For social items: prefer upload_date (original publish date); for ads: use captured_at
-  const displayDate = isSocial ? (item.upload_date || item.captured_at) : item.captured_at;
+  // 소셜: 게시일만 표시, 광고: 집행 시작일만 표시. 수집일은 프론트 미노출.
+  const displayDate = isSocial ? item.upload_date : item.ad_delivery_start;
   const dateStr = displayDate
     ? new Date(displayDate).toLocaleDateString("ko-KR", {
         month: "short",
         day: "numeric",
       })
     : "";
-  const dateLabelSuffix = isSocial && !item.upload_date && item.captured_at ? " (수집일)" : "";
 
   const showImage = parsed && !imgError;
 
@@ -692,19 +789,16 @@ function ImageModal({
   const channelLabel = CHANNEL_LABELS[item.channel] ?? item.channel;
 
   const isSocial = item.source === "social";
-  const displayDate = isSocial ? (item.upload_date || item.captured_at) : item.captured_at;
+  // 소셜: 게시일만 표시, 광고: 집행 시작일만 표시. 수집일은 프론트 미노출.
+  const displayDate = isSocial ? item.upload_date : item.ad_delivery_start;
   const dateStr = displayDate
     ? new Date(displayDate).toLocaleString("ko-KR", {
         year: "numeric",
         month: "long",
         day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
       })
     : "";
-  const dateLabel = isSocial
-    ? (item.upload_date ? "게시일:" : "수집일:")
-    : "수집일:";
+  const dateLabel = isSocial ? "게시일:" : "집행 시작:";
 
   const showImage = parsed && !imgError;
 

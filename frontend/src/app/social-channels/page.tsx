@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { PlanGate } from "@/components/PlanGate";
 import { PeriodSelector } from "@/components/PeriodSelector";
 import { api } from "@/lib/api";
 import {
@@ -231,8 +230,7 @@ export default function SocialChannelsPage() {
   const [tab, setTab] = useState<SocialTab>("channels");
 
   return (
-    <PlanGate>
-      <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
+    <div className="p-6 lg:p-8 max-w-7xl animate-fade-in">
         {/* Header */}
         <div className="mb-8 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-200/50">
@@ -266,8 +264,7 @@ export default function SocialChannelsPage() {
           ))}
         </div>
         {tab === "channels" ? <SocialChannelsContent /> : <BrandChannelsContent />}
-      </div>
-    </PlanGate>
+    </div>
   );
 }
 
@@ -275,6 +272,16 @@ function SocialChannelsContent() {
   const router = useRouter();
   const [platform, setPlatform] = useState("");
   const [days, setDays] = useState(30);
+  const [customRange, setCustomRange] = useState<{ from: string; to: string }>({ from: "", to: "" });
+  const handleCustomRangeChange = (from: string, to: string) => {
+    setCustomRange({ from, to });
+    if (from) {
+      const fromDate = new Date(from);
+      const today = new Date();
+      const diffDays = Math.ceil((today.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
+      if (diffDays > 0) setDays(diffDays);
+    }
+  };
   const [advertiserSearch, setAdvertiserSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -550,7 +557,7 @@ function SocialChannelsContent() {
           <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
             분석 기간
           </label>
-          <PeriodSelector days={days} onDaysChange={setDays} />
+          <PeriodSelector days={days} onDaysChange={setDays} customRange={customRange} onCustomRangeChange={handleCustomRangeChange} />
         </div>
 
         {/* Advertiser multi-select */}
@@ -1238,16 +1245,26 @@ function BrandChannelsContent() {
   const [brandPlatform, setBrandPlatform] = useState("");
   const [isAdOnly, setIsAdOnly] = useState(false);
   const [brandDays, setBrandDays] = useState(30);
+  const [brandCustomRange, setBrandCustomRange] = useState<{ from: string; to: string }>({ from: "", to: "" });
+  const handleBrandCustomRangeChange = (from: string, to: string) => {
+    setBrandCustomRange({ from, to });
+    if (from) {
+      const fromDate = new Date(from);
+      const today = new Date();
+      const diffDays = Math.ceil((today.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
+      if (diffDays > 0) setBrandDays(diffDays);
+    }
+  };
 
   const { data: stats } = useQuery<BrandChannelStats>({
     queryKey: ["brand-channel-stats"],
-    queryFn: () => api.getBrandChannelStats(),
+    queryFn: () => api.getPublicBrandChannelStats(),
   });
 
   const { data: recentUploads, isLoading, isError } = useQuery<BrandContentItem[]>({
     queryKey: ["brand-recent-uploads", brandPlatform, isAdOnly, brandDays],
     queryFn: () =>
-      api.getBrandRecentUploads({
+      api.getPublicBrandRecentUploads({
         days: brandDays, limit: 50,
         platform: brandPlatform || undefined,
         is_ad: isAdOnly ? true : undefined,
@@ -1291,7 +1308,7 @@ function BrandChannelsContent() {
           </div>
           <div>
             <p className="text-xs font-medium text-gray-500 mb-2">기간</p>
-            <PeriodSelector days={brandDays} onDaysChange={setBrandDays} />
+            <PeriodSelector days={brandDays} onDaysChange={setBrandDays} customRange={brandCustomRange} onCustomRangeChange={handleBrandCustomRangeChange} />
           </div>
           <div className="ml-auto self-end">
             <button onClick={() => { setBrandPlatform(""); setIsAdOnly(false); setBrandDays(30); }}

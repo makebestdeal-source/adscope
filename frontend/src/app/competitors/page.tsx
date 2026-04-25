@@ -58,6 +58,8 @@ export default function CompetitorsPage() {
   const [selectedAdvertiserName, setSelectedAdvertiserName] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [days, setDays] = useState(30);
+  const [showAllLandscape, setShowAllLandscape] = useState(false);
+  const competitorRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Fetch industries from API
@@ -119,6 +121,13 @@ export default function CompetitorsPage() {
     setShowDropdown(false);
   };
 
+  const handleSelectLandscapeAdvertiser = (adv: LandscapeAdvertiser) => {
+    setSelectedAdvertiserId(adv.id);
+    setSelectedAdvertiserName(adv.name);
+    setAdvertiserSearch(adv.name);
+    setTimeout(() => competitorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+  };
+
   // Chart data for competitor affinity
   const chartData =
     competitorData?.competitors.map((c, i) => ({
@@ -162,6 +171,7 @@ export default function CompetitorsPage() {
             onChange={(e) => {
               const val = e.target.value;
               setSelectedIndustry(val ? Number(val) : null);
+              setShowAllLandscape(false);
             }}
             className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-adscope-500/20 focus:border-adscope-500"
           >
@@ -251,6 +261,7 @@ export default function CompetitorsPage() {
 
       {/* Competitor Affinity Section */}
       {selectedAdvertiserId && (
+        <div ref={competitorRef} />
         <div className="space-y-6 mb-8">
           {/* Header */}
           <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
@@ -517,6 +528,45 @@ export default function CompetitorsPage() {
             </div>
           ) : landscapeData && landscapeData.advertiser_count > 0 ? (
             <>
+              {/* 주요 광고주 빠른 선택 칩 */}
+              <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm font-semibold text-gray-700">주요 광고주</p>
+                  <p className="text-xs text-gray-400">클릭 시 경쟁사 분석 자동 적용</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(showAllLandscape
+                    ? landscapeData.advertisers
+                    : landscapeData.advertisers.slice(0, 8)
+                  ).map((adv: LandscapeAdvertiser) => (
+                    <button
+                      key={adv.id}
+                      onClick={() => handleSelectLandscapeAdvertiser(adv)}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                        selectedAdvertiserId === adv.id
+                          ? "bg-indigo-600 text-white border-indigo-600"
+                          : "bg-white text-gray-700 border-gray-200 hover:border-indigo-400 hover:text-indigo-600"
+                      }`}
+                    >
+                      <span>{adv.name}</span>
+                      <span className={`text-[10px] font-normal ${selectedAdvertiserId === adv.id ? "text-indigo-200" : "text-gray-400"}`}>
+                        {adv.sov_percentage.toFixed(1)}%
+                      </span>
+                    </button>
+                  ))}
+                  {landscapeData.advertisers.length > 8 && (
+                    <button
+                      onClick={() => setShowAllLandscape((v) => !v)}
+                      className="px-3 py-1.5 rounded-full text-sm font-medium border border-dashed border-gray-300 text-gray-500 hover:border-gray-400 hover:text-gray-700 transition-colors"
+                    >
+                      {showAllLandscape
+                        ? "접기"
+                        : `전체보기 +${landscapeData.advertisers.length - 8}`}
+                    </button>
+                  )}
+                </div>
+              </div>
+
               {/* Summary cards */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">

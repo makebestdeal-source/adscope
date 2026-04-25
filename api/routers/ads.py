@@ -5,20 +5,45 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path as FilePath
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import and_, false, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from api.deps import get_current_user, require_plan, require_paid
+from api.deps import get_current_user
 from database import get_db
 from database.models import AdDetail, AdSnapshot, Keyword, User
 from database.schemas import AdSnapshotOut, AdSnapshotWithDetails
-from processor.channel_utils import SEARCH_CHANNELS, normalize_channel_for_display
+from processor.channel_utils import (
+    GALLERY_EXCLUDED_CHANNELS,
+    SEARCH_CHANNELS,
+    get_gallery_ad_channels,
+    get_gallery_social_platforms,
+    normalize_channel_for_display,
+)
+from processor.entity_label_quality import repair_material_text
 
-router = APIRouter(prefix="/api/ads", tags=["ads"],
-    dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/api/ads", tags=["ads"])
 
 _IMAGE_STORE_DIR = os.getenv("IMAGE_STORE_DIR", "stored_images")
+
+def _keyword_material_fields(
+    channel: str | None,
+    keyword: str | None,
+    extra_data: dict | None,
+) -> dict[str, str | None]:
+    search_keyword = extra_data.get("search_keyword") if isinstance(extra_data, dict) else None
+    is_search = channel in SEARCH_CHANNELS
+    return {
+        "material_type": "keyword_text" if is_search else "creative_image",
+        "keyword": keyword or search_keyword,
+        "search_keyword": search_keyword,
+    }
+
+
+def _safe_ad_text(text: str | None, extra_data: dict | None) -> str | None:
+    """Hide crawler/library placeholders from public gallery payloads."""
+    return repair_material_text(text, extra_data)
+
 
 def _normalize_image_path(path: str) -> str | None:
     """DB 경로를 정규화하고 실제 파일이 존재하면 정규화된 경로를 반환, 없으면 None."""
@@ -98,7 +123,6 @@ async def get_snapshot(
 @router.get("/stats/daily")
 async def daily_stats(
     date: datetime | None = None,
-    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """일일 수집 통계. KST 기준 오늘. 데이터 없으면 최근 날짜로 fallback."""
@@ -205,7 +229,6 @@ async def daily_stats(
 @router.get("/stats/daily-trend")
 async def daily_trend(
     days: int = Query(default=30, le=90),
-    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """N일간 채널별 일일 수집 추이. KST 기준 날짜별 광고 수."""
@@ -238,7 +261,7 @@ async def daily_trend(
     ]
 
 
-@router.get("/gallery", dependencies=[Depends(require_plan("full"))])
+@router.get("/gallery")
 async def ad_gallery(
     channel: str | None = None,
     advertiser: str | None = None,
@@ -247,7 +270,6 @@ async def ad_gallery(
     source: str | None = Query(default=None, description="ads | social | None(all)"),
     limit: int = Query(default=60, le=200),
     offset: int = 0,
-    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """creative_image_path가 있는 광고 목록 + 소셜 콘텐츠 (갤러리용)."""
@@ -263,6 +285,7 @@ async def ad_gallery(
                 AdDetail.id,
                 AdDetail.advertiser_name_raw,
                 AdDetail.ad_text,
+                AdDetail.ad_description,
                 AdDetail.ad_type,
                 AdDetail.creative_image_path,
                 AdDetail.url,
@@ -270,8 +293,14 @@ async def ad_gallery(
                 AdSnapshot.channel,
                 AdSnapshot.captured_at,
                 AdDetail.extra_data,
+                AdDetail.display_url,
+                Keyword.keyword,
+                AdDetail.ad_delivery_start,
             )
             .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+            .outerjoin(Keyword, AdSnapshot.keyword_id == Keyword.id)
+            .where(~AdSnapshot.channel.in_(GALLERY_EXCLUDED_CHANNELS))
+            .where(or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected"))
             .order_by(AdSnapshot.captured_at.desc())
         )
         # 검색소재는 이미지 없어도 포함 (문구+광고주 유지), 그 외는 이미지 필수
@@ -282,7 +311,10 @@ async def ad_gallery(
             query = query.where(
                 or_(
                     AdSnapshot.channel.in_(SEARCH_CHANNELS),
-                    AdDetail.creative_image_path.isnot(None),
+                    and_(
+                        AdDetail.creative_image_path.isnot(None),
+                        AdDetail.creative_image_path != "",
+                    ),
                 )
             )
         else:
@@ -291,10 +323,13 @@ async def ad_gallery(
 
         if channel:
             # Meta 통합: DB에 이미 meta로 저장됨 (facebook/instagram → meta)
-            if channel == "meta":
-                query = query.where(AdSnapshot.channel == "meta")
+            ad_channels = get_gallery_ad_channels(channel)
+            if not ad_channels:
+                query = query.where(false())
+            elif len(ad_channels) == 1:
+                query = query.where(AdSnapshot.channel == next(iter(ad_channels)))
             else:
-                query = query.where(AdSnapshot.channel == channel)
+                query = query.where(AdSnapshot.channel.in_(ad_channels))
         if advertiser:
             query = query.where(
                 AdDetail.advertiser_name_raw.ilike(f"%{advertiser}%")
@@ -315,27 +350,35 @@ async def ad_gallery(
 
         result = await db.execute(query)
         for row in result.all():
-            img_path = _normalize_image_path(row[4])
-            extra = row[9] or {}
+            img_path = _normalize_image_path(row[5])
+            extra = row[10] or {}
             landing = extra.get("landing_analysis") if isinstance(extra, dict) else None
-            ch = row[7]
+            ch = row[8]
             # 검색소재는 썸네일 제거 (문구+광고주 정보만 유지)
             if ch in SEARCH_CHANNELS:
                 img_path = None
+            elif not img_path:
+                continue
             display_ch = normalize_channel_for_display(ch)
+            material_fields = _keyword_material_fields(ch, row[12], extra)
+            ad_text = _safe_ad_text(row[2], extra)
             ad_items.append({
                 "id": row[0],
                 "advertiser_name_raw": row[1],
-                "ad_text": row[2],
-                "ad_type": row[3],
+                "ad_text": ad_text,
+                "ad_description": row[3],
+                "ad_type": row[4],
                 "creative_image_path": img_path,
-                "url": row[5],
-                "brand": row[6],
+                "url": row[6],
+                "display_url": row[11],
+                "brand": row[7],
                 "channel": display_ch,
                 "channel_raw": ch,
-                "captured_at": row[8].isoformat() if row[8] else None,
+                "captured_at": row[9].isoformat() if row[9] else None,
+                "ad_delivery_start": row[13].isoformat() if row[13] else None,
                 "source": "ads",
                 "landing_analysis": landing,
+                **material_fields,
             })
 
     # ── 소셜 콘텐츠 ──
@@ -362,13 +405,14 @@ async def ad_gallery(
         )
 
         if channel:
-            if channel == "meta":
-                sq = sq.where(BrandChannelContent.platform.in_(["meta", "instagram", "facebook"]))
-            elif channel in ("youtube", "instagram", "facebook"):
-                sq = sq.where(BrandChannelContent.platform == channel)
+            platforms = get_gallery_social_platforms(channel)
+            if not platforms:
+                sq = sq.where(false())
+            elif len(platforms) == 1:
+                sq = sq.where(BrandChannelContent.platform == next(iter(platforms)))
             else:
+                sq = sq.where(BrandChannelContent.platform.in_(platforms))
                 # 소셜 콘텐츠에 해당 없는 채널이면 소셜 쿼리 스킵
-                sq = sq.where(BrandChannelContent.platform == "___none___")
         if advertiser:
             sq = sq.where(AdvModel.name.ilike(f"%{advertiser}%"))
         if date_from:
@@ -377,10 +421,10 @@ async def ad_gallery(
             sq = sq.where(BrandChannelContent.discovered_at <= date_to)
 
         result = await db.execute(sq)
-        # 같은 (advertiser_id, platform, title) 조합 중 조회수 높은 1개만 표시 (시각적 중복 제거)
+        # 같은 content_id(영상 ID) 중 조회수 높은 1개만 표시 (시각적 중복 제거)
         _seen_title_key: dict = {}
         for row in result.all():
-            title_key = (row[1], row[6], row[2])  # advertiser_id, platform, title
+            title_key = (row[1], row[6], row[13] or row[2])  # advertiser_id, platform, content_id(fallback:title)
             if title_key in _seen_title_key:
                 existing_views = _seen_title_key[title_key]
                 cur_views = row[8] or 0

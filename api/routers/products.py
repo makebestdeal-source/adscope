@@ -24,8 +24,7 @@ from database.schemas import (
     ProductCategoryTreeOut,
 )
 
-router = APIRouter(prefix="/api/products", tags=["products"], redirect_slashes=False,
-    dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/api/products", tags=["products"], redirect_slashes=False)
 
 KST = timezone(timedelta(hours=9))
 
@@ -74,11 +73,14 @@ async def _count_advertisers_for_category(
     """Count unique advertisers for a category."""
     cutoff = _now_kst() - timedelta(days=days)
 
-    # FK match
+    # FK match (기간 필터 동일 적용 — 목록 API와 카운트 일치)
     fk_result = await db.execute(
-        select(func.count(func.distinct(AdDetail.advertiser_id))).where(
+        select(func.count(func.distinct(AdDetail.advertiser_id)))
+        .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+        .where(
             AdDetail.product_category_id == category_id,
             AdDetail.advertiser_id.isnot(None),
+            AdSnapshot.captured_at >= cutoff.replace(tzinfo=None),
         )
     )
     fk_count = fk_result.scalar() or 0
