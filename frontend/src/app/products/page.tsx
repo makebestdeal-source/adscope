@@ -120,9 +120,11 @@ function CategoryCard({
 function SubcategoryList({
   detail,
   onSubClick,
+  selectedSubId,
 }: {
   detail: ProductCategoryDetail;
   onSubClick: (id: number) => void;
+  selectedSubId?: number | null;
 }) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -131,25 +133,32 @@ function SubcategoryList({
       </div>
       <div className="divide-y divide-gray-50">
         {detail.children.length > 0 ? (
-          detail.children.map((child) => (
-            <button
-              key={child.id}
-              onClick={() => onSubClick(child.id)}
-              className="w-full px-5 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors text-left"
-            >
-              <span className="text-sm font-medium text-gray-700">
-                {child.name}
-              </span>
-              <div className="flex items-center gap-4">
-                <span className="text-xs text-gray-400">
-                  {child.advertiser_count} 광고주
+          detail.children.map((child) => {
+            const isSelected = selectedSubId === child.id;
+            return (
+              <button
+                key={child.id}
+                onClick={() => onSubClick(child.id)}
+                className={`w-full px-5 py-3 flex items-center justify-between transition-colors text-left ${
+                  isSelected
+                    ? "bg-adscope-50 border-l-2 border-adscope-500"
+                    : "hover:bg-gray-50"
+                }`}
+              >
+                <span className={`text-sm font-medium ${isSelected ? "text-adscope-700" : "text-gray-700"}`}>
+                  {child.name}
                 </span>
-                <span className="text-xs font-medium text-adscope-600 tabular-nums">
-                  {child.ad_count} 광고
-                </span>
-              </div>
-            </button>
-          ))
+                <div className="flex items-center gap-4">
+                  <span className="text-xs text-gray-400">
+                    {child.advertiser_count} 광고주
+                  </span>
+                  <span className="text-xs font-medium text-adscope-600 tabular-nums">
+                    {child.ad_count} 광고
+                  </span>
+                </div>
+              </button>
+            );
+          })
         ) : (
           <div className="px-5 py-6 text-center text-sm text-gray-400">
             소분류 없음
@@ -277,34 +286,47 @@ function SpendBarChart({
 }
 
 export default function ProductsPage() {
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
-    null
-  );
+  // parentCategoryId: 대분류 ID (항상 대분류)
+  const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
+  // selectedSubId: 소분류 ID (소분류 클릭 시 설정)
+  const [selectedSubId, setSelectedSubId] = useState<number | null>(null);
   const [days] = useState(30);
+
+  // 광고주 조회에 사용할 ID (소분류 선택 시 소분류, 없으면 대분류)
+  const activeQueryId = selectedSubId ?? parentCategoryId;
+  // 하위 호환을 위한 alias
+  const selectedCategoryId = parentCategoryId;
 
   const { data: categories, isLoading: loadingCategories } = useQuery({
     queryKey: ["productCategories", days],
     queryFn: () => api.getProductCategories(days),
   });
 
+  // detail은 항상 대분류 ID로 조회 (소분류 목록 유지)
   const { data: detail, isLoading: loadingDetail } = useQuery({
-    queryKey: ["productCategoryDetail", selectedCategoryId, days],
-    queryFn: () => api.getProductCategoryDetail(selectedCategoryId!, days),
-    enabled: !!selectedCategoryId,
+    queryKey: ["productCategoryDetail", parentCategoryId, days],
+    queryFn: () => api.getProductCategoryDetail(parentCategoryId!, days),
+    enabled: !!parentCategoryId,
   });
 
+  // 광고주는 소분류 선택 시 소분류 ID, 없으면 대분류 ID
   const { data: advertisers, isLoading: loadingAdvertisers } = useQuery({
-    queryKey: ["productCategoryAdvertisers", selectedCategoryId, days],
+    queryKey: ["productCategoryAdvertisers", activeQueryId, days],
     queryFn: () =>
-      api.getProductCategoryAdvertisers(selectedCategoryId!, days, 50),
-    enabled: !!selectedCategoryId,
+      api.getProductCategoryAdvertisers(activeQueryId!, days, 50),
+    enabled: !!activeQueryId,
   });
 
   const selectedCategory = categories?.find(
-    (c) => c.id === selectedCategoryId
+    (c) => c.id === parentCategoryId
   );
 
-  // Check if selectedCategoryId is a subcategory
+  // 소분류 이름 찾기
+  const selectedSubName = selectedSubId
+    ? selectedCategory?.children.find((c) => c.id === selectedSubId)?.name
+    : null;
+
+  // Check if selectedCategoryId is a subcategory (하위 호환)
   const parentOfSub = categories?.find((c) =>
     c.children.some((ch) => ch.id === selectedCategoryId)
   );
@@ -322,9 +344,9 @@ export default function ProductsPage() {
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            {selectedCategoryId && (
+            {parentCategoryId && (
               <button
-                onClick={() => setSelectedCategoryId(null)}
+                onClick={() => { setParentCategoryId(null); setSelectedSubId(null); }}
                 className="text-adscope-600 hover:text-adscope-800 transition-colors"
               >
                 <svg
@@ -343,19 +365,15 @@ export default function ProductsPage() {
               </button>
             )}
             <h1 className="text-2xl font-bold text-gray-900">
-              {selectedCategoryId
-                ? parentOfSub
-                  ? `${parentOfSub.name} > ${
-                      parentOfSub.children.find(
-                        (c) => c.id === selectedCategoryId
-                      )?.name || ""
-                    }`
+              {parentCategoryId
+                ? selectedSubName
+                  ? `${selectedCategory?.name} > ${selectedSubName}`
                   : selectedCategory?.name || ""
                 : "제품/서비스 분석"}
             </h1>
           </div>
           <p className="text-sm text-gray-500">
-            {selectedCategoryId
+            {parentCategoryId
               ? "카테고리별 광고주 랭킹 및 광고비 분석"
               : "제품/서비스 카테고리별 광고 현황"}
           </p>
@@ -363,7 +381,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Stats */}
-      {!selectedCategoryId && (
+      {!parentCategoryId && (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
             <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -398,7 +416,7 @@ export default function ProductsPage() {
       )}
 
       {/* Main Content */}
-      {!selectedCategoryId ? (
+      {!parentCategoryId ? (
         // Category Grid
         loadingCategories ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -420,7 +438,7 @@ export default function ProductsPage() {
               <CategoryCard
                 key={cat.id}
                 category={cat}
-                onClick={() => setSelectedCategoryId(cat.id)}
+                onClick={() => { setParentCategoryId(cat.id); setSelectedSubId(null); }}
               />
             ))}
           </div>
@@ -506,7 +524,8 @@ export default function ProductsPage() {
                 <>
                   <SubcategoryList
                     detail={detail}
-                    onSubClick={(id) => setSelectedCategoryId(id)}
+                    onSubClick={(id) => setSelectedSubId(prev => prev === id ? null : id)}
+                    selectedSubId={selectedSubId}
                   />
                   {advertisers && <SpendBarChart advertisers={advertisers} />}
                 </>

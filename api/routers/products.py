@@ -54,8 +54,8 @@ async def _get_category_and_children(
         child_ids = [c for c in children_result.scalars()]
         return [category_id] + child_ids
     else:
-        # 소분류 → 자신만
-        return [category_id]
+        # 소분류 → 자신 + 부모(대분류) 포함 (광고 데이터가 대분류 레벨에 저장될 수 있음)
+        return [category_id, category.parent_id]
 
 
 async def _count_ads_for_category(
@@ -309,11 +309,8 @@ async def get_category_advertisers(
     # Convert KST to UTC for DB comparison
     cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
 
-    # Include child categories
-    child_result = await db.execute(
-        select(ProductCategory.id).where(ProductCategory.parent_id == category_id)
-    )
-    all_cat_ids = [category_id] + [r[0] for r in child_result.all()]
+    # Include child categories (or parent if this is a subcategory)
+    all_cat_ids = await _get_category_and_children(db, category_id)
 
     # Get advertisers via FK
     fk_query = (
@@ -335,11 +332,10 @@ async def get_category_advertisers(
     fk_rows = (await db.execute(fk_query)).all()
 
     # Also get from text match (legacy)
-    cat_name = category.name
-    child_names_result = await db.execute(
-        select(ProductCategory.name).where(ProductCategory.parent_id == category_id)
+    cat_names_result = await db.execute(
+        select(ProductCategory.name).where(ProductCategory.id.in_(all_cat_ids))
     )
-    all_cat_names = [cat_name] + [r[0] for r in child_names_result.all()]
+    all_cat_names = [r[0] for r in cat_names_result.all()]
 
     text_query = (
         select(

@@ -108,10 +108,11 @@ export default function CompetitorsPage() {
   });
 
   // Industry landscape
-  const { data: landscapeData, isLoading: landscapeLoading } = useQuery({
+  const { data: landscapeData, isLoading: landscapeLoading, error: landscapeError } = useQuery({
     queryKey: ["industryLandscape", selectedIndustry, days],
     queryFn: () => api.getIndustryLandscape(selectedIndustry!, days),
     enabled: !!selectedIndustry,
+    retry: 1,
   });
 
   const handleSelectAdvertiser = (adv: AdvertiserSearchResult) => {
@@ -524,6 +525,11 @@ export default function CompetitorsPage() {
           {landscapeLoading ? (
             <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400 text-sm shadow-sm">
               랜드스케이프 분석 중...
+            </div>
+          ) : landscapeError ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
+              <p className="text-sm text-red-500">오류: {(landscapeError as Error).message}</p>
+              <p className="text-xs text-gray-400 mt-1">업종 ID: {selectedIndustry}</p>
             </div>
           ) : landscapeData && landscapeData.advertiser_count > 0 ? (
             <>
