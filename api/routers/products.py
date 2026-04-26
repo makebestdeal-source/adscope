@@ -33,27 +33,56 @@ def _now_kst() -> datetime:
     return datetime.now(KST)
 
 
+async def _get_category_and_children(
+    db: AsyncSession, category_id: int
+) -> list[int]:
+    """Get category_id와 모든 자식 카테고리의 id 리스트."""
+    cat_result = await db.execute(
+        select(ProductCategory).where(ProductCategory.id == category_id)
+    )
+    category = cat_result.scalar_one_or_none()
+    if not category:
+        return []
+
+    # 부모 카테고리인지 확인
+    if category.parent_id is None:
+        # 부모 → 자식들도 포함
+        children_result = await db.execute(
+            select(ProductCategory.id)
+            .where(ProductCategory.parent_id == category_id)
+        )
+        child_ids = [c for c in children_result.scalars()]
+        return [category_id] + child_ids
+    else:
+        # 소분류 → 자신만
+        return [category_id]
+
+
 async def _count_ads_for_category(
     db: AsyncSession, category_id: int, days: int
 ) -> int:
-    """Count ad_details linked to a category (by product_category_id or product_category text match)."""
+    """Count ad_details linked to a category (including children if parent)."""
     cutoff = _now_kst() - timedelta(days=days)
     cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
 
-    # product_category_id FK match
+    # 카테고리와 자식들 조회
+    category_ids = await _get_category_and_children(db, category_id)
+    if not category_ids:
+        return 0
+
+    # product_category_id FK match (카테고리 또는 자식 포함)
     fk_count = await db.execute(
         select(func.count(AdDetail.id)).where(
-            AdDetail.product_category_id == category_id
+            AdDetail.product_category_id.in_(category_ids)
         )
     )
     count = fk_count.scalar() or 0
 
     # Also match by product_category text field (for legacy data without FK)
-    cat_result = await db.execute(
-        select(ProductCategory.name).where(ProductCategory.id == category_id)
+    cat_names = await db.execute(
+        select(ProductCategory.name).where(ProductCategory.id.in_(category_ids))
     )
-    cat_name = cat_result.scalar_one_or_none()
-    if cat_name:
+    for cat_name in cat_names.scalars():
         text_count = await db.execute(
             select(func.count(AdDetail.id))
             .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
@@ -71,16 +100,21 @@ async def _count_ads_for_category(
 async def _count_advertisers_for_category(
     db: AsyncSession, category_id: int, days: int
 ) -> int:
-    """Count unique advertisers for a category."""
+    """Count unique advertisers for a category (including children if parent)."""
     cutoff = _now_kst() - timedelta(days=days)
     cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
 
-    # FK match (기간 필터 동일 적용 — 목록 API와 카운트 일치)
+    # 카테고리와 자식들 조회
+    category_ids = await _get_category_and_children(db, category_id)
+    if not category_ids:
+        return 0
+
+    # FK match (카테고리 또는 자식 포함)
     fk_result = await db.execute(
         select(func.count(func.distinct(AdDetail.advertiser_id)))
         .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
         .where(
-            AdDetail.product_category_id == category_id,
+            AdDetail.product_category_id.in_(category_ids),
             AdDetail.advertiser_id.isnot(None),
             AdSnapshot.captured_at >= cutoff_utc,
         )
@@ -88,11 +122,10 @@ async def _count_advertisers_for_category(
     fk_count = fk_result.scalar() or 0
 
     # Text match for legacy
-    cat_result = await db.execute(
-        select(ProductCategory.name).where(ProductCategory.id == category_id)
+    cat_names = await db.execute(
+        select(ProductCategory.name).where(ProductCategory.id.in_(category_ids))
     )
-    cat_name = cat_result.scalar_one_or_none()
-    if cat_name:
+    for cat_name in cat_names.scalars():
         text_result = await db.execute(
             select(func.count(func.distinct(AdDetail.advertiser_id)))
             .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
