@@ -140,8 +140,9 @@ async def classify_batch(
         return {}
 
 
-async def main(limit: int, dry_run: bool):
-    conn = sqlite3.connect(str(DB_PATH))
+async def main(limit: int, dry_run: bool, db_path: str = None):
+    path = db_path or str(DB_PATH)
+    conn = sqlite3.connect(path)
     conn.text_factory = lambda b: b.decode("utf-8", errors="replace")
     cur = conn.cursor()
 
@@ -200,7 +201,7 @@ async def main(limit: int, dry_run: bool):
 
     if not dry_run:
         # 결과 확인
-        conn2 = sqlite3.connect(str(DB_PATH))
+        conn2 = sqlite3.connect(path)
         conn2.text_factory = lambda b: b.decode("utf-8", errors="replace")
         cur2 = conn2.cursor()
         cur2.execute("""
@@ -223,6 +224,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=3500)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--db", type=str, default=None, help="DB 경로 (기본: adscope.db)")
     args = parser.parse_args()
 
     # .env 로드
@@ -233,4 +235,4 @@ if __name__ == "__main__":
                 k, _, v = line.partition("=")
                 os.environ.setdefault(k.strip(), v.strip())
 
-    asyncio.run(main(args.limit, args.dry_run))
+    asyncio.run(main(args.limit, args.dry_run, args.db))

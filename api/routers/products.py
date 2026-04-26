@@ -101,27 +101,24 @@ async def _count_advertisers_for_category(
     db: AsyncSession, category_id: int, days: int
 ) -> int:
     """Count unique advertisers for a category (including children if parent)."""
-    cutoff = _now_kst() - timedelta(days=days)
-    cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
-
     # 카테고리와 자식들 조회
     category_ids = await _get_category_and_children(db, category_id)
     if not category_ids:
         return 0
 
-    # FK match (카테고리 또는 자식 포함)
+    # FK match — 광고 수와 동일하게 시간 필터 없이 전체 기간 카운트
     fk_result = await db.execute(
         select(func.count(func.distinct(AdDetail.advertiser_id)))
-        .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
         .where(
             AdDetail.product_category_id.in_(category_ids),
             AdDetail.advertiser_id.isnot(None),
-            AdSnapshot.captured_at >= cutoff_utc,
         )
     )
     fk_count = fk_result.scalar() or 0
 
-    # Text match for legacy
+    # Text match for legacy (product_category 텍스트 필드)
+    cutoff = _now_kst() - timedelta(days=days)
+    cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
     cat_names = await db.execute(
         select(ProductCategory.name).where(ProductCategory.id.in_(category_ids))
     )
