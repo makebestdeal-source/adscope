@@ -359,7 +359,7 @@ async def get_category_advertisers(
         .join(SpendEstimate, SpendEstimate.campaign_id == Campaign.id)
         .where(
             Campaign.advertiser_id.in_(list(adv_stats.keys())),
-            SpendEstimate.date >= cutoff.replace(tzinfo=None),
+            SpendEstimate.date >= cutoff_utc,
         )
         .group_by(Campaign.advertiser_id)
     )
