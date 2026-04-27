@@ -65,6 +65,11 @@ GARBAGE_PATTERNS = [
     re.compile(r"^Visit Instagram"),
     re.compile(r"^AD,\s*광고"),
     re.compile(r"^광고 닫기"),
+    # YouTube 재생 시간 타임스탬프 (예: "0:00 / 0:36", "1:03 / 14:12")
+    re.compile(r"^\d{1,2}:\d{2}\s*/\s*\d{1,2}:\d{2}$"),
+    # URL이 광고주명으로 들어간 경우
+    re.compile(r"^https?://"),
+    re.compile(r"^www\."),
 ]
 
 
@@ -103,6 +108,7 @@ async def main():
     stats = {
         "house_deleted": 0,
         "garbage_deleted": 0,
+        "no_url_orphan_deleted": 0,
         "orphan_campaigns_deleted": 0,
         "orphan_ad_details_deleted": 0,
         "name_cleaned": 0,
@@ -194,7 +200,57 @@ async def main():
             """))
             stats["orphan_ad_details_deleted"] = orphan_ads
 
-        # ── 6. Run advertiser_name_cleaner ──
+        # ── 6. Delete URL-less orphan advertisers (no website AND no ad_details) ──
+        r = await session.execute(text("""
+            SELECT id, name FROM advertisers
+            WHERE (website IS NULL OR website = '')
+            AND NOT EXISTS (SELECT 1 FROM ad_details d WHERE d.advertiser_id = advertisers.id)
+        """))
+        no_url_orphans = r.fetchall()
+        print(f"\n=== URL-less orphan advertisers (no ads, no website): {len(no_url_orphans)} ===")
+        for aid, name in no_url_orphans:
+            print(f"  [{aid}] {name}")
+        if no_url_orphans and not dry_run:
+            orphan_ids = [row[0] for row in no_url_orphans]
+            for oid in orphan_ids:
+                await session.execute(
+                    text("DELETE FROM spend_estimates WHERE campaign_id IN (SELECT id FROM campaigns WHERE advertiser_id = :id)"),
+                    {"id": oid}
+                )
+                await session.execute(text("DELETE FROM campaigns WHERE advertiser_id = :id"), {"id": oid})
+                await session.execute(text("DELETE FROM advertisers WHERE id = :id"), {"id": oid})
+            stats["no_url_orphan_deleted"] = len(no_url_orphans)
+
+        # ── 7. Backfill website from ad_details.url (pipeline upsert 누락 보정) ──
+        r = await session.execute(text("""
+            SELECT COUNT(*) FROM advertisers a
+            WHERE (a.website IS NULL OR a.website = '')
+            AND EXISTS (
+                SELECT 1 FROM ad_details d
+                WHERE d.advertiser_id = a.id AND d.url IS NOT NULL AND d.url != ''
+            )
+        """))
+        backfill_count = r.scalar() or 0
+        print(f"\n=== Website backfill (ad_details.url → advertisers.website): {backfill_count} ===")
+        if backfill_count > 0 and not dry_run:
+            await session.execute(text("""
+                UPDATE advertisers
+                SET website = (
+                    SELECT d.url FROM ad_details d
+                    WHERE d.advertiser_id = advertisers.id
+                      AND d.url IS NOT NULL AND d.url != ''
+                    ORDER BY d.id DESC
+                    LIMIT 1
+                )
+                WHERE (website IS NULL OR website = '')
+                AND EXISTS (
+                    SELECT 1 FROM ad_details d
+                    WHERE d.advertiser_id = advertisers.id AND d.url IS NOT NULL AND d.url != ''
+                )
+            """))
+            print(f"  Backfilled {backfill_count} advertisers")
+
+        # ── 8. Run advertiser_name_cleaner ──
         print("\n=== Running advertiser name cleaner ===")
         if not dry_run:
             from processor.advertiser_name_cleaner import clean_advertiser_names
@@ -208,6 +264,8 @@ async def main():
     print(f"\n{'=== DRY RUN ===' if dry_run else '=== DONE ==='}")
     print(f"  House ads deleted: {stats['house_deleted']}")
     print(f"  Garbage names deleted: {stats['garbage_deleted']}")
+    print(f"  URL-less orphans deleted: {stats['no_url_orphan_deleted']}")
+    print(f"  Website backfilled: {backfill_count}")
     print(f"  Orphan campaigns deleted: {stats['orphan_campaigns_deleted']}")
     print(f"  Orphan ad_details deleted: {stats['orphan_ad_details_deleted']}")
     print(f"  Name cleaning: {stats['name_cleaned']}")

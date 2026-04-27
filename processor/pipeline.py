@@ -401,10 +401,10 @@ async def _auto_update_advertiser_websites(session: AsyncSession):
             SELECT d.id, d.url, d.extra_data, d.advertiser_id, a.name
             FROM ad_details d
             JOIN advertisers a ON d.advertiser_id = a.id
-            WHERE d.first_seen_at >= datetime('now', '-1 hour')
+            WHERE d.first_seen_at >= datetime('now', '-6 hours')
               AND (a.website IS NULL OR a.website = '')
               AND d.url IS NOT NULL AND d.url <> ''
-            LIMIT 200
+            LIMIT 500
         """))
         rows = result.fetchall()
 

@@ -105,6 +105,10 @@ _GDN_AD_CODE = re.compile(r"^GDN-\d+$", re.IGNORECASE)
 # 인스타그램 협찬 표기 패턴 (예: "username 페이지는 BrandName과(와) 함께합니다")
 _INSTAGRAM_SPONSORED = re.compile(r"페이지는\s+.+과\(와\)\s*함께합니다$")
 
+# YouTube 재생 시간 타임스탬프 (예: "0:00 / 0:36", "1:03 / 14:12")
+# 광고 영상 재생 시간이 광고주명으로 잘못 수집된 경우
+_YOUTUBE_TIMESTAMP = re.compile(r"^\d{1,2}:\d{2}\s*/\s*\d{1,2}:\d{2}$")
+
 # 네이버 검색광고 전체 광고문구 (광고주명+URL+설명이 합쳐진 형태)
 # 2+ 연속공백이 포함되면 검색광고 전체 텍스트가 잘못 잡힌 것
 _NAVER_SEARCH_AD_TEXT = re.compile(r"\s{2,}")
@@ -270,6 +274,15 @@ def validate_name(name: str | None) -> VerificationResult:
             quality=NameQuality.REJECTED,
             confidence=ConfidenceLevel.INVALID,
             rejection_reason=label_check.reason,
+        )
+
+    # YouTube 재생 시간 타임스탬프 ("0:00 / 0:36", "1:03 / 14:12")
+    if _YOUTUBE_TIMESTAMP.match(stripped):
+        return VerificationResult(
+            original_name=name,
+            quality=NameQuality.REJECTED,
+            confidence=ConfidenceLevel.INVALID,
+            rejection_reason="youtube_timestamp",
         )
 
     # Meta 라이브러리 ID 텍스트 ("라이브러리 ID: 576434418048307")

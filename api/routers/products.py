@@ -54,8 +54,8 @@ async def _get_category_and_children(
         child_ids = [c for c in children_result.scalars()]
         return [category_id] + child_ids
     else:
-        # 소분류 → 자신 + 부모(대분류) 포함 (광고 데이터가 대분류 레벨에 저장될 수 있음)
-        return [category_id, category.parent_id]
+        # 소분류 → 자신만 조회 (부모 포함 시 모든 소분류에 동일한 부모 데이터가 중복 집계됨)
+        return [category_id]
 
 
 async def _count_ads_for_category(
