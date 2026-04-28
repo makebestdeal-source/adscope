@@ -115,6 +115,7 @@ class AdvertiserOut(BaseModel):
     industry_id: int | None
     brand_name: str | None
     website: str | None
+    total_est_spend: float = 0.0
     model_config = ConfigDict(from_attributes=True)
 
 

@@ -134,6 +134,7 @@ export interface Advertiser {
   industry_id: number | null;
   brand_name: string | null;
   website: string | null;
+  total_est_spend: number;
 }
 
 export interface DailyStats {
@@ -182,6 +183,7 @@ export interface AdvertiserSearchResult {
   advertiser_type: string | null;
   parent_id: number | null;
   match_type: string;
+  total_est_spend: number;
 }
 
 export interface AdvertiserTreeNode {

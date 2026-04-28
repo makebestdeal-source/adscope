@@ -122,7 +122,31 @@ async def list_advertisers(
 
     query = query.offset(offset).limit(limit)
     result = await db.execute(query)
-    return result.scalars().all()
+    advertisers = result.scalars().all()
+
+    if not advertisers:
+        return []
+
+    # 광고주별 총 광고비 합산 (Campaign.total_est_spend)
+    adv_ids = [a.id for a in advertisers]
+    spend_result = await db.execute(
+        select(Campaign.advertiser_id, func.sum(Campaign.total_est_spend).label("total_spend"))
+        .where(Campaign.advertiser_id.in_(adv_ids))
+        .group_by(Campaign.advertiser_id)
+    )
+    spend_map = {row.advertiser_id: row.total_spend or 0.0 for row in spend_result.all()}
+
+    return [
+        {
+            "id": a.id,
+            "name": a.name,
+            "industry_id": a.industry_id,
+            "brand_name": a.brand_name,
+            "website": a.website,
+            "total_est_spend": round(spend_map.get(a.id, 0.0), 2),
+        }
+        for a in advertisers
+    ]
 
 
 _NON_ADVERTISER_NAMES = frozenset({

@@ -187,8 +187,8 @@ export default function AdvertisersPage() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "tree">("list");
-  const [sortKey, setSortKey] = useState<"name" | "brand" | "website" | "ad_count">("name");
-  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [sortKey, setSortKey] = useState<"name" | "brand" | "website" | "ad_count" | "total_est_spend">("total_est_spend");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // debounce 300ms
@@ -315,7 +315,7 @@ export default function AdvertisersPage() {
       setSortDir(sortDir === "asc" ? "desc" : "asc");
     } else {
       setSortKey(key);
-      setSortDir(key === "ad_count" ? "desc" : "asc");
+      setSortDir(key === "ad_count" || key === "total_est_spend" ? "desc" : "asc");
     }
   };
 
@@ -335,6 +335,8 @@ export default function AdvertisersPage() {
           const cb = adCountMap.get(b.name) ?? 0;
           return dir * (ca - cb);
         }
+        case "total_est_spend":
+          return dir * ((a.total_est_spend ?? 0) - (b.total_est_spend ?? 0));
         default:
           return 0;
       }
@@ -534,6 +536,9 @@ export default function AdvertisersPage() {
                   <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("website")}>
                     웹사이트<SortIcon col="website" />
                   </th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("total_est_spend")}>
+                    총 광고비<SortIcon col="total_est_spend" />
+                  </th>
                   <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("ad_count")}>
                     30일 노출<SortIcon col="ad_count" />
                   </th>
@@ -585,8 +590,21 @@ export default function AdvertisersPage() {
                         )}
                       </td>
                       <td className="py-3 px-4 text-right tabular-nums">
+                        {adv.total_est_spend > 0 ? (
+                          <span className="font-semibold text-gray-900">
+                            {adv.total_est_spend >= 1e8
+                              ? `${(adv.total_est_spend / 1e8).toFixed(1)}억`
+                              : adv.total_est_spend >= 1e4
+                              ? `${Math.round(adv.total_est_spend / 1e4).toLocaleString()}만`
+                              : `${Math.round(adv.total_est_spend).toLocaleString()}`}
+                          </span>
+                        ) : (
+                          <span className="text-gray-300">-</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-right tabular-nums">
                         {adCountMap.has(adv.name) ? (
-                          <span className="font-medium text-gray-900">
+                          <span className="font-medium text-gray-700">
                             {(adCountMap.get(adv.name) ?? 0).toLocaleString()}회
                           </span>
                         ) : (
@@ -597,7 +615,7 @@ export default function AdvertisersPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="py-12 text-center text-gray-400 text-sm">
+                    <td colSpan={5} className="py-12 text-center text-gray-400 text-sm">
                       {search ? `"${search}" 검색 결과가 없습니다` : "등록된 광고주가 없습니다"}
                     </td>
                   </tr>
