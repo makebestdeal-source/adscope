@@ -47,7 +47,7 @@ export default function GalleryPage() {
 
 function GalleryContent() {
   const [selectedChannels, setSelectedChannels] = useState<Set<string>>(
-    new Set()
+    new Set(ALL_CHANNELS)
   );
   const [advertiserSearch, setAdvertiserSearch] = useState("");
   const [dateFrom, setDateFrom] = useState("");
