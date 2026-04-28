@@ -19,7 +19,8 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/advertisers/favorites", label: "나의 광고주", icon: "star" },
       { href: "/advertisers", label: "광고주", icon: "advertisers", public: true },
       { href: "/campaigns", label: "캠페인", icon: "campaign" },
-      { href: "/gallery", label: "광고 소재", icon: "gallery", public: true },
+      { href: "/gallery", label: "광고소재(이미지)", icon: "gallery", public: true },
+      { href: "/gallery/keyword", label: "광고소재(키워드)", icon: "keyword", public: true },
       { href: "/social-gallery", label: "소셜 소재", icon: "social" },
     ],
   },
@@ -545,6 +546,8 @@ export function Sidebar() {
                     ? pathname === "/advertisers" || (pathname.startsWith("/advertisers/") && !pathname.startsWith("/advertisers/favorites"))
                     : item.href === "/admin"
                     ? pathname === "/admin"
+                    : item.href === "/gallery"
+                    ? pathname === "/gallery"
                     : pathname.startsWith(item.href);
                 return (
                   <Link

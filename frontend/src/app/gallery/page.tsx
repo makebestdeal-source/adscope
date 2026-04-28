@@ -9,10 +9,9 @@ import { DataFreshness } from "@/components/DataFreshness";
 import { ExportDropdown } from "@/components/ExportDropdown";
 import { GallerySelectionDownload } from "@/components/DownloadButtons";
 
+// 이미지 소재 페이지: DA/디스플레이 채널만 표시
 const ALL_CHANNELS = [
-  "naver_search",
   "naver_da",
-  "google_search_ads",
   "google_gdn",
   "youtube_ads",
   "meta",
@@ -172,10 +171,10 @@ function GalleryContent() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              광고 소재
+              광고소재(이미지)
             </h1>
             <p className="text-sm text-gray-500">
-              수집된 광고 크리에이티브 갤러리
+              DA·디스플레이 배너 소재 — 네이버DA, GDN, 유튜브, 메타, 카카오, 틱톡
             </p>
           </div>
         </div>
@@ -187,7 +186,7 @@ function GalleryContent() {
       </div>
 
       <div className="mb-6 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-900">
-        비회원도 광고 소재를 둘러볼 수 있습니다. 내보내기와 이미지 다운로드는 유료 가입 후 사용할 수 있습니다.
+        비회원도 DA 이미지 소재를 둘러볼 수 있습니다. 내보내기와 이미지 다운로드는 유료 가입 후 사용할 수 있습니다.
       </div>
 
       {/* Filters */}
