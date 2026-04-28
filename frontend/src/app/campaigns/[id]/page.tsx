@@ -2,11 +2,10 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import {
   BarChart, Bar, XAxis, YAxis,
-  Tooltip, Legend, ResponsiveContainer, ReferenceLine, ComposedChart, Area, Line,
-  CartesianGrid,
+  Tooltip, ResponsiveContainer,
 } from "recharts";
 import {
   api,
@@ -90,12 +89,6 @@ export default function CampaignDetailPage() {
     enabled: !!campaignId,
   });
 
-  const { data: journey } = useQuery({
-    queryKey: ["campaignJourney", campaignId],
-    queryFn: () => api.getCampaignJourney(campaignId, { days: 120 }),
-    enabled: !!campaignId,
-  });
-
   const { data: lift } = useQuery({
     queryKey: ["campaignLift", campaignId],
     queryFn: () => api.getCampaignLift(campaignId),
@@ -112,24 +105,6 @@ export default function CampaignDetailPage() {
       setEditing(false);
     },
   });
-
-  // Journey timeline data transformation
-  const timelineData = useMemo(() => {
-    if (!journey?.length) return [];
-    const byDate: Record<string, Record<string, number>> = {};
-
-    for (const ev of journey) {
-      const d = ev.ts.slice(0, 10);
-      if (!byDate[d]) byDate[d] = {};
-      // Aggregate by stage
-      const key = `${ev.stage}_${ev.metric}`;
-      byDate[d][key] = (byDate[d][key] || 0) + ev.value;
-    }
-
-    return Object.entries(byDate)
-      .map(([date, metrics]) => ({ date, ...metrics }))
-      .sort((a, b) => String(a.date).localeCompare(String(b.date)));
-  }, [journey]);
 
   // Loading states
   if (!detail) {
@@ -213,187 +188,100 @@ export default function CampaignDetailPage() {
       </div>
 
       {/* ── Section 1: KPI Cards ── */}
-      <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         <KpiCard label="총 광고비" value={formatSpend(effect?.total_spend ?? 0)} color="blue" />
         <KpiCard label="추정 노출" value={fmtNum(effect?.est_impressions)} unit="회" color="blue" />
         <KpiCard label="추정 클릭" value={fmtNum(effect?.est_clicks)} unit="회" color="blue" />
-        <KpiCard
-          label="Query Lift"
-          value={fmtPct(effect?.query_lift_pct)}
-          color={liftColor(effect?.query_lift_pct)}
-          isLift
-        />
-        <KpiCard
-          label="Social Lift"
-          value={fmtPct(effect?.social_lift_pct)}
-          color={liftColor(effect?.social_lift_pct)}
-          isLift
-        />
-        <KpiCard
-          label="Sales Lift"
-          value={fmtPct(effect?.sales_lift_pct)}
-          color={liftColor(effect?.sales_lift_pct)}
-          isLift
-        />
       </div>
 
-      {/* ── Section 2: Journey Timeline ── */}
-      {timelineData.length > 0 && (
+      {/* ── Section 3: Campaign Details Card (데이터 있을 때만) ── */}
+      {(detail.objective || detail.product_service || detail.promotion_copy || detail.model_info || detail.target_keywords) && (
         <div className="bg-white rounded-xl shadow p-5">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">저니 타임라인</h2>
-          <ResponsiveContainer width="100%" height={340}>
-            <ComposedChart data={timelineData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 11 }}
-                tickFormatter={(v: string) => v.slice(5)}
-              />
-              <YAxis tick={{ fontSize: 11 }} />
-              <Tooltip
-                contentStyle={{ fontSize: 12 }}
-                labelFormatter={(v: string) => v}
-              />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
-              {detail.start_at && (
-                <ReferenceLine
-                  x={detail.start_at.slice(0, 10)}
-                  stroke="#6366F1"
-                  strokeDasharray="3 3"
-                  label={{ value: "Start", position: "top", fontSize: 10 }}
-                />
-              )}
-              {detail.end_at && detail.status === "completed" && (
-                <ReferenceLine
-                  x={detail.end_at.slice(0, 10)}
-                  stroke="#EF4444"
-                  strokeDasharray="3 3"
-                  label={{ value: "End", position: "top", fontSize: 10 }}
-                />
-              )}
-              <Area
-                type="monotone"
-                dataKey="exposure_spend"
-                name="광고비"
-                fill="#6366F130"
-                stroke="#6366F1"
-                strokeWidth={2}
-              />
-              <Line
-                type="monotone"
-                dataKey="interest_queries"
-                name="검색지수"
-                stroke="#3B82F6"
-                strokeWidth={2}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="interest_engagements"
-                name="소셜반응"
-                stroke="#F59E0B"
-                strokeWidth={2}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="conversion_orders"
-                name="주문"
-                stroke="#10B981"
-                strokeWidth={2}
-                dot={false}
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-800">캠페인 상세</h2>
+            {!editing && authed ? (
+              <button
+                onClick={startEdit}
+                className="text-sm text-indigo-600 hover:text-indigo-800"
+              >
+                편집
+              </button>
+            ) : editing ? (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => updateMut.mutate(editForm)}
+                  className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                  disabled={updateMut.isPending}
+                >
+                  {updateMut.isPending ? "저장중..." : "저장"}
+                </button>
+                <button
+                  onClick={() => setEditing(false)}
+                  className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                >
+                  취소
+                </button>
+              </div>
+            ) : (
+              <span className="text-xs text-gray-400">비회원은 읽기 전용으로 열람할 수 있습니다.</span>
+            )}
+          </div>
 
-      {/* ── Section 3: Campaign Details Card ── */}
-      <div className="bg-white rounded-xl shadow p-5">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">캠페인 상세</h2>
-          {!editing && authed ? (
-            <button
-              onClick={startEdit}
-              className="text-sm text-indigo-600 hover:text-indigo-800"
-            >
-              편집
-            </button>
-          ) : editing ? (
-            <div className="flex gap-2">
-              <button
-                onClick={() => updateMut.mutate(editForm)}
-                className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                disabled={updateMut.isPending}
-              >
-                {updateMut.isPending ? "저장중..." : "저장"}
-              </button>
-              <button
-                onClick={() => setEditing(false)}
-                className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
-              >
-                취소
-              </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <DetailField
+              label="광고목적"
+              value={editing ? editForm.objective : detail.objective}
+              editing={editing}
+              onChange={(v) => setEditForm({ ...editForm, objective: v })}
+              options={Object.entries(OBJECTIVE_LABELS).map(([k, v]) => ({ value: k, label: v }))}
+            />
+            <DetailField
+              label="광고상품/서비스"
+              value={editing ? editForm.product_service : detail.product_service}
+              editing={editing}
+              onChange={(v) => setEditForm({ ...editForm, product_service: v })}
+            />
+            <DetailField
+              label="프로모션 카피"
+              value={editing ? editForm.promotion_copy : detail.promotion_copy}
+              editing={editing}
+              onChange={(v) => setEditForm({ ...editForm, promotion_copy: v })}
+              multiline
+            />
+            <DetailField
+              label="모델/셀럽 정보"
+              value={editing ? editForm.model_info : detail.model_info}
+              editing={editing}
+              onChange={(v) => setEditForm({ ...editForm, model_info: v })}
+            />
+          </div>
+
+          {/* Keywords */}
+          {detail.target_keywords && (
+            <div className="mt-4">
+              <p className="text-xs text-gray-500 mb-1">타겟 키워드</p>
+              <div className="flex flex-wrap gap-1">
+                {Object.entries(detail.target_keywords).map(([type, keywords]) =>
+                  (keywords as string[])?.map((kw) => (
+                    <span
+                      key={`${type}-${kw}`}
+                      className={`px-2 py-0.5 rounded-full text-xs ${
+                        type === "brand"
+                          ? "bg-indigo-50 text-indigo-600"
+                          : type === "product"
+                            ? "bg-green-50 text-green-600"
+                            : "bg-red-50 text-red-600"
+                      }`}
+                    >
+                      {kw}
+                    </span>
+                  ))
+                )}
+              </div>
             </div>
-          ) : (
-            <span className="text-xs text-gray-400">비회원은 읽기 전용으로 열람할 수 있습니다.</span>
           )}
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <DetailField
-            label="광고목적"
-            value={editing ? editForm.objective : detail.objective}
-            editing={editing}
-            onChange={(v) => setEditForm({ ...editForm, objective: v })}
-            options={Object.entries(OBJECTIVE_LABELS).map(([k, v]) => ({ value: k, label: v }))}
-          />
-          <DetailField
-            label="광고상품/서비스"
-            value={editing ? editForm.product_service : detail.product_service}
-            editing={editing}
-            onChange={(v) => setEditForm({ ...editForm, product_service: v })}
-          />
-          <DetailField
-            label="프로모션 카피"
-            value={editing ? editForm.promotion_copy : detail.promotion_copy}
-            editing={editing}
-            onChange={(v) => setEditForm({ ...editForm, promotion_copy: v })}
-            multiline
-          />
-          <DetailField
-            label="모델/셀럽 정보"
-            value={editing ? editForm.model_info : detail.model_info}
-            editing={editing}
-            onChange={(v) => setEditForm({ ...editForm, model_info: v })}
-          />
-        </div>
-
-        {/* Keywords */}
-        {detail.target_keywords && (
-          <div className="mt-4">
-            <p className="text-xs text-gray-500 mb-1">타겟 키워드</p>
-            <div className="flex flex-wrap gap-1">
-              {Object.entries(detail.target_keywords).map(([type, keywords]) =>
-                (keywords as string[])?.map((kw) => (
-                  <span
-                    key={`${type}-${kw}`}
-                    className={`px-2 py-0.5 rounded-full text-xs ${
-                      type === "brand"
-                        ? "bg-indigo-50 text-indigo-600"
-                        : type === "product"
-                          ? "bg-green-50 text-green-600"
-                          : "bg-red-50 text-red-600"
-                    }`}
-                  >
-                    {kw}
-                  </span>
-                ))
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+      )}
 
       {/* ── Section 4: Lift Analysis ── */}
       {lift && (
@@ -435,22 +323,18 @@ export default function CampaignDetailPage() {
         </div>
       )}
 
-      {/* ── Section 5: Linked Creatives ── */}
-      {detail.creative_ids && detail.creative_ids.length > 0 && (
+      {/* ── Section 5: Linked Creatives (실제 로드된 것만) ── */}
+      {detail.creatives && detail.creatives.length > 0 && (
         <div className="bg-white rounded-xl shadow p-5">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            연결 소재 ({detail.creative_ids.length}건
-            {detail.creative_ids.length > 20 && ", 최대 20건 표시"})
+            연결 소재 ({detail.creatives.length}건
+            {detail.creative_ids && detail.creative_ids.length > 20 && ", 최대 20건 표시"})
           </h2>
-          {detail.creatives.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {detail.creatives.map((c) => (
-                <CreativeCard key={c.id} creative={c} />
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-gray-400">소재 정보를 불러올 수 없습니다.</p>
-          )}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {detail.creatives.map((c) => (
+              <CreativeCard key={c.id} creative={c} />
+            ))}
+          </div>
         </div>
       )}
     </div>
