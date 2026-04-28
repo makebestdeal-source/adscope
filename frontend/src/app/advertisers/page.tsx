@@ -539,9 +539,6 @@ export default function AdvertisersPage() {
                   <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("total_est_spend")}>
                     총 광고비<SortIcon col="total_est_spend" />
                   </th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase cursor-pointer select-none hover:text-gray-700" onClick={() => handleSort("ad_count")}>
-                    30일 노출<SortIcon col="ad_count" />
-                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -551,7 +548,7 @@ export default function AdvertisersPage() {
                       <td className="py-3 px-4"><div className="skeleton h-4 w-32" /></td>
                       <td className="py-3 px-4"><div className="skeleton h-4 w-20" /></td>
                       <td className="py-3 px-4"><div className="skeleton h-4 w-40" /></td>
-                      <td className="py-3 px-4"><div className="skeleton h-4 w-12 ml-auto" /></td>
+                      <td className="py-3 px-4"><div className="skeleton h-4 w-16 ml-auto" /></td>
                     </tr>
                   ))
                 ) : sortedAdvertisers.length > 0 ? (
@@ -602,20 +599,11 @@ export default function AdvertisersPage() {
                           <span className="text-gray-300">-</span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-right tabular-nums">
-                        {adCountMap.has(adv.name) ? (
-                          <span className="font-medium text-gray-700">
-                            {(adCountMap.get(adv.name) ?? 0).toLocaleString()}회
-                          </span>
-                        ) : (
-                          <span className="text-gray-300">-</span>
-                        )}
-                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-12 text-center text-gray-400 text-sm">
+                    <td colSpan={4} className="py-12 text-center text-gray-400 text-sm">
                       {search ? `"${search}" 검색 결과가 없습니다` : "등록된 광고주가 없습니다"}
                     </td>
                   </tr>
