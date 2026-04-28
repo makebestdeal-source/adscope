@@ -29,6 +29,27 @@ from crawler.personas.profiles import PersonaProfile
 from crawler.url_utils import extract_domain, is_tracking_url, resolve_redirect_url, resolve_via_http
 
 
+# ── 모바일 고수익 지면: 페이지 reload 횟수 (GFP 로테이션 다양화) ──
+# 같은 URL을 reload할 때마다 GFP가 새 광고 로테이션을 서빙 → 띠배너 중복 없이 추가 수집
+_MOBILE_PAGE_REPEATS: dict[str, int] = {
+    "main":          8,   # m.naver.com 메인 (상단·중단 띠배너 최다)
+    "news":          7,   # 모바일 뉴스
+    "sports":        5,
+    "entertainment": 5,
+    "finance":       4,
+    "shopping":      4,
+    "blog":          3,
+    "cafe":          3,
+    "tv":            3,
+    "webtoon":       3,
+    "weather":       2,
+    "kin":           2,
+    "realestate":    2,
+    "chzzk":         2,
+    "auto":          2,
+    "movie":         2,
+}
+
 # ── 네이버 광고 지면 정의 (네트워크 캡처 전용) ──
 
 NAVER_DA_PLACEMENTS: dict[str, list[dict]] = {
@@ -202,9 +223,33 @@ class NaverDACrawler(BaseCrawler):
                         await page.evaluate(f'window.scrollBy(0, {500 + s * 120})')
                         await page.wait_for_timeout(400 + random.randint(100, 200))
 
-                # 서핑 모드: 콘텐츠 섹션 기사/서브페이지 방문
-                if surf_mode and placement["name"] in ("news", "sports", "entertainment", "finance"):
+                # 서핑 모드: 콘텐츠 섹션 기사/서브페이지 방문 (기사면은 띠배너 밀도 높음)
+                if surf_mode and placement["name"] in ("news", "sports", "entertainment", "finance", "main", "shopping"):
                     await self._visit_sub_pages(page, placement, _cur_placement)
+
+                # GFP 로테이션 다양화: 추가 reload (모바일/PC 모두 적용)
+                # 같은 URL reload → 새 광고주가 GFP에서 서빙됨 → 띠배너 추가 수집
+                if surf_mode:
+                    if device.is_mobile:
+                        repeat_count = _MOBILE_PAGE_REPEATS.get(placement["name"], 2)
+                    else:
+                        # PC도 주요 지면은 3회 이상
+                        _PC_REPEATS = {"main": 5, "news": 4, "sports": 3, "entertainment": 3,
+                                       "finance": 3, "shopping": 3, "blog": 2}
+                        repeat_count = _PC_REPEATS.get(placement["name"], 2)
+                    for _ri in range(repeat_count - 1):
+                        await page.wait_for_timeout(1500 + random.randint(300, 700))
+                        try:
+                            await page.reload(wait_until="domcontentloaded", timeout=20000)
+                        except Exception:
+                            break
+                        await page.wait_for_timeout(1500 + random.randint(300, 700))
+                        # 상단 띠배너 즉시 캡처 후 스크롤로 중단 띠배너 트리거
+                        await page.evaluate('window.scrollTo(0, 0)')
+                        await page.wait_for_timeout(600)
+                        for s in range(10):
+                            await page.evaluate(f'window.scrollBy(0, {350 + s * 90})')
+                            await page.wait_for_timeout(350 + random.randint(50, 200))
 
                 # 지면 간 자연스러운 대기
                 if pidx < len(visit_list) - 1:
@@ -289,25 +334,30 @@ class NaverDACrawler(BaseCrawler):
     async def _visit_sub_pages(self, page: Page, placement: dict, cur_ref: dict) -> None:
         """섹션 내 기사/서브페이지 2~3개 방문하여 추가 GFP 광고 수집."""
         try:
-            article_urls = await page.evaluate("""() => {
+            article_urls = await page.evaluate(r"""() => {
                 const links = [];
                 const seen = new Set();
                 for (const a of document.querySelectorAll('a[href]')) {
                     const href = a.href;
                     if (!href || !href.startsWith('http')) continue;
                     if (seen.has(href)) continue;
-                    if (href.match(/\\/article\\//) || href.match(/\\/news\\/read/) ||
-                        href.match(/\\/ranking\\//) || href.match(/[?&]aid=/) ||
-                        href.match(/\\/\\d{8,}/) || href.match(/oid=.*&aid=/)) {
+                    if (href.match(/\/article\//) || href.match(/\/news\/read/) ||
+                        href.match(/\/ranking\//) || href.match(/[?&]aid=/) ||
+                        href.match(/\/\d{8,}/) || href.match(/oid=.*&aid=/) ||
+                        href.match(/m\.news\.naver\.com\/article/) ||
+                        href.match(/m\.sports\.naver\.com\/.*\/article/) ||
+                        href.match(/m\.entertain\.naver\.com\/article/)) {
                         seen.add(href);
                         links.push(href);
-                        if (links.length >= 3) break;
+                        if (links.length >= 8) break;
                     }
                 }
                 return links;
             }""")
 
-            for article_url in (article_urls or [])[:2]:
+            # 기사면 최대 방문 수: 뉴스/스포츠/연예는 5개, 나머지는 3개
+            _max_articles = 5 if placement["name"] in ("news", "sports", "entertainment") else 3
+            for article_url in (article_urls or [])[:_max_articles]:
                 cur_ref['name'] = f"{placement['name']}_article"
                 cur_ref['label'] = f"{placement['label']}_article"
 
@@ -315,7 +365,10 @@ class NaverDACrawler(BaseCrawler):
                     await page.goto(article_url, wait_until="domcontentloaded", timeout=15000)
                     await page.wait_for_timeout(1500 + random.randint(500, 1000))
 
-                    for s in range(5):
+                    # 기사면: 상단 띠배너 → 스크롤로 중단 띠배너 모두 캡처
+                    await page.evaluate('window.scrollTo(0, 0)')
+                    await page.wait_for_timeout(600)
+                    for s in range(8):
                         await page.evaluate(f'window.scrollBy(0, {300 + s * 100})')
                         await page.wait_for_timeout(400 + random.randint(100, 300))
                 except Exception:
