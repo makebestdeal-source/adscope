@@ -398,6 +398,46 @@ def merge():
     except Exception as e:
         print(f"  SKIP brand_channel_contents ({e})")
 
+    # ── 11) product_categories: natural key = (name, parent_id IS NULL / parent_name) ──
+    print("\n=== product_categories ===")
+    try:
+        before = count(merged, "product_categories")
+
+        # 부모 카테고리 먼저
+        local_parents = lc.execute(
+            "SELECT name FROM product_categories WHERE parent_id IS NULL"
+        ).fetchall()
+        for (name,) in local_parents:
+            mc.execute(
+                "INSERT OR IGNORE INTO product_categories (name) VALUES (?)", (name,)
+            )
+
+        # 자식 카테고리: 로컬의 부모명으로 머지 DB의 부모 ID 찾아 삽입
+        local_children = lc.execute(
+            "SELECT pc.name, p.name as parent_name "
+            "FROM product_categories pc "
+            "JOIN product_categories p ON pc.parent_id = p.id "
+            "WHERE pc.parent_id IS NOT NULL"
+        ).fetchall()
+        for (child_name, parent_name) in local_children:
+            parent_row = mc.execute(
+                "SELECT id FROM product_categories WHERE name = ? AND parent_id IS NULL",
+                (parent_name,)
+            ).fetchone()
+            if parent_row:
+                mc.execute(
+                    "INSERT OR IGNORE INTO product_categories (name, parent_id) "
+                    "SELECT ?, ? WHERE NOT EXISTS ("
+                    "  SELECT 1 FROM product_categories WHERE name = ? AND parent_id = ?"
+                    ")",
+                    (child_name, parent_row[0], child_name, parent_row[0])
+                )
+        merged.commit()
+        after = count(merged, "product_categories")
+        print(f"  Added {after - before} new categories ({before} -> {after})")
+    except Exception as e:
+        print(f"  SKIP product_categories ({e})")
+
     # ── Final summary ──
     print(f"\n{'='*50}")
     print(f"Merged DB: {OUTPUT_DB}")

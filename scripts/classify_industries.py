@@ -23,12 +23,29 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+# .env 먼저 로드 (모듈 레벨 상수보다 앞서)
+_env_path = ROOT / ".env"
+if _env_path.exists():
+    for _line in _env_path.read_text(encoding="utf-8").splitlines():
+        if "=" in _line and not _line.startswith("#"):
+            _k, _, _v = _line.partition("=")
+            os.environ.setdefault(_k.strip(), _v.strip())
+
 import sqlite3
 from openai import AsyncOpenAI
 
 DB_PATH = ROOT / "adscope.db"
-API_KEY = os.getenv("DEEPSEEK_API_KEY", "sk-70891bb3f55644d2a5c168e22908a274")
-MODEL = "deepseek-chat"
+# OpenRouter 우선 사용, 없으면 DeepSeek 직접
+_OR_KEY = os.getenv("OPENROUTER_API_KEY", "")
+_DS_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+if _OR_KEY:
+    API_KEY = _OR_KEY
+    BASE_URL = "https://openrouter.ai/api/v1"
+    MODEL = "deepseek/deepseek-v4-flash"  # 저렴한 모델 ($0.14/M)
+else:
+    API_KEY = _DS_KEY
+    BASE_URL = "https://api.deepseek.com"
+    MODEL = "deepseek-chat"
 BATCH_SIZE = 60  # 1회 요청당 광고주 수
 SLEEP_BETWEEN = 1.5  # 요청 간 딜레이(초)
 
@@ -161,7 +178,7 @@ async def main(limit: int, dry_run: bool, db_path: str = None):
 
     client = AsyncOpenAI(
         api_key=API_KEY,
-        base_url="https://api.deepseek.com",
+        base_url=BASE_URL,
     )
 
     total_updated = 0

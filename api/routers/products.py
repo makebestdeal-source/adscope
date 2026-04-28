@@ -193,8 +193,9 @@ async def list_categories(
                 parent_id=None,
                 industry_id=parent.industry_id,
                 children=child_items,
-                advertiser_count=direct_adv + parent_adv_count,
-                ad_count=direct_ad + parent_ad_count,
+                # direct_adv/direct_ad already include children via _get_category_and_children
+                advertiser_count=direct_adv,
+                ad_count=direct_ad,
             )
         )
 
@@ -277,8 +278,9 @@ async def get_category_detail(
         name=category.name,
         parent_id=category.parent_id,
         industry_id=category.industry_id,
-        advertiser_count=direct_adv + total_adv_count,
-        ad_count=direct_ad + total_ad_count,
+        # direct_adv/direct_ad already include children via _get_category_and_children
+        advertiser_count=direct_adv,
+        ad_count=direct_ad,
         est_spend=round(est_spend, 2),
         children=child_items,
     )
@@ -309,7 +311,7 @@ async def get_category_advertisers(
     # Include child categories (or parent if this is a subcategory)
     all_cat_ids = await _get_category_and_children(db, category_id)
 
-    # Get advertisers via FK
+    # Get advertisers via FK (전체 기간 — count와 동일하게 시간 필터 미적용)
     fk_query = (
         select(
             AdDetail.advertiser_id,
@@ -320,7 +322,6 @@ async def get_category_advertisers(
         .where(
             AdDetail.product_category_id.in_(all_cat_ids),
             AdDetail.advertiser_id.isnot(None),
-            AdSnapshot.captured_at >= cutoff_utc,
         )
         .group_by(AdDetail.advertiser_id)
         .order_by(func.count(AdDetail.id).desc())
@@ -345,7 +346,7 @@ async def get_category_advertisers(
             AdDetail.product_category.in_(all_cat_names),
             AdDetail.product_category_id.is_(None),
             AdDetail.advertiser_id.isnot(None),
-            AdSnapshot.captured_at >= cutoff_utc,
+            AdSnapshot.captured_at >= cutoff_utc,  # 텍스트 매칭은 시간 필터 유지
         )
         .group_by(AdDetail.advertiser_id)
         .order_by(func.count(AdDetail.id).desc())
