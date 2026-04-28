@@ -58,84 +58,108 @@ async def _get_category_and_children(
         return [category_id]
 
 
+async def _batch_count_stats(
+    db: AsyncSession,
+    category_ids: list[int],
+    days: int,
+) -> dict[int, tuple[int, int]]:
+    """Batch count (ad_count, adv_count) for a list of category IDs in 4 queries.
+
+    Returns {category_id: (ad_count, adv_count)}.
+    """
+    if not category_ids:
+        return {}
+
+    cutoff = _now_kst() - timedelta(days=days)
+    cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
+
+    # 1. FK-based ad counts per category
+    fk_ad_result = await db.execute(
+        select(AdDetail.product_category_id, func.count(AdDetail.id))
+        .where(AdDetail.product_category_id.in_(category_ids))
+        .group_by(AdDetail.product_category_id)
+    )
+    ad_counts: dict[int, int] = {row[0]: row[1] for row in fk_ad_result}
+
+    # 2. FK-based advertiser counts per category
+    fk_adv_result = await db.execute(
+        select(
+            AdDetail.product_category_id,
+            func.count(func.distinct(AdDetail.advertiser_id)),
+        )
+        .where(
+            AdDetail.product_category_id.in_(category_ids),
+            AdDetail.advertiser_id.isnot(None),
+        )
+        .group_by(AdDetail.product_category_id)
+    )
+    adv_counts: dict[int, int] = {row[0]: row[1] for row in fk_adv_result}
+
+    # 3. Legacy text-based counts (product_category_id IS NULL)
+    cat_name_result = await db.execute(
+        select(ProductCategory.id, ProductCategory.name).where(
+            ProductCategory.id.in_(category_ids)
+        )
+    )
+    cat_names = dict(cat_name_result.all())  # {id: name}
+    name_to_id = {v: k for k, v in cat_names.items()}
+
+    if name_to_id:
+        # text ad counts
+        text_ad_result = await db.execute(
+            select(AdDetail.product_category, func.count(AdDetail.id))
+            .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+            .where(
+                AdDetail.product_category.in_(list(name_to_id.keys())),
+                AdDetail.product_category_id.is_(None),
+                AdSnapshot.captured_at >= cutoff_utc,
+            )
+            .group_by(AdDetail.product_category)
+        )
+        for cat_name, cnt in text_ad_result:
+            cat_id = name_to_id.get(cat_name)
+            if cat_id:
+                ad_counts[cat_id] = ad_counts.get(cat_id, 0) + cnt
+
+        # text advertiser counts
+        text_adv_result = await db.execute(
+            select(
+                AdDetail.product_category,
+                func.count(func.distinct(AdDetail.advertiser_id)),
+            )
+            .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+            .where(
+                AdDetail.product_category.in_(list(name_to_id.keys())),
+                AdDetail.product_category_id.is_(None),
+                AdDetail.advertiser_id.isnot(None),
+                AdSnapshot.captured_at >= cutoff_utc,
+            )
+            .group_by(AdDetail.product_category)
+        )
+        for cat_name, cnt in text_adv_result:
+            cat_id = name_to_id.get(cat_name)
+            if cat_id:
+                adv_counts[cat_id] = adv_counts.get(cat_id, 0) + cnt
+
+    return {cat_id: (ad_counts.get(cat_id, 0), adv_counts.get(cat_id, 0)) for cat_id in category_ids}
+
+
 async def _count_ads_for_category(
     db: AsyncSession, category_id: int, days: int
 ) -> int:
     """Count ad_details linked to a category (including children if parent)."""
-    cutoff = _now_kst() - timedelta(days=days)
-    cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
-
-    # 카테고리와 자식들 조회
     category_ids = await _get_category_and_children(db, category_id)
-    if not category_ids:
-        return 0
-
-    # product_category_id FK match (카테고리 또는 자식 포함)
-    fk_count = await db.execute(
-        select(func.count(AdDetail.id)).where(
-            AdDetail.product_category_id.in_(category_ids)
-        )
-    )
-    count = fk_count.scalar() or 0
-
-    # Also match by product_category text field (for legacy data without FK)
-    cat_names = await db.execute(
-        select(ProductCategory.name).where(ProductCategory.id.in_(category_ids))
-    )
-    for cat_name in cat_names.scalars():
-        text_count = await db.execute(
-            select(func.count(AdDetail.id))
-            .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
-            .where(
-                AdDetail.product_category == cat_name,
-                AdDetail.product_category_id.is_(None),
-                AdSnapshot.captured_at >= cutoff_utc,
-            )
-        )
-        count += text_count.scalar() or 0
-
-    return count
+    stats = await _batch_count_stats(db, category_ids, days)
+    return sum(v[0] for v in stats.values())
 
 
 async def _count_advertisers_for_category(
     db: AsyncSession, category_id: int, days: int
 ) -> int:
     """Count unique advertisers for a category (including children if parent)."""
-    # 카테고리와 자식들 조회
     category_ids = await _get_category_and_children(db, category_id)
-    if not category_ids:
-        return 0
-
-    # FK match — 광고 수와 동일하게 시간 필터 없이 전체 기간 카운트
-    fk_result = await db.execute(
-        select(func.count(func.distinct(AdDetail.advertiser_id)))
-        .where(
-            AdDetail.product_category_id.in_(category_ids),
-            AdDetail.advertiser_id.isnot(None),
-        )
-    )
-    fk_count = fk_result.scalar() or 0
-
-    # Text match for legacy (product_category 텍스트 필드)
-    cutoff = _now_kst() - timedelta(days=days)
-    cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
-    cat_names = await db.execute(
-        select(ProductCategory.name).where(ProductCategory.id.in_(category_ids))
-    )
-    for cat_name in cat_names.scalars():
-        text_result = await db.execute(
-            select(func.count(func.distinct(AdDetail.advertiser_id)))
-            .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
-            .where(
-                AdDetail.product_category == cat_name,
-                AdDetail.product_category_id.is_(None),
-                AdDetail.advertiser_id.isnot(None),
-                AdSnapshot.captured_at >= cutoff_utc,
-            )
-        )
-        fk_count += text_result.scalar() or 0
-
-    return fk_count
+    stats = await _batch_count_stats(db, category_ids, days)
+    return sum(v[1] for v in stats.values())
 
 
 @router.get("/categories", response_model=list[ProductCategoryTreeOut])
@@ -151,25 +175,34 @@ async def list_categories(
     )
     parents = result.scalars().all()
 
+    parent_ids = [p.id for p in parents]
+
+    # Fetch all children in one query
+    all_children_result = await db.execute(
+        select(ProductCategory)
+        .where(ProductCategory.parent_id.in_(parent_ids))
+        .order_by(ProductCategory.name)
+    )
+    all_children = all_children_result.scalars().all()
+    children_by_parent: dict[int, list] = {}
+    for c in all_children:
+        children_by_parent.setdefault(c.parent_id, []).append(c)
+
+    # Batch count stats for all categories (4 queries total)
+    all_ids = parent_ids + [c.id for c in all_children]
+    stats = await _batch_count_stats(db, all_ids, days)
+
     tree: list[ProductCategoryTreeOut] = []
     for parent in parents:
-        # children
-        child_result = await db.execute(
-            select(ProductCategory)
-            .where(ProductCategory.parent_id == parent.id)
-            .order_by(ProductCategory.name)
-        )
-        children = child_result.scalars().all()
-
+        children = children_by_parent.get(parent.id, [])
         child_items: list[ProductCategoryTreeOut] = []
         parent_ad_count = 0
         parent_adv_count = 0
 
         for child in children:
-            ad_count = await _count_ads_for_category(db, child.id, days)
-            adv_count = await _count_advertisers_for_category(db, child.id, days)
-            parent_ad_count += ad_count
-            parent_adv_count += adv_count
+            child_ad, child_adv = stats.get(child.id, (0, 0))
+            parent_ad_count += child_ad
+            parent_adv_count += child_adv
             child_items.append(
                 ProductCategoryTreeOut(
                     id=child.id,
@@ -177,15 +210,12 @@ async def list_categories(
                     parent_id=child.parent_id,
                     industry_id=child.industry_id,
                     children=[],
-                    advertiser_count=adv_count,
-                    ad_count=ad_count,
+                    advertiser_count=child_adv,
+                    ad_count=child_ad,
                 )
             )
 
-        # parent-level counts include direct + children
-        direct_ad = await _count_ads_for_category(db, parent.id, days)
-        direct_adv = await _count_advertisers_for_category(db, parent.id, days)
-
+        direct_ad, direct_adv = stats.get(parent.id, (0, 0))
         tree.append(
             ProductCategoryTreeOut(
                 id=parent.id,
@@ -193,9 +223,8 @@ async def list_categories(
                 parent_id=None,
                 industry_id=parent.industry_id,
                 children=child_items,
-                # direct_adv/direct_ad already include children via _get_category_and_children
-                advertiser_count=direct_adv,
-                ad_count=direct_ad,
+                advertiser_count=parent_adv_count + direct_adv,
+                ad_count=parent_ad_count + direct_ad,
             )
         )
 
@@ -224,13 +253,16 @@ async def get_category_detail(
     )
     children = child_result.scalars().all()
 
+    # Batch count stats for category + all children (4 queries)
+    all_ids = [category.id] + [c.id for c in children]
+    stats = await _batch_count_stats(db, all_ids, days)
+
     child_items: list[ProductCategoryTreeOut] = []
     total_ad_count = 0
     total_adv_count = 0
 
     for child in children:
-        ad_count = await _count_ads_for_category(db, child.id, days)
-        adv_count = await _count_advertisers_for_category(db, child.id, days)
+        ad_count, adv_count = stats.get(child.id, (0, 0))
         total_ad_count += ad_count
         total_adv_count += adv_count
         child_items.append(
@@ -245,17 +277,14 @@ async def get_category_detail(
             )
         )
 
-    direct_ad = await _count_ads_for_category(db, category.id, days)
-    direct_adv = await _count_advertisers_for_category(db, category.id, days)
+    direct_ad, direct_adv = stats.get(category.id, (0, 0))
 
     # Estimated spend for this category
     cutoff = _now_kst() - timedelta(days=days)
     cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)
-    # Get advertiser IDs for this category
-    all_category_ids = [category.id] + [c.id for c in children]
     adv_ids_result = await db.execute(
         select(func.distinct(AdDetail.advertiser_id)).where(
-            AdDetail.product_category_id.in_(all_category_ids),
+            AdDetail.product_category_id.in_(all_ids),
             AdDetail.advertiser_id.isnot(None),
         )
     )

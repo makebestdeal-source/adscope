@@ -307,16 +307,24 @@ async def ad_gallery(
         if channel and channel in SEARCH_CHANNELS:
             pass  # No image filter for search ads
         elif not channel:
-            # 전체 조회: 검색채널 OR 이미지 있는 광고
-            query = query.where(
-                or_(
-                    AdSnapshot.channel.in_(SEARCH_CHANNELS),
-                    and_(
-                        AdDetail.creative_image_path.isnot(None),
-                        AdDetail.creative_image_path != "",
-                    ),
+            if source == "ads":
+                # 이미지 갤러리 전체 조회: 검색 채널 제외 + 이미지 있는 DA 채널만
+                query = query.where(
+                    ~AdSnapshot.channel.in_(SEARCH_CHANNELS),
                 )
-            )
+                query = query.where(AdDetail.creative_image_path.isnot(None))
+                query = query.where(AdDetail.creative_image_path != "")
+            else:
+                # 소셜+광고 통합 전체 조회: 검색채널 OR 이미지 있는 광고
+                query = query.where(
+                    or_(
+                        AdSnapshot.channel.in_(SEARCH_CHANNELS),
+                        and_(
+                            AdDetail.creative_image_path.isnot(None),
+                            AdDetail.creative_image_path != "",
+                        ),
+                    )
+                )
         else:
             query = query.where(AdDetail.creative_image_path.isnot(None))
             query = query.where(AdDetail.creative_image_path != "")

@@ -21,9 +21,10 @@ from database.models import BrandChannelContent
 _STORE_DIR = Path("stored_images") / "instagram"
 
 
-async def _download_ig_thumbnail(content_id: str) -> str | None:
-    """Download IG thumbnail via /p/{shortcode}/media/?size=l and save as WebP.
+async def _download_ig_thumbnail(content_id: str, thumbnail_url: str = "") -> str | None:
+    """Download IG thumbnail from CDN URL and save as WebP.
 
+    Uses the CDN URL provided at collection time (fresh, not expired).
     Returns local file path on success, None on failure.
     """
     date_str = datetime.now().strftime("%Y%m%d")
@@ -31,7 +32,10 @@ async def _download_ig_thumbnail(content_id: str) -> str | None:
     if dest.exists():
         return str(dest)
 
-    url = f"https://www.instagram.com/p/{content_id}/media/?size=l"
+    # Use fresh CDN URL from collection time; /p/{shortcode}/media/ is blocked
+    url = thumbnail_url
+    if not url:
+        return None
     try:
         timeout = aiohttp.ClientTimeout(total=15)
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
@@ -113,7 +117,7 @@ async def save_brand_content(
         # Download IG thumbnails locally (CDN URLs expire)
         local_path = None
         if platform == "instagram" and content_id:
-            local_path = await _download_ig_thumbnail(content_id)
+            local_path = await _download_ig_thumbnail(content_id, item.get("thumbnail_url", ""))
 
         if existing:
             # Update mutable fields
