@@ -111,11 +111,16 @@ function GalleryContent() {
   });
 
   // Client-side multi-channel filter (API only supports single channel)
+  const DA_CHANNEL_SET = useMemo(() => new Set(ALL_CHANNELS), []);
+
   const filteredItems = useMemo(() => {
     if (!data?.items) return [];
-    if (selectedChannels.size <= 1) return data.items;
+    // 항상 DA 채널만 표시 (API가 채널 미선택 시 keyword 채널도 반환하므로 강제 필터)
+    if (selectedChannels.size <= 1) {
+      return data.items.filter((item) => DA_CHANNEL_SET.has(item.channel));
+    }
     return data.items.filter((item) => selectedChannels.has(item.channel));
-  }, [data?.items, selectedChannels]);
+  }, [data?.items, selectedChannels, DA_CHANNEL_SET]);
 
   const visibleItems = filteredItems;
   const selectableImageCount = useMemo(
