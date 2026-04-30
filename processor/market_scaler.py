@@ -36,8 +36,7 @@ _ANNUAL_MARKET_SIZE_KRW: dict[str, int] = {
     "mobile_gdn":        200_000_000_000,   # 모바일 GDN 2,000억
 
     # 동영상 광고 (~1.8조)
-    "youtube_ads":     1_200_000_000_000,   # 유튜브 1.2조
-    "youtube_surf":      100_000_000_000,   # (유튜브 서프 부분)
+    "youtube_ads":     1_300_000_000_000,   # 유튜브 1.3조 (구 youtube_surf 귀속)
     "tiktok_ads":        200_000_000_000,   # 틱톡 2,000억
     "youtube_brand":     300_000_000_000,   # 유튜브 브랜드채널 3,000억
 
@@ -59,7 +58,6 @@ _DAILY_MARKET_SIZE_KRW = {ch: v // 365 for ch, v in _ANNUAL_MARKET_SIZE_KRW.item
 # < 1.0: 우리 수집이 실제보다 과대 → 하향 보정
 _MEDIA_USAGE_WEIGHT: dict[str, float] = {
     "youtube_ads":       1.8,   # 유튜브: MAU 4,600만, 광고 지면 매우 다양, 수집 커버리지 낮음
-    "youtube_surf":      1.5,
     "meta":              1.3,   # 메타(FB+IG): MAU 2,200만+1,800만, Ad Library 커버
     "google_gdn":        1.3,   # GDN: 매우 넓은 인벤토리, 언론사 기사면만 수집
     "mobile_gdn":        1.4,

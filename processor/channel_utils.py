@@ -7,21 +7,20 @@ Every module should import from here instead of defining local mappings.
   - is_contact=True  → 소셜 소재 (실제 브라우징 접촉, /social-gallery)
   - is_contact=False → 광고 소재 (카탈로그/라이브러리, /gallery)
 
-듀얼 수집 플랫폼 (같은 플랫폼에서 카탈로그+접촉 모두 수집):
-  - YouTube: youtube_ads(카탈로그) + youtube_surf(접촉)
-  - Google:  google_search_ads(카탈로그) + google_gdn(접촉)
-  - Naver:   naver_search/naver_shopping(카탈로그) + naver_da(접촉)
+수집 채널:
+  - 카탈로그: youtube_ads / google_search_ads / meta / tiktok_ads / naver_shopping / naver_search
+  - 접촉:     naver_da / kakao_da / google_gdn
+  - 제거됨:   youtube_surf / meta_feed (수집 0건 → youtube_ads / meta 로 귀속)
 """
 
 from __future__ import annotations
 
 # ── Contact channels (real browsing exposure → 소셜 소재) ──
+# youtube_surf / meta_feed 제거 — 수집 0건 확인, 원매체(youtube_ads/meta)로 귀속
 CONTACT_CHANNELS: set[str] = {
     "naver_da",
     "kakao_da",
     "google_gdn",
-    "youtube_surf",
-    "meta_feed",
 }
 
 # ── Catalog channels (ad library / transparency center → 광고 소재) ──
@@ -39,15 +38,14 @@ ALL_CHANNELS: set[str] = CONTACT_CHANNELS | CATALOG_CHANNELS
 
 # ── Dual collection mapping (platform -> catalog + contact channels) ──
 DUAL_PLATFORM_MAP: dict[str, dict[str, str | list[str]]] = {
-    "youtube": {"catalog": "youtube_ads", "contact": "youtube_surf"},
     "google": {"catalog": "google_search_ads", "contact": "google_gdn"},
     "naver": {"catalog": ["naver_search", "naver_shopping"], "contact": "naver_da"},
 }
 
 # ── Media category mapping (channel -> category key) ──
 MEDIA_CATEGORIES: dict[str, list[str]] = {
-    "video": ["youtube_ads", "youtube_surf"],
-    "social": ["meta", "meta_feed"],
+    "video": ["youtube_ads"],
+    "social": ["meta"],
     "portal": ["naver_search", "naver_da"],
     "search": ["google_search_ads"],
     "network": ["google_gdn", "kakao_da"],
@@ -69,9 +67,7 @@ CHANNEL_DISPLAY_NAMES: dict[str, str] = {
     "kakao_da": "카카오 DA",
     "google_gdn": "구글 GDN",
     "youtube_ads": "유튜브 광고",
-    "youtube_surf": "유튜브 광고",
     "meta": "Meta",
-    "meta_feed": "Meta 피드",
     "tiktok_ads": "틱톡 광고",
     "naver_shopping": "네이버 쇼핑",
     "google_search_ads": "구글 검색광고",
@@ -92,7 +88,6 @@ CHANNEL_TO_BENCHMARK_KEY: dict[str, str] = {
     "kakao_da": "kakao",
     "google_gdn": "google",
     "youtube_ads": "google",
-    "youtube_surf": "google",
     "google_search_ads": "google",
 }
 
@@ -185,21 +180,17 @@ def normalize_channel_for_display(channel: str) -> str:
 GALLERY_EXCLUDED_CHANNELS: set[str] = {"naver_shopping"}
 
 GALLERY_AD_CHANNEL_GROUPS: dict[str, set[str]] = {
-    "youtube": {"youtube_ads", "youtube_surf"},
-    "youtube_ads": {"youtube_ads", "youtube_surf"},
-    "youtube_surf": {"youtube_ads", "youtube_surf"},
-    "meta": {"meta", "meta_feed", "facebook", "instagram"},
-    "meta_feed": {"meta", "meta_feed", "facebook", "instagram"},
-    "facebook": {"meta", "meta_feed", "facebook", "instagram"},
-    "instagram": {"meta", "meta_feed", "facebook", "instagram"},
+    "youtube": {"youtube_ads"},
+    "youtube_ads": {"youtube_ads"},
+    "meta": {"meta", "facebook", "instagram"},
+    "facebook": {"meta", "facebook", "instagram"},
+    "instagram": {"meta", "facebook", "instagram"},
 }
 
 GALLERY_SOCIAL_PLATFORM_GROUPS: dict[str, set[str]] = {
     "youtube": {"youtube"},
     "youtube_ads": {"youtube"},
-    "youtube_surf": {"youtube"},
     "meta": {"meta", "instagram", "facebook"},
-    "meta_feed": {"meta", "instagram", "facebook"},
     "facebook": {"meta", "instagram", "facebook"},
     "instagram": {"meta", "instagram", "facebook"},
 }

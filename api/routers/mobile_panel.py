@@ -30,7 +30,7 @@ router = APIRouter(prefix="/api/mobile-panel", tags=["mobile-panel"])
 
 # 앱→채널 매핑
 _APP_TO_CHANNEL = {
-    "youtube": "youtube_surf",
+    "youtube": "youtube_ads",
     "instagram": "meta",
     "facebook": "meta",
     "tiktok": "tiktok_ads",

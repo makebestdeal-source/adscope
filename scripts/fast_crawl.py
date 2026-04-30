@@ -27,30 +27,22 @@ os.environ["CRAWLER_DWELL_SCROLL_COUNT_MAX"] = "4"
 os.environ["CRAWLER_INTER_PAGE_MIN_MS"] = "800"
 os.environ["CRAWLER_INTER_PAGE_MAX_MS"] = "1500"
 os.environ["CRAWLER_WARMUP_SITE_COUNT"] = "0"
-# 유튜브 (시장 1.9조 -- 2배 확대)
+# 유튜브 (시장 1.9조 -- 5배 확대)
 os.environ["YOUTUBE_AD_WAIT_MS"] = "18000"
-os.environ["YOUTUBE_PLAYER_SAMPLES"] = "20"     # 10→20 (2배)
-os.environ["YOUTUBE_SURF_SAMPLES"] = "30"       # 15→30 (2배)
-os.environ["YT_ADS_MAX_ADVERTISERS"] = "200"    # 100→200 (2배)
-os.environ["YT_ADS_MAX_ADS"] = "600"            # 300→600 (2배)
-# 구글검색 (시장 2.0조 -- 2배 확대)
-os.environ["GS_ADS_MAX_ADVERTISERS"] = "100"    # 50→100 (2배)
-os.environ["GS_ADS_MAX_ADS"] = "400"            # 200→400 (2배)
-# 네이버쇼핑 (시장 1.1조 -- 2배 확대)
-os.environ["NAVER_SHOP_MAX_ADS"] = "100"        # 50→100 (2배)
-# GDN (시장 0.4조) — 2배 확대
-os.environ["GDN_MAX_ADVERTISERS"] = "100"       # 50→100 (2배)
-os.environ["GDN_MAX_ADS"] = "400"               # 200→400 (2배)
-# 메타 (시장 1조 -- 2배 확대)
+os.environ["YOUTUBE_PLAYER_SAMPLES"] = "50"     # 10→50 (5배)
+os.environ["YOUTUBE_SURF_SAMPLES"] = "75"       # 15→75 (5배)
+os.environ["YT_ADS_MAX_ADVERTISERS"] = "500"    # 100→500 (5배)
+os.environ["YT_ADS_MAX_ADS"] = "1500"           # 300→1500 (5배)
+# 구글검색 (시장 2.0조 -- 5배 확대)
+os.environ["GS_ADS_MAX_ADVERTISERS"] = "250"    # 50→250 (5배)
+os.environ["GS_ADS_MAX_ADS"] = "1000"           # 200→1000 (5배)
+# 네이버쇼핑 (시장 1.1조 -- 5배 확대)
+os.environ["NAVER_SHOP_MAX_ADS"] = "250"        # 50→250 (5배)
+# 메타 라이브러리 (시장 1조 -- 5배 확대)
 os.environ["META_TRUST_CHECK"] = "false"
-os.environ["META_FEED_SCROLL_COUNT"] = "30"     # 15→30 (2배)
-os.environ["META_MAX_PAGES"] = "10"             # 5→10 (2배)
-os.environ["INSTAGRAM_EXPLORE_CLICKS"] = "30"  # 15→30 (2배)
-os.environ["INSTAGRAM_REELS_SWIPES"] = "40"    # 20→40 (2배)
-os.environ["FB_CONTACT_MAX_PAGES"] = "12"      # 6→12 (2배)
-os.environ["FB_CONTACT_SCROLL_ROUNDS"] = "20"  # 10→20 (2배)
-# 카카오 (시장 1.5조 -- 전체 12개 미디어 수집)
-os.environ["KAKAO_MAX_MEDIA"] = "16"            # 8→16 (전체 지면 커버)
+os.environ["META_MAX_PAGES"] = "25"             # 5→25 (5배)
+# 카카오 (시장 1.5조 -- 5배 확대)
+os.environ["KAKAO_MAX_MEDIA"] = "40"            # 8→40 (5배, 실제 미디어 수까지만 수집)
 os.environ["MEDIA_COLLECTION_PROFILE"] = "full" # balanced→full (core+secondary+extended)
 os.environ["KAKAO_LANDING_RESOLVE_LIMIT"] = "0"
 # 네이버 DA
@@ -84,12 +76,10 @@ from processor.channel_utils import (
 # 각 페르소나는 독립 브라우저 세션 → 같은 지면에서 다른 광고 노출
 # NOTE: OOM 방지를 위해 페르소나 수 축소 (2026-03-26)
 CHANNEL_PERSONA_COUNT = {
-    "naver_search": 2,   # 검색: 2명 (3→2)
-    "naver_da": 2,       # DA 서핑: 2명 (3→2)
-    "kakao_da": 1,       # 카카오 DA: 1명 (2→1)
-    "youtube_surf": 2,   # 유튜브 서핑: 2명 (3→2)
-    "google_gdn": 1,     # GDN 서핑: 1명 (2→1)
-    "meta_feed": 1,      # 메타 피드: 1명 (2→1)
+    "naver_search": 2,   # 검색: 2명
+    "naver_da": 2,       # DA 서핑: 2명
+    "kakao_da": 1,       # 카카오 DA: 1명
+    # youtube_surf / google_gdn / meta_feed 제거 — 수집 0건 확인
 }
 
 # 동시 브라우저 최대 수 (메모리 보호: ~300MB × 2 = ~600MB)
@@ -298,12 +288,6 @@ CHANNEL_TASKS_BASE = [
     # [3] 네이버 DA — 서핑 모드: 1세션에서 18개 지면 + 기사 서브페이지 순회
     ("naver_da", ["surf"]),
 
-    # [4] GDN — 언론사 서핑 + Transparency Center IMAGE (프리픽스 검색)
-    ("google_gdn", ["surf"] + _generate_transparency_prefixes()),
-
-    # [5] 유튜브 서핑 — 시장 1.9조 (영상 직접 로드)
-    ("youtube_surf", ["surf"]),
-
     # ── 카탈로그 (페르소나 무관, 공개 데이터) ──
 
     # [6] 유튜브 투명성센터 — 전체 KR 광고주 프리픽스 검색 (64개)
@@ -312,18 +296,16 @@ CHANNEL_TASKS_BASE = [
     # [7] 구글 검색광고 투명성센터 — 전체 KR 광고주 프리픽스 검색 (64개)
     ("google_search_ads", _generate_transparency_prefixes()),
 
-    # [8] 메타 (FB+IG 통합) — 시장 1조
+    # [8] 메타 Ad Library (FB+IG 통합) — 시장 1조
+    # meta_feed 제거 → 라이브러리 브라우즈 50회로 보강
     # 브라우즈 모드(""): KR 전체 활성 광고를 스크롤로 수집 (매 방문마다 다른 광고 노출)
     # 프리픽스 검색: 한글 초성+중성 + 알파벳 + 숫자로 국내 모든 광고주 검색
     ("meta", (
-        [""] * 10  # KR 전체 브라우즈 10회
+        [""] * 50  # KR 전체 브라우즈 50회 (10→50, meta_feed 제거 보강)
         + _generate_transparency_prefixes()  # 435개 프리픽스 검색
     )),
 
-    # [8.5] 메타 피드 서핑 — 로그인 후 실제 FB/IG 피드에서 Sponsored 광고 수집
-    ("meta_feed", ["both"]),
-
-    # [9] 틱톡 — 시장 0.3조 (카테고리별 Top Ads 수집, 2배 확대)
+    # [9] 틱톡 — 시장 0.3조
     ("tiktok_ads", ["", "게임", "뷰티", "패션", "음식", "반려동물", "교육", "여행"]),
 
     # [10] 네이버 쇼핑 — 시장 1.1조 (키워드 2배 확대)
@@ -407,7 +389,7 @@ def build_persona_tasks():
 
     return tasks
 
-TOTAL_TIMEOUT = 7200  # 120분 (2시간 — 어제 대비 2배 볼륨)
+TOTAL_TIMEOUT = 18000  # 300분 (5시간 — 5배 볼륨)
 
 
 async def save_to_db(channel_name, result, keyword_text, persona_code, device_type):
@@ -621,14 +603,11 @@ def _get_crawler_cls(channel_name):
 
 
 CHANNEL_TIMEOUT = {
-    "google_gdn": 480,           # 240→480 (2배)
-    "google_search_ads": 480,    # 240→480 (2배)
-    "youtube_ads": 720,          # 360→720 (2배)
-    "youtube_surf": 720,         # 360→720 (2배)
-    "meta": 720,                 # 360→720 (2배)
-    "naver_da": 900,             # 18개 지면 + 기사 서브페이지 서핑
-    "kakao_da": 600,             # 16개 미디어 순회 (각 ~11초 × 16 = ~176초 + 여유)
-    "meta_feed": 480,            # FB + IG 피드 서핑 (25스크롤 × 2플랫폼)
+    "google_search_ads": 1200,   # 240→1200 (5배)
+    "youtube_ads": 1800,         # 360→1800 (5배)
+    "meta": 1800,                # 360→1800 (5배)
+    "naver_da": 900,             # 18개 지면 서핑 (탭 수 고정)
+    "kakao_da": 3000,            # 600→3000 (5배, 미디어 순회)
 }
 
 

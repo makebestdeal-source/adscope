@@ -64,8 +64,7 @@ CHANNEL_ANNUAL_REVENUE: dict[str, int] = {
     "naver_shopping":    1_250_000_000_000,   # 1.25조 (쇼핑검색광고)
     "google_search_ads": 2_000_000_000_000,   # 2조    (구글 검색)
     "google_gdn":        1_000_000_000_000,   # 1조    (GDN Korea)
-    "youtube_ads":       1_750_000_000_000,   # 1.75조 (유튜브)
-    "youtube_surf":        500_000_000_000,   # 5,000억 (서핑형)
+    "youtube_ads":       2_250_000_000_000,   # 2.25조 (유튜브, 구 youtube_surf 귀속)
     "meta":              2_000_000_000_000,   # 2조    (FB+IG Korea)
     "kakao_da":          1_200_000_000_000,   # 1.2조  (카카오모먼트+DA)
     "tiktok_ads":          150_000_000_000,   # 1,500억 (틱톡)
@@ -91,7 +90,6 @@ CRAWL_DAILY_CAPACITY: dict[str, int] = {
     "google_search_ads": 2_000,
     "google_gdn":        1_500,
     "youtube_ads":       2_000,
-    "youtube_surf":      2_000,
     "meta":              3_000,
     "kakao_da":          1_500,
     "tiktok_ads":          800,
@@ -102,7 +100,6 @@ CRAWL_DAILY_CAPACITY: dict[str, int] = {
 # ──────────────────────────────────────────────────────────
 VIDEO_CPV: dict[str, int] = {
     "youtube_ads":  50,   # 원/조회
-    "youtube_surf": 50,
     "tiktok_ads":   40,
 }
 
@@ -256,7 +253,7 @@ class SpendEstimatorV2:
         resolved = _CHANNEL_ALIAS.get(channel, channel)
 
         # ── 동영상: 실 조회수 있으면 CPV 우선 ──
-        if resolved in ("youtube_ads", "youtube_surf", "tiktok_ads") and daily_view_count > 0:
+        if resolved in ("youtube_ads", "tiktok_ads") and daily_view_count > 0:
             est, factors = _video_cpv_estimate(resolved, ad_hits, daily_view_count)
             method = "video_cpv"
             confidence = 0.75  # 실 조회수 기반 = 높은 신뢰도

@@ -349,7 +349,7 @@ async def ad_gallery(
             yt_cutoff = datetime.now(timezone(timedelta(hours=9))).replace(tzinfo=None) - timedelta(days=30)
             query = query.where(
                 or_(
-                    ~AdSnapshot.channel.in_(["youtube_ads", "youtube_surf"]),
+                    ~AdSnapshot.channel.in_(["youtube_ads"]),
                     AdSnapshot.captured_at >= yt_cutoff,
                 )
             )

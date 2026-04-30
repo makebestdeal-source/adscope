@@ -16,9 +16,7 @@ CHANNEL_LABELS: dict[str, str] = {
     "google_search_ads": "구글 검색",
     "google_gdn": "구글 GDN",
     "youtube_ads": "유튜브",
-    "youtube_surf": "유튜브 서프",
     "meta": "메타",
-    "meta_feed": "메타 피드",
     "kakao_da": "카카오 DA",
     "tiktok_ads": "틱톡",
 }

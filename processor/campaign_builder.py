@@ -30,7 +30,7 @@ _NON_AD_NAME_SET = {
 }
 
 DEFAULT_EXCLUDED_CHANNELS: set[str] = set()  # youtube_ads 포함 (2,372건 활용)
-YOUTUBE_CHANNELS = {"youtube_ads", "youtube_surf"}
+YOUTUBE_CHANNELS = {"youtube_ads"}
 
 # ── Channel -> spend_category mapping ──
 _CHANNEL_SPEND_CATEGORY: dict[str, str] = {
@@ -42,7 +42,6 @@ _CHANNEL_SPEND_CATEGORY: dict[str, str] = {
     "google_gdn": "banner",
     "mobile_gdn": "banner",
     "youtube_ads": "video",
-    "youtube_surf": "video",
     "tiktok_ads": "video",
     "meta": "social",
 }
@@ -491,7 +490,6 @@ async def _collect_aggregates(
 # ── Channel ↔ Stealth network mapping ──
 _CHANNEL_TO_STEALTH_NETWORK = {
     "youtube_ads": "youtube",
-    "youtube_surf": "youtube",
     "google_gdn": "gdn",
     "mobile_gdn": "gdn",
     "naver_da": "naver",
@@ -560,7 +558,6 @@ async def _load_stealth_contact_multipliers(
     # 기본값: 1.0 (데이터 없으면 변동 없음)
     _DEFAULT_CHANNEL_MULTIPLIERS: dict[str, float] = {
         "youtube_ads": 1.2,        # 유튜브 영상광고 시장 활발 (stealth 데이터 부족 보완)
-        "youtube_surf": 1.2,
         "google_gdn": 1.1,
         "mobile_gdn": 1.1,
         "naver_da": 1.0,

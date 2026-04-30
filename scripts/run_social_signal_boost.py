@@ -494,12 +494,12 @@ def write_report(report: dict[str, Any]) -> None:
 
 async def main() -> None:
     parser = argparse.ArgumentParser(description="Run social/meta signal boost")
-    parser.add_argument("--discover-limit", type=int, default=500)
-    parser.add_argument("--content-limit", type=int, default=80)
-    parser.add_argument("--stats-limit", type=int, default=120)
-    parser.add_argument("--news-limit", type=int, default=150)
+    parser.add_argument("--discover-limit", type=int, default=2000)
+    parser.add_argument("--content-limit", type=int, default=500)
+    parser.add_argument("--stats-limit", type=int, default=500)
+    parser.add_argument("--news-limit", type=int, default=300)
     parser.add_argument("--news-articles", type=int, default=10)
-    parser.add_argument("--trend-limit", type=int, default=100)
+    parser.add_argument("--trend-limit", type=int, default=300)
     parser.add_argument("--trend-days", type=int, default=30)
     parser.add_argument("--per-channel-timeout", type=int, default=45)
     parser.add_argument("--skip-discovery", action="store_true")

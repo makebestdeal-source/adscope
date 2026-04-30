@@ -1,159 +1,151 @@
 {
-  "started_at": "2026-04-25 20:10:34",
-  "finished_at": "2026-04-25 20:36:38",
-  "elapsed_seconds": 1564.0,
+  "started_at": "2026-04-29 23:08:55",
+  "finished_at": "2026-04-30 00:05:13",
+  "elapsed_seconds": 3378.5,
   "before": {
-    "advertisers": 6160,
-    "with_website": 2744,
-    "with_official_channels": 866,
-    "active_advertisers_90d": 4690,
+    "advertisers": 1034,
+    "with_website": 623,
+    "with_official_channels": 0,
+    "active_advertisers_90d": 1037,
     "channel_stats": {
-      "rows": 1305,
-      "advertisers": 606,
-      "latest": "2026-03-29 01:44:22.242797"
+      "rows": 0,
+      "advertisers": 0,
+      "latest": null
     },
     "brand_channel_contents": {
-      "rows": 11929,
-      "advertisers": 399,
-      "latest": "2026-03-28 16:13:08.404321"
+      "rows": 0,
+      "advertisers": 0,
+      "latest": null
     },
     "news_mentions": {
-      "rows": 8813,
-      "advertisers": 430,
-      "latest": "2026-04-25 10:11:55.640197"
+      "rows": 0,
+      "advertisers": 0,
+      "latest": null
     },
     "traffic_signals": {
-      "rows": 2484,
-      "advertisers": 119,
-      "latest": "2026-04-24 00:00:00.000000"
+      "rows": 0,
+      "advertisers": 0,
+      "latest": null
     },
     "social_impact_scores": {
-      "rows": 23694,
-      "advertisers": 8007,
-      "latest": "2026-04-25 00:00:00.000000"
+      "rows": 0,
+      "advertisers": 0,
+      "latest": null
     },
     "meta_signal_composites": {
-      "rows": 43199,
-      "advertisers": 12062,
-      "latest": "2026-04-25 00:00:00.000000"
+      "rows": 0,
+      "advertisers": 0,
+      "latest": null
     }
   },
   "after": {
-    "advertisers": 6160,
-    "with_website": 2744,
-    "with_official_channels": 970,
-    "active_advertisers_90d": 4690,
+    "advertisers": 1097,
+    "with_website": 661,
+    "with_official_channels": 306,
+    "active_advertisers_90d": 1100,
     "channel_stats": {
-      "rows": 1424,
-      "advertisers": 682,
-      "latest": "2026-04-25 20:33:12.758837"
+      "rows": 409,
+      "advertisers": 280,
+      "latest": "2026-04-30 00:02:13.889442"
     },
     "brand_channel_contents": {
-      "rows": 12722,
-      "advertisers": 437,
-      "latest": "2026-04-25 11:28:51.912995"
+      "rows": 5844,
+      "advertisers": 238,
+      "latest": "2026-04-29 14:54:01.791644"
     },
     "news_mentions": {
-      "rows": 9188,
-      "advertisers": 430,
-      "latest": "2026-04-25 11:33:13.153746"
+      "rows": 2669,
+      "advertisers": 279,
+      "latest": "2026-04-29 15:02:14.296936"
     },
     "traffic_signals": {
-      "rows": 2848,
-      "advertisers": 133,
-      "latest": "2026-04-24 00:00:00.000000"
+      "rows": 0,
+      "advertisers": 0,
+      "latest": null
     },
     "social_impact_scores": {
-      "rows": 23743,
-      "advertisers": 8024,
-      "latest": "2026-04-25 00:00:00.000000"
+      "rows": 794,
+      "advertisers": 794,
+      "latest": "2026-04-29 00:00:00.000000"
     },
     "meta_signal_composites": {
-      "rows": 43215,
-      "advertisers": 12076,
-      "latest": "2026-04-25 00:00:00.000000"
+      "rows": 0,
+      "advertisers": 0,
+      "latest": null
     }
   },
   "steps": [
     {
       "name": "discover_social_channels",
       "status": "ok",
-      "elapsed": 446.8,
+      "elapsed": 360.6,
       "result": {
-        "processed": 500,
-        "discovered": 104,
-        "channels_added": 241,
+        "processed": 623,
+        "discovered": 306,
+        "channels_added": 627,
         "errors": 0
       }
     },
     {
       "name": "collect_brand_content",
       "status": "ok",
-      "elapsed": 651.0,
+      "elapsed": 2346.5,
       "result": {
-        "targets": 80,
-        "processed": 80,
-        "new_items": 793,
-        "youtube_channels": 44,
-        "instagram_channels": 61,
+        "targets": 306,
+        "processed": 306,
+        "new_items": 5844,
+        "youtube_channels": 162,
+        "instagram_channels": 268,
         "errors": 0
       }
     },
     {
       "name": "collect_channel_stats",
       "status": "ok",
-      "elapsed": 260.8,
+      "elapsed": 492.0,
       "result": {
-        "targets": 120,
-        "youtube_success": 52,
-        "instagram_success": 67,
+        "targets": 306,
+        "youtube_success": 153,
+        "instagram_success": 256,
         "errors": 0
       }
     },
     {
       "name": "collect_news",
       "status": "ok",
-      "elapsed": 87.1,
+      "elapsed": 171.0,
       "result": {
-        "processed": 150,
-        "saved": 375,
+        "processed": 300,
+        "saved": 2669,
         "errors": 0
       }
     },
     {
       "name": "collect_search_trends",
       "status": "ok",
-      "elapsed": 23.8,
+      "elapsed": 0.0,
       "result": {
-        "processed": 78,
-        "saved": 364,
+        "processed": 0,
+        "saved": 0,
         "errors": 0
       }
     },
     {
       "name": "recompute_scores",
       "status": "ok",
-      "elapsed": 93.9,
+      "elapsed": 8.3,
       "result": {
-        "activity_scores": {
-          "processed": 743,
-          "created": 23,
-          "updated": 720
-        },
-        "meta_signal_composites": {
-          "processed": 2997,
-          "created": 16,
-          "updated": 2981
-        },
+        "activity_scores_error": "(sqlite3.OperationalError) no such table: serpapi_ads\n[SQL: \n        SELECT json_extract(extra_data, '$.network') AS net,\n               COUNT(*) AS cnt\n        FROM serpapi_ads\n        WHERE advertis",
+        "meta_signal_composites_error": "(sqlite3.OperationalError) no such table: serpapi_ads\n[SQL: \n        SELECT json_extract(extra_data, '$.network') AS net, COUNT(*) AS cnt\n        FROM serpapi_ads\n        WHERE advertiser_name LIKE 's",
         "social_impact_scores": {
-          "processed": 2630,
-          "created": 49,
-          "updated": 2581
+          "processed": 794,
+          "created": 794,
+          "updated": 0
         },
         "social_category_rankings": {
-          "processed": 686,
-          "created": 93,
-          "industries": 21
+          "processed": 279,
+          "created": 279,
+          "industries": 7
         }
       }
     }
