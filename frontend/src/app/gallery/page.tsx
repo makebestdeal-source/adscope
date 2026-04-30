@@ -47,7 +47,7 @@ export default function GalleryPage() {
 
 function GalleryContent() {
   const [selectedChannels, setSelectedChannels] = useState<Set<string>>(
-    new Set(ALL_CHANNELS)
+    new Set(["naver_da"])
   );
   const [advertiserSearch, setAdvertiserSearch] = useState("");
   const [dateFrom, setDateFrom] = useState("");
@@ -115,12 +115,10 @@ function GalleryContent() {
 
   const filteredItems = useMemo(() => {
     if (!data?.items) return [];
-    // 항상 DA 채널만 표시 (API가 채널 미선택 시 keyword 채널도 반환하므로 강제 필터)
-    if (selectedChannels.size <= 1) {
-      return data.items.filter((item) => DA_CHANNEL_SET.has(item.channel));
-    }
+    // 0개 선택 시 빈 결과
+    if (selectedChannels.size === 0) return [];
     return data.items.filter((item) => selectedChannels.has(item.channel));
-  }, [data?.items, selectedChannels, DA_CHANNEL_SET]);
+  }, [data?.items, selectedChannels]);
 
   const visibleItems = filteredItems;
   const selectableImageCount = useMemo(
