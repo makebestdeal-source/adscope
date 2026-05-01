@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { getUser, logout, AuthUser, isInTrial } from "@/lib/auth";
 
-type NavItem = { href: string; label: string; icon: string; beta?: boolean; soon?: boolean; adminOnly?: boolean; public?: boolean };
+type NavItem = { href: string; label: string; icon: string; beta?: boolean; soon?: boolean; adminOnly?: boolean; public?: boolean; external?: boolean };
 type NavGroup = { title: string; items: NavItem[]; public?: boolean; adminOnly?: boolean };
 
 const NAV_GROUPS: NavGroup[] = [
@@ -60,6 +60,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/guide", label: "서비스 소개", icon: "guide" },
       { href: "/manual", label: "이용 매뉴얼", icon: "manual" },
       { href: "/faq", label: "FAQ", icon: "faq" },
+      { href: "https://blog.naver.com/adscope", label: "블로그", icon: "blog", public: true, external: true },
     ],
   },
   {
@@ -394,6 +395,14 @@ function NavIcon({ name, className = "w-5 h-5" }: { name: string; className?: st
           <path d="M10 9l4 2-4 2V9z" fill="currentColor" />
         </svg>
       );
+    case "blog":
+      return (
+        <svg {...props}>
+          <path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+          <path d="M6 8h8M6 12h6" />
+          <circle cx="17" cy="14" r="1.5" fill="currentColor" />
+        </svg>
+      );
     default:
       return null;
   }
@@ -540,6 +549,7 @@ export function Sidebar() {
             <div className="space-y-1">
               {group.items.map((item) => {
                 const isActive =
+                  item.external ? false :
                   item.href === "/"
                     ? pathname === "/"
                     : item.href === "/advertisers"
@@ -549,18 +559,8 @@ export function Sidebar() {
                     : item.href === "/gallery"
                     ? pathname === "/gallery"
                     : pathname.startsWith(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className={clsx(
-                      "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
-                      isActive
-                        ? "bg-gradient-to-r from-adscope-600 to-indigo-600 text-white shadow-md shadow-indigo-900/20"
-                        : "text-slate-300 hover:bg-slate-800/70 hover:text-white hover:translate-x-0.5"
-                    )}
-                  >
+                const itemContent = (
+                  <>
                     <NavIcon name={item.icon} />
                     <span className="flex items-center gap-1.5">
                       {item.label}
@@ -574,7 +574,41 @@ export function Sidebar() {
                           준비중
                         </span>
                       )}
+                      {item.external && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3 opacity-50">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                      )}
                     </span>
+                  </>
+                );
+                const itemClass = clsx(
+                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                  isActive
+                    ? "bg-gradient-to-r from-adscope-600 to-indigo-600 text-white shadow-md shadow-indigo-900/20"
+                    : "text-slate-300 hover:bg-slate-800/70 hover:text-white hover:translate-x-0.5"
+                );
+                return item.external ? (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setOpen(false)}
+                    className={itemClass}
+                  >
+                    {itemContent}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={itemClass}
+                  >
+                    {itemContent}
                   </Link>
                 );
               })}

@@ -36,6 +36,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="space-y-1 text-right md:text-right">
               <p>문의: support@adscope.kr</p>
               <p>
+                <a
+                  href="https://blog.naver.com/adscope"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-gray-400 hover:text-green-600 transition-colors"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3">
+                    <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/>
+                  </svg>
+                  AdScope 블로그
+                </a>
+              </p>
+              <p>
                 <a href="https://doubleestudio.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-adscope-500 transition-colors">
                   &copy; {new Date().getFullYear()} DoubleE Studio
                 </a>. All rights reserved.

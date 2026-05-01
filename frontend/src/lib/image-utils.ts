@@ -45,13 +45,17 @@ export function parseImagePath(path: string | null | undefined): ParsedImagePath
     }
   }
 
+  const R2_BASE = "https://pub-212e20fe661343f2816c81f3ebc9b26b.r2.dev";
+
   let url: string;
   if (cleanPath.startsWith("stored_images/")) {
-    url = "/images/" + cleanPath.slice("stored_images/".length);
+    url = R2_BASE + "/" + cleanPath.slice("stored_images/".length);
+  } else if (cleanPath.startsWith("http://") || cleanPath.startsWith("https://")) {
+    url = cleanPath;
   } else if (cleanPath.startsWith("screenshots/")) {
     url = "/" + cleanPath;
   } else {
-    url = "/images/" + cleanPath;
+    url = R2_BASE + "/" + cleanPath;
   }
 
   return {
