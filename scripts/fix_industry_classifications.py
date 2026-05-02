@@ -427,6 +427,9 @@ GARBAGE_PATTERNS = [
     r"^\d+-\d+$",                     # 6-5929000037199 같은 패턴
 ]
 
+# 글자수 초과 = 광고 카피가 광고주명으로 저장된 것
+_GARBAGE_MAX_LEN = 80
+
 
 # 이 도메인들은 플랫폼(스토어/채널) URL이라서 광고주 업종과 무관 — 도메인 분류에서 제외
 PLATFORM_DOMAINS = {
@@ -514,6 +517,11 @@ def classify_by_name(name: str) -> int | None:
 
 
 def is_garbage(name: str) -> bool:
+    if not name:
+        return True
+    # 길이 초과 = 광고 카피가 광고주명으로 저장된 것
+    if len(name) > _GARBAGE_MAX_LEN:
+        return True
     for pattern in GARBAGE_PATTERNS:
         if re.match(pattern, name, re.IGNORECASE):
             return True

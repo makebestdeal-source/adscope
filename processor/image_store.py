@@ -186,12 +186,13 @@ class LocalImageStore(ImageStore):
 
 
 class S3ImageStore(ImageStore):
-    """AWS S3 스토리지 (프로덕션용).
+    """Cloudflare R2 / AWS S3 스토리지 (프로덕션용).
 
     환경변수:
-        AWS_S3_BUCKET: S3 버킷명
-        AWS_S3_PREFIX: 키 접두사 (기본: "adscope/images")
-        AWS_S3_REGION: 리전 (기본: "ap-northeast-2")
+        AWS_S3_BUCKET: 버킷명 (R2: adscope-images)
+        R2_ENDPOINT_URL: R2 엔드포인트 (https://<account_id>.r2.cloudflarestorage.com)
+        R2_PUBLIC_URL: R2 public URL 베이스 (https://pub-xxx.r2.dev 또는 커스텀 도메인)
+        AWS_S3_REGION: 리전 (R2: auto)
     """
 
     def __init__(self):
@@ -201,12 +202,26 @@ class S3ImageStore(ImageStore):
             raise ImportError("S3 스토리지를 사용하려면 boto3를 설치하세요: pip install boto3")
 
         self.bucket = os.environ["AWS_S3_BUCKET"]
-        self.prefix = os.getenv("AWS_S3_PREFIX", "adscope/images")
-        self.region = os.getenv("AWS_S3_REGION", "ap-northeast-2")
-        self.s3 = boto3.client("s3", region_name=self.region)
+        self.region = os.getenv("AWS_S3_REGION", "auto")
+        self.endpoint_url = os.getenv("R2_ENDPOINT_URL")
+        self.public_url = os.getenv("R2_PUBLIC_URL", "").rstrip("/")
+        self.s3 = boto3.client(
+            "s3",
+            region_name=self.region,
+            endpoint_url=self.endpoint_url,
+            aws_access_key_id=os.getenv("R2_ACCESS_KEY_ID") or os.getenv("AWS_ACCESS_KEY_ID"),
+            aws_secret_access_key=os.getenv("R2_SECRET_ACCESS_KEY") or os.getenv("AWS_SECRET_ACCESS_KEY"),
+        )
+
+    def _to_key(self, stored_path: str) -> str:
+        """DB에 저장된 경로 → R2 key 변환 (stored_images/ prefix 제거)."""
+        p = stored_path.replace("\\", "/")
+        if p.startswith("stored_images/"):
+            p = p[len("stored_images/"):]
+        return p
 
     async def save(self, source_path: str, channel: str, category: str = "screenshot") -> str:
-        key = f"{self.prefix}/{_generate_key(channel, category, os.path.basename(source_path))}"
+        key = _generate_key(channel, category, os.path.basename(source_path))
 
         try:
             webp_data = _convert_to_webp(source_path)
@@ -215,19 +230,24 @@ class S3ImageStore(ImageStore):
                 webp_data = f.read()
             key = key.replace(".webp", ".png")
 
-        self.s3.put_object(
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(None, lambda: self.s3.put_object(
             Bucket=self.bucket,
             Key=key,
             Body=webp_data,
             ContentType="image/webp" if key.endswith(".webp") else "image/png",
-        )
-        logger.debug(f"[image_store] S3 업로드: s3://{self.bucket}/{key}")
+        ))
+        logger.debug(f"[image_store] R2 업로드: {key}")
         return key
 
     async def get_url(self, stored_path: str) -> str:
+        key = self._to_key(stored_path)
+        if self.public_url:
+            return f"{self.public_url}/{key}"
+        # fallback: presigned URL (1시간)
         return self.s3.generate_presigned_url(
             "get_object",
-            Params={"Bucket": self.bucket, "Key": stored_path},
+            Params={"Bucket": self.bucket, "Key": key},
             ExpiresIn=3600,
         )
 

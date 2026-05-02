@@ -1,11 +1,12 @@
-"""YouTube 광고 크롤러 -- Google Ads Transparency Center RPC API 캡처.
+"""Google Ads Transparency Center 크롤러 -- YouTube + Search 동시 수집.
 
 Google Ads Transparency Center의 내부 RPC API를 네트워크 인터셉트하여
-YouTube 플랫폼 광고를 키워드 기반으로 수집한다.
+YouTube(VIDEO) + 구글검색(TEXT) 광고를 키워드 기반으로 한 번에 수집한다.
+→ 435 프리픽스를 두 번 돌 필요 없이 1회 순회로 두 채널 데이터를 모두 확보.
 
 - 로그인 불필요, headless OK
 - SearchSuggestions RPC -> 광고주 ID 목록
-- SearchCreatives RPC -> 광고주별 크리에이티브 목록
+- SearchCreatives RPC -> 광고주별 크리에이티브 (VIDEO + TEXT 모두)
 - keyword_dependent = True (키워드 기반 검색)
 """
 
@@ -35,8 +36,10 @@ from crawler.url_utils import resolve_redirect_url
 
 ADS_TRANSPARENCY_URL = (
     "https://adstransparency.google.com/"
-    "?region=KR&platform=YOUTUBE"
+    "?region=KR"
 )
+# 광고주 페이지도 포맷 필터 없이 — VIDEO + TEXT 한 번에 수집
+_ADV_PAGE_BASE = "https://adstransparency.google.com/advertiser/"
 
 # 방문할 최대 광고주 수
 MAX_ADVERTISERS = max(1, int(os.getenv("YT_ADS_MAX_ADVERTISERS", "100")))
@@ -437,26 +440,35 @@ class YouTubeAdsCrawler(BaseCrawler):
         context = await self._create_context(persona, device)
 
         try:
-            page, ads = await self._collect_ads(context, keyword)
+            page, ads, text_ads = await self._collect_ads(context, keyword)
 
-            screenshot_path = None  # full-page 스크린샷 비활성화
+            now = datetime.now(timezone.utc)
+            elapsed = int((now - start_time).total_seconds() * 1000)
 
-            elapsed = int(
-                (datetime.now(timezone.utc) - start_time).total_seconds()
-                * 1000
-            )
-
-            return {
+            result = {
                 "keyword": keyword,
                 "persona_code": persona.code,
                 "device": device.device_type,
                 "channel": self.channel,
-                "captured_at": datetime.now(timezone.utc),
+                "captured_at": now,
                 "page_url": ADS_TRANSPARENCY_URL,
-                "screenshot_path": screenshot_path,
+                "screenshot_path": None,
                 "ads": ads,
                 "crawl_duration_ms": elapsed,
             }
+            # TEXT 광고 → google_search_ads 채널로 extra_results에 담아 반환
+            if text_ads:
+                result["extra_results"] = [{
+                    "channel": "google_search_ads",
+                    "keyword": keyword,
+                    "persona_code": persona.code,
+                    "device": device.device_type,
+                    "captured_at": now,
+                    "page_url": ADS_TRANSPARENCY_URL,
+                    "screenshot_path": None,
+                    "ads": text_ads,
+                }]
+            return result
         finally:
             for p in context.pages:
                 await p.close()
@@ -591,25 +603,26 @@ class YouTubeAdsCrawler(BaseCrawler):
 
                 await page.wait_for_timeout(2000)
 
-            # -- 5) 정규화 --
+            # -- 5) 정규화 (VIDEO + TEXT 동시) --
             await _enrich_creatives_from_preview(all_creatives, limit=max(40, MAX_ADS * 2))
             ads = self._normalize_creatives(all_creatives, keyword)
+            text_ads = self._normalize_text_creatives(all_creatives, keyword)
             logger.info(
-                "[{}] '{}' -> {} ads (raw: {})",
-                self.channel, keyword, len(ads), len(all_creatives),
+                "[{}] '{}' -> {} video ads + {} text ads (raw: {})",
+                self.channel, keyword, len(ads), len(text_ads), len(all_creatives),
             )
 
             # -- 6) preview_url 이미지 다운로드 --
             await self._download_preview_images(ads)
 
-            return page, ads
+            return page, ads, text_ads
 
         except Exception as e:
             logger.error(
                 "[{}] transparency center failed: {}",
                 self.channel, e,
             )
-            return page, []
+            return page, [], []
 
     async def _fill_search(self, page, keyword: str) -> bool:
         """검색창에 키워드 입력 (type으로 Angular change detection 트리거)."""
@@ -633,10 +646,63 @@ class YouTubeAdsCrawler(BaseCrawler):
         return False
 
     @staticmethod
+    def _normalize_text_creatives(creatives: list[dict], keyword: str) -> list[dict]:
+        """TEXT 포맷 크리에이티브 → google_search_ads 채널 광고 리스트로 변환."""
+        ads: list[dict] = []
+        seen_ids: set[str] = set()
+        GS_MAX = max(1, int(os.getenv("GS_ADS_MAX_ADS", "40")))
+
+        for cr in creatives:
+            if len(ads) >= GS_MAX:
+                break
+
+            # TEXT(1)만
+            fmt_type = cr.get("format_type")
+            if fmt_type != 1:
+                continue
+
+            cid = cr.get("creative_id") or ""
+            if cid in seen_ids:
+                continue
+            seen_ids.add(cid)
+
+            advertiser = cr.get("advertiser_name")
+            adv_url = _normalize_external_landing_url(cr.get("landing_url"))
+            ad_text = _clean_transparency_text(cr.get("text_content"))
+            if not adv_url or not ad_text:
+                continue
+
+            ads.append({
+                "advertiser_name": advertiser,
+                "ad_text": ad_text,
+                "ad_description": None,
+                "url": adv_url,
+                "display_url": _display_domain_for_url(adv_url),
+                "position": len(ads) + 1,
+                "ad_type": "google_search_text",
+                "ad_placement": "google_search",
+                "ad_product_name": "구글 검색광고",
+                "ad_format_type": "text",
+                "campaign_purpose": "performance",
+                "extra_data": {
+                    "detection_method": "ads_transparency_rpc",
+                    "creative_id": cid,
+                    "format_type": fmt_type,
+                    "start_ts": cr.get("start_ts"),
+                    "end_ts": cr.get("end_ts"),
+                    "search_keyword": keyword,
+                    "platform": "google_search",
+                    "preview_url": cr.get("preview_url"),
+                },
+            })
+
+        return ads
+
+    @staticmethod
     def _normalize_creatives(
         creatives: list[dict], keyword: str,
     ) -> list[dict]:
-        """크리에이티브를 정규화된 광고 리스트로 변환."""
+        """크리에이티브를 정규화된 광고 리스트로 변환 (VIDEO 전용 → youtube_ads)."""
         ads: list[dict] = []
         seen_ids: set[str] = set()
         view_count_found = 0
@@ -645,7 +711,7 @@ class YouTubeAdsCrawler(BaseCrawler):
             if len(ads) >= MAX_ADS:
                 break
 
-            # VIDEO(3)만 수집 — TEXT(1)=search, IMAGE(2)=GDN은 각 전용 크롤러에서 수집
+            # VIDEO(3)만 — TEXT는 _normalize_text_creatives에서 처리
             fmt_type = cr.get("format_type")
             if fmt_type is not None and fmt_type != 3:
                 continue
@@ -943,7 +1009,14 @@ class YouTubeAdsCrawler(BaseCrawler):
                         )
                         ad["creative_image_path"] = stored
                     except Exception:
-                        ad["creative_image_path"] = str(filepath)
+                        # image_store 실패 시 절대경로 저장 금지 — None으로 남김
+                        ad["creative_image_path"] = None
+                    finally:
+                        # 임시 파일 정리
+                        try:
+                            filepath.unlink(missing_ok=True)
+                        except Exception:
+                            pass
 
                     download_count += 1
                 except Exception as exc:

@@ -69,6 +69,14 @@ async def lifespan(app: FastAPI):
     """앱 시작/종료 시 DB 초기화 + 마스터 계정 생성."""
     setup_logging()
     logger.info("AdScope API starting up")
+    # R2로 전환된 경우 볼륨의 stored_images 삭제하여 공간 확보
+    if os.getenv("IMAGE_STORE_TYPE") == "s3":
+        import shutil
+        from pathlib import Path as _P
+        _si = _P(os.getenv("IMAGE_STORE_DIR", "/data/stored_images"))
+        if _si.exists():
+            shutil.rmtree(_si, ignore_errors=True)
+            logger.info(f"R2 전환: {_si} 삭제 완료 (볼륨 공간 확보)")
     await init_db()
     await _ensure_master_account()
     try:
@@ -512,6 +520,15 @@ async def upload_data(file: UploadFile = File(...), secret: str = ""):
                     logger.warning("Blocked unsafe tar path: %s", member.name)
                     continue
                 safe_members.append(member)
+            # 기존 파일이 write-protected 상태여도 덮어쓸 수 있도록 미리 삭제
+            for member in safe_members:
+                if member.isreg():
+                    target_path = os.path.join(str(data_dir), member.name)
+                    if os.path.isfile(target_path):
+                        try:
+                            os.unlink(target_path)
+                        except Exception:
+                            pass
             tar.extractall(path=str(data_dir), members=safe_members)
         os.remove(tmp_path)
         return {"status": "ok", "extracted_to": str(data_dir)}

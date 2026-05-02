@@ -46,20 +46,25 @@ def _safe_ad_text(text: str | None, extra_data: dict | None) -> str | None:
 
 
 def _normalize_image_path(path: str) -> str | None:
-    """DB 경로를 정규화하고 실제 파일이 존재하면 정규화된 경로를 반환, 없으면 None."""
+    """DB 경로를 정규화하여 반환.
+
+    R2 이전(2025-05) 이후: 이미지는 Cloudflare R2에 저장됨.
+    stored_images/ 경로는 파일시스템 체크 없이 그대로 반환 — 프론트엔드의
+    parseImagePath()가 R2 URL로 변환함.
+    """
     if not path:
         return None
     # Windows 백슬래시 → 슬래시
     p = path.replace("\\", "/")
-    # 로컬 직접 경로 체크
+    # R2 저장 경로 (stored_images/channel/date/category/file.webp)
+    if p.startswith("stored_images/"):
+        return p
+    # 이미 http(s):// URL이면 그대로 반환
+    if p.startswith("http://") or p.startswith("https://"):
+        return p
+    # 로컬 직접 경로 체크 (개발환경 fallback)
     if os.path.exists(p):
         return p
-    # stored_images/ 접두사: IMAGE_STORE_DIR 기준으로 resolve
-    if p.startswith("stored_images/"):
-        resolved = os.path.join(_IMAGE_STORE_DIR, p[len("stored_images/"):])
-        if os.path.exists(resolved):
-            return p  # 프론트에는 stored_images/... 형식으로 반환
-    # screenshots/ 는 서버에 없을 수 있으므로 None
     return None
 
 

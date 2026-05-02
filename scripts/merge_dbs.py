@@ -90,6 +90,99 @@ def merge():
 
     merged.commit()
 
+    # ── 1-1) advertisers: natural key = website (fallback: name) ──
+    print("\n=== advertisers ===")
+    before = count(merged, "advertisers")
+
+    adv_cols = [col[1] for col in lc.execute('PRAGMA table_info("advertisers")').fetchall()]
+    adv_non_id = [c for c in adv_cols if c != "id"]
+    adv_col_str = ", ".join(f'"{c}"' for c in adv_non_id)
+    adv_placeholders = ", ".join(["?"] * len(adv_non_id))
+
+    existing_adv_website = dict(mc.execute(
+        "SELECT website, id FROM advertisers WHERE website IS NOT NULL AND website != ''"
+    ).fetchall())
+    existing_adv_name = dict(mc.execute(
+        "SELECT name, id FROM advertisers WHERE (website IS NULL OR website = '')"
+    ).fetchall())
+
+    local_advs = lc.execute(f"SELECT id, {adv_col_str} FROM advertisers").fetchall()
+    adv_name_idx = adv_non_id.index("name")
+    adv_website_idx = adv_non_id.index("website") if "website" in adv_non_id else None
+
+    local_to_merged_adv = {}  # local_adv_id -> merged_adv_id
+    for row in local_advs:
+        local_id = row[0]
+        data = list(row[1:])
+        website = data[adv_website_idx] if adv_website_idx is not None else None
+        name = data[adv_name_idx]
+
+        if website:
+            if website in existing_adv_website:
+                local_to_merged_adv[local_id] = existing_adv_website[website]
+                continue
+        else:
+            if name in existing_adv_name:
+                local_to_merged_adv[local_id] = existing_adv_name[name]
+                continue
+
+        mc.execute(f"INSERT INTO advertisers ({adv_col_str}) VALUES ({adv_placeholders})", data)
+        new_id = mc.lastrowid
+        local_to_merged_adv[local_id] = new_id
+        if website:
+            existing_adv_website[website] = new_id
+        else:
+            existing_adv_name[name] = new_id
+
+    merged.commit()
+    after = count(merged, "advertisers")
+    print(f"  Added {after - before} new advertisers ({before} -> {after})")
+
+    # ── 1-2) campaigns: natural key = advertiser_id + first_seen_month + product_service ──
+    print("\n=== campaigns ===")
+    before = count(merged, "campaigns")
+
+    camp_cols = [col[1] for col in lc.execute('PRAGMA table_info("campaigns")').fetchall()]
+    camp_non_id = [c for c in camp_cols if c != "id"]
+    camp_col_str = ", ".join(f'"{c}"' for c in camp_non_id)
+    camp_placeholders = ", ".join(["?"] * len(camp_non_id))
+
+    existing_camps = {}
+    for row in mc.execute("SELECT advertiser_id, strftime('%Y-%m', first_seen), COALESCE(product_service,''), id FROM campaigns"):
+        existing_camps[(row[0], row[1], row[2])] = row[3]
+
+    local_camps = lc.execute(f"SELECT id, {camp_col_str} FROM campaigns").fetchall()
+    camp_adv_idx = camp_non_id.index("advertiser_id")
+    camp_fs_idx = camp_non_id.index("first_seen") if "first_seen" in camp_non_id else None
+    camp_ps_idx = camp_non_id.index("product_service") if "product_service" in camp_non_id else None
+
+    local_to_merged_camp = {}  # local_camp_id -> merged_camp_id
+    for row in local_camps:
+        local_id = row[0]
+        data = list(row[1:])
+
+        # remap advertiser_id
+        local_adv_id = data[camp_adv_idx]
+        merged_adv_id = local_to_merged_adv.get(local_adv_id, local_adv_id)
+        data[camp_adv_idx] = merged_adv_id
+
+        fs = data[camp_fs_idx][:7] if camp_fs_idx is not None and data[camp_fs_idx] else None
+        ps = data[camp_ps_idx] if camp_ps_idx is not None else None
+        key = (merged_adv_id, fs, ps or "")
+
+        if key in existing_camps:
+            local_to_merged_camp[local_id] = existing_camps[key]
+            continue
+
+        mc.execute(f"INSERT INTO campaigns ({camp_col_str}) VALUES ({camp_placeholders})", data)
+        new_id = mc.lastrowid
+        local_to_merged_camp[local_id] = new_id
+        existing_camps[key] = new_id
+
+    merged.commit()
+    after = count(merged, "campaigns")
+    print(f"  Added {after - before} new campaigns ({before} -> {after})")
+
     # ── 2) ad_snapshots: natural key = keyword_id + channel + captured_at ──
     print("\n=== ad_snapshots ===")
     before = count(merged, "ad_snapshots")
@@ -130,6 +223,78 @@ def merge():
     after = count(merged, "ad_snapshots")
     print(f"  Added {after - before} new snapshots ({before} -> {after})")
 
+    # Build local_snapshot_id -> merged_snapshot_id mapping
+    merged_snapshot_map = {}  # (keyword_id, channel, captured_at) -> merged_id
+    for row in mc.execute("SELECT id, keyword_id, channel, captured_at FROM ad_snapshots"):
+        merged_snapshot_map[(row[1], row[2], row[3])] = row[0]
+
+    local_to_merged_snapshot = {}  # local_snapshot_id -> merged_snapshot_id
+    for (kw_id, ch, cat), local_id in local_snapshot_map.items():
+        merged_id = merged_snapshot_map.get((kw_id, ch, cat))
+        if merged_id:
+            local_to_merged_snapshot[local_id] = merged_id
+
+    # ── 2-1) ad_details: natural key = creative_hash (fallback: url + ad_text) ──
+    print("\n=== ad_details ===")
+    before = count(merged, "ad_details")
+
+    ad_cols = [col[1] for col in lc.execute('PRAGMA table_info("ad_details")').fetchall()]
+    non_id_cols = [c for c in ad_cols if c != "id"]
+    col_str = ", ".join(f'"{c}"' for c in non_id_cols)
+    placeholders = ", ".join(["?"] * len(non_id_cols))
+
+    # existing dedup keys
+    existing_hashes = set(r[0] for r in mc.execute(
+        "SELECT creative_hash FROM ad_details WHERE creative_hash IS NOT NULL"
+    ).fetchall())
+    existing_url_text = set(mc.execute(
+        "SELECT url, ad_text FROM ad_details WHERE creative_hash IS NULL"
+    ).fetchall())
+
+    local_ads = lc.execute(f"SELECT id, {col_str} FROM ad_details").fetchall()
+    snap_idx = non_id_cols.index("snapshot_id") if "snapshot_id" in non_id_cols else None
+    hash_idx = non_id_cols.index("creative_hash") if "creative_hash" in non_id_cols else None
+    url_idx = non_id_cols.index("url") if "url" in non_id_cols else None
+    text_idx = non_id_cols.index("ad_text") if "ad_text" in non_id_cols else None
+    ad_adv_idx = non_id_cols.index("advertiser_id") if "advertiser_id" in non_id_cols else None
+
+    new_ads = []
+    for row in local_ads:
+        local_id = row[0]
+        data = list(row[1:])  # non-id columns
+
+        # remap snapshot_id
+        if snap_idx is not None and data[snap_idx] is not None:
+            data[snap_idx] = local_to_merged_snapshot.get(data[snap_idx], data[snap_idx])
+
+        # remap advertiser_id
+        if ad_adv_idx is not None and data[ad_adv_idx] is not None:
+            data[ad_adv_idx] = local_to_merged_adv.get(data[ad_adv_idx], data[ad_adv_idx])
+
+        ch = data[hash_idx] if hash_idx is not None else None
+        if ch:
+            if ch in existing_hashes:
+                continue
+            existing_hashes.add(ch)
+        else:
+            url = data[url_idx] if url_idx is not None else None
+            txt = data[text_idx] if text_idx is not None else None
+            key = (url, txt)
+            if key in existing_url_text:
+                continue
+            existing_url_text.add(key)
+
+        new_ads.append(data)
+
+    if new_ads:
+        mc.executemany(
+            f"INSERT INTO ad_details ({col_str}) VALUES ({placeholders})",
+            new_ads
+        )
+    merged.commit()
+    after = count(merged, "ad_details")
+    print(f"  Added {after - before} new ad_details ({before} -> {after})")
+
     # ── 3) keywords: natural key = keyword ──
     print("\n=== keywords ===")
     before = count(merged, "keywords")
@@ -164,18 +329,14 @@ def merge():
         "FROM spend_estimates"
     ).fetchall()
 
-    # Only add if campaign_id exists in merged DB
-    existing_campaigns = set(r[0] for r in mc.execute("SELECT id FROM campaigns").fetchall())
-
     new_spends = []
-    skipped_campaign = 0
     for row in local_spends:
-        key = (row[0], row[1], row[2])
+        local_camp_id = row[0]
+        merged_camp_id = local_to_merged_camp.get(local_camp_id, local_camp_id)
+        key = (merged_camp_id, row[1], row[2])
         if key not in existing_spend:
-            if row[0] in existing_campaigns:
-                new_spends.append(row)
-            else:
-                skipped_campaign += 1
+            existing_spend.add(key)
+            new_spends.append((merged_camp_id, row[1], row[2], row[3], row[4], row[5], row[6]))
 
     if new_spends:
         mc.executemany(
@@ -187,8 +348,6 @@ def merge():
     merged.commit()
     after = count(merged, "spend_estimates")
     print(f"  Added {after - before} new spend estimates ({before} -> {after})")
-    if skipped_campaign:
-        print(f"  Skipped {skipped_campaign} (campaign_id not in server)")
 
     # ── 5) channel_stats: natural key = brand_channel_id + collected_at ──
     print("\n=== channel_stats ===")
@@ -403,13 +562,17 @@ def merge():
     try:
         before = count(merged, "product_categories")
 
-        # 부모 카테고리 먼저
+        # 부모 카테고리 먼저 (name 기준 중복 체크)
         local_parents = lc.execute(
             "SELECT name FROM product_categories WHERE parent_id IS NULL"
         ).fetchall()
         for (name,) in local_parents:
             mc.execute(
-                "INSERT OR IGNORE INTO product_categories (name) VALUES (?)", (name,)
+                "INSERT INTO product_categories (name) "
+                "SELECT ? WHERE NOT EXISTS ("
+                "  SELECT 1 FROM product_categories WHERE name = ? AND parent_id IS NULL"
+                ")",
+                (name, name)
             )
 
         # 자식 카테고리: 로컬의 부모명으로 머지 DB의 부모 ID 찾아 삽입
@@ -459,7 +622,124 @@ def merge():
 
     merged.close()
     local.close()
+
+    # ── 머지 후 정리: 쓰레기 광고주 + 절대경로 이미지 + 중복 소재 ──
+    _post_merge_cleanup(OUTPUT_DB)
+
     print(f"\nDone! Upload {OUTPUT_DB} to server.")
+
+
+def _post_merge_cleanup(db_path: str):
+    """머지 완료 후 DB 품질 정리.
+
+    1. 쓰레기 광고주 삭제 (라이브러리 ID:, 광고카피, 랜덤코드 등)
+    2. 절대 로컬 경로 이미지 → NULL (서버에서 접근 불가)
+    3. 텍스트 광고 당일 중복 소재 제거
+    """
+    import re
+    GARBAGE_PATTERNS = [
+        r"^라이브러리 ID:",
+        r"^Library ID:",
+        r"^Learn More$",
+        r"^Shop Now$",
+        r"^자세히 알아보기$",
+        r"^지금 쇼핑하기$",
+        r"^더 보기$",
+        r"^See More$",
+        r"^Get Started$",
+        r"^Sign Up$",
+        r"^Download$",
+        r"^[A-Za-z0-9]{8,}[0-9]{6,}$",
+        r"^[A-Za-z0-9\-_]{5,}\d{4,}$",
+        r"^\d{7,}$",
+        r"^\d+-\d+$",
+    ]
+
+    def is_garbage(name):
+        if not name:
+            return True
+        if len(name) > 80:
+            return True
+        for pat in GARBAGE_PATTERNS:
+            if re.match(pat, name, re.IGNORECASE):
+                return True
+        return False
+
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
+
+    # 1. 쓰레기 광고주
+    rows = cur.execute("SELECT id, name FROM advertisers").fetchall()
+    garbage_ids = [r[0] for r in rows if is_garbage(r[1])]
+    if garbage_ids:
+        ph = ",".join("?" * len(garbage_ids))
+        cur.execute(f"UPDATE ad_details SET advertiser_id = NULL WHERE advertiser_id IN ({ph})", garbage_ids)
+        cur.execute(f"DELETE FROM campaigns WHERE advertiser_id IN ({ph})", garbage_ids)
+        cur.execute(f"DELETE FROM advertisers WHERE id IN ({ph})", garbage_ids)
+        print(f"\n[cleanup] 쓰레기 광고주 {len(garbage_ids)}개 삭제")
+
+    # 2. 절대 로컬 경로 이미지 → NULL
+    cur.execute("""
+        UPDATE ad_details SET creative_image_path = NULL
+        WHERE creative_image_path IS NOT NULL
+          AND creative_image_path NOT LIKE 'stored_images%'
+          AND creative_image_path NOT LIKE 'http%'
+    """)
+    if cur.rowcount:
+        print(f"[cleanup] 절대경로 이미지 {cur.rowcount}개 NULL 처리")
+
+    # 3. 텍스트 광고 당일 중복 제거
+    cur.execute("""
+        DELETE FROM ad_details
+        WHERE creative_image_path IS NULL
+          AND ad_text IS NOT NULL
+          AND advertiser_name_raw IS NOT NULL
+          AND id NOT IN (
+            SELECT MIN(d2.id)
+            FROM ad_details d2
+            JOIN ad_snapshots s2 ON d2.snapshot_id = s2.id
+            WHERE d2.creative_image_path IS NULL
+              AND d2.ad_text IS NOT NULL
+              AND d2.advertiser_name_raw IS NOT NULL
+            GROUP BY d2.advertiser_name_raw, d2.ad_text, s2.channel, DATE(s2.captured_at)
+          )
+    """)
+    if cur.rowcount:
+        print(f"[cleanup] 텍스트 광고 중복 {cur.rowcount}개 삭제")
+
+    # 4. 불량 소재 삭제: URL 없거나 텍스트+이미지 둘 다 없는 껍데기
+    cur.execute("""
+        DELETE FROM ad_details
+        WHERE (url IS NULL OR url = '')
+           OR ((ad_text IS NULL OR ad_text = '') AND creative_image_path IS NULL)
+    """)
+    if cur.rowcount:
+        print(f"[cleanup] 불량 소재 (URL없음/내용없음) {cur.rowcount}개 삭제")
+
+    # 5. 품질 체크 리포트 — WARNING 있으면 배포 전 확인 필요
+    total = cur.execute("SELECT COUNT(*) FROM ad_details").fetchone()[0]
+    no_url = cur.execute("SELECT COUNT(*) FROM ad_details WHERE url IS NULL OR url=''").fetchone()[0]
+    no_content = cur.execute("""
+        SELECT COUNT(*) FROM ad_details
+        WHERE (ad_text IS NULL OR ad_text='') AND creative_image_path IS NULL
+    """).fetchone()[0]
+    no_adv = cur.execute("""
+        SELECT COUNT(*) FROM ad_details
+        WHERE advertiser_id IS NULL AND (advertiser_name_raw IS NULL OR advertiser_name_raw='')
+    """).fetchone()[0]
+    print(f"\n{'='*50}")
+    print(f"[품질 검사] 최종 ad_details: {total:,}건")
+    print(f"  URL 없음: {no_url}건 | 소재 없음: {no_content}건 | 광고주 없음: {no_adv}건")
+    if no_url > 0 or no_content > 0:
+        print("  [WARNING] 불량 데이터 잔존 - 배포 전 확인 필요!")
+        sys.exit(1)
+    else:
+        print("  [OK] 품질 검사 통과 - 배포 가능")
+    print('='*50)
+
+    conn.commit()
+    conn.execute("VACUUM")
+    conn.close()
 
 
 if __name__ == "__main__":

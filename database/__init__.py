@@ -50,6 +50,21 @@ async def init_db():
                     except OSError:
                         pass
 
+    # DB 손상 감지 시 파일 삭제 후 재생성 (볼륨 풀로 인한 corruption 복구)
+    if _db_path:
+        import pathlib
+        _dbf2 = pathlib.Path(_db_path).resolve()
+        if _dbf2.exists():
+            try:
+                import sqlite3 as _sq
+                _c = _sq.connect(str(_dbf2))
+                _c.execute("PRAGMA integrity_check")
+                _c.close()
+            except Exception as _ie:
+                import sys; print(f"DB 손상 감지, 삭제 후 재생성: {_ie}", file=sys.stderr)
+                await engine.dispose()
+                _dbf2.unlink()
+
     async with engine.begin() as conn:
         # SQLite performance pragmas
         await conn.exec_driver_sql("PRAGMA journal_mode=WAL")

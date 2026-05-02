@@ -352,7 +352,12 @@ class GoogleGDNCrawler(BaseCrawler):
                         )
                         ad["creative_image_path"] = stored
                     except Exception:
-                        ad["creative_image_path"] = str(filepath)
+                        ad["creative_image_path"] = None
+                    finally:
+                        try:
+                            filepath.unlink(missing_ok=True)
+                        except Exception:
+                            pass
 
                     download_count += 1
                 except Exception as exc:
