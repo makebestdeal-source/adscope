@@ -111,20 +111,37 @@ def merge():
     adv_website_idx = adv_non_id.index("website") if "website" in adv_non_id else None
 
     local_to_merged_adv = {}  # local_adv_id -> merged_adv_id
+    adv_industry_idx = adv_non_id.index("industry_id") if "industry_id" in adv_non_id else None
+    industry_updated = 0
+
     for row in local_advs:
         local_id = row[0]
         data = list(row[1:])
         website = data[adv_website_idx] if adv_website_idx is not None else None
         name = data[adv_name_idx]
 
-        if website:
-            if website in existing_adv_website:
-                local_to_merged_adv[local_id] = existing_adv_website[website]
-                continue
-        else:
-            if name in existing_adv_name:
-                local_to_merged_adv[local_id] = existing_adv_name[name]
-                continue
+        matched_id = None
+        if website and website in existing_adv_website:
+            matched_id = existing_adv_website[website]
+        elif not website and name in existing_adv_name:
+            matched_id = existing_adv_name[name]
+
+        if matched_id is not None:
+            local_to_merged_adv[local_id] = matched_id
+            # Propagate industry_id if local has a more specific value (not 기타/1)
+            if adv_industry_idx is not None:
+                local_industry = data[adv_industry_idx]
+                if local_industry and local_industry != 1:
+                    merged_industry = mc.execute(
+                        "SELECT industry_id FROM advertisers WHERE id = ?", (matched_id,)
+                    ).fetchone()
+                    if merged_industry and (merged_industry[0] is None or merged_industry[0] == 1):
+                        mc.execute(
+                            "UPDATE advertisers SET industry_id = ? WHERE id = ?",
+                            (local_industry, matched_id)
+                        )
+                        industry_updated += 1
+            continue
 
         mc.execute(f"INSERT INTO advertisers ({adv_col_str}) VALUES ({adv_placeholders})", data)
         new_id = mc.lastrowid
@@ -137,6 +154,7 @@ def merge():
     merged.commit()
     after = count(merged, "advertisers")
     print(f"  Added {after - before} new advertisers ({before} -> {after})")
+    print(f"  Updated {industry_updated} existing advertisers with more specific industry_id")
 
     # ── 1-2) campaigns: natural key = advertiser_id + first_seen_month + product_service ──
     print("\n=== campaigns ===")
@@ -638,7 +656,9 @@ def _post_merge_cleanup(db_path: str):
     """
     import re
     GARBAGE_PATTERNS = [
+        r"^라이브러리$",
         r"^라이브러리 ID:",
+        r"^Library$",
         r"^Library ID:",
         r"^Learn More$",
         r"^Shop Now$",
@@ -677,6 +697,20 @@ def _post_merge_cleanup(db_path: str):
         cur.execute(f"DELETE FROM campaigns WHERE advertiser_id IN ({ph})", garbage_ids)
         cur.execute(f"DELETE FROM advertisers WHERE id IN ({ph})", garbage_ids)
         print(f"\n[cleanup] 쓰레기 광고주 {len(garbage_ids)}개 삭제")
+
+    # 1-1. 원본 광고주명 필드도 화면/다운로드에서 다시 새지 않도록 비운다.
+    rows = cur.execute(
+        "SELECT id, advertiser_name_raw FROM ad_details "
+        "WHERE advertiser_name_raw IS NOT NULL AND advertiser_name_raw != ''"
+    ).fetchall()
+    garbage_raw_ids = [r[0] for r in rows if is_garbage(r[1])]
+    if garbage_raw_ids:
+        ph = ",".join("?" * len(garbage_raw_ids))
+        cur.execute(
+            f"UPDATE ad_details SET advertiser_name_raw = NULL WHERE id IN ({ph})",
+            garbage_raw_ids,
+        )
+        print(f"[cleanup] 쓰레기 원본 광고주명 {len(garbage_raw_ids)}개 NULL 처리")
 
     # 2. 절대 로컬 경로 이미지 → NULL
     cur.execute("""
@@ -737,9 +771,113 @@ def _post_merge_cleanup(db_path: str):
         print("  [OK] 품질 검사 통과 - 배포 가능")
     print('='*50)
 
+    # 6. 업종/제품 자동 분류 (기타 광고주 키워드 분류 + 제품카테고리 전파)
+    _auto_classify(conn, cur)
+
     conn.commit()
     conn.execute("VACUUM")
     conn.close()
+
+
+def _auto_classify(conn, cur):
+    """머지 후 자동 업종 분류 + 제품카테고리 전파.
+
+    - 키워드 기반으로 기타(industry_id=1) 광고주를 적절한 업종으로 재분류
+    - 업종별 기본 product_category_id를 미분류 ad_details에 전파
+    """
+    import sys, os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    try:
+        from scripts.reclassify_gita_advertisers import classify_advertiser
+    except ImportError:
+        print("[auto_classify] reclassify_gita_advertisers import 실패 — 건너뜀")
+        return
+
+    # ── 6-1) 업종 키워드 분류 ──
+    rows = cur.execute(
+        "SELECT id, name, website, brand_name FROM advertisers WHERE industry_id = 1 OR industry_id IS NULL"
+    ).fetchall()
+    updated_industry = 0
+    for adv_id, name, website, brand_name in rows:
+        new_id = classify_advertiser(adv_id, name, website, brand_name)
+        if new_id and new_id != 1:
+            cur.execute("UPDATE advertisers SET industry_id = ? WHERE id = ?", (new_id, adv_id))
+            updated_industry += 1
+    if updated_industry:
+        print(f"[auto_classify] 업종 재분류: {updated_industry}개")
+
+    # ── 6-2) 업종 → 제품카테고리 전파 ──
+    # industry_id → (top-level product_category name) 매핑
+    INDUSTRY_TO_PRODUCT_CAT = {
+        2: "소프트웨어/SaaS",     # IT/통신
+        3: "자동차",               # 자동차
+        4: "금융서비스",           # 금융/보험
+        5: "식품/음료",            # 식품/음료
+        6: "뷰티/화장품",          # 뷰티/화장품
+        7: "패션",                 # 패션/의류
+        8: "유통/쇼핑",            # 유통/이커머스
+        9: "건강/의료",            # 제약/헬스케어
+        10: "가전/전자",           # 가전/전자
+        11: "부동산",              # 건설/부동산
+        12: "게임",                # 게임
+        13: "엔터테인먼트",        # 엔터테인먼트
+        14: "여행/레저",           # 여행/항공
+        15: "교육",                # 교육
+        16: "스포츠/아웃도어",     # 스포츠/아웃도어 (없으면 생활서비스)
+        17: "생활서비스",          # 가구/인테리어
+        18: "식품/음료",           # 주류
+        19: "생활서비스",          # 공공기관
+        20: "생활서비스",          # 반려동물
+        21: "생활서비스",          # 생활용품
+    }
+    # product_category name → id
+    cat_rows = cur.execute(
+        "SELECT id, name FROM product_categories WHERE parent_id IS NULL"
+    ).fetchall()
+    cat_name_to_id = {name: pid for pid, name in cat_rows}
+
+    updated_cat = 0
+    for industry_id, cat_name in INDUSTRY_TO_PRODUCT_CAT.items():
+        cat_id = cat_name_to_id.get(cat_name)
+        if not cat_id:
+            continue
+        # Update ad_details that have no product_category_id but whose advertiser is in this industry
+        cur.execute("""
+            UPDATE ad_details
+            SET product_category_id = ?
+            WHERE product_category_id IS NULL
+              AND advertiser_id IN (
+                SELECT id FROM advertisers WHERE industry_id = ?
+              )
+        """, (cat_id, industry_id))
+        updated_cat += cur.rowcount
+    if updated_cat:
+        print(f"[auto_classify] 제품카테고리 전파: {updated_cat}개 ad_details")
+
+    conn.commit()
+
+    # ── 6-3) AI 분류 (기타 잔류분, OpenRouter 사용) ──
+    remaining_gita = cur.execute(
+        "SELECT COUNT(*) FROM advertisers WHERE industry_id = 1 OR industry_id IS NULL"
+    ).fetchone()[0]
+    if remaining_gita > 0:
+        print(f"[auto_classify] AI 분류 시작: {remaining_gita}개 기타 광고주...")
+        import subprocess as _subprocess
+        db_abs = os.path.abspath(conn.execute("PRAGMA database_list").fetchone()[2] or db_path)
+        result = _subprocess.run(
+            [sys.executable, os.path.join(ROOT, "scripts", "classify_industries.py"),
+             "--db", db_abs],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            cwd=ROOT,
+        )
+        if result.returncode == 0:
+            # 완료 후 결과 재확인
+            after_gita = conn.execute(
+                "SELECT COUNT(*) FROM advertisers WHERE industry_id = 1 OR industry_id IS NULL"
+            ).fetchone()[0]
+            print(f"[auto_classify] AI 분류 완료: {remaining_gita} -> {after_gita}개 기타 남음")
+        else:
+            print(f"[auto_classify] AI 분류 실패 (no OPENROUTER_API_KEY?): {result.stderr[:200]}")
 
 
 if __name__ == "__main__":

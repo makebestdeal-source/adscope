@@ -346,6 +346,34 @@ async def _campaign_chain():
 # ──────────────────────────────────────────────
 # 메인 실행
 # ──────────────────────────────────────────────
+async def phase3_r2_upload():
+    """크롤 후 신규 이미지를 Cloudflare R2에 자동 업로드."""
+    logger.info("=" * 60)
+    logger.info("  PHASE 3: R2 Image Upload (new files only)")
+    logger.info("=" * 60)
+    import subprocess
+    proc = await asyncio.create_subprocess_exec(
+        sys.executable, str(Path(_root) / "scripts" / "upload_images_to_r2.py"),
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.STDOUT,
+        cwd=_root,
+    )
+    lines_shown = 0
+    while True:
+        line = await proc.stdout.readline()
+        if not line:
+            break
+        decoded = line.decode("utf-8", errors="replace").rstrip()
+        if decoded and lines_shown < 20:
+            logger.info(f"[r2] {decoded}")
+            lines_shown += 1
+    await proc.wait()
+    if proc.returncode != 0:
+        logger.warning(f"R2 upload exited with code {proc.returncode} (non-fatal)")
+    else:
+        logger.info("R2 image upload completed")
+
+
 async def main():
     from database import init_db
     await init_db()
@@ -374,12 +402,21 @@ async def main():
         pp_results = []
     pp_elapsed = time.time() - t2
 
+    # Phase 3: R2 Image Upload (신규 이미지 자동 업로드)
+    t3 = time.time()
+    try:
+        await phase3_r2_upload()
+    except Exception as e:
+        logger.error(f"Phase 3 (R2 upload) failed: {str(e)[:200]}")
+    r2_elapsed = time.time() - t3
+
     # ── 최종 결과 ──
     total_elapsed = time.time() - overall_start
     logger.info("=" * 70)
     logger.info(f"  ALL TASKS COMPLETED ({total_elapsed:.0f}s total)")
     logger.info(f"  Phase 1 (crawl): {crawl_elapsed:.0f}s")
     logger.info(f"  Phase 2 (post-process): {pp_elapsed:.0f}s")
+    logger.info(f"  Phase 3 (R2 upload): {r2_elapsed:.0f}s")
     logger.info("=" * 70)
 
     ok_count = sum(1 for r in pp_results if isinstance(r, dict) and r.get("status") == "ok")
