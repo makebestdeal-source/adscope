@@ -18,10 +18,57 @@ export interface AtlasCoords {
 export interface ParsedImagePath {
   /** 서버에서 접근 가능한 이미지 URL */
   url: string;
+  candidates: string[];
   /** 아틀라스인 경우 좌표 정보, 아닌 경우 null */
   atlas: AtlasCoords | null;
   /** 아틀라스 여부 */
   isAtlas: boolean;
+}
+
+function encodePath(path: string): string {
+  return path.split("/").map((part) => encodeURIComponent(part)).join("/");
+}
+
+/** Unicode replacement char (U+FFFD): DB에서 한글 파일명이 깨져 저장될 때 나타남 */
+const REPLACEMENT_CHAR_CODE = 0xfffd;
+
+function hasCorruptedChars(s: string): boolean {
+  for (let i = 0; i < s.length; i++) {
+    if (s.charCodeAt(i) === REPLACEMENT_CHAR_CODE) return true;
+  }
+  return false;
+}
+
+export function imageUrlCandidates(path: string | null | undefined): string[] {
+  if (!path) return [];
+
+  const normalized = path.replace(/\\/g, "/");
+  const cleanPath = normalized.split("#", 1)[0].replace(/^\/+/, "");
+  const r2Base = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || "https://pub-212e20fe661343f2816c81f3ebc9b26b.r2.dev";
+  const urls: string[] = [];
+
+  if (cleanPath.startsWith("http://") || cleanPath.startsWith("https://")) {
+    urls.push(cleanPath);
+  } else if (cleanPath.startsWith("stored_images/")) {
+    const inner = cleanPath.slice("stored_images/".length);
+    const corrupted = hasCorruptedChars(inner);
+    if (!corrupted) {
+      // 정상 경로: R2 우선, 백엔드 fallback
+      if (r2Base) urls.push(`${r2Base.replace(/\/$/, "")}/${encodePath(inner)}`);
+      urls.push(`/images/${encodePath(inner)}`);
+    } else {
+      // 한글 파일명 깨짐: 백엔드 우선(Railway 볼륨), R2는 마지막 시도
+      urls.push(`/images/${encodePath(inner)}`);
+      if (r2Base) urls.push(`${r2Base.replace(/\/$/, "")}/${encodePath(inner)}`);
+    }
+  } else if (cleanPath.startsWith("images/") || cleanPath.startsWith("screenshots/")) {
+    urls.push(`/${encodePath(cleanPath)}`);
+  } else {
+    if (r2Base) urls.push(`${r2Base.replace(/\/$/, "")}/${encodePath(cleanPath)}`);
+    urls.push(`/images/${encodePath(cleanPath)}`);
+  }
+
+  return Array.from(new Set(urls));
 }
 
 /**
@@ -45,21 +92,11 @@ export function parseImagePath(path: string | null | undefined): ParsedImagePath
     }
   }
 
-  const R2_BASE = "https://pub-212e20fe661343f2816c81f3ebc9b26b.r2.dev";
-
-  let url: string;
-  if (cleanPath.startsWith("stored_images/")) {
-    url = R2_BASE + "/" + cleanPath.slice("stored_images/".length);
-  } else if (cleanPath.startsWith("http://") || cleanPath.startsWith("https://")) {
-    url = cleanPath;
-  } else if (cleanPath.startsWith("screenshots/")) {
-    url = "/" + cleanPath;
-  } else {
-    url = R2_BASE + "/" + cleanPath;
-  }
+  const candidates = imageUrlCandidates(cleanPath);
 
   return {
-    url,
+    url: candidates[0] ?? "",
+    candidates,
     atlas: atlasCoords,
     isAtlas: atlasCoords !== null,
   };

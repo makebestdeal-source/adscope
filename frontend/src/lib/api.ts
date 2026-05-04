@@ -423,6 +423,7 @@ export interface GalleryItem {
   search_keyword?: string | null;
   channel_raw?: string | null;
   creative_image_path: string | null;
+  screenshot_path?: string | null;
   url: string | null;
   display_url: string | null;
   brand: string | null;
@@ -515,6 +516,7 @@ export interface IndustryInfo {
   name: string;
   avg_cpc_min: number | null;
   avg_cpc_max: number | null;
+  advertiser_count: number;
 }
 
 export interface LandscapeAdvertiser {
@@ -751,6 +753,7 @@ export const api = {
 
   getGallery: (params?: {
     channel?: string;
+    channels?: string[] | string;
     advertiser?: string;
     date_from?: string;
     date_to?: string;
@@ -760,6 +763,12 @@ export const api = {
   }) => {
     const qs = new URLSearchParams();
     if (params?.channel) qs.set("channel", params.channel);
+    if (params?.channels) {
+      qs.set(
+        "channels",
+        Array.isArray(params.channels) ? params.channels.join(",") : params.channels
+      );
+    }
     if (params?.advertiser) qs.set("advertiser", params.advertiser);
     if (params?.date_from) qs.set("date_from", params.date_from);
     if (params?.date_to) qs.set("date_to", params.date_to);
@@ -772,6 +781,7 @@ export const api = {
 
   getPublicGallery: (params?: {
     channel?: string;
+    channels?: string[] | string;
     advertiser?: string;
     date_from?: string;
     date_to?: string;
@@ -781,6 +791,12 @@ export const api = {
   }) => {
     const qs = new URLSearchParams();
     if (params?.channel) qs.set("channel", params.channel);
+    if (params?.channels) {
+      qs.set(
+        "channels",
+        Array.isArray(params.channels) ? params.channels.join(",") : params.channels
+      );
+    }
     if (params?.advertiser) qs.set("advertiser", params.advertiser);
     if (params?.date_from) qs.set("date_from", params.date_from);
     if (params?.date_to) qs.set("date_to", params.date_to);
@@ -966,6 +982,9 @@ export const api = {
 
   adminAdvertiserMap: (token: string, limit = 100) =>
     fetchApi<AdvertiserMapResponse>(`/admin/advertiser-map?limit=${limit}`, { headers: { Authorization: `Bearer ${token}` } }),
+
+  adminAccessLogs: (token: string, days = 7, limit = 200) =>
+    fetchApi<AccessLogResponse>(`/admin/access-logs?days=${days}&limit=${limit}`, { headers: { Authorization: `Bearer ${token}` } }),
 
 
   adminCollectSocial: (token: string) =>
@@ -1749,6 +1768,35 @@ export interface AdminStats {
   latest_crawl: string | null;
   db_size_mb: number;
   server_time: string;
+}
+
+export interface AccessLogItem {
+  id: number;
+  ts: string | null;
+  method: string;
+  path: string;
+  query_string: string | null;
+  status_code: number;
+  duration_ms: number;
+  ip_address: string | null;
+  user_agent: string | null;
+  referer: string | null;
+  accept_language: string | null;
+  is_bot: boolean;
+}
+
+export interface AccessLogResponse {
+  days: number;
+  summary: {
+    total_hits: number;
+    unique_ips: number;
+    bot_hits: number;
+    error_hits: number;
+  };
+  top_paths: Array<{ path: string; hits: number }>;
+  top_referrers: Array<{ referer: string; hits: number }>;
+  top_ips: Array<{ ip_address: string | null; hits: number }>;
+  recent: AccessLogItem[];
 }
 
 export interface AdminChannel {

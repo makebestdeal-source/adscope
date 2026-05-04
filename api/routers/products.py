@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from api.deps import get_current_user, require_paid
+from api.services.advertiser_names import display_market_advertiser_name
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -307,9 +308,8 @@ async def get_category_detail(
         name=category.name,
         parent_id=category.parent_id,
         industry_id=category.industry_id,
-        # direct_adv/direct_ad already include children via _get_category_and_children
-        advertiser_count=direct_adv,
-        ad_count=direct_ad,
+        advertiser_count=total_adv_count + direct_adv,
+        ad_count=total_ad_count + direct_ad,
         est_spend=round(est_spend, 2),
         children=child_items,
     )
@@ -431,10 +431,13 @@ async def get_category_advertisers(
         adv = advertisers.get(aid)
         if not adv:
             continue
+        display_name = display_market_advertiser_name(adv.name, adv.brand_name)
+        if not display_name:
+            continue
         items.append(
             ProductCategoryAdvertiserOut(
                 advertiser_id=aid,
-                advertiser_name=adv.name,
+                advertiser_name=display_name,
                 brand_name=adv.brand_name,
                 ad_count=stats["ad_count"],
                 est_spend=round(spend_map.get(aid, 0.0), 2),
@@ -475,43 +478,68 @@ async def shopping_insight(
         .limit(15)
     )
     cat_rows = (await db.execute(cat_q)).all()
+    top_cat_names = [row.product_category for row in cat_rows]
+
+    # Batch: advertiser_id per category
+    cat_adv_q = (
+        select(
+            AdDetail.product_category,
+            AdDetail.advertiser_id,
+        )
+        .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+        .where(
+            AdDetail.product_category.in_(top_cat_names),
+            AdDetail.advertiser_id.isnot(None),
+            AdSnapshot.captured_at >= cutoff_naive,
+        )
+        .distinct()
+    )
+    cat_adv_rows = (await db.execute(cat_adv_q)).all()
+    # {category: set(advertiser_ids)}
+    cat_adv_map: dict[str, set[int]] = {}
+    for r in cat_adv_rows:
+        cat_adv_map.setdefault(r[0], set()).add(r[1])
+
+    # Batch: spend per advertiser (all top-cat advertisers at once)
+    all_adv_ids = {aid for ids in cat_adv_map.values() for aid in ids}
+    spend_per_adv: dict[int, float] = {}
+    if all_adv_ids:
+        spend_batch = await db.execute(
+            select(
+                Campaign.advertiser_id,
+                func.sum(SpendEstimate.est_daily_spend).label("total"),
+            )
+            .join(SpendEstimate, SpendEstimate.campaign_id == Campaign.id)
+            .where(
+                Campaign.advertiser_id.in_(list(all_adv_ids)),
+                SpendEstimate.date >= cutoff_naive,
+            )
+            .group_by(Campaign.advertiser_id)
+        )
+        for r in spend_batch.all():
+            spend_per_adv[r[0]] = r[1] or 0.0
+
+    # Batch: previous-period ad counts per category
+    prev_q = (
+        select(
+            AdDetail.product_category,
+            func.count(AdDetail.id).label("cnt"),
+        )
+        .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+        .where(
+            AdDetail.product_category.in_(top_cat_names),
+            AdSnapshot.captured_at >= prev_cutoff,
+            AdSnapshot.captured_at < cutoff_naive,
+        )
+        .group_by(AdDetail.product_category)
+    )
+    prev_map: dict[str, int] = {r[0]: r[1] for r in (await db.execute(prev_q)).all()}
 
     top_categories = []
     for row in cat_rows:
-        # Spend for this category
-        adv_ids_q = (
-            select(func.distinct(AdDetail.advertiser_id))
-            .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
-            .where(
-                AdDetail.product_category == row.product_category,
-                AdDetail.advertiser_id.isnot(None),
-                AdSnapshot.captured_at >= cutoff_naive,
-            )
-        )
-        adv_ids = [r[0] for r in (await db.execute(adv_ids_q)).all()]
-        spend = 0.0
-        if adv_ids:
-            spend_r = await db.execute(
-                select(func.sum(SpendEstimate.est_daily_spend))
-                .join(Campaign, SpendEstimate.campaign_id == Campaign.id)
-                .where(
-                    Campaign.advertiser_id.in_(adv_ids),
-                    SpendEstimate.date >= cutoff_naive,
-                )
-            )
-            spend = spend_r.scalar() or 0.0
-
-        # Previous period ad count for growth
-        prev_q = (
-            select(func.count(AdDetail.id))
-            .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
-            .where(
-                AdDetail.product_category == row.product_category,
-                AdSnapshot.captured_at >= prev_cutoff,
-                AdSnapshot.captured_at < cutoff_naive,
-            )
-        )
-        prev_count = (await db.execute(prev_q)).scalar() or 0
+        adv_ids = cat_adv_map.get(row.product_category, set())
+        spend = sum(spend_per_adv.get(aid, 0.0) for aid in adv_ids)
+        prev_count = prev_map.get(row.product_category, 0)
         growth = None
         if prev_count > 0:
             growth = round((row.ad_count - prev_count) / prev_count * 100, 1)

@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from api.deps import get_current_user, require_paid
-from sqlalchemy import func, select
+from api.services.advertiser_names import display_market_advertiser_name
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
@@ -34,9 +35,44 @@ router = APIRouter(
 
 @router.get("", response_model=list[IndustryOut])
 async def list_industries(db: AsyncSession = Depends(get_db)):
-    """List all industries."""
+    """List all industries with advertiser counts (last 30 days)."""
+    cutoff = datetime.utcnow() - timedelta(days=30)
+
     result = await db.execute(select(Industry).order_by(Industry.name))
-    return result.scalars().all()
+    industries = result.scalars().all()
+
+    if not industries:
+        return []
+
+    # Batch: count distinct advertisers with ads in last 30 days, per industry
+    count_result = await db.execute(
+        select(
+            Advertiser.industry_id,
+            func.count(func.distinct(AdDetail.advertiser_id)).label("cnt"),
+        )
+        .join(AdDetail, AdDetail.advertiser_id == Advertiser.id)
+        .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+        .where(
+            Advertiser.industry_id.in_([i.id for i in industries]),
+            AdSnapshot.captured_at >= cutoff,
+            or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected"),
+        )
+        .group_by(Advertiser.industry_id)
+    )
+    count_map: dict[int, int] = {row[0]: row[1] for row in count_result.all()}
+
+    items = []
+    for ind in industries:
+        items.append(
+            IndustryOut(
+                id=ind.id,
+                name=ind.name,
+                avg_cpc_min=ind.avg_cpc_min,
+                avg_cpc_max=ind.avg_cpc_max,
+                advertiser_count=count_map.get(ind.id, 0),
+            )
+        )
+    return items
 
 
 async def _build_landscape_advertisers(
@@ -67,6 +103,7 @@ async def _build_landscape_advertisers(
         .where(
             AdDetail.advertiser_id.in_(adv_ids),
             AdSnapshot.captured_at >= cutoff,
+            or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected"),
         )
         .group_by(AdDetail.advertiser_id)
     )
@@ -86,6 +123,7 @@ async def _build_landscape_advertisers(
         .where(
             AdDetail.advertiser_id.in_(adv_ids),
             AdSnapshot.captured_at >= cutoff,
+            or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected"),
         )
     )
     total_ads = total_ads_result.scalar() or 0
@@ -112,13 +150,18 @@ async def _build_landscape_advertisers(
     for adv in advertisers:
         stats = ad_stats_map.get(adv.id, {"ad_count": 0, "channels": []})
         ad_count = stats["ad_count"]
+        if ad_count <= 0:
+            continue
+        display_name = display_market_advertiser_name(adv.name, adv.brand_name)
+        if not display_name:
+            continue
         sov = (ad_count / total_ads * 100) if total_ads > 0 else 0.0
         est_spend = spend_map.get(adv.id, 0.0)
 
         items.append(
             IndustryAdvertiserOut(
                 id=adv.id,
-                name=adv.name,
+                name=display_name,
                 brand_name=adv.brand_name,
                 annual_revenue=adv.annual_revenue,
                 employee_count=adv.employee_count,

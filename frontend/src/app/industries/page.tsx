@@ -1,17 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { api, IndustryInfo, IndustryLandscape } from "@/lib/api";
+import { api, IndustryInfo } from "@/lib/api";
 import Link from "next/link";
 
 function IndustryCard({ industry }: { industry: IndustryInfo }) {
-  const { data: landscape } = useQuery({
-    queryKey: ["industryLandscape", industry.id],
-    queryFn: () => api.getIndustryLandscapeFull(industry.id, 30),
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const advertiserCount = landscape?.advertiser_count ?? 0;
+  const advertiserCount = industry.advertiser_count ?? 0;
   const cpcRange =
     industry.avg_cpc_min != null && industry.avg_cpc_max != null
       ? `${industry.avg_cpc_min.toLocaleString()} ~ ${industry.avg_cpc_max.toLocaleString()}원`

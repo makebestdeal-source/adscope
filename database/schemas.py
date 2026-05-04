@@ -27,6 +27,7 @@ class IndustryBase(BaseModel):
 
 class IndustryOut(IndustryBase):
     id: int
+    advertiser_count: int = Field(default=0, description="해당 업종 광고주 수 (최근 30일 기준)")
     model_config = ConfigDict(from_attributes=True)
 
 
