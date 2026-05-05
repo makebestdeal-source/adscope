@@ -728,7 +728,18 @@ class MetaLibraryCrawler(BaseCrawler):
                 advertiser_name = item.get("advertiser_name")
                 ad_text = item.get("ad_text") or advertiser_name or "meta_ad"
                 url = item.get("url")
-                # URL 없으면 파이프라인에서 필터됨 (가짜 facebook.com URL 생성하지 않음)
+                # URL 없으면 redirect_urls에서 fallback 추출 (l.facebook.com/l.php?u=)
+                if not url and redirect_urls:
+                    for rurl in redirect_urls:
+                        try:
+                            from urllib.parse import parse_qs as _pqs, urlparse as _up
+                            parsed = _up(rurl)
+                            actual = _pqs(parsed.query).get("u", [None])[0]
+                            if actual and actual.startswith("http") and "facebook.com" not in actual:
+                                url = actual
+                                break
+                        except Exception:
+                            pass
 
                 signature = (advertiser_name, ad_text)
                 if signature in seen:

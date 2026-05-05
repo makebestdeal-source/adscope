@@ -266,8 +266,16 @@ class GoogleGDNCrawler(BaseCrawler):
             advertiser = cr.get("advertiser_name")
             adv_url = _normalize_external_landing_url(cr.get("landing_url"))
             ad_text = _clean_transparency_text(cr.get("text_content"))
-            if not adv_url or not ad_text:
+            # IMAGE 포맷: landing_url/text 없이 광고주명만 있어도 수집 허용
+            # (archive_missing_landing_url: -0.05만 차감, creative_id로 지문화)
+            image_url = cr.get("image_url")
+            if not advertiser:
                 continue
+            if not adv_url and not image_url and not ad_text:
+                continue
+            # text fallback: advertiser name으로 대체
+            if not ad_text:
+                ad_text = advertiser
 
             view_count = cr.get("view_count")
 
