@@ -27,13 +27,13 @@ const CHANNELS = [
 const CAPABILITIES = [
   {
     title: "광고 소재 모니터링",
-    desc: "9개 디지털 광고 채널에서 광고 크리에이티브를 매일 자동 수집합니다. 페르소나 기반 접촉 측정과 카탈로그 수집을 병행하여 실제 소비자가 접하는 광고를 포착합니다.",
+    desc: "9개 디지털 광고 채널에서 광고 크리에이티브를 매일 자동 수집합니다. 공개 광고 데이터와 수집 채널 정보를 바탕으로 실제 광고 소재를 확인합니다.",
     icon: "gallery",
     color: "bg-indigo-50 text-indigo-600",
   },
   {
     title: "경쟁사 분석",
-    desc: "산업별 현황, 제품/서비스 카테고리, 경쟁사 비교, 광고주 트렌드를 통해 시장 전체를 조망합니다. SOV(점유율) 분석과 페르소나 접촉률로 경쟁 포지션을 파악합니다.",
+    desc: "산업별 현황, 제품/서비스 카테고리, 경쟁사 비교, 광고주 트렌드를 통해 시장 전체를 조망하고 경쟁 포지션을 파악합니다.",
     icon: "landscape",
     color: "bg-emerald-50 text-emerald-600",
   },
@@ -45,29 +45,19 @@ const CAPABILITIES = [
   },
   {
     title: "소셜 인사이트",
-    desc: "브랜드 공식 YouTube/Instagram 채널의 콘텐츠, 구독자, 인게이지먼트를 추적합니다. 소셜 채널 분석, 브랜드 버즈, 캠페인 효과를 종합적으로 분석합니다.",
+    desc: "브랜드 공식 YouTube/Instagram 채널의 콘텐츠, 구독자, 인게이지먼트 흐름을 확인합니다. 소셜 소재와 공개 소셜 메뉴 중심으로 제공합니다.",
     icon: "social",
     color: "bg-rose-50 text-rose-600",
   },
-  {
-    title: "쇼핑 분석",
-    desc: "네이버 쇼핑 파워링크 광고를 추적하고, 카테고리별 광고 분포와 프로모션 트렌드를 분석합니다. 커머스 광고 전략 수립에 필요한 쇼핑 인사이트를 제공합니다.",
-    icon: "shopping",
-    color: "bg-violet-50 text-violet-600",
-  },
-  {
-    title: "매체별 광고비 추정",
-    desc: "CPC 기반 추정, 카탈로그 역추산, 메타시그널 보정, 실집행 벤치마크의 다층 방식으로 채널별 광고비를 역추정합니다. 광고비 추이와 매체 믹스를 분석합니다.",
-    icon: "spend",
-    color: "bg-sky-50 text-sky-600",
-  },
 ];
+
+const LIVE_CAPABILITIES = CAPABILITIES;
 
 /* ── Menu Structure ── */
 const MENU_GROUPS = [
   {
     group: "메인",
-    items: ["보고서", "나의광고주", "대시보드", "광고주", "캠페인", "광고소재", "소셜소재", "매체별광고비"],
+    items: ["보고서", "나의광고주", "광고주", "캠페인", "광고소재", "소셜소재"],
   },
   {
     group: "키워드분석",
@@ -78,18 +68,12 @@ const MENU_GROUPS = [
     items: ["산업별현황", "제품서비스현황", "경쟁사비교", "광고주트렌드"],
   },
   {
-    group: "쇼핑분석",
-    items: ["쇼핑인사이트"],
-  },
-  {
     group: "소셜인사이트",
-    items: ["소셜채널분석", "브랜드버즈", "캠페인효과"],
-  },
-  {
-    group: "분석도구",
-    items: ["SOV분석", "페르소나접촉률", "타겟오디언스"],
+    items: ["소셜채널분석", "브랜드버즈"],
   },
 ];
+
+const LIVE_MENU_GROUPS = MENU_GROUPS;
 
 function CapabilityIcon({ name }: { name: string }) {
   const props = {
@@ -168,8 +152,8 @@ export default function AboutPage() {
           마케팅 의사결정에 필요한 경쟁 인텔리전스를 제공합니다.
         </p>
         <p className="text-base text-gray-400 max-w-xl mx-auto">
-          광고 분석 + 소셜 분석 + 쇼핑 분석, 3축 통합 분석으로
-          디지털 마케팅 시장의 전체 그림을 파악하세요.
+          광고주, 캠페인, 광고 소재, 키워드와 시장/소셜 공개 메뉴를 중심으로
+          디지털 광고 시장의 흐름을 파악하세요.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
           <Link
@@ -191,10 +175,10 @@ export default function AboutPage() {
             서비스 소개서 다운로드
           </a>
           <Link
-            href="/"
+            href="/gallery"
             className="px-7 py-3.5 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-adscope-400 hover:text-adscope-600 transition-colors"
           >
-            대시보드
+            광고 소재 보기
           </Link>
         </div>
       </section>
@@ -236,7 +220,7 @@ export default function AboutPage() {
           ))}
         </div>
         <p className="text-xs text-gray-400 mt-4 text-center">
-          * 페르소나 기반 접촉 측정 + 카탈로그 수집 병행으로 실제 소비자가 접하는 광고를 포착합니다.
+          * 공개 광고 카탈로그와 채널별 수집 데이터를 기준으로 소재를 정리합니다.
         </p>
       </section>
 
@@ -246,10 +230,10 @@ export default function AboutPage() {
           주요 기능
         </h2>
         <p className="text-gray-500 text-center mb-10">
-          광고/소셜/쇼핑 3축 통합 분석으로 디지털 마케팅 인텔리전스를 제공합니다.
+          현재 공개 메뉴 기준의 광고 인텔리전스 기능을 제공합니다.
         </p>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {CAPABILITIES.map((f) => (
+          {LIVE_CAPABILITIES.map((f) => (
             <div
               key={f.title}
               className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md hover:border-adscope-200 transition-all"
@@ -266,13 +250,13 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── 3-Axis Analysis ── */}
+      {/* ── Live Service Scope ── */}
       <section className="mb-20">
         <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
-          3축 통합 분석
+          공개 서비스 영역
         </h2>
         <p className="text-gray-500 text-center mb-10">
-          광고, 소셜, 쇼핑 데이터를 결합하여 마케팅 시장의 전체 그림을 제공합니다.
+          로그인 일반 사용자에게 보이는 공개 메뉴 기준으로 안내합니다.
         </p>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-6 border border-indigo-100/50">
@@ -283,13 +267,13 @@ export default function AboutPage() {
                 <path d="M21 15l-5-5L5 21" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">광고 분석</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">광고 소재</h3>
             <ul className="space-y-1.5 text-sm text-gray-600">
               <li>9개 채널 광고 소재 수집/분류</li>
-              <li>광고주/캠페인/소재 3단계 분석</li>
-              <li>키워드 역추적 / 광고 랜드스케이프</li>
-              <li>매체별 광고비 추정 / SOV 분석</li>
-              <li>경쟁사 비교 / 산업별 현황</li>
+              <li>광고주/캠페인/소재 탐색</li>
+              <li>이미지 소재 갤러리</li>
+              <li>검색광고 키워드 소재 갤러리</li>
+              <li>채널/광고주/기간별 필터</li>
             </ul>
           </div>
           <div className="bg-gradient-to-br from-rose-50 to-pink-50 rounded-2xl p-6 border border-rose-100/50">
@@ -299,13 +283,13 @@ export default function AboutPage() {
                 <path d="M13.73 21a2 2 0 01-3.46 0" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">소셜 분석</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">키워드/시장</h3>
             <ul className="space-y-1.5 text-sm text-gray-600">
-              <li>브랜드 YouTube/Instagram 모니터링</li>
-              <li>소셜 소재 갤러리 / 콘텐츠 분석</li>
-              <li>소셜 채널 분석 / 구독자 추적</li>
-              <li>브랜드 버즈 / 인게이지먼트 분석</li>
-              <li>캠페인 효과 측정</li>
+              <li>키워드 역추적</li>
+              <li>광고 랜드스케이프</li>
+              <li>광고비 추이</li>
+              <li>산업별 현황</li>
+              <li>경쟁사 비교 / 광고주 트렌드</li>
             </ul>
           </div>
           <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-100/50">
@@ -316,13 +300,13 @@ export default function AboutPage() {
                 <path d="M16 10a4 4 0 0 1-8 0" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">쇼핑 분석</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">소셜 공개 메뉴</h3>
             <ul className="space-y-1.5 text-sm text-gray-600">
-              <li>네이버 쇼핑 파워링크 추적</li>
-              <li>카테고리별 광고 분포 분석</li>
-              <li>쇼핑 키워드 경쟁 분석</li>
-              <li>프로모션 트렌드 파악</li>
-              <li>커머스 광고 전략 인사이트</li>
+              <li>소셜 소재 갤러리</li>
+              <li>소셜 채널 분석</li>
+              <li>콘텐츠 성과</li>
+              <li>브랜드 버즈</li>
+              <li>추가 심층 기능은 업데이트 후 오픈</li>
             </ul>
           </div>
         </div>
@@ -337,7 +321,7 @@ export default function AboutPage() {
           목적에 따라 체계적으로 구성된 분석 메뉴를 제공합니다.
         </p>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {MENU_GROUPS.map((g) => (
+          {LIVE_MENU_GROUPS.map((g) => (
             <div key={g.group} className="bg-white border border-gray-200 rounded-xl p-5">
               <h3 className="text-sm font-bold text-adscope-600 mb-3 uppercase tracking-wide">
                 {g.group}
@@ -375,12 +359,10 @@ export default function AboutPage() {
             <p className="text-xs text-gray-400 mt-1">연간 490,000원 (17% 할인)</p>
             <ul className="mt-4 space-y-1.5 text-sm text-gray-600">
               <li>9개 채널 광고 소재 열람</li>
-              <li>광고주 리포트 / 광고비 분석</li>
-              <li>시장 분석 / 경쟁사 비교</li>
-              <li>키워드 역추적 / 랜드스케이프</li>
-              <li>쇼핑 인사이트</li>
-              <li>SOV 분석 / 페르소나 접촉률</li>
-              <li>보고서 생성 (광고 정보)</li>
+              <li>광고주 / 캠페인 / 광고 소재 열람</li>
+              <li>검색광고 키워드 소재 조회</li>
+              <li>키워드 / 시장 / 소셜 공개 메뉴</li>
+              <li>보고서와 즐겨찾기 등 기본 메뉴</li>
             </ul>
           </div>
           <div className="bg-adscope-600 text-white rounded-xl p-6">
@@ -390,18 +372,15 @@ export default function AboutPage() {
                 추천
               </span>
             </div>
-            <p className="text-sm text-adscope-100 mb-3">광고 + 소셜 + 쇼핑 통합 분석</p>
+            <p className="text-sm text-adscope-100 mb-3">공개 메뉴 기준 이용</p>
             <p className="text-3xl font-bold">
               99,000<span className="text-sm font-normal text-adscope-200">원/월</span>
             </p>
             <p className="text-xs text-adscope-200 mt-1">연간 990,000원 (17% 할인)</p>
             <ul className="mt-4 space-y-1.5 text-sm text-adscope-50">
-              <li>Lite 전체 기능 포함</li>
-              <li>소셜 소재 갤러리 (YouTube/Instagram)</li>
-              <li>소셜 채널 분석 (구독자/인게이지먼트)</li>
-              <li>브랜드 버즈 / 캠페인 효과 분석</li>
-              <li>소셜 콘텐츠 성과 분석</li>
-              <li>보고서 소셜 섹션 포함</li>
+              <li>Lite와 동일한 공개 메뉴 기준 제공</li>
+              <li>추가 분석 기능은 업데이트 후 순차 오픈</li>
+              <li>오픈 전 기능은 메뉴와 안내에서 제외</li>
             </ul>
           </div>
         </div>

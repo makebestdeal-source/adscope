@@ -6,7 +6,7 @@ import {
   ScheduleOverview, ScheduleCategory, ScheduleItem,
   MediaSourceItem, CrawlLogItem,
   MediaMapResponse, MediaMapChannel,
-  AdvertiserMapResponse, AdvertiserMapItem,
+  AdvertiserMapResponse, AdvertiserMapItem, AccessLogResponse,
 } from "@/lib/api";
 import { login as authLogin, getToken, getUser, logout as authLogout } from "@/lib/auth";
 
@@ -70,6 +70,7 @@ const TABS = [
   { id: "overview", label: "수집 현황" },
   { id: "media-map", label: "미디어 지도" },
   { id: "advertiser-map", label: "광고주 지도" },
+  { id: "access", label: "접속 분석" },
   { id: "ad", label: "광고 수집" },
   { id: "social", label: "소셜 수집" },
   { id: "meta", label: "메타시그널" },
@@ -120,6 +121,9 @@ export default function AdminPage() {
   const [advMap, setAdvMap] = useState<AdvertiserMapResponse | null>(null);
   const [mediaMapLoading, setMediaMapLoading] = useState(false);
   const [advMapLoading, setAdvMapLoading] = useState(false);
+  const [accessLogs, setAccessLogs] = useState<AccessLogResponse | null>(null);
+  const [accessLoading, setAccessLoading] = useState(false);
+  const [accessDays, setAccessDays] = useState(7);
 
   useEffect(() => {
     const existingToken = getToken();
@@ -245,16 +249,28 @@ export default function AdminPage() {
     finally { setAdvMapLoading(false); }
   };
 
+  const loadAccessLogs = async () => {
+    if (!token) return;
+    setAccessLoading(true);
+    try { setAccessLogs(await api.adminAccessLogs(token, accessDays, 200)); } catch { /* */ }
+    finally { setAccessLoading(false); }
+  };
+
   useEffect(() => {
     if (token && activeTab === "users") loadUsers();
     if (token && activeTab === "payments") loadPayments();
     if (token && activeTab === "media-map") loadMediaMap();
     if (token && activeTab === "advertiser-map") loadAdvMap();
+    if (token && activeTab === "access") loadAccessLogs();
   }, [activeTab, token]);
 
   useEffect(() => {
     if (token && activeTab === "payments") loadPayments();
   }, [paymentFilter]);
+
+  useEffect(() => {
+    if (token && activeTab === "access") loadAccessLogs();
+  }, [accessDays]);
 
   const handleLogout = () => {
     setToken(null); setStats(null); setCrawlStatus(null); setSchedule(null); setActionMsg({});
@@ -486,6 +502,64 @@ export default function AdminPage() {
                           </tr>
                         );
                       })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {activeTab === "access" && (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">접속 분석</h2>
+              <p className="text-xs text-gray-500 mt-0.5">페이지, API, 유입 경로, 봇 접근을 서버 로그 기준으로 확인합니다.</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <select value={accessDays} onChange={e => setAccessDays(Number(e.target.value))} className="px-3 py-1.5 text-xs bg-white border border-gray-300 rounded-lg">
+                <option value={1}>1일</option>
+                <option value={7}>7일</option>
+                <option value={30}>30일</option>
+                <option value={90}>90일</option>
+              </select>
+              <button onClick={loadAccessLogs} disabled={accessLoading} className="px-3 py-1.5 text-xs bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 flex items-center gap-1.5">{accessLoading && <Spinner size={12} />} 새로고침</button>
+            </div>
+          </div>
+          {accessLoading && !accessLogs && <div className="text-center py-12 text-gray-400 text-sm"><Spinner size={20} /> 로딩 중...</div>}
+          {accessLogs && (
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <StatCard label="전체 요청" value={accessLogs.summary.total_hits} />
+                <StatCard label="고유 IP" value={accessLogs.summary.unique_ips} />
+                <StatCard label="봇 접근" value={accessLogs.summary.bot_hits} />
+                <StatCard label="오류 응답" value={accessLogs.summary.error_hits} />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <AccessRank title="상위 경로" rows={accessLogs.top_paths.map(r => ({ label: r.path, hits: r.hits }))} />
+                <AccessRank title="상위 유입" rows={accessLogs.top_referrers.map(r => ({ label: r.referer, hits: r.hits }))} />
+                <AccessRank title="상위 IP" rows={accessLogs.top_ips.map(r => ({ label: r.ip_address || "-", hits: r.hits }))} />
+              </div>
+              <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100"><h3 className="text-sm font-semibold text-gray-700">최근 접속</h3></div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead><tr className="bg-gray-50 text-left text-xs text-gray-500 uppercase tracking-wider"><th className="px-4 py-3">시간</th><th className="px-4 py-3">경로</th><th className="px-4 py-3">상태</th><th className="px-4 py-3">IP</th><th className="px-4 py-3">유입</th><th className="px-4 py-3">UA</th></tr></thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {accessLogs.recent.length === 0 ? (
+                        <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-gray-400">아직 수집된 접속 로그가 없습니다.</td></tr>
+                      ) : accessLogs.recent.map(row => (
+                        <tr key={row.id} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{row.ts ? formatKST(row.ts) : "-"}</td>
+                          <td className="px-4 py-3"><div className="font-mono text-xs text-gray-900">{row.method} {row.path}{row.query_string ? `?${row.query_string}` : ""}</div><div className="text-[10px] text-gray-400">{row.duration_ms}ms {row.is_bot ? "bot" : ""}</div></td>
+                          <td className="px-4 py-3"><span className={`text-xs px-2 py-0.5 rounded-full font-medium ${row.status_code >= 400 ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>{row.status_code}</span></td>
+                          <td className="px-4 py-3 text-xs text-gray-600 font-mono">{row.ip_address || "-"}</td>
+                          <td className="px-4 py-3 text-xs text-gray-500 max-w-[220px] truncate">{row.referer || "-"}</td>
+                          <td className="px-4 py-3 text-xs text-gray-500 max-w-[280px] truncate">{row.user_agent || "-"}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -765,6 +839,23 @@ function ChannelStatusRow({ channel }: { channel: CrawlChannelStatus }) {
 function StatCard({ label, value }: { label: string; value: number }) { return (<div className="bg-white rounded-xl border border-gray-200 p-5"><p className="text-xs text-gray-500 mb-1">{label}</p><p className="text-2xl font-bold text-gray-900">{value.toLocaleString()}</p></div>); }
 function InfoCard({ label, value }: { label: string; value: string }) { return (<div className="bg-white rounded-xl border border-gray-200 p-5"><p className="text-xs text-gray-500 mb-1">{label}</p><p className="text-sm font-medium text-gray-900">{value}</p></div>); }
 function MiniStat({ label, value, suffix }: { label: string; value: number; suffix?: string }) { return (<div className="bg-gray-50 rounded-lg py-3 px-4"><p className="text-xs text-gray-500 mb-1">{label}</p><p className="text-lg font-bold text-gray-900">{value.toLocaleString()}{suffix && <span className="text-xs font-normal text-gray-500 ml-0.5">{suffix}</span>}</p></div>); }
+function AccessRank({ title, rows }: { title: string; rows: Array<{ label: string; hits: number }> }) {
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-5">
+      <h3 className="text-sm font-semibold text-gray-700 mb-3">{title}</h3>
+      <div className="space-y-2">
+        {rows.length === 0 ? (
+          <p className="text-xs text-gray-400">데이터 없음</p>
+        ) : rows.slice(0, 10).map(row => (
+          <div key={row.label} className="flex items-center justify-between gap-3">
+            <span className="text-xs text-gray-600 truncate">{row.label}</span>
+            <span className="text-xs font-bold text-gray-900 tabular-nums">{row.hits.toLocaleString()}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 function Spinner({ size = 16 }: { size?: number }) { return (<svg className="animate-spin inline-block" width={size} height={size} viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>); }
 
 function formatKST(iso: string): string {

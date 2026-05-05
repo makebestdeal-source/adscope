@@ -6,7 +6,6 @@ import { api, type GalleryItem } from "@/lib/api";
 import { CHANNEL_LABELS, CHANNEL_BADGE_COLORS } from "@/lib/constants";
 import { parseImagePath } from "@/lib/image-utils";
 import { DataFreshness } from "@/components/DataFreshness";
-import { ExportDropdown } from "@/components/ExportDropdown";
 import { GallerySelectionDownload } from "@/components/DownloadButtons";
 
 // 이미지 소재 페이지: DA/디스플레이 채널만 표시
@@ -312,10 +311,6 @@ function GalleryContent() {
           <p className="text-sm text-gray-500">
             <span className="font-semibold text-gray-900">{visibleItems.length.toLocaleString()}</span> / {totalItems.toLocaleString()}개 소재
           </p>
-          <ExportDropdown
-            csvUrl="/api/export/gallery"
-            xlsxUrl="/api/export/gallery.xlsx"
-          />
           <button
             onClick={() => { setSelectMode(!selectMode); if (selectMode) clearSelection(); }}
             disabled={selectableImageCount === 0}
@@ -600,8 +595,20 @@ function CreativeImage({
 }) {
   const parsed = parseImagePath(path);
   const [imgError, setImgError] = useState(false);
+  const [candidateIndex, setCandidateIndex] = useState(0);
+
+  useEffect(() => {
+    setImgError(false);
+    setCandidateIndex(0);
+  }, [path]);
+
+  const imageUrl = parsed?.candidates[candidateIndex] ?? parsed?.url;
 
   const handleError = () => {
+    if (parsed && candidateIndex < parsed.candidates.length - 1) {
+      setCandidateIndex((value) => value + 1);
+      return;
+    }
     setImgError(true);
     onError?.();
   };
@@ -617,7 +624,7 @@ function CreativeImage({
       <div
         className={containerClassName || className}
         style={{
-          backgroundImage: `url(${parsed.url})`,
+          backgroundImage: `url(${imageUrl})`,
           backgroundPosition: `-${x}px -${y}px`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "auto",
@@ -629,7 +636,7 @@ function CreativeImage({
       >
         {/* 숨겨진 img로 로드 에러 감지 */}
         <img
-          src={parsed.url}
+          src={imageUrl}
           alt=""
           className="hidden"
           referrerPolicy="no-referrer"
@@ -642,7 +649,7 @@ function CreativeImage({
   // 일반 이미지: 기존 <img> 태그
   return (
     <img
-      src={parsed.url}
+      src={imageUrl}
       alt={alt}
       className={className}
       loading={loading}

@@ -163,57 +163,74 @@ async def buzz_alerts(
     now = datetime.now(KST).replace(tzinfo=None)
     cutoff = now - timedelta(days=days)
 
-    # Get latest 2 scores per advertiser within window
+    # Get latest 2 scores per existing advertiser within window.
+    # Old social impact rows can point at advertisers removed by data cleaning;
+    # those must not become nameless alert cards.
     scores = (
         await db.execute(
             select(
                 SocialImpactScore.advertiser_id,
+                Advertiser.name.label("advertiser_name"),
                 SocialImpactScore.date,
                 SocialImpactScore.composite_score,
+                SocialImpactScore.news_impact_score,
+                SocialImpactScore.social_posting_score,
+                SocialImpactScore.search_lift_score,
             )
+            .join(Advertiser, Advertiser.id == SocialImpactScore.advertiser_id)
             .where(SocialImpactScore.date >= cutoff)
+            .where(Advertiser.name.isnot(None))
+            .where(func.length(func.trim(Advertiser.name)) > 0)
             .order_by(SocialImpactScore.advertiser_id, SocialImpactScore.date.desc())
         )
     ).all()
 
-    # Group by advertiser, find max change
+    # Group by advertiser, compare latest score with the previous score.
     from collections import defaultdict
     adv_scores: dict[int, list] = defaultdict(list)
     for s in scores:
-        adv_scores[s.advertiser_id].append((s.date, s.composite_score or 0))
+        adv_scores[s.advertiser_id].append(
+            {
+                "date": s.date,
+                "advertiser_name": s.advertiser_name,
+                "composite": s.composite_score or 0,
+                "news": s.news_impact_score or 0,
+                "social": s.social_posting_score or 0,
+                "search": s.search_lift_score or 0,
+            }
+        )
+
+    def _driver_label(latest_entry: dict, prev_entry: dict) -> str:
+        drivers = [
+            ("뉴스 영향", abs(latest_entry["news"] - prev_entry["news"])),
+            ("소셜 포스팅", abs(latest_entry["social"] - prev_entry["social"])),
+            ("검색 리프트", abs(latest_entry["search"] - prev_entry["search"])),
+        ]
+        label, delta = max(drivers, key=lambda x: x[1])
+        return label if delta > 0 else "종합 점수"
 
     alerts = []
     for adv_id, entries in adv_scores.items():
         if len(entries) < 2:
             continue
-        latest = entries[0][1]
-        prev = entries[1][1]
+        latest_entry = entries[0]
+        prev_entry = entries[1]
+        latest = latest_entry["composite"]
+        prev = prev_entry["composite"]
         if prev == 0:
             continue
         change_pct = ((latest - prev) / prev) * 100
         if abs(change_pct) >= threshold:
             alerts.append({
                 "advertiser_id": adv_id,
+                "advertiser_name": latest_entry["advertiser_name"],
                 "latest_score": round(latest, 1),
                 "prev_score": round(prev, 1),
                 "change_pct": round(change_pct, 1),
                 "direction": "up" if change_pct > 0 else "down",
-                "date": str(entries[0][0]),
+                "driver": _driver_label(latest_entry, prev_entry),
+                "date": str(latest_entry["date"]),
             })
-
-    # Enrich with advertiser names
-    if alerts:
-        adv_ids = [a["advertiser_id"] for a in alerts]
-        advs = (
-            await db.execute(
-                select(Advertiser.id, Advertiser.name, Advertiser.industry_id).where(
-                    Advertiser.id.in_(adv_ids)
-                )
-            )
-        ).all()
-        name_map = {a.id: a.name for a in advs}
-        for alert in alerts:
-            alert["advertiser_name"] = name_map.get(alert["advertiser_id"], "")
 
     alerts.sort(key=lambda x: abs(x["change_pct"]), reverse=True)
     return alerts[:20]

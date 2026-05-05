@@ -3,19 +3,19 @@
 import { useEffect, useState } from "react";
 import { Dashboard } from "@/components/Dashboard";
 import { GuestLanding } from "@/components/GuestLanding";
-import { isAuthenticated } from "@/lib/auth";
+import { AuthUser, getUser } from "@/lib/auth";
 
 export default function Home() {
-  const [authed, setAuthed] = useState<boolean | null>(null);
+  const [user, setUser] = useState<AuthUser | null | undefined>(undefined);
 
   useEffect(() => {
-    setAuthed(isAuthenticated());
+    setUser(getUser());
   }, []);
 
   // SSR 하이드레이션 전에는 아무것도 렌더하지 않음
-  if (authed === null) return null;
+  if (user === undefined) return null;
 
-  if (!authed) {
+  if (!user || user.role !== "admin") {
     return <GuestLanding />;
   }
 

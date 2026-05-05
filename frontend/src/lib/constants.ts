@@ -55,14 +55,15 @@ export function formatChannel(channel: string): string {
 }
 
 export function formatSpend(amount: number): string {
-  if (amount >= 100_000_000) {
-    return `약 ${(amount / 100_000_000).toFixed(1)}억원`;
+  const won = Math.round(Number(amount) || 0);
+  if (won >= 100_000_000) {
+    return `약 ${(won / 100_000_000).toFixed(1)}억원`;
   }
-  if (amount >= 10_000) {
-    return `약 ${Math.round(amount / 10_000).toLocaleString()}만원`;
+  if (won >= 10_000) {
+    return `약 ${Math.round(won / 10_000).toLocaleString()}만원`;
   }
-  if (amount > 0) {
-    return `약 ${amount.toLocaleString()}원`;
+  if (won > 0) {
+    return `약 ${won.toLocaleString()}원`;
   }
   return "0원";
 }

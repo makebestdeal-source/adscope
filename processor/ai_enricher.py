@@ -227,9 +227,16 @@ async def _load_industry_map() -> dict[str, int]:
 
 
 async def _load_product_category_map() -> dict[str, int]:
-    """제품 카테고리명 -> product_category_id 매핑."""
+    """제품 카테고리명 -> product_category_id 매핑. 소분류(leaf)만 포함.
+
+    대분류명(parent_id=None)은 제외 — AI가 대분류명을 반환해도
+    product_category_id에 부모 ID가 저장되지 않도록 방지.
+    """
     async with async_session() as s:
-        rows = await s.execute(select(ProductCategory.id, ProductCategory.name))
+        rows = await s.execute(
+            select(ProductCategory.id, ProductCategory.name)
+            .where(ProductCategory.parent_id.isnot(None))
+        )
         return {name: cid for cid, name in rows.all()}
 
 

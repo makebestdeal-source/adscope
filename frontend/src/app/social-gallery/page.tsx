@@ -4,7 +4,6 @@ import { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api, type GalleryItem } from "@/lib/api";
 import { toImageUrl } from "@/lib/image-utils";
-import { ExportDropdown } from "@/components/ExportDropdown";
 import { GallerySelectionDownload } from "@/components/DownloadButtons";
 
 const PLATFORM_OPTIONS = [
@@ -155,10 +154,6 @@ function SocialGalleryContent() {
           <p className="text-sm text-gray-500">
             총 <span className="font-semibold text-gray-900">{totalItems.toLocaleString()}</span>건
           </p>
-          <ExportDropdown
-            csvUrl="/api/export/social"
-            xlsxUrl="/api/export/social.xlsx"
-          />
           <button
             onClick={() => { setSelectMode(!selectMode); if (selectMode) clearSelection(); }}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border rounded-lg transition-colors ${

@@ -6,19 +6,27 @@ TikTok Creative Center(ads.tiktok.com)의 Top Ads 페이지를 Playwright로 로
 
 발견된 내부 API:
   GET /creative_radar_api/v1/top_ads/v2/list
-    ?period=30&page=1&limit=20&order_by=for_you&country_code=KR
+    ?period=30&page=1&limit=20&order_by=for_you&country_code=KR&msToken=<signed>
 
 응답 material 필드:
   ad_title, brand_name, cost, ctr, favorite, id, industry_key,
   is_search, like, objective_key, video_info{url, cover, duration, ...}
 
+수집 전략 (2026-05 업데이트):
+  1. Playwright로 Creative Center 페이지 로드 (JS 실행 → 서명된 msToken 획득)
+  2. 네트워크 인터셉트로 첫 페이지 API 응답 캡처
+  3. 추가 페이지: page.evaluate fetch에 서명된 msToken을 URL 쿼리로 포함
+  4. fetch 실패 시: 다양한 industry 파라미터로 CC 페이지 재방문 (다중 goto)
+  5. 키워드(한국어) → industry_key 매핑으로 TikTok API 필터 활용
+
 - 로그인 불필요, headless OK
-- 페이지네이션: page 파라미터로 다중 페이지 호출
-- keyword 파라미터는 산업 필터 or 검색어로 활용
+- 페이지네이션: msToken 포함 fetch() 또는 다중 goto()로 볼륨 확보
+- keyword 파라미터는 industry_key로 매핑하여 API 필터로 활용
 """
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import re
@@ -49,7 +57,50 @@ API_LIST_URL = (
 
 MAX_ADS = max(1, int(os.getenv("TIKTOK_MAX_ADS", "60")))
 MAX_PAGES = max(1, int(os.getenv("TIKTOK_MAX_PAGES", "3")))
-PAGE_WAIT_MS = max(3000, int(os.getenv("TIKTOK_PAGE_WAIT_MS", "5000")))
+# 5000 → 10000: TikTok CC는 무거운 SPA — JS 실행 + 서명 토큰 생성까지 시간 필요
+PAGE_WAIT_MS = max(5000, int(os.getenv("TIKTOK_PAGE_WAIT_MS", "10000")))
+
+# ── 키워드 → TikTok industry_key 매핑 ──
+# fast_crawl.py의 keyword 값을 TikTok CC API industry_key로 변환
+# API 파라미터: ?industry_key=GAMING (빈값이면 전체 피드)
+_KEYWORD_TO_INDUSTRY: dict[str, str | None] = {
+    "": None,                 # 필터 없음 (전체 KR 피드)
+    "게임": "GAMING",
+    "뷰티": "FASHION_AND_BEAUTY",
+    "패션": "FASHION_AND_BEAUTY",
+    "음식": "FOOD_AND_BEVERAGES",
+    "반려동물": "PET",
+    "교육": "EDUCATION",
+    "여행": "TRAVEL",
+    # 추가 매핑 (fast_crawl.py 확장 시 대비)
+    "금융": "FINANCE",
+    "기술": "TECHNOLOGY",
+    "IT": "TECHNOLOGY",
+    "건강": "HEALTH",
+    "자동차": "AUTOMOTIVE",
+    "엔터테인먼트": "ENTERTAINMENT",
+    "쇼핑": "ECOMMERCE",
+    "e커머스": "ECOMMERCE",
+    "미디어": "MEDIA",
+    "스포츠": "SPORTS",
+}
+
+# TikTok Creative Center에서 확인된 industry_key 전체 목록
+# (keyword 매핑 없을 때 다중 goto 폴백에서 순환 사용)
+_ALL_INDUSTRY_KEYS = [
+    "GAMING",
+    "FASHION_AND_BEAUTY",
+    "FOOD_AND_BEVERAGES",
+    "EDUCATION",
+    "TRAVEL",
+    "ECOMMERCE",
+    "FINANCE",
+    "TECHNOLOGY",
+    "HEALTH",
+    "AUTOMOTIVE",
+    "ENTERTAINMENT",
+    "PET",
+]
 
 
 def _safe_str(val) -> str:
@@ -284,10 +335,18 @@ def _normalize_material(mat: dict, position: int) -> dict | None:
 class TikTokAdsCrawler(BaseCrawler):
     """TikTok Creative Center Top Ads API 캡처로 광고 수집.
 
-    수집 방식:
-    1. Playwright로 Creative Center 페이지 로드 (쿠키/세션 획득)
-    2. 내부 API 응답을 네트워크 인터셉트
-    3. 추가 페이지는 Playwright 내에서 fetch()로 직접 호출
+    수집 방식 (2026-05 업데이트):
+    1. Playwright로 Creative Center 페이지 로드 (JS 실행 → 서명된 msToken 획득)
+    2. 네트워크 인터셉트로 첫 페이지 API 응답 캡처
+    3. page.evaluate fetch()에 서명된 msToken 포함 → 추가 페이지 수집
+    4. fetch 실패 시: 다양한 industry CC 페이지 goto() 폴백
+    5. 키워드 → industry_key 매핑 적용
+
+    핵심 변경점:
+    - PAGE_WAIT_MS 5000→10000 (SPA JS 실행 대기 충분히)
+    - msToken을 cookie가 아닌 URL 쿼리 파라미터로 포함 (TikTok API 인증 요구사항)
+    - industry_key 파라미터를 keyword 매핑으로 적용
+    - fetch 실패 시 다중 goto 폴백으로 더 많은 네트워크 캡처
     """
 
     channel = "tiktok_ads"
@@ -326,14 +385,31 @@ class TikTokAdsCrawler(BaseCrawler):
             await context.close()
 
     async def _collect_ads(self, context, keyword: str) -> list[dict]:
-        """Creative Center 페이지 로드 + API 페이지네이션으로 광고 수집."""
+        """Creative Center 페이지 로드 + API 페이지네이션으로 광고 수집.
+
+        수집 전략:
+        1. keyword → industry_key 매핑
+        2. Playwright 페이지 로드 (10초 대기 - SPA JS 실행 충분히)
+        3. 네트워크 인터셉트로 첫 페이지 캡처 (항상 작동)
+        4. page.evaluate fetch에 서명된 msToken 포함 → 추가 페이지
+        5. fetch 실패 시 다중 industry goto 폴백
+        """
         page = await context.new_page()
 
         try:
-            # -- 네트워크 캡처: 첫 페이지 API 응답 --
+            # keyword → industry_key 매핑
+            industry_key: str | None = _KEYWORD_TO_INDUSTRY.get(keyword)
+            logger.info(
+                "[tiktok_ads] keyword={!r} -> industry_key={!r}",
+                keyword, industry_key,
+            )
+
+            # -- 네트워크 캡처: 모든 top_ads API 응답 수집 --
             api_materials: list[dict] = []
+            capture_count = 0
 
             async def _on_response(response: Response):
+                nonlocal capture_count
                 url = response.url
                 try:
                     if response.status != 200:
@@ -346,12 +422,13 @@ class TikTokAdsCrawler(BaseCrawler):
                         mats = (data.get("data") or {}).get("materials", [])
                         if isinstance(mats, list) and mats:
                             api_materials.extend(mats)
+                            capture_count += 1
                             logger.debug(
-                                "[tiktok_ads] API page captured {} ads",
-                                len(mats),
+                                "[tiktok_ads] network capture #{}: {} ads (total: {})",
+                                capture_count, len(mats), len(api_materials),
                             )
-                            # 첫 material의 전체 키 + video_info 구조 로깅
-                            if len(api_materials) <= 20:
+                            # 첫 번째 material 구조 로깅 (디버그)
+                            if capture_count == 1:
                                 logger.debug(
                                     "[tiktok_ads] material keys: {}",
                                     sorted(mats[0].keys()),
@@ -362,101 +439,265 @@ class TikTokAdsCrawler(BaseCrawler):
                                         "[tiktok_ads] video_info keys: {}",
                                         sorted(vi.keys()),
                                     )
-                except Exception:
-                    pass
+                        else:
+                            # code 확인 - 40101이면 인증 실패
+                            code = data.get("code")
+                            msg = data.get("msg", "")
+                            if code and code != 0:
+                                logger.warning(
+                                    "[tiktok_ads] API error code={} msg={} url={}",
+                                    code, msg, url[:120],
+                                )
+                except Exception as exc:
+                    logger.debug("[tiktok_ads] response handler error: {}", exc)
 
             page.on("response", _on_response)
 
-            # -- 1) 페이지 로드 (세션/쿠키 획득 + 첫 API 자동 호출) --
-            url = f"{TOP_ADS_BASE_URL}?region=KR"
-            logger.info("[tiktok_ads] loading: {}", url[:100])
-            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            # -- 1) 첫 페이지 로드 (industry_key 파라미터 포함) --
+            # CC 페이지 URL: ?region=KR&industry=GAMING 형태로 industry 필터 적용
+            page_url = f"{TOP_ADS_BASE_URL}?region=KR"
+            if industry_key:
+                page_url = f"{page_url}&industry={industry_key}"
+
+            logger.info("[tiktok_ads] loading: {}", page_url[:120])
+            await page.goto(page_url, wait_until="domcontentloaded", timeout=30000)
+
+            # SPA 초기화 대기 (10초 - JS 실행 + 서명 토큰 생성 시간 필요)
             await page.wait_for_timeout(PAGE_WAIT_MS)
 
             first_page_count = len(api_materials)
             logger.info(
-                "[tiktok_ads] first page (for_you): {} ads from API",
+                "[tiktok_ads] first page network capture: {} ads",
                 first_page_count,
             )
 
-            # -- 2) 페이지네이션 + 다양한 정렬/기간으로 볼륨 최대화 --
-            all_orders = ["for_you", "reach", "ctr", "like"]
-            all_periods = [30, 7, 180]
-            for order in all_orders:
-                for period in all_periods:
+            if first_page_count == 0:
+                logger.warning(
+                    "[tiktok_ads] WARN: no ads from first page capture! "
+                    "Check if TikTok CC is blocking headless browser."
+                )
+
+            # -- 2) 서명된 msToken 추출 --
+            # Playwright 쿠키에서 msToken을 가져옴 (JS 실행으로 서명된 토큰)
+            ms_token = ""
+            try:
+                cookies = await context.cookies(["https://ads.tiktok.com"])
+                for cookie in cookies:
+                    if cookie.get("name") == "msToken":
+                        ms_token = cookie.get("value", "")
+                        break
+                logger.debug(
+                    "[tiktok_ads] msToken from Playwright: {}...{}",
+                    ms_token[:10] if ms_token else "NONE",
+                    ms_token[-5:] if len(ms_token) > 10 else "",
+                )
+            except Exception as e:
+                logger.debug("[tiktok_ads] msToken extract error: {}", e)
+
+            # -- 3) 추가 페이지: page.evaluate fetch + msToken URL 쿼리 포함 --
+            # msToken을 URL 쿼리 파라미터로 포함해야 TikTok API 인증 통과
+            fetch_success_count = 0
+            fetch_fail_count = 0
+            orders = ["for_you", "reach", "ctr", "like"]
+            periods = [30, 7, 180]
+
+            for order in orders:
+                if len(api_materials) >= MAX_ADS:
+                    break
+                for period in periods:
                     if len(api_materials) >= MAX_ADS:
                         break
                     for pg in range(1, MAX_PAGES + 1):
                         if len(api_materials) >= MAX_ADS:
                             break
-                        # KR 우선, 전체 지역도 수집 (한국 광고주는 korean_filter에서 걸러짐)
                         for country in ("KR", ""):
                             if len(api_materials) >= MAX_ADS:
                                 break
-                            country_param = f"&country_code={country}" if country else ""
-                            api_url = (
-                                f"{API_LIST_URL}?period={period}&page={pg}&limit=20"
-                                f"&order_by={order}{country_param}"
+
+                            # URL 파라미터 구성 (msToken 포함)
+                            params = (
+                                f"period={period}&page={pg}&limit=20"
+                                f"&order_by={order}"
                             )
+                            if country:
+                                params += f"&country_code={country}"
+                            if industry_key:
+                                params += f"&industry_key={industry_key}"
+                            if ms_token:
+                                params += f"&msToken={ms_token}"
+
+                            api_url = f"{API_LIST_URL}?{params}"
+
                             try:
                                 resp_text = await page.evaluate(f"""
                                     async () => {{
                                         const r = await fetch("{api_url}", {{
                                             credentials: "include",
-                                            headers: {{ "Accept": "application/json" }}
+                                            headers: {{
+                                                "Accept": "application/json",
+                                                "Referer": "https://ads.tiktok.com/business/creativecenter/inspiration/topads/pc/en"
+                                            }}
                                         }});
                                         return await r.text();
                                     }}
                                 """)
                                 data = json.loads(resp_text)
+                                code = data.get("code", 0)
                                 mats = (data.get("data") or {}).get("materials", [])
                                 if isinstance(mats, list) and mats:
                                     api_materials.extend(mats)
+                                    fetch_success_count += 1
                                     logger.info(
-                                        "[tiktok_ads] order={}/period={}/page={}/country={} -> {} ads",
+                                        "[tiktok_ads] fetch ok: order={}/period={}/p={}/country={} -> {} ads",
                                         order, period, pg, country or "ALL", len(mats),
                                     )
+                                elif code == 40101:
+                                    # 인증 실패 → fetch 방식 포기, goto 폴백으로
+                                    fetch_fail_count += 1
+                                    logger.debug(
+                                        "[tiktok_ads] fetch 40101 no permission "
+                                        "(order={}/period={}/p={})",
+                                        order, period, pg,
+                                    )
+                                    if fetch_fail_count >= 3:
+                                        logger.warning(
+                                            "[tiktok_ads] fetch 연속 3회 40101 -> goto 폴백으로 전환"
+                                        )
+                                        raise _FetchAuthError()
                                 else:
-                                    break  # No more pages for this combo
+                                    # 빈 결과 = 더 이상 페이지 없음
+                                    break
+                            except _FetchAuthError:
+                                raise
                             except Exception as e:
                                 logger.debug(
-                                    "[tiktok_ads] order={}/page={} failed: {}",
-                                    order, pg, e,
+                                    "[tiktok_ads] fetch error (order={}/p={}): {}",
+                                    order, pg, str(e)[:80],
                                 )
                                 break
-                            await page.wait_for_timeout(800)
+                            await page.wait_for_timeout(600)
 
-            # -- 3) 중복 제거 --
-            seen_ids: set[str] = set()
-            unique: list[dict] = []
-            for mat in api_materials:
-                mid = str(mat.get("id") or id(mat))
-                if mid not in seen_ids:
-                    seen_ids.add(mid)
-                    unique.append(mat)
-
-            # -- 4) 정규화 --
-            ads: list[dict] = []
-            for i, mat in enumerate(unique[:MAX_ADS]):
-                ad = _normalize_material(mat, i + 1)
-                if ad:
-                    ads.append(ad)
-
-            logger.info(
-                "[tiktok_ads] '{}' -> {} ads (raw:{}, unique:{})",
-                keyword, len(ads), len(api_materials), len(unique),
+        except _FetchAuthError:
+            # fetch 방식 인증 실패 → goto 폴백
+            logger.info("[tiktok_ads] fetch auth failed -> goto 폴백 시작")
+            api_materials = await self._collect_via_goto(
+                context, page, api_materials, industry_key
             )
-
-            # -- 5) 커버 이미지 다운로드 --
-            await self._download_covers(ads)
-
-            return ads
 
         except Exception as e:
             logger.error("[tiktok_ads] crawl failed: {}", e)
             return []
         finally:
-            await page.close()
+            # page는 goto 폴백에서도 재사용되므로 여기서 닫음
+            try:
+                await page.close()
+            except Exception:
+                pass
+
+        # -- 4) 중복 제거 --
+        seen_ids: set[str] = set()
+        unique: list[dict] = []
+        for mat in api_materials:
+            mid = str(mat.get("id") or id(mat))
+            if mid not in seen_ids:
+                seen_ids.add(mid)
+                unique.append(mat)
+
+        # -- 5) 정규화 --
+        ads: list[dict] = []
+        for i, mat in enumerate(unique[:MAX_ADS]):
+            ad = _normalize_material(mat, i + 1)
+            if ad:
+                ads.append(ad)
+
+        logger.info(
+            "[tiktok_ads] '{}' -> {} ads (raw:{}, unique:{})",
+            keyword, len(ads), len(api_materials), len(unique),
+        )
+
+        if not ads:
+            logger.warning(
+                "[tiktok_ads] WARN: 0 ads collected for keyword={!r}. "
+                "TikTok may require anti-bot bypass.",
+                keyword,
+            )
+
+        # -- 6) 커버 이미지 다운로드 --
+        await self._download_covers(ads)
+
+        return ads
+
+    async def _collect_via_goto(
+        self,
+        context,
+        page,
+        existing_materials: list[dict],
+        industry_key: str | None,
+    ) -> list[dict]:
+        """fetch 실패 시 폴백: 다양한 industry CC 페이지를 goto로 방문하여 네트워크 캡처.
+
+        각 goto는 TikTok CC가 자체적으로 API를 호출하게 하고,
+        network intercept가 그 응답을 캡처함.
+        """
+        api_materials = list(existing_materials)
+        captured_extra: list[dict] = []
+
+        async def _on_response_extra(response: Response):
+            url = response.url
+            try:
+                if response.status != 200:
+                    return
+                ct = response.headers.get("content-type", "")
+                if "json" not in ct or "top_ads/v2/list" not in url:
+                    return
+                data = await response.json()
+                mats = (data.get("data") or {}).get("materials", [])
+                if isinstance(mats, list) and mats:
+                    captured_extra.extend(mats)
+                    logger.debug(
+                        "[tiktok_ads] goto capture: {} ads (total extra: {})",
+                        len(mats), len(captured_extra),
+                    )
+            except Exception:
+                pass
+
+        page.on("response", _on_response_extra)
+
+        # industry 순환: 현재 industry_key 제외하고 나머지 순환
+        industries_to_visit = [industry_key] if industry_key else []
+        for ind in _ALL_INDUSTRY_KEYS:
+            if ind not in industries_to_visit:
+                industries_to_visit.append(ind)
+
+        for ind in industries_to_visit:
+            if len(api_materials) + len(captured_extra) >= MAX_ADS:
+                break
+
+            visit_url = f"{TOP_ADS_BASE_URL}?region=KR"
+            if ind:
+                visit_url = f"{visit_url}&industry={ind}"
+
+            logger.info("[tiktok_ads] goto fallback: {}", visit_url[:120])
+            try:
+                await page.goto(
+                    visit_url, wait_until="domcontentloaded", timeout=25000
+                )
+                # 페이지마다 7초 대기 (SPA API 자동 호출 시간)
+                await page.wait_for_timeout(7000)
+                logger.debug(
+                    "[tiktok_ads] goto {} -> captured {} so far",
+                    ind or "ALL", len(captured_extra),
+                )
+            except Exception as e:
+                logger.debug("[tiktok_ads] goto {} failed: {}", ind, e)
+                continue
+
+        api_materials.extend(captured_extra)
+        logger.info(
+            "[tiktok_ads] goto fallback complete: {} extra ads (total: {})",
+            len(captured_extra), len(api_materials),
+        )
+        return api_materials
 
     async def _download_covers(self, ads: list[dict]):
         """커버 이미지 다운로드."""
@@ -518,3 +759,8 @@ class TikTokAdsCrawler(BaseCrawler):
             )
 
     # is_valid_image → crawler.image_utils.is_valid_image
+
+
+class _FetchAuthError(Exception):
+    """page.evaluate fetch()가 TikTok API 40101 인증 오류를 반환한 경우."""
+    pass

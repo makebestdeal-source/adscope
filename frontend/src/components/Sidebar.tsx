@@ -15,7 +15,7 @@ const NAV_GROUPS: NavGroup[] = [
     title: "",
     public: true,
     items: [
-      { href: "/reports", label: "보고서", icon: "report" },
+      { href: "/reports", label: "보고서 & 자료 다운로드", icon: "report" },
       { href: "/advertisers/favorites", label: "나의 광고주", icon: "star" },
       { href: "/advertisers", label: "광고주", icon: "advertisers", public: true },
       { href: "/campaigns", label: "캠페인", icon: "campaign" },
@@ -40,7 +40,6 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/social-channels", label: "소셜 채널 분석", icon: "brand" },
       { href: "/social-content", label: "콘텐츠 성과", icon: "content" },
       { href: "/buzz-dashboard", label: "브랜드 버즈", icon: "buzz" },
-      { href: "/campaign-effect", label: "캠페인 효과", icon: "effect" },
     ],
   },
   {
@@ -94,6 +93,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/consumer-insights", label: "소비자 인사이트", icon: "insight", soon: true },
       { href: "/launch-impact", label: "신상품 임팩트", icon: "launch", soon: true },
       { href: "/marketing-schedule", label: "마케팅 플랜", icon: "schedule", soon: true },
+      { href: "/campaign-effect", label: "캠페인 효과", icon: "effect" },
     ],
   },
 ];
@@ -414,6 +414,7 @@ export function Sidebar() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     setUser(getUser());
@@ -533,12 +534,12 @@ export function Sidebar() {
           .map((group) => ({
             ...group,
             items: group.items.filter((item) => {
-              if (item.adminOnly && user?.role !== "admin") return false;
-              if (!user && !group.public && !item.public) return false;
+              if (item.adminOnly && !isAdmin) return false;
+              if (!isAdmin && !group.public && !item.public) return false;
               return true;
             }),
           }))
-          .filter((group) => (!group.adminOnly || user?.role === "admin") && group.items.length > 0)
+          .filter((group) => (!group.adminOnly || isAdmin) && group.items.length > 0)
           .map((group, gi) => (
           <div key={gi}>
             {group.title && (

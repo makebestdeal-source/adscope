@@ -17,6 +17,8 @@ from database.schemas import BrandChannelContentOut, BrandChannelSummary
 
 router = APIRouter(prefix="/api/brand-channels", tags=["brand-channels"])
 
+CONTENT_ANALYSIS_PLATFORMS = {"youtube", "instagram"}
+
 
 def _fix_thumbnail(row) -> BrandChannelContentOut:
     """IG CDN URL 만료 대비: extra_data.local_image_path가 있으면 thumbnail_url 교체."""
@@ -149,8 +151,12 @@ async def content_analysis(
 
     cutoff = datetime.now(tz.utc).replace(tzinfo=None) - timedelta(days=days)
 
-    # Base query for contents within period
-    base_filter = [BrandChannelContent.discovered_at >= cutoff]
+    # Content performance is backed by brand channel collection only.
+    # Today that collector stores YouTube and Instagram content only.
+    base_filter = [
+        BrandChannelContent.discovered_at >= cutoff,
+        BrandChannelContent.platform.in_(CONTENT_ANALYSIS_PLATFORMS),
+    ]
     if platform:
         base_filter.append(BrandChannelContent.platform == platform)
 
@@ -176,7 +182,7 @@ async def content_analysis(
             BrandChannelContent.platform,
             func.count(BrandChannelContent.id).label("count"),
         )
-        .where(BrandChannelContent.discovered_at >= cutoff)
+        .where(*base_filter)
         .group_by(BrandChannelContent.platform)
     )
     plat_rows = (await db.execute(plat_q)).all()
@@ -208,7 +214,7 @@ async def content_analysis(
             func.date(BrandChannelContent.discovered_at).label("date"),
             func.count(BrandChannelContent.id).label("count"),
         )
-        .where(BrandChannelContent.discovered_at >= cutoff)
+        .where(*base_filter)
         .group_by(func.date(BrandChannelContent.discovered_at))
         .order_by(func.date(BrandChannelContent.discovered_at))
     )

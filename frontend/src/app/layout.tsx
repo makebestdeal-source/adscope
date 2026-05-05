@@ -12,6 +12,59 @@ const ContentProtection = dynamic(
   { ssr: false }
 );
 
+const siteDescription =
+  "AdScope는 네이버, 구글, 유튜브, 메타, 카카오 등 국내 주요 디지털 광고 채널의 광고 소재, 집행 현황, 광고비를 통합 모니터링하는 광고 인텔리전스 플랫폼입니다.";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      name: "AdScope",
+      legalName: "더블이스튜디오",
+      url: "https://adscope.kr",
+      logo: "https://adscope.kr/apple-touch-icon.png",
+      description: siteDescription,
+      parentOrganization: {
+        "@type": "Organization",
+        name: "DoubleE Studio",
+        url: "https://doubleestudio.com",
+      },
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: "KR",
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "support@adscope.kr",
+        contactType: "customer service",
+        availableLanguage: "Korean",
+      },
+      sameAs: ["https://doubleestudio.com"],
+    },
+    {
+      "@type": "WebSite",
+      name: "AdScope",
+      url: "https://adscope.kr",
+      description: siteDescription,
+      inLanguage: "ko-KR",
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: "AdScope",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+      url: "https://adscope.kr",
+      description: "국내 주요 디지털 광고 채널을 통합 모니터링하는 광고 인텔리전스 플랫폼",
+      offers: {
+        "@type": "AggregateOffer",
+        priceCurrency: "KRW",
+        availability: "https://schema.org/InStock",
+      },
+    },
+  ],
+};
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -22,11 +75,10 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "AdScope | 광고 인텔리전스 플랫폼 - 경쟁사 광고 모니터링",
+    default: "AdScope | 광고 인텔리전스 플랫폼",
     template: "%s | AdScope",
   },
-  description:
-    "네이버, 구글, 유튜브, 메타, 카카오, 틱톡 등 9개 채널의 광고 소재, 집행 현황, 광고비를 통합 모니터링하는 디지털 광고 인텔리전스 플랫폼",
+  description: siteDescription,
   keywords: [
     "광고 모니터링",
     "경쟁사 광고 분석",
@@ -39,6 +91,7 @@ export const metadata: Metadata = {
     "유튜브 광고",
     "광고 소재 갤러리",
   ],
+  applicationName: "AdScope",
   manifest: "/manifest.json",
   metadataBase: new URL("https://adscope.kr"),
   alternates: {
@@ -46,8 +99,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "AdScope | 광고 인텔리전스 플랫폼",
-    description:
-      "9개 디지털 광고 채널의 소재, 집행 현황, 광고비를 통합 모니터링. 경쟁사 광고 전략을 한눈에 파악하세요.",
+    description: siteDescription,
     url: "https://adscope.kr",
     siteName: "AdScope",
     locale: "ko_KR",
@@ -57,15 +109,14 @@ export const metadata: Metadata = {
         url: "https://adscope.kr/icons/icon-512x512.png",
         width: 512,
         height: 512,
-        alt: "AdScope - 광고 인텔리전스 플랫폼",
+        alt: "AdScope 광고 인텔리전스 플랫폼",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "AdScope | 광고 인텔리전스 플랫폼",
-    description:
-      "9개 디지털 광고 채널 통합 모니터링. 경쟁사 광고비, 소재, 트렌드를 분석하세요.",
+    description: siteDescription,
     images: ["https://adscope.kr/icons/icon-512x512.png"],
   },
   robots: {
@@ -100,60 +151,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@graph": [
-                {
-                  "@type": "Organization",
-                  name: "AdScope",
-                  legalName: "더블이스튜디오(DoubleE Studio)",
-                  url: "https://adscope.kr",
-                  logo: "https://adscope.kr/apple-touch-icon.png",
-                  description:
-                    "한국 디지털 광고 통합 모니터링 인텔리전스 플랫폼",
-                  parentOrganization: {
-                    "@type": "Organization",
-                    name: "DoubleE Studio",
-                    url: "https://doubleestudio.com",
-                  },
-                  address: {
-                    "@type": "PostalAddress",
-                    addressLocality: "남양주시",
-                    addressRegion: "경기도",
-                    addressCountry: "KR",
-                  },
-                  contactPoint: {
-                    "@type": "ContactPoint",
-                    email: "support@adscope.kr",
-                    contactType: "customer service",
-                    availableLanguage: "Korean",
-                  },
-                  sameAs: ["https://doubleestudio.com"],
-                },
-                {
-                  "@type": "WebSite",
-                  name: "AdScope",
-                  url: "https://adscope.kr",
-                  description:
-                    "네이버, 구글, 유튜브, 메타, 카카오, 틱톡 등 9개 채널의 광고 소재, 집행 현황, 광고비를 통합 모니터링",
-                  inLanguage: "ko",
-                },
-                {
-                  "@type": "SoftwareApplication",
-                  name: "AdScope",
-                  applicationCategory: "BusinessApplication",
-                  operatingSystem: "Web",
-                  url: "https://adscope.kr",
-                  description:
-                    "디지털 광고 인텔리전스 플랫폼 - 9개 채널 광고 모니터링",
-                  offers: {
-                    "@type": "AggregateOffer",
-                    priceCurrency: "KRW",
-                    availability: "https://schema.org/InStock",
-                  },
-                },
-              ],
-            }),
+            __html: JSON.stringify(structuredData),
           }}
         />
       </head>

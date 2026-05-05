@@ -12,9 +12,7 @@ import {
   INDUSTRIES,
 } from "@/lib/constants";
 import { PeriodSelector } from "@/components/PeriodSelector";
-import { ExportDropdown } from "@/components/ExportDropdown";
-import { AdvertiserDownloadDropdown } from "@/components/DownloadButtons";
-import { toImageUrl } from "@/lib/image-utils";
+import { CreativeImage } from "@/components/CreativeImage";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { isAuthenticated } from "@/lib/auth";
 import {
@@ -55,6 +53,14 @@ const OBJECTIVE_KO: Record<string, { label: string; color: string }> = {
   conversion: { label: "전환", color: "bg-orange-100 text-orange-700" },
   retention: { label: "리텐션", color: "bg-teal-100 text-teal-700" },
 };
+
+function isForeignAdvertiser(name: string, website?: string | null): boolean {
+  const cjk = /[\u4e00-\u9fff\u3040-\u30ff]/;
+  const hangul = /[\uac00-\ud7a3\u1100-\u11ff]/;
+  if (cjk.test(name) && !hangul.test(name)) return true;
+  const site = (website || "").toLowerCase();
+  return /\.(cn|com\.cn|jp|tw|hk|sg|vn|th)(\/|$)/.test(site);
+}
 
 type AdvertiserKeyword = {
   keyword_id: number;
@@ -371,6 +377,9 @@ export default function AdvertiserDetailPage() {
   const website = mb?.website || adv?.website;
   const advType = mb?.advertiser_type;
   const industryName = mb?.industry_name;
+  const recentImageAds = (mb?.recent_ads || []).filter(
+    (ad) => ad.creative_image_path || ad.screenshot_path || ad.thumbnail_url
+  );
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl">
@@ -388,6 +397,9 @@ export default function AdvertiserDetailPage() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-gray-900">{advName}</h1>
+            {isForeignAdvertiser(advName, website) && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200">해외</span>
+            )}
             {/* Favorite button with dropdown */}
             {authed && (
             <div className="relative" ref={favDropdownRef}>
@@ -500,12 +512,6 @@ export default function AdvertiserDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <AdvertiserDownloadDropdown advertiserId={id} />
-          <ExportDropdown
-            csvUrl={`/api/export/report/${id}`}
-            xlsxUrl={`/api/export/report/${id}.xlsx`}
-            label="리포트 다운로드"
-          />
           <PeriodSelector days={days} onDaysChange={setDays} />
         </div>
       </div>
@@ -1073,7 +1079,7 @@ export default function AdvertiserDetailPage() {
       })()}
 
       {/* Recent Ads Gallery */}
-      {(mb?.recent_ads || []).length > 0 && (
+      {recentImageAds.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
           <div className="px-6 py-4 border-b border-gray-100">
             <h2 className="text-base font-semibold text-gray-900">
@@ -1084,33 +1090,27 @@ export default function AdvertiserDetailPage() {
             </p>
           </div>
           <div className="p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {(mb?.recent_ads || []).map((ad) => (
+            {recentImageAds.map((ad) => {
+              const imagePath = ad.creative_image_path || ad.screenshot_path || ad.thumbnail_url;
+              return (
               <div
                 key={ad.id}
                 className="group border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
               >
-                {ad.creative_image_path && (
-                  <div className="aspect-[4/3] bg-gray-100 overflow-hidden relative">
-                    <img
-                      src={toImageUrl(ad.creative_image_path) || `/images/${ad.creative_image_path}`}
-                      alt={ad.ad_text || "ad creative"}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                      onError={(e) => {
-                        const el = e.target as HTMLImageElement;
-                        el.style.display = "none";
-                        const placeholder = el.nextElementSibling as HTMLElement;
-                        if (placeholder) placeholder.style.display = "flex";
-                      }}
-                    />
-                    <div className="absolute inset-0 items-center justify-center bg-gray-100 text-gray-300" style={{ display: "none" }}>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8">
-                        <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </div>
-                  </div>
-                )}
+                <div className="aspect-[4/3] bg-gray-100 overflow-hidden relative">
+                  <CreativeImage
+                    path={imagePath}
+                    alt={ad.ad_text || "ad creative"}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    fallback={
+                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-300">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8">
+                          <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                    }
+                  />
+                </div>
                 <div className="p-2.5">
                   <div className="flex items-center gap-1.5 mb-1">
                     <span
@@ -1139,7 +1139,8 @@ export default function AdvertiserDetailPage() {
                   )}
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
       )}

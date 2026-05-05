@@ -1,8 +1,20 @@
 # AdScope Latest Worklog
 
-Last updated: 2026-04-24 22:23 KST
+Last updated: 2026-05-04 KST
 
 Archive detail: `docs/archive/adscope_worklog_2026-04-24.md`
+Latest Claude handoff: `docs/CLAUDE_HANDOFF_2026-05-04.md`
+
+## 2026-05-04 Batch Fix Notes
+
+- Prepared Claude-visible handoff in `docs/CLAUDE_HANDOFF_2026-05-04.md`.
+- Meta signal ranking: added advertiser quality filtering so person-name, placeholder, duplicate, low-confidence, and platform-profile advertisers do not dominate activity ranking.
+- Social content performance: removed Facebook selector/copy because only YouTube and Instagram brand-channel content is collected; backend charts now use the same platform filter.
+- Buzz alerts: removed nameless stale advertiser alerts by joining to existing advertisers; cards now show score direction, recent/previous score, main driver, and date.
+- Deployment rule: use `scripts/deploy_railway_batch.ps1` and deploy only when explicitly requested.
+- Final batch deployment completed:
+  - Backend `887be90e-a925-4013-8890-112c010dacad` - `SUCCESS`
+  - Frontend `1455652f-f7e4-4542-a55e-beea2eb78102` - `SUCCESS`
 
 ## Current Status
 

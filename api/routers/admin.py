@@ -17,7 +17,7 @@ from database import get_db
 from database.models import (
     AdDetail, AdSnapshot, Advertiser, Keyword, Persona, Industry, User,
     BrandChannelContent, ChannelStats, SmartStoreSnapshot, TrafficSignal,
-    ActivityScore, MetaSignalComposite, PaymentRecord,
+    ActivityScore, MetaSignalComposite, PaymentRecord, SiteAccessLog,
 )
 from database.schemas import CSVImportResult
 
@@ -159,6 +159,93 @@ async def admin_stats(
         "latest_crawl": latest_crawl,
         "db_size_mb": db_size_mb,
         "server_time": now_kst.isoformat(),
+    }
+
+
+@router.get("/access-logs")
+async def access_logs(
+    days: int = 7,
+    limit: int = 200,
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(require_admin),
+):
+    """Recent site/API access details for admin traffic inspection."""
+    days = max(1, min(days, 90))
+    limit = max(1, min(limit, 1000))
+    since = datetime.utcnow() - timedelta(days=days)
+
+    total = (await db.execute(
+        select(func.count(SiteAccessLog.id)).where(SiteAccessLog.ts >= since)
+    )).scalar() or 0
+    unique_ips = (await db.execute(
+        select(func.count(func.distinct(SiteAccessLog.ip_address)))
+        .where(SiteAccessLog.ts >= since)
+    )).scalar() or 0
+    bot_hits = (await db.execute(
+        select(func.count(SiteAccessLog.id))
+        .where(SiteAccessLog.ts >= since, SiteAccessLog.is_bot == True)
+    )).scalar() or 0
+    error_hits = (await db.execute(
+        select(func.count(SiteAccessLog.id))
+        .where(SiteAccessLog.ts >= since, SiteAccessLog.status_code >= 400)
+    )).scalar() or 0
+
+    top_paths_q = await db.execute(
+        select(SiteAccessLog.path, func.count(SiteAccessLog.id).label("hits"))
+        .where(SiteAccessLog.ts >= since)
+        .group_by(SiteAccessLog.path)
+        .order_by(text("hits DESC"))
+        .limit(20)
+    )
+    top_referrers_q = await db.execute(
+        select(SiteAccessLog.referer, func.count(SiteAccessLog.id).label("hits"))
+        .where(SiteAccessLog.ts >= since, SiteAccessLog.referer.isnot(None))
+        .group_by(SiteAccessLog.referer)
+        .order_by(text("hits DESC"))
+        .limit(20)
+    )
+    top_ips_q = await db.execute(
+        select(SiteAccessLog.ip_address, func.count(SiteAccessLog.id).label("hits"))
+        .where(SiteAccessLog.ts >= since)
+        .group_by(SiteAccessLog.ip_address)
+        .order_by(text("hits DESC"))
+        .limit(20)
+    )
+    recent_q = await db.execute(
+        select(SiteAccessLog)
+        .where(SiteAccessLog.ts >= since)
+        .order_by(SiteAccessLog.ts.desc())
+        .limit(limit)
+    )
+
+    return {
+        "days": days,
+        "summary": {
+            "total_hits": total,
+            "unique_ips": unique_ips,
+            "bot_hits": bot_hits,
+            "error_hits": error_hits,
+        },
+        "top_paths": [{"path": r[0], "hits": r[1]} for r in top_paths_q.all()],
+        "top_referrers": [{"referer": r[0], "hits": r[1]} for r in top_referrers_q.all()],
+        "top_ips": [{"ip_address": r[0], "hits": r[1]} for r in top_ips_q.all()],
+        "recent": [
+            {
+                "id": row.id,
+                "ts": row.ts.isoformat() if row.ts else None,
+                "method": row.method,
+                "path": row.path,
+                "query_string": row.query_string,
+                "status_code": row.status_code,
+                "duration_ms": row.duration_ms,
+                "ip_address": row.ip_address,
+                "user_agent": row.user_agent,
+                "referer": row.referer,
+                "accept_language": row.accept_language,
+                "is_bot": row.is_bot,
+            }
+            for row in recent_q.scalars().all()
+        ],
     }
 
 

@@ -1130,6 +1130,69 @@ function StatCard({ label, value }: { label: string; value: string }) {
   );
 }
 
+// ── 광고주 / 캠페인 목록 다운로드 ──
+function ListDownloadPanel() {
+  const download = async (url: string) => {
+    await authDownload(url);
+  };
+
+  const items = [
+    {
+      key: "advertiser-xlsx",
+      icon: "XLS",
+      iconColor: "bg-green-100 text-green-700",
+      title: "광고주 목록",
+      desc: "전체 광고주 명단, 업종, 채널, 광고비 Excel",
+      onClick: () => download("/api/export/advertisers.xlsx"),
+    },
+    {
+      key: "advertiser-csv",
+      icon: "CSV",
+      iconColor: "bg-gray-100 text-gray-600",
+      title: "광고주 목록 (CSV)",
+      desc: "간략 광고주 목록 CSV",
+      onClick: () => download("/api/export/advertisers"),
+    },
+    {
+      key: "ad-report-single",
+      icon: "ZIP",
+      iconColor: "bg-teal-100 text-teal-700",
+      title: "광고주별 보고서 (ZIP)",
+      desc: "특정 광고주의 PPTX + PDF + Excel 묶음 — 아래 '맞춤 보고서'에서 생성",
+      onClick: null,
+    },
+  ];
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+      <div className="flex items-center gap-2 mb-1">
+        <div className="w-6 h-6 rounded bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">↓</div>
+        <h2 className="text-lg font-bold text-gray-900">광고주 & 캠페인 목록</h2>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {items.map((item) => (
+          <button
+            key={item.key}
+            onClick={item.onClick ?? undefined}
+            disabled={!item.onClick}
+            className={`text-left rounded-lg border p-4 transition-colors ${
+              item.onClick
+                ? "border-gray-200 hover:bg-gray-50 hover:border-gray-300 cursor-pointer"
+                : "border-gray-100 bg-gray-50 cursor-default opacity-70"
+            }`}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className={`w-7 h-7 rounded flex items-center justify-center text-[10px] font-bold ${item.iconColor}`}>{item.icon}</span>
+              <span className="text-sm font-semibold text-gray-900">{item.title}</span>
+            </div>
+            <p className="text-xs text-gray-400">{item.desc}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Scope별 Raw Data 다운로드 ──
 type ScopeTab = "ad" | "social" | "shop";
 
@@ -1369,9 +1432,19 @@ export default function ReportsPage() {
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">보고서</h1>
-            <p className="text-sm text-gray-500">Scope별 Raw Data 다운로드 및 맞춤 보고서 생성</p>
+            <h1 className="text-2xl font-bold text-gray-900">보고서 & 자료 다운로드</h1>
+            <p className="text-sm text-gray-500">광고주 목록, 광고 소재, 소셜 소재, 맞춤 보고서를 한 곳에서 내려받으세요.</p>
           </div>
+        </div>
+
+        {/* 광고주 목록 */}
+        <ListDownloadPanel />
+
+        {/* 구분선 */}
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-gray-200" />
+          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">소재 & 원자료 다운로드</span>
+          <div className="h-px flex-1 bg-gray-200" />
         </div>
 
         {/* Scope별 Raw Data 다운로드 */}

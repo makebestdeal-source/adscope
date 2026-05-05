@@ -44,7 +44,9 @@ async def list_industries(db: AsyncSession = Depends(get_db)):
     if not industries:
         return []
 
-    # Batch: count distinct advertisers with ads in last 30 days, per industry
+    industry_ids = [i.id for i in industries]
+
+    # 최근 30일 광고 집행 광고주 수 (ad_details JOIN)
     count_result = await db.execute(
         select(
             Advertiser.industry_id,
@@ -53,7 +55,7 @@ async def list_industries(db: AsyncSession = Depends(get_db)):
         .join(AdDetail, AdDetail.advertiser_id == Advertiser.id)
         .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
         .where(
-            Advertiser.industry_id.in_([i.id for i in industries]),
+            Advertiser.industry_id.in_(industry_ids),
             AdSnapshot.captured_at >= cutoff,
             or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected"),
         )
@@ -61,15 +63,29 @@ async def list_industries(db: AsyncSession = Depends(get_db)):
     )
     count_map: dict[int, int] = {row[0]: row[1] for row in count_result.all()}
 
+    # Fallback: 전체 광고주 수 (ad JOIN 없이) — ad 연결이 누락된 경우 보완
+    total_adv_result = await db.execute(
+        select(
+            Advertiser.industry_id,
+            func.count(Advertiser.id).label("cnt"),
+        )
+        .where(Advertiser.industry_id.in_(industry_ids))
+        .group_by(Advertiser.industry_id)
+    )
+    total_adv_map: dict[int, int] = {row[0]: row[1] for row in total_adv_result.all()}
+
     items = []
     for ind in industries:
+        # 최근 광고 집행 수 우선, 없으면 전체 등록 광고주 수
+        ad_count = count_map.get(ind.id, 0)
+        fallback = total_adv_map.get(ind.id, 0)
         items.append(
             IndustryOut(
                 id=ind.id,
                 name=ind.name,
                 avg_cpc_min=ind.avg_cpc_min,
                 avg_cpc_max=ind.avg_cpc_max,
-                advertiser_count=count_map.get(ind.id, 0),
+                advertiser_count=ad_count if ad_count > 0 else fallback,
             )
         )
     return items

@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from api.deps import get_current_user, require_paid
+from api.services.advertiser_quality import is_meta_signal_eligible_advertiser
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -279,6 +280,7 @@ async def get_top_active_advertisers(
 ):
     """Get top advertisers by meta-signal composite score (for dashboard widget)."""
     cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
+    candidate_limit = min(max(limit * 20, 100), 1000)
 
     # Subquery: latest date per advertiser
     latest_sub = (
@@ -303,6 +305,10 @@ async def get_top_active_advertisers(
             MetaSignalComposite.date,
             Advertiser.name,
             Advertiser.brand_name,
+            Advertiser.advertiser_type,
+            Advertiser.website,
+            Advertiser.official_channels,
+            Advertiser.smartstore_url,
             ActivityScore.activity_state,
         )
         .join(
@@ -321,12 +327,22 @@ async def get_top_active_advertisers(
             ),
         )
         .order_by(MetaSignalComposite.composite_score.desc())
-        .limit(limit)
+        .limit(candidate_limit)
     )
 
     rows = result.fetchall()
-    return [
-        {
+    items = []
+    for r in rows:
+        if not is_meta_signal_eligible_advertiser(
+            name=r[7],
+            brand_name=r[8],
+            advertiser_type=r[9],
+            website=r[10],
+            official_channels=r[11],
+            smartstore_url=r[12],
+        ):
+            continue
+        items.append({
             "advertiser_id": r[0],
             "composite_score": r[1],
             "spend_multiplier": r[2],
@@ -336,7 +352,8 @@ async def get_top_active_advertisers(
             "date": r[6].isoformat() if r[6] else None,
             "advertiser_name": r[7],
             "brand_name": r[8],
-            "activity_state": r[9],
-        }
-        for r in rows
-    ]
+            "activity_state": r[13],
+        })
+        if len(items) >= limit:
+            break
+    return items

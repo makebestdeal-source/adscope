@@ -132,21 +132,38 @@ export default function BuzzDashboardPage() {
           {/* Buzz Alerts */}
           {alerts && alerts.length > 0 && (
             <div className="bg-white rounded-xl p-6 shadow-sm border">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">버즈 알림</h2>
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">버즈 알림</h2>
+                <p className="text-xs text-gray-500 mt-1">최근 측정일의 종합 버즈 점수가 직전 측정일 대비 크게 변한 광고주입니다</p>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {alerts.slice(0, 6).map((a: any, i: number) => (
-                  <div key={i} className={`rounded-lg p-4 border ${a.direction === "up" ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}>
-                    <div className="flex items-center justify-between">
-                      <Link href={`/advertisers/${a.advertiser_id}`} className="font-medium text-gray-900 hover:text-indigo-600">
-                        {a.advertiser_name}
-                      </Link>
-                      <span className={`text-sm font-bold ${a.direction === "up" ? "text-green-600" : "text-red-600"}`}>
-                        {a.direction === "up" ? "+" : ""}{a.change_pct}%
-                      </span>
+                {alerts.slice(0, 6).map((a: any) => {
+                  const isUp = a.direction === "up";
+                  const dateText = typeof a.date === "string" ? a.date.slice(0, 10) : "";
+                  return (
+                    <div key={a.advertiser_id} className={`rounded-lg p-4 border ${isUp ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <Link href={`/advertisers/${a.advertiser_id}`} className="font-medium text-gray-900 hover:text-indigo-600 truncate block">
+                            {a.advertiser_name || `광고주 ${a.advertiser_id}`}
+                          </Link>
+                          <p className={`text-xs mt-1 ${isUp ? "text-green-700" : "text-red-700"}`}>
+                            버즈 점수 {isUp ? "급등" : "급락"}
+                          </p>
+                        </div>
+                        <span className={`text-sm font-bold ${isUp ? "text-green-600" : "text-red-600"}`}>
+                          {isUp ? "+" : ""}{a.change_pct}%
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 mt-3">
+                        최근 {a.latest_score}점 / 직전 {a.prev_score}점
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        주요 변화: {a.driver || "종합 점수"}{dateText ? ` · ${dateText}` : ""}
+                      </p>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">{a.latest_score} (이전 {a.prev_score})</p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

@@ -4,12 +4,19 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 
-from api.deps import get_current_user, require_paid
-from sqlalchemy import and_, case, func, select
+from api.services.advertiser_links import (
+    needs_context_advertiser_name,
+    resolve_profile_advertiser_id,
+)
+from api.services.advertiser_names import (
+    campaign_display_fields,
+)
+from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
 from database.models import (
+    AdDetail,
     Advertiser,
     Campaign,
     CampaignLift,
@@ -22,6 +29,84 @@ from database.models import (
 router = APIRouter(prefix="/api/campaign-effect", tags=["campaign-effect"])
 
 KST = timezone(timedelta(hours=9))
+
+
+async def _display_spend(db: AsyncSession, campaign_id: int, fallback) -> int | None:
+    """Return spend only when the estimate has enough evidence for UI display."""
+    rows = (
+        await db.execute(
+            select(
+                SpendEstimate.est_daily_spend,
+                SpendEstimate.confidence,
+                SpendEstimate.calculation_method,
+            ).where(SpendEstimate.campaign_id == campaign_id)
+        )
+    ).all()
+    if not rows:
+        return round(fallback or 0) if fallback else None
+
+    total = sum(float(r.est_daily_spend or 0) for r in rows)
+    if (
+        len(rows) == 1
+        and rows[0].calculation_method == "market_share_inverse"
+        and float(rows[0].confidence or 0) <= 0.4
+    ):
+        return None
+    return round(total or fallback or 0) if (total or fallback) else None
+
+
+def _needs_subject(advertiser_name) -> bool:
+    return needs_context_advertiser_name(advertiser_name)
+
+
+def _as_id_list(value) -> list[int]:
+    if not value:
+        return []
+    if isinstance(value, list):
+        return [int(v) for v in value if str(v).isdigit()]
+    if isinstance(value, str):
+        import json
+        try:
+            parsed = json.loads(value)
+            if isinstance(parsed, list):
+                return [int(v) for v in parsed if str(v).isdigit()]
+        except Exception:
+            return [int(v) for v in value.split(",") if v.strip().isdigit()]
+    return []
+
+
+async def _first_ad_context(db: AsyncSession, creative_ids) -> dict:
+    ids = _as_id_list(creative_ids)[:5]
+    if not ids:
+        return {}
+    row = (
+        await db.execute(
+            select(
+                AdDetail.advertiser_name_raw,
+                AdDetail.ad_text,
+                AdDetail.url,
+                AdDetail.brand,
+                AdDetail.extra_data,
+            ).where(AdDetail.id.in_(ids)).limit(1)
+        )
+    ).first()
+    if not row:
+        return {}
+    return {
+        "advertiser_name_raw": row.advertiser_name_raw,
+        "ad_text": row.ad_text,
+        "url": row.url,
+        "brand": row.brand,
+        "extra_data": row.extra_data,
+    }
+
+
+def _context_brand_name(brand_name, advertiser_name, ad_ctx: dict):
+    if brand_name:
+        return brand_name
+    if _needs_subject(advertiser_name):
+        return ad_ctx.get("brand") or ad_ctx.get("advertiser_name_raw")
+    return None
 
 
 @router.get("/overview")
@@ -45,6 +130,26 @@ async def campaign_effect_overview(
     adv = (
         await db.execute(select(Advertiser).where(Advertiser.id == campaign.advertiser_id))
     ).scalar_one_or_none()
+    ad_ctx = await _first_ad_context(db, campaign.creative_ids)
+    display = campaign_display_fields(
+        campaign_name=campaign.campaign_name,
+        advertiser_name=adv.name if adv else None,
+        brand_name=_context_brand_name(adv.brand_name if adv else None, adv.name if adv else None, ad_ctx),
+        website=adv.website if adv else None,
+        url=ad_ctx.get("url"),
+        ad_text=ad_ctx.get("ad_text"),
+        product_service=campaign.product_service,
+        model_info=campaign.model_info,
+        promotion_copy=campaign.promotion_copy,
+        extra_data=ad_ctx.get("extra_data"),
+        campaign_id=campaign.id,
+    )
+    profile_advertiser_id = await resolve_profile_advertiser_id(
+        db,
+        current_id=campaign.advertiser_id,
+        current_name=adv.name if adv else None,
+        display_name=display["advertiser_name"],
+    )
 
     # Use SUM(SpendEstimate) for consistency with campaigns.py
     spend_sum = (
@@ -55,18 +160,22 @@ async def campaign_effect_overview(
         )
     ) or campaign.total_est_spend or 0
 
+    display_spend = await _display_spend(db, campaign_id, spend_sum)
+
     return {
         "campaign_id": campaign.id,
-        "campaign_name": campaign.campaign_name or f"Campaign #{campaign.id}",
-        "advertiser_id": campaign.advertiser_id,
-        "advertiser_name": adv.name if adv else "",
+        "campaign_name": display["campaign_name"],
+        "advertiser_id": profile_advertiser_id or campaign.advertiser_id,
+        "source_advertiser_id": campaign.advertiser_id,
+        "profile_link_resolved": bool(profile_advertiser_id and profile_advertiser_id != campaign.advertiser_id),
+        "advertiser_name": display["advertiser_name"],
         "channel": campaign.channel,
         "channels": campaign.channels,
         "objective": campaign.objective,
         "status": campaign.status,
         "first_seen": str(campaign.first_seen) if campaign.first_seen else None,
         "last_seen": str(campaign.last_seen) if campaign.last_seen else None,
-        "total_est_spend": spend_sum,
+        "total_est_spend": display_spend,
         "lift": {
             "query_lift_pct": round(lift.query_lift_pct or 0, 1) if lift else None,
             "social_lift_pct": round(lift.social_lift_pct or 0, 1) if lift else None,
@@ -286,8 +395,9 @@ async def campaign_comparison(
     q = q.order_by(Campaign.first_seen.desc()).limit(limit)
     rows = (await db.execute(q)).all()
 
-    return [
-        {
+    items = []
+    for r in rows:
+        items.append({
             "campaign_id": r.id,
             "campaign_name": r.campaign_name or f"Campaign #{r.id}",
             "channel": r.channel,
@@ -295,14 +405,13 @@ async def campaign_comparison(
             "objective": r.objective,
             "first_seen": str(r.first_seen) if r.first_seen else None,
             "last_seen": str(r.last_seen) if r.last_seen else None,
-            "total_est_spend": r.spend or 0,
+            "total_est_spend": await _display_spend(db, r.id, r.spend),
             "query_lift_pct": round(r.query_lift_pct or 0, 1) if r.query_lift_pct else None,
             "social_lift_pct": round(r.social_lift_pct or 0, 1) if r.social_lift_pct else None,
             "sales_lift_pct": round(r.sales_lift_pct or 0, 1) if r.sales_lift_pct else None,
             "confidence": round(r.confidence or 0, 2) if r.confidence else None,
-        }
-        for r in rows
-    ]
+        })
+    return items
 
 
 @router.get("/campaigns")
@@ -324,11 +433,23 @@ async def list_campaigns_for_effect(
             Campaign.last_seen,
             Campaign.is_active,
             Campaign.total_est_spend,
+            Campaign.product_service,
+            Campaign.model_info,
+            Campaign.promotion_copy,
+            Campaign.creative_ids,
             Advertiser.id.label("advertiser_id"),
             Advertiser.name.label("advertiser_name"),
+            Advertiser.brand_name.label("brand_name"),
+            Advertiser.website.label("website"),
         )
         .join(Advertiser, Advertiser.id == Campaign.advertiser_id)
+        .join(CampaignLift, CampaignLift.campaign_id == Campaign.id)
         .where(Campaign.first_seen >= cutoff)
+        .where(
+            (CampaignLift.query_lift_pct.isnot(None))
+            | (CampaignLift.social_lift_pct.isnot(None))
+            | (CampaignLift.sales_lift_pct.isnot(None))
+        )
     )
     if advertiser_id:
         q = q.where(Campaign.advertiser_id == advertiser_id)
@@ -336,17 +457,43 @@ async def list_campaigns_for_effect(
     q = q.order_by(Campaign.first_seen.desc()).limit(limit)
     rows = (await db.execute(q)).all()
 
-    return [
-        {
+    items = []
+    for r in rows:
+        ad_ctx = await _first_ad_context(db, r.creative_ids)
+        display = campaign_display_fields(
+            campaign_name=r.campaign_name,
+            advertiser_name=r.advertiser_name,
+            brand_name=_context_brand_name(r.brand_name, r.advertiser_name, ad_ctx),
+            website=r.website,
+            url=ad_ctx.get("url"),
+            ad_text=ad_ctx.get("ad_text"),
+            product_service=r.product_service,
+            model_info=r.model_info,
+            promotion_copy=r.promotion_copy,
+            extra_data=ad_ctx.get("extra_data"),
+            campaign_id=r.id,
+        )
+        if _needs_subject(r.advertiser_name) and not display["subject"]:
+            continue
+
+        profile_advertiser_id = await resolve_profile_advertiser_id(
+            db,
+            current_id=r.advertiser_id,
+            current_name=r.advertiser_name,
+            display_name=display["advertiser_name"],
+        )
+
+        items.append({
             "id": r.id,
-            "campaign_name": r.campaign_name or f"Campaign #{r.id}",
+            "campaign_name": display["campaign_name"],
             "channel": r.channel,
             "first_seen": str(r.first_seen) if r.first_seen else None,
             "last_seen": str(r.last_seen) if r.last_seen else None,
             "is_active": r.is_active,
-            "total_est_spend": r.total_est_spend or 0,
-            "advertiser_id": r.advertiser_id,
-            "advertiser_name": r.advertiser_name,
-        }
-        for r in rows
-    ]
+            "total_est_spend": await _display_spend(db, r.id, r.total_est_spend),
+            "advertiser_id": profile_advertiser_id or r.advertiser_id,
+            "source_advertiser_id": r.advertiser_id,
+            "profile_link_resolved": bool(profile_advertiser_id and profile_advertiser_id != r.advertiser_id),
+            "advertiser_name": display["advertiser_name"],
+        })
+    return items

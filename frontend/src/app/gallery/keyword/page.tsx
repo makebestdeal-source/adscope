@@ -5,9 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import { api, type GalleryItem } from "@/lib/api";
 import { CHANNEL_LABELS, CHANNEL_BADGE_COLORS } from "@/lib/constants";
 import { DataFreshness } from "@/components/DataFreshness";
-import { ExportDropdown } from "@/components/ExportDropdown";
 
 const KEYWORD_CHANNELS = ["naver_search", "google_search_ads"];
+const defaultKeywordChannels = () => new Set(KEYWORD_CHANNELS);
 
 function getKeywordLabel(item: GalleryItem) {
   return item.keyword || item.search_keyword || null;
@@ -21,7 +21,9 @@ function getDisplayDate(item: GalleryItem) {
 }
 
 export default function KeywordCreativesPage() {
-  const [selectedChannels, setSelectedChannels] = useState<Set<string>>(new Set());
+  const [selectedChannels, setSelectedChannels] = useState<Set<string>>(
+    defaultKeywordChannels()
+  );
   const [advertiserSearch, setAdvertiserSearch] = useState("");
   const [keywordSearch, setKeywordSearch] = useState("");
   const [dateFrom, setDateFrom] = useState("");
@@ -32,13 +34,15 @@ export default function KeywordCreativesPage() {
   const dateRangeInvalid = dateFrom && dateTo && dateTo < dateFrom;
 
   const queryParams = useMemo(() => {
-    const params: Record<string, string | number> = {
+    const params: Record<string, string | number | string[]> = {
       limit: ITEMS_PER_PAGE,
       offset: page * ITEMS_PER_PAGE,
       source: "ads",
     };
     if (selectedChannels.size === 1) {
       params.channel = Array.from(selectedChannels)[0];
+    } else if (selectedChannels.size > 1) {
+      params.channels = Array.from(selectedChannels);
     }
     if (advertiserSearch.trim()) params.advertiser = advertiserSearch.trim();
     if (dateFrom) params.date_from = dateFrom;
@@ -55,9 +59,10 @@ export default function KeywordCreativesPage() {
   // 키워드 채널만 필터링 + 멀티채널 필터 + 키워드 텍스트 검색
   const filteredItems = useMemo(() => {
     if (!data?.items) return [];
+    if (selectedChannels.size === 0) return [];
     return data.items.filter((item) => {
       if (!KEYWORD_CHANNELS.includes(item.channel)) return false;
-      if (selectedChannels.size > 1 && !selectedChannels.has(item.channel)) return false;
+      if (!selectedChannels.has(item.channel)) return false;
       if (keywordSearch.trim()) {
         const q = keywordSearch.trim().toLowerCase();
         const kw = (item.keyword || item.search_keyword || "").toLowerCase();
@@ -82,7 +87,7 @@ export default function KeywordCreativesPage() {
   }, []);
 
   const clearFilters = useCallback(() => {
-    setSelectedChannels(new Set());
+    setSelectedChannels(defaultKeywordChannels());
     setAdvertiserSearch("");
     setKeywordSearch("");
     setDateFrom("");
@@ -185,7 +190,6 @@ export default function KeywordCreativesPage() {
           <p className="text-sm text-gray-500">
             <span className="font-semibold text-gray-900">{filteredItems.length.toLocaleString()}</span> / {totalItems.toLocaleString()}개 소재
           </p>
-          <ExportDropdown csvUrl="/api/export/gallery" xlsxUrl="/api/export/gallery.xlsx" />
         </div>
         {totalPages > 1 && (
           <div className="flex items-center gap-2">

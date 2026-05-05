@@ -12,7 +12,7 @@ from pathlib import Path
 
 from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 import bcrypt
 from sqlalchemy import select, text
@@ -25,12 +25,12 @@ from api.routers import (
     events, export, impact, industries, master_index,
     marketing_schedule, meta_signals, mobile_panel, payments, launch_impact,
     products, public as public_router, shopping_analytics, shopping_keywords,
-    shopping_ranking_v2, smartstore, social_channels, social_impact, social_ranking,
+    reports, shopping_ranking_v2, smartstore, social_channels, social_impact, social_ranking,
     spend, staging, stealth_surf, target_audience, trends,
 )
 from api.deps import require_admin
 from database import async_session, init_db
-from database.models import User
+from database.models import SiteAccessLog, User
 
 logger = logging.getLogger("adscope.api")
 
@@ -177,6 +177,10 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        if request.url.path.startswith(("/api", "/images", "/screenshots")):
+            response.headers["X-Robots-Tag"] = (
+                "noindex, nofollow, noarchive, nosnippet, noimageindex"
+            )
         return response
 
 
@@ -184,17 +188,68 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 # Request logging middleware
 # ---------------------------------------------------------------------------
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
+    _SKIP_PREFIXES = (
+        "/_next",
+        "/images",
+        "/screenshots",
+        "/favicon",
+        "/icons",
+    )
+    _SKIP_PATHS = {"/health", "/api/events/stream"}
+    _BOT_MARKERS = (
+        "bot", "crawler", "spider", "slurp", "googlebot", "bingbot",
+        "naverbot", "yeti", "daum", "kakaotalk-scrap", "facebookexternalhit",
+    )
+
+    @classmethod
+    def _should_store(cls, path: str) -> bool:
+        if path in cls._SKIP_PATHS:
+            return False
+        return not any(path.startswith(prefix) for prefix in cls._SKIP_PREFIXES)
+
+    @classmethod
+    def _client_ip(cls, request: Request) -> str:
+        forwarded = request.headers.get("X-Forwarded-For")
+        if forwarded:
+            return forwarded.split(",", 1)[0].strip()
+        real_ip = request.headers.get("X-Real-IP")
+        if real_ip:
+            return real_ip.strip()
+        return request.client.host if request.client else "unknown"
+
     async def dispatch(self, request: Request, call_next):
         start = time.time()
         response = await call_next(request)
         duration = time.time() - start
+        path = request.url.path
+        client_ip = self._client_ip(request)
+        user_agent = request.headers.get("User-Agent", "")[:500]
         logger.info(
-            "%s %s -> %d (%.2fs)",
+            "%s %s -> %d (%.2fs) ip=%s",
             request.method,
-            request.url.path,
+            path,
             response.status_code,
             duration,
+            client_ip,
         )
+        if self._should_store(path):
+            try:
+                async with async_session() as session:
+                    session.add(SiteAccessLog(
+                        method=request.method,
+                        path=path[:500],
+                        query_string=(request.url.query or None),
+                        status_code=response.status_code,
+                        duration_ms=int(duration * 1000),
+                        ip_address=client_ip[:45],
+                        user_agent=user_agent,
+                        referer=(request.headers.get("Referer") or None),
+                        accept_language=(request.headers.get("Accept-Language") or None),
+                        is_bot=any(m in user_agent.lower() for m in self._BOT_MARKERS),
+                    ))
+                    await session.commit()
+            except Exception:
+                logger.debug("Failed to persist site access log", exc_info=True)
         return response
 
 
@@ -259,6 +314,7 @@ app.include_router(social_impact.router)
 app.include_router(payments.router)
 app.include_router(advertiser_trends.router)
 app.include_router(export.router)
+app.include_router(reports.router)
 app.include_router(events.router)
 app.include_router(staging.router)
 app.include_router(launch_impact.router)
@@ -290,9 +346,26 @@ app.include_router(shopping_ranking_v2.router)
 # ---------------------------------------------------------------------------
 
 # 로컬 이미지 스토리지 서빙
-_image_dir = Path(os.getenv("IMAGE_STORE_DIR", "stored_images"))
-if _image_dir.exists():
-    app.mount("/images", StaticFiles(directory=str(_image_dir)), name="images")
+_image_dir = Path(os.getenv("IMAGE_STORE_DIR", "stored_images")).resolve()
+_public_image_base_url = os.getenv(
+    "IMAGE_PUBLIC_BASE_URL",
+    "https://pub-212e20fe661343f2816c81f3ebc9b26b.r2.dev",
+).rstrip("/")
+
+
+@app.get("/images/{image_path:path}", include_in_schema=False)
+async def serve_image(image_path: str):
+    """Serve local images in development, redirect to R2 in production."""
+    safe_path = image_path.replace("\\", "/").lstrip("/")
+    local_path = (_image_dir / safe_path).resolve()
+    if str(local_path).startswith(str(_image_dir)) and local_path.is_file():
+        return FileResponse(local_path)
+    if _public_image_base_url:
+        return RedirectResponse(
+            url=f"{_public_image_base_url}/{safe_path}",
+            status_code=302,
+        )
+    raise HTTPException(status_code=404, detail="Image not found")
 
 # screenshots 디렉토리 서빙 (backfill 이미지 등)
 _screenshots_dir = Path("screenshots")

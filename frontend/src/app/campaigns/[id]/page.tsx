@@ -14,7 +14,7 @@ import {
   type CampaignEffect,
 } from "@/lib/api";
 import { isAuthenticated } from "@/lib/auth";
-import { parseImagePath } from "@/lib/image-utils";
+import { CreativeImage } from "@/components/CreativeImage";
 import { formatSpend } from "@/lib/constants";
 
 /* ── 상수 ── */
@@ -484,9 +484,6 @@ function LiftCard({
 const TEXT_AD_CHANNELS = new Set(["naver_search", "google_search_ads"]);
 
 function CreativeCard({ creative }: { creative: CampaignCreative }) {
-  const parsed = parseImagePath(creative.creative_image_path);
-  const [imgError, setImgError] = useState(false);
-  const showImage = parsed && !imgError;
   const isText = TEXT_AD_CHANNELS.has(creative.channel);
 
   const domain = (() => {
@@ -497,7 +494,14 @@ function CreativeCard({ creative }: { creative: CampaignCreative }) {
   return (
     <div className="rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
       <div className="relative aspect-[4/3] bg-gray-100">
-        {isText ? (
+        {creative.creative_image_path ? (
+          <CreativeImage
+            path={creative.creative_image_path}
+            alt={creative.advertiser_name_raw || creative.ad_text || "creative"}
+            className="w-full h-full object-cover"
+            fallback={<CreativeTextPreview creative={creative} domain={domain} isText={isText} />}
+          />
+        ) : (
           <div className={`w-full h-full flex flex-col justify-center p-2 ${
             creative.channel === "naver_search" ? "bg-[#f0f8ff]" : "bg-[#f8fff0]"
           }`}>
@@ -505,18 +509,6 @@ function CreativeCard({ creative }: { creative: CampaignCreative }) {
             <p className="text-xs font-semibold text-gray-800 line-clamp-2 mt-0.5">
               {creative.ad_text || "-"}
             </p>
-          </div>
-        ) : showImage ? (
-          <img
-            src={parsed.url}
-            alt={creative.advertiser_name_raw || "creative"}
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="text-gray-400 text-xs">이미지 없음</span>
           </div>
         )}
       </div>
@@ -526,6 +518,27 @@ function CreativeCard({ creative }: { creative: CampaignCreative }) {
           <p className="text-xs text-gray-700 line-clamp-2 mt-0.5">{creative.ad_text}</p>
         )}
       </div>
+    </div>
+  );
+}
+
+function CreativeTextPreview({
+  creative,
+  domain,
+  isText,
+}: {
+  creative: CampaignCreative;
+  domain: string;
+  isText: boolean;
+}) {
+  return (
+    <div className={`w-full h-full flex flex-col justify-center p-2 ${
+      isText ? (creative.channel === "naver_search" ? "bg-[#f0f8ff]" : "bg-[#f8fff0]") : "bg-gray-50"
+    }`}>
+      <p className="text-[10px] text-gray-500 truncate">{domain}</p>
+      <p className="text-xs font-semibold text-gray-800 line-clamp-2 mt-0.5">
+        {creative.ad_text || "이미지 없음"}
+      </p>
     </div>
   );
 }

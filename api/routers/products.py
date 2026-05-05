@@ -280,6 +280,23 @@ async def get_category_detail(
 
     direct_ad, direct_adv = stats.get(category.id, (0, 0))
 
+    # 소분류가 있는 대분류인데 직접 배정 광고가 있으면 "미분류" 항목 추가
+    if direct_ad > 0 and children:
+        child_items.append(
+            ProductCategoryTreeOut(
+                id=0,  # 가상 ID
+                name="미분류",
+                parent_id=category.id,
+                industry_id=category.industry_id,
+                children=[],
+                advertiser_count=direct_adv,
+                ad_count=direct_ad,
+            )
+        )
+        total_ad_count += direct_ad
+        total_adv_count += direct_adv
+        direct_ad, direct_adv = 0, 0
+
     # Estimated spend for this category
     cutoff = _now_kst() - timedelta(days=days)
     cutoff_utc = cutoff.astimezone(timezone.utc).replace(tzinfo=None)

@@ -3,7 +3,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { formatChannel as formatChannelLabel } from "@/lib/constants";
-import { DownloadButton } from "./DownloadButtons";
 import { AdTimeline } from "./AdTimeline";
 import { DailyTrendChart } from "./DailyTrendChart";
 import { ChannelDonutChart } from "./ChannelDonutChart";
@@ -234,11 +233,6 @@ export function Dashboard() {
             <h2 className="section-title !mb-0">
               광고 노출 TOP 10 (7일)
             </h2>
-            <DownloadButton
-              url="/api/download/advertiser-list"
-              label="광고주 CSV"
-              icon="csv"
-            />
           </div>
           {topLoading ? (
             <div className="space-y-3">

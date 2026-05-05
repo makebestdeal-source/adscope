@@ -41,7 +41,6 @@ interface ContentAnalysis {
 const PLATFORM_LABELS: Record<string, { label: string; color: string; bg: string }> = {
   youtube: { label: "YouTube", color: "text-red-600", bg: "bg-red-50" },
   instagram: { label: "Instagram", color: "text-pink-600", bg: "bg-pink-50" },
-  meta: { label: "Facebook", color: "text-blue-600", bg: "bg-blue-50" },
 };
 
 function formatNumber(v: number | null): string {
@@ -105,7 +104,6 @@ export default function SocialContentPage() {
             <option value="all">전체 플랫폼</option>
             <option value="youtube">YouTube</option>
             <option value="instagram">Instagram</option>
-            <option value="meta">Facebook</option>
           </select>
           <select value={days} onChange={(e) => setDays(Number(e.target.value))} className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white">
             <option value={7}>7일</option>
@@ -123,7 +121,7 @@ export default function SocialContentPage() {
           <div>
             <p className="font-medium mb-1">콘텐츠 분석 활용법</p>
             <ul className="space-y-0.5 list-disc list-inside text-pink-600">
-              <li>브랜드 공식 채널(YouTube/Instagram/Facebook) 콘텐츠 성과 분석</li>
+              <li>브랜드 공식 채널(YouTube/Instagram) 콘텐츠 성과 분석</li>
               <li>플랫폼별 필터로 채널 비교, 기간 설정으로 트렌드 파악</li>
               <li>광고성 콘텐츠만 필터링하여 브랜드 광고 전략 분석</li>
             </ul>

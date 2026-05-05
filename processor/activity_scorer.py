@@ -17,6 +17,7 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import func, select, and_, text
 
+from api.services.advertiser_quality import is_meta_signal_eligible_advertiser
 from database import async_session
 from database.models import (
     ActivityScore,
@@ -56,28 +57,34 @@ _CHANNEL_TO_NETWORK = {
 async def _get_stealth_contact_rates(session, days: int = 30) -> dict[str, float]:
     """Get stealth surf contact rates per network (cached per call)."""
     since = (datetime.now(UTC).replace(tzinfo=None) - timedelta(days=days)).isoformat()
-    q = text("""
-        SELECT json_extract(extra_data, '$.network') AS net,
-               COUNT(*) AS cnt
-        FROM serpapi_ads
-        WHERE advertiser_name LIKE 'stealth_%'
-          AND collected_at >= :since
-        GROUP BY net
-    """)
-    result = await session.execute(q, {"since": since})
-    rows = result.fetchall()
+    try:
+        q = text("""
+            SELECT json_extract(extra_data, '$.network') AS net,
+                   COUNT(*) AS cnt
+            FROM serpapi_ads
+            WHERE advertiser_name LIKE 'stealth_%'
+              AND collected_at >= :since
+            GROUP BY net
+        """)
+        result = await session.execute(q, {"since": since})
+        rows = result.fetchall()
+    except Exception:
+        return {}
     if not rows:
         return {}
     # Normalize: request counts → 0-100 score per network
     ratios = {"gdn": 50, "naver": 6, "kakao": 6, "meta": 5}
     total_pages = 26  # pages per session
     # Estimate sessions from persona count
-    pq = text("""
-        SELECT COUNT(DISTINCT json_extract(extra_data, '$.persona'))
-        FROM serpapi_ads
-        WHERE advertiser_name LIKE 'stealth_%' AND collected_at >= :since
-    """)
-    persona_count = (await session.execute(pq, {"since": since})).scalar() or 1
+    try:
+        pq = text("""
+            SELECT COUNT(DISTINCT json_extract(extra_data, '$.persona'))
+            FROM serpapi_ads
+            WHERE advertiser_name LIKE 'stealth_%' AND collected_at >= :since
+        """)
+        persona_count = (await session.execute(pq, {"since": since})).scalar() or 1
+    except Exception:
+        persona_count = 1
     scores = {}
     for net, cnt in rows:
         if not net:
@@ -145,6 +152,36 @@ async def calculate_activity_scores(
 
         result = await session.execute(adv_query)
         active_adv_ids = [r[0] for r in result.fetchall()]
+
+        if not active_adv_ids:
+            return {"processed": 0, "created": 0, "updated": 0}
+
+        adv_rows = (
+            await session.execute(
+                select(
+                    Advertiser.id,
+                    Advertiser.name,
+                    Advertiser.brand_name,
+                    Advertiser.advertiser_type,
+                    Advertiser.website,
+                    Advertiser.official_channels,
+                    Advertiser.smartstore_url,
+                ).where(Advertiser.id.in_(active_adv_ids))
+            )
+        ).all()
+        eligible_ids = {
+            row.id
+            for row in adv_rows
+            if is_meta_signal_eligible_advertiser(
+                name=row.name,
+                brand_name=row.brand_name,
+                advertiser_type=row.advertiser_type,
+                website=row.website,
+                official_channels=row.official_channels,
+                smartstore_url=row.smartstore_url,
+            )
+        }
+        active_adv_ids = [adv_id for adv_id in active_adv_ids if adv_id in eligible_ids]
 
         if not active_adv_ids:
             return {"processed": 0, "created": 0, "updated": 0}

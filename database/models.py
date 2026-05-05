@@ -279,6 +279,7 @@ class Advertiser(Base):
     dart_fiscal_year = Column(String(10))             # DART 회계연도
     corp_code = Column(String(20))                    # DART 법인 고유번호
     dart_matched_at = Column(DateTime)                # DART 매칭 완료 시각
+    country = Column(String(10), default="KR")        # 국가 코드 (KR/CN/JP/US 등)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -458,6 +459,30 @@ class LoginHistory(Base):
     __table_args__ = (
         Index("ix_login_history_user", "user_id"),
         Index("ix_login_history_created", "created_at"),
+    )
+
+
+class SiteAccessLog(Base):
+    __tablename__ = "site_access_logs"
+
+    id = Column(Integer, primary_key=True)
+    ts = Column(DateTime, default=datetime.utcnow, nullable=False)
+    method = Column(String(10), nullable=False)
+    path = Column(String(500), nullable=False)
+    query_string = Column(Text, nullable=True)
+    status_code = Column(Integer, nullable=False)
+    duration_ms = Column(Integer, nullable=False)
+    ip_address = Column(String(45), nullable=True)
+    user_agent = Column(String(500), nullable=True)
+    referer = Column(String(1000), nullable=True)
+    accept_language = Column(String(200), nullable=True)
+    is_bot = Column(Boolean, default=False)
+
+    __table_args__ = (
+        Index("ix_site_access_ts", "ts"),
+        Index("ix_site_access_path_ts", "path", "ts"),
+        Index("ix_site_access_ip_ts", "ip_address", "ts"),
+        Index("ix_site_access_bot_ts", "is_bot", "ts"),
     )
 
 

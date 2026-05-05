@@ -4,9 +4,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, AdvertiserSearchResult, BrandTreeChild, BrandTreeGroup, FavoriteAdvertiser } from "@/lib/api";
 import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
-import { ExportDropdown } from "@/components/ExportDropdown";
-import { DownloadButton } from "@/components/DownloadButtons";
 import { isAuthenticated } from "@/lib/auth";
+
+function isForeignAdvertiser(name: string, website?: string | null): boolean {
+  const cjk = /[\u4e00-\u9fff\u3040-\u30ff]/;
+  const hangul = /[\uac00-\ud7a3\u1100-\u11ff]/;
+  if (cjk.test(name) && !hangul.test(name)) return true;
+  const site = (website || "").toLowerCase();
+  return /\.(cn|com\.cn|jp|tw|hk|sg|vn|th)(\/|$)/.test(site);
+}
 
 /* ── Tree Node Component ── */
 function TreeNode({ node, depth = 0 }: { node: BrandTreeChild; depth?: number }) {
@@ -65,6 +71,9 @@ function TreeNode({ node, depth = 0 }: { node: BrandTreeChild; depth?: number })
         >
           {node.name}
         </Link>
+        {isForeignAdvertiser(node.name, node.website) && (
+          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200 leading-none flex-shrink-0">해외</span>
+        )}
 
         {node.brand_name && (
           <span className="text-xs text-gray-400 truncate hidden sm:inline">
@@ -375,18 +384,7 @@ export default function AdvertisersPage() {
             <p className="text-sm text-gray-500">등록된 광고주 목록 및 활동 현황</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <DownloadButton
-            url="/api/download/advertiser-list"
-            label="전체 CSV"
-            icon="csv"
-          />
-          <ExportDropdown
-            csvUrl="/api/export/advertisers"
-            xlsxUrl="/api/export/advertisers.xlsx"
-            label="광고주 목록 다운로드"
-          />
-        </div>
+        <div className="flex items-center gap-2" />
       </div>
 
       {/* 검색 */}

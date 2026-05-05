@@ -68,6 +68,40 @@ def _normalize_image_path(path: str) -> str | None:
     return None
 
 
+def _parse_channel_filters(channel: str | None, channels: str | None) -> list[str]:
+    """Parse single or comma-separated gallery channel filters."""
+    values: list[str] = []
+    for raw in (channel, channels):
+        if not raw:
+            continue
+        values.extend(part.strip() for part in raw.split(",") if part.strip())
+    return list(dict.fromkeys(values))
+
+
+def _gallery_ad_channel_filter(filters: list[str]) -> set[str] | None:
+    """Return ad DB channels for gallery filters.
+
+    None means no filter. Empty set means filters were supplied but no ad
+    channel is valid for them.
+    """
+    if not filters:
+        return None
+    result: set[str] = set()
+    for value in filters:
+        result.update(get_gallery_ad_channels(value) or set())
+    return result
+
+
+def _gallery_social_platform_filter(filters: list[str]) -> set[str] | None:
+    """Return social platforms for gallery filters."""
+    if not filters:
+        return None
+    result: set[str] = set()
+    for value in filters:
+        result.update(get_gallery_social_platforms(value) or set())
+    return result
+
+
 @router.get("/snapshots", response_model=list[AdSnapshotOut])
 async def list_snapshots(
     channel: str | None = None,
@@ -269,6 +303,7 @@ async def daily_trend(
 @router.get("/gallery")
 async def ad_gallery(
     channel: str | None = None,
+    channels: str | None = Query(default=None, description="Comma-separated channel filters"),
     advertiser: str | None = None,
     date_from: datetime | None = None,
     date_to: datetime | None = None,
@@ -282,6 +317,9 @@ async def ad_gallery(
 
     ad_items = []
     social_items = []
+    channel_filters = _parse_channel_filters(channel, channels)
+    ad_channel_filter = _gallery_ad_channel_filter(channel_filters)
+    social_platform_filter = _gallery_social_platform_filter(channel_filters)
 
     # ── 광고 소재 ──
     if source != "social":
@@ -309,9 +347,9 @@ async def ad_gallery(
             .order_by(AdSnapshot.captured_at.desc())
         )
         # 검색소재는 이미지 없어도 포함 (문구+광고주 유지), 그 외는 이미지 필수
-        if channel and channel in SEARCH_CHANNELS:
+        if ad_channel_filter is not None and ad_channel_filter and ad_channel_filter <= SEARCH_CHANNELS:
             pass  # No image filter for search ads
-        elif not channel:
+        elif ad_channel_filter is None:
             if source == "ads":
                 # 이미지 갤러리 전체 조회: 검색 채널 제외 + 이미지 있는 DA 채널만
                 query = query.where(
@@ -331,18 +369,25 @@ async def ad_gallery(
                     )
                 )
         else:
-            query = query.where(AdDetail.creative_image_path.isnot(None))
-            query = query.where(AdDetail.creative_image_path != "")
+            # Mixed channel filters can include both search text ads and image ads.
+            query = query.where(
+                or_(
+                    AdSnapshot.channel.in_(SEARCH_CHANNELS),
+                    and_(
+                        AdDetail.creative_image_path.isnot(None),
+                        AdDetail.creative_image_path != "",
+                    ),
+                )
+            )
 
-        if channel:
+        if ad_channel_filter is not None:
             # Meta 통합: DB에 이미 meta로 저장됨 (facebook/instagram → meta)
-            ad_channels = get_gallery_ad_channels(channel)
-            if not ad_channels:
+            if not ad_channel_filter:
                 query = query.where(false())
-            elif len(ad_channels) == 1:
-                query = query.where(AdSnapshot.channel == next(iter(ad_channels)))
+            elif len(ad_channel_filter) == 1:
+                query = query.where(AdSnapshot.channel == next(iter(ad_channel_filter)))
             else:
-                query = query.where(AdSnapshot.channel.in_(ad_channels))
+                query = query.where(AdSnapshot.channel.in_(ad_channel_filter))
         if advertiser:
             query = query.where(
                 AdDetail.advertiser_name_raw.ilike(f"%{advertiser}%")
@@ -417,14 +462,13 @@ async def ad_gallery(
             .order_by(BrandChannelContent.discovered_at.desc())
         )
 
-        if channel:
-            platforms = get_gallery_social_platforms(channel)
-            if not platforms:
+        if social_platform_filter is not None:
+            if not social_platform_filter:
                 sq = sq.where(false())
-            elif len(platforms) == 1:
-                sq = sq.where(BrandChannelContent.platform == next(iter(platforms)))
+            elif len(social_platform_filter) == 1:
+                sq = sq.where(BrandChannelContent.platform == next(iter(social_platform_filter)))
             else:
-                sq = sq.where(BrandChannelContent.platform.in_(platforms))
+                sq = sq.where(BrandChannelContent.platform.in_(social_platform_filter))
                 # 소셜 콘텐츠에 해당 없는 채널이면 소셜 쿼리 스킵
         if advertiser:
             sq = sq.where(AdvModel.name.ilike(f"%{advertiser}%"))

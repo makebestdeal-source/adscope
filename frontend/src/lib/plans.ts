@@ -78,7 +78,8 @@ export const PLAN_CATALOG: Record<PlanId, PlanPolicy> = {
     features: [
       "Lite 전체 기능",
       "소셜 소재 갤러리 및 소셜 인사이트",
-      "브랜드 채널/버즈/캠페인 효과 분석",
+      "브랜드 채널/버즈 분석",
+      "분석도구 캠페인 효과 분석",
       "다중 광고주 비교 리포트",
       "우선 데이터 보강 요청",
     ],

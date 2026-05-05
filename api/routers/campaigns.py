@@ -7,6 +7,7 @@
   - est_daily_spend: 일별 추정 매체비 (KRW).
 """
 
+import re
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -14,6 +15,14 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.deps import get_current_user, require_paid
+from api.services.advertiser_links import (
+    needs_context_advertiser_name,
+    resolve_profile_advertiser_id,
+)
+from api.services.advertiser_names import (
+    campaign_display_fields,
+    clean_raw_advertiser_name,
+)
 from database import get_db
 from database.models import (
     AdDetail, AdSnapshot, Advertiser, Campaign, CampaignLift, JourneyEvent, SpendEstimate,
@@ -28,6 +37,92 @@ router = APIRouter(
     tags=["campaigns"],
     redirect_slashes=False,
 )
+
+
+def _as_id_list(value) -> list[int]:
+    if not value:
+        return []
+    if isinstance(value, list):
+        return [int(v) for v in value if str(v).isdigit()]
+    if isinstance(value, str):
+        import json
+        try:
+            parsed = json.loads(value)
+            if isinstance(parsed, list):
+                return [int(v) for v in parsed if str(v).isdigit()]
+        except Exception:
+            return [int(v) for v in value.split(",") if v.strip().isdigit()]
+    return []
+
+
+def _has_cjk_without_hangul(text: str) -> bool:
+    """한자/일본어가 있고 한국어(한글)가 없으면 True."""
+    has_cjk = bool(re.search(r"[\u4e00-\u9fff\u3040-\u30ff]", text))
+    has_hangul = bool(re.search(r"[\uac00-\ud7a3\u1100-\u11ff]", text))
+    return has_cjk and not has_hangul
+
+
+def _is_foreign_advertiser(
+    country: str | None,
+    name: str | None,
+    website: str | None,
+    *extra_texts: str | None,
+) -> bool:
+    """국내 광고주(KR) 여부를 판별. 해외이면 True.
+    extra_texts: 캠페인명·표시 광고주명 등 추가 텍스트 필드.
+    """
+    if country and country.upper() != "KR":
+        return True
+    # DB 광고주명 검사
+    if _has_cjk_without_hangul(name or ""):
+        return True
+    # 추가 텍스트 필드 검사 (캠페인명, 표시 광고주명 등)
+    for t in extra_texts:
+        if t and _has_cjk_without_hangul(t):
+            return True
+    # 해외 도메인 TLD
+    site = (website or "").lower()
+    if re.search(r"\.(cn|com\.cn|jp|tw|hk|sg|vn|th)(/|$)", site):
+        return True
+    return False
+
+
+async def _first_ad_context(db: AsyncSession, creative_ids) -> dict:
+    ids = _as_id_list(creative_ids)[:5]
+    if not ids:
+        return {}
+    row = (
+        await db.execute(
+            select(
+                AdDetail.advertiser_name_raw,
+                AdDetail.ad_text,
+                AdDetail.url,
+                AdDetail.brand,
+                AdDetail.extra_data,
+            ).where(AdDetail.id.in_(ids)).limit(1)
+        )
+    ).first()
+    if not row:
+        return {}
+    return {
+        "advertiser_name_raw": row.advertiser_name_raw,
+        "ad_text": row.ad_text,
+        "url": row.url,
+        "brand": row.brand,
+        "extra_data": row.extra_data,
+    }
+
+
+def _needs_subject(advertiser_name) -> bool:
+    return needs_context_advertiser_name(advertiser_name)
+
+
+def _context_brand_name(brand_name, advertiser_name, ad_ctx: dict):
+    if brand_name:
+        return brand_name
+    if _needs_subject(advertiser_name):
+        return ad_ctx.get("brand") or ad_ctx.get("advertiser_name_raw")
+    return None
 
 
 @router.get("", response_model=list[CampaignOut])
@@ -83,10 +178,13 @@ async def list_campaigns_enriched(
             func.min(Campaign.id).label("id"),
             Campaign.advertiser_id,
             Advertiser.name.label("advertiser_name"),
+            func.max(Advertiser.brand_name).label("brand_name"),
+            func.max(Advertiser.website).label("website"),
             month_expr.label("month"),
             product_expr.label("product_service"),
             func.group_concat(Campaign.channel).label("channels_raw"),
             func.group_concat(Campaign.id).label("campaign_ids_raw"),
+            func.max(Campaign.creative_ids).label("creative_ids"),
             func.sum(Campaign.total_est_spend).label("total_est_spend"),
             func.min(Campaign.first_seen).label("first_seen"),
             func.max(Campaign.last_seen).label("last_seen"),
@@ -97,6 +195,7 @@ async def list_campaigns_enriched(
             func.max(Campaign.promotion_copy).label("promotion_copy"),
             func.max(Campaign.status).label("status"),
             func.max(sa_cast(Campaign.is_active, Integer)).label("is_active"),
+            func.max(Advertiser.country).label("advertiser_country"),
         )
         .outerjoin(Advertiser, Campaign.advertiser_id == Advertiser.id)
         .group_by(Campaign.advertiser_id, month_expr, product_expr)
@@ -139,22 +238,50 @@ async def list_campaigns_enriched(
 
     rows = (await db.execute(query.offset(offset).limit(limit))).all()
 
-    items = []
+    raw_items = []
     for r in rows:
         # GROUP_CONCAT 결과에서 채널 중복 제거
         channels = list(dict.fromkeys((r.channels_raw or "").split(",")))
         channels = [c for c in channels if c]
         campaign_ids = [int(x) for x in (r.campaign_ids_raw or "").split(",") if x.strip()]
+        ad_ctx = await _first_ad_context(db, r.creative_ids)
+        display = campaign_display_fields(
+            campaign_name=r.campaign_name,
+            advertiser_name=r.advertiser_name,
+            brand_name=_context_brand_name(r.brand_name, r.advertiser_name, ad_ctx),
+            website=r.website,
+            url=ad_ctx.get("url"),
+            ad_text=ad_ctx.get("ad_text"),
+            product_service=r.product_service,
+            model_info=r.model_info,
+            promotion_copy=r.promotion_copy,
+            extra_data=ad_ctx.get("extra_data"),
+            campaign_id=r.id,
+        )
+        if _needs_subject(r.advertiser_name) and not display["subject"]:
+            continue
 
-        items.append({
+        profile_advertiser_id = await resolve_profile_advertiser_id(
+            db,
+            current_id=r.advertiser_id,
+            current_name=r.advertiser_name,
+            display_name=display["advertiser_name"],
+        )
+        link_resolved = bool(profile_advertiser_id and profile_advertiser_id != r.advertiser_id)
+        resolved_adv_id = profile_advertiser_id or r.advertiser_id
+
+        raw_items.append({
             "id": r.id,
             "campaign_ids": campaign_ids,
-            "advertiser_id": r.advertiser_id,
-            "advertiser_name": r.advertiser_name,
+            "advertiser_id": resolved_adv_id,
+            "source_advertiser_id": r.advertiser_id,
+            "profile_link_resolved": link_resolved,
+            "advertiser_name": display["advertiser_name"],
             "channel": channels[0] if len(channels) == 1 else "multi",
             "channels": channels,
             "month": r.month,
-            "campaign_name": r.campaign_name,
+            "campaign_name": display["campaign_name"],
+            "advertised_subject": display["subject"],
             "objective": r.objective,
             "product_service": r.product_service or None,
             "model_info": r.model_info,
@@ -165,7 +292,42 @@ async def list_campaigns_enriched(
             "total_est_spend": round(r.total_est_spend or 0),
             "snapshot_count": r.snapshot_count or 0,
             "status": r.status,
+            "is_foreign": _is_foreign_advertiser(
+                r.advertiser_country,
+                r.advertiser_name,
+                r.website,
+                display["advertiser_name"],
+                display["campaign_name"],
+            ),
         })
+
+    # advertiser_name + month + product_service 기준 재병합
+    # (동일 브랜드가 복수 advertiser_id로 등록된 케이스 통합)
+    merged: dict[tuple, dict] = {}
+    for item in raw_items:
+        name_key = (item["advertiser_name"] or "").strip().lower()
+        # 이름이 없으면 advertiser_id로 대체 (잘못된 병합 방지)
+        if not name_key:
+            name_key = f"_id_{item['advertiser_id']}"
+        key = (name_key, item["month"], item.get("product_service") or "")
+        if key not in merged:
+            merged[key] = item
+        else:
+            ex = merged[key]
+            ex["campaign_ids"] = list(dict.fromkeys(ex["campaign_ids"] + item["campaign_ids"]))
+            new_ch = ex["channels"] + [c for c in item["channels"] if c not in ex["channels"]]
+            ex["channels"] = new_ch
+            ex["channel"] = new_ch[0] if len(new_ch) == 1 else "multi"
+            ex["total_est_spend"] += item["total_est_spend"]
+            ex["snapshot_count"] += item["snapshot_count"]
+            ex["is_active"] = ex["is_active"] or item["is_active"]
+            ex["is_foreign"] = ex["is_foreign"] or item["is_foreign"]
+            if item["last_seen"] and (not ex["last_seen"] or item["last_seen"] > ex["last_seen"]):
+                ex["last_seen"] = item["last_seen"]
+            if item["first_seen"] and (not ex["first_seen"] or item["first_seen"] < ex["first_seen"]):
+                ex["first_seen"] = item["first_seen"]
+
+    items = list(merged.values())
 
     return {
         "total": total,
@@ -221,14 +383,15 @@ async def get_campaign_detail(campaign_id: int, db: AsyncSession = Depends(get_d
     total_est_spend = 캠페인 누적 추정 매체비 (KRW). Campaign 테이블 컬럼.
     """
     result = await db.execute(
-        select(Campaign, Advertiser.name)
+        select(Campaign, Advertiser)
         .outerjoin(Advertiser, Campaign.advertiser_id == Advertiser.id)
         .where(Campaign.id == campaign_id)
     )
     row = result.first()
     if not row:
         raise HTTPException(status_code=404, detail="Campaign not found")
-    campaign, advertiser_name = row
+    campaign, advertiser = row
+    advertiser_name = advertiser.name if advertiser else None
 
     # 연결 소재 조회 (최대 20건)
     creatives: list[CampaignCreativeItem] = []
@@ -259,7 +422,7 @@ async def get_campaign_detail(campaign_id: int, db: AsyncSession = Depends(get_d
                     extra = None
             creatives.append(CampaignCreativeItem(
                 id=row2.id,
-                advertiser_name_raw=row2.advertiser_name_raw,
+                advertiser_name_raw=clean_raw_advertiser_name(row2.advertiser_name_raw),
                 ad_text=row2.ad_text,
                 ad_type=row2.ad_type,
                 creative_image_path=row2.creative_image_path,
@@ -280,10 +443,41 @@ async def get_campaign_detail(campaign_id: int, db: AsyncSession = Depends(get_d
         )
         fb_row = fb.first()
         if fb_row:
-            advertiser_name = fb_row[0]
+            advertiser_name = clean_raw_advertiser_name(fb_row[0])
+
+    ad_ctx = {}
+    if creatives:
+        first = creatives[0]
+        ad_ctx = {
+            "advertiser_name_raw": first.advertiser_name_raw,
+            "ad_text": first.ad_text,
+            "url": first.url,
+            "extra_data": first.extra_data,
+        }
+    display = campaign_display_fields(
+        campaign_name=campaign.campaign_name,
+        advertiser_name=advertiser_name,
+        brand_name=_context_brand_name(advertiser.brand_name if advertiser else None, advertiser_name, ad_ctx),
+        website=advertiser.website if advertiser else None,
+        url=ad_ctx.get("url"),
+        ad_text=ad_ctx.get("ad_text"),
+        product_service=campaign.product_service,
+        model_info=campaign.model_info,
+        promotion_copy=campaign.promotion_copy,
+        extra_data=ad_ctx.get("extra_data"),
+        campaign_id=campaign.id,
+    )
 
     out = CampaignDetailOut.model_validate(campaign)
-    out.advertiser_name = advertiser_name
+    profile_advertiser_id = await resolve_profile_advertiser_id(
+        db,
+        current_id=campaign.advertiser_id,
+        current_name=advertiser_name,
+        display_name=display["advertiser_name"],
+    )
+    out.advertiser_id = profile_advertiser_id or campaign.advertiser_id
+    out.advertiser_name = display["advertiser_name"]
+    out.campaign_name = display["campaign_name"]
     out.advertiser_exists = advertiser_exists
     out.creatives = creatives
     return out
@@ -342,12 +536,26 @@ async def get_campaign_effect(campaign_id: int, db: AsyncSession = Depends(get_d
         raise HTTPException(status_code=404, detail="Campaign not found")
 
     # 광고주명
-    adv_name = None
+    advertiser = None
     if campaign.advertiser_id:
         adv_result = await db.execute(
-            select(Advertiser.name).where(Advertiser.id == campaign.advertiser_id)
+            select(Advertiser).where(Advertiser.id == campaign.advertiser_id)
         )
-        adv_name = adv_result.scalar_one_or_none()
+        advertiser = adv_result.scalar_one_or_none()
+    ad_ctx = await _first_ad_context(db, campaign.creative_ids)
+    display = campaign_display_fields(
+        campaign_name=campaign.campaign_name,
+        advertiser_name=advertiser.name if advertiser else None,
+        brand_name=_context_brand_name(advertiser.brand_name if advertiser else None, advertiser.name if advertiser else None, ad_ctx),
+        website=advertiser.website if advertiser else None,
+        url=ad_ctx.get("url"),
+        ad_text=ad_ctx.get("ad_text"),
+        product_service=campaign.product_service,
+        model_info=campaign.model_info,
+        promotion_copy=campaign.promotion_copy,
+        extra_data=ad_ctx.get("extra_data"),
+        campaign_id=campaign.id,
+    )
 
     # 총 추정 매체비 = SUM(est_daily_spend) (KRW)
     spend_result = await db.execute(
@@ -385,8 +593,8 @@ async def get_campaign_effect(campaign_id: int, db: AsyncSession = Depends(get_d
 
     return CampaignEffectOut(
         campaign_id=campaign.id,
-        campaign_name=campaign.campaign_name,
-        advertiser_name=adv_name,
+        campaign_name=display["campaign_name"],
+        advertiser_name=display["advertiser_name"],
         objective=campaign.objective,
         status=campaign.status,
         duration_days=duration,

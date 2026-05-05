@@ -14,9 +14,10 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Sequence
 
-from sqlalchemy import func, select, and_, distinct, case, Float, Integer
+from sqlalchemy import func, select, and_, distinct, case, Float, Integer, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.services.advertiser_names import display_market_advertiser_name
 from database.models import (
     AdDetail,
     AdSnapshot,
@@ -106,6 +107,13 @@ def _position_similarity(dist_a: dict[str, int], dist_b: dict[str, int]) -> floa
     return (dot / (mag_a * mag_b)) * 100.0
 
 
+def _live_ad_filter():
+    return or_(
+        AdDetail.verification_status.is_(None),
+        AdDetail.verification_status != "rejected",
+    )
+
+
 # ── Main scoring function ──
 
 
@@ -139,6 +147,7 @@ async def calculate_competitor_affinity(
         .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
         .where(AdDetail.advertiser_id == advertiser_id)
         .where(AdSnapshot.captured_at >= since)
+        .where(_live_ad_filter())
     )
     target_kw_result = await db.execute(target_kw_q)
     target_keyword_ids: set[int] = {r[0] for r in target_kw_result.all() if r[0] is not None}
@@ -150,6 +159,7 @@ async def calculate_competitor_affinity(
         .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
         .where(AdDetail.advertiser_id == advertiser_id)
         .where(AdSnapshot.captured_at >= since)
+        .where(_live_ad_filter())
     )
     target_ch_result = await db.execute(target_ch_q)
     target_channels: set[str] = {r[0] for r in target_ch_result.all() if r[0]}
@@ -164,6 +174,7 @@ async def calculate_competitor_affinity(
         .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
         .where(AdDetail.advertiser_id == advertiser_id)
         .where(AdSnapshot.captured_at >= since)
+        .where(_live_ad_filter())
         .where(AdDetail.position_zone.isnot(None))
         .group_by(AdDetail.position_zone)
     )
@@ -189,9 +200,14 @@ async def calculate_competitor_affinity(
     # 2a: Same industry
     if target.industry_id:
         industry_q = (
-            select(Advertiser.id)
+            select(distinct(Advertiser.id))
+            .select_from(Advertiser)
+            .join(AdDetail, AdDetail.advertiser_id == Advertiser.id)
+            .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
             .where(Advertiser.industry_id == target.industry_id)
             .where(Advertiser.id != advertiser_id)
+            .where(AdSnapshot.captured_at >= since)
+            .where(_live_ad_filter())
         )
         industry_result = await db.execute(industry_q)
         candidate_ids.update(r[0] for r in industry_result.all())
@@ -206,6 +222,7 @@ async def calculate_competitor_affinity(
             .where(AdDetail.advertiser_id.isnot(None))
             .where(AdDetail.advertiser_id != advertiser_id)
             .where(AdSnapshot.captured_at >= since)
+            .where(_live_ad_filter())
         )
         cooccur_result = await db.execute(cooccur_q)
         candidate_ids.update(r[0] for r in cooccur_result.all())
@@ -227,6 +244,7 @@ async def calculate_competitor_affinity(
         .where(AdDetail.advertiser_id.in_(candidate_ids))
         .where(AdSnapshot.captured_at >= since)
         .where(AdSnapshot.keyword_id.isnot(None))
+        .where(_live_ad_filter())
     )
     cand_kw_result = await db.execute(cand_kw_q)
     cand_keywords: dict[int, set[int]] = {}
@@ -243,6 +261,7 @@ async def calculate_competitor_affinity(
         .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
         .where(AdDetail.advertiser_id.in_(candidate_ids))
         .where(AdSnapshot.captured_at >= since)
+        .where(_live_ad_filter())
     )
     cand_ch_result = await db.execute(cand_ch_q)
     cand_channels: dict[int, set[str]] = {}
@@ -262,6 +281,7 @@ async def calculate_competitor_affinity(
         .where(AdDetail.advertiser_id.in_(candidate_ids))
         .where(AdSnapshot.captured_at >= since)
         .where(AdDetail.position_zone.isnot(None))
+        .where(_live_ad_filter())
         .group_by(AdDetail.advertiser_id, AdDetail.position_zone)
     )
     cand_pos_result = await db.execute(cand_pos_q)
@@ -291,6 +311,7 @@ async def calculate_competitor_affinity(
         target_snapshot_q = (
             select(distinct(AdDetail.snapshot_id))
             .where(AdDetail.advertiser_id == advertiser_id)
+            .where(_live_ad_filter())
         )
         cooccur_count_q = (
             select(
@@ -299,6 +320,7 @@ async def calculate_competitor_affinity(
             )
             .where(AdDetail.advertiser_id.in_(candidate_ids))
             .where(AdDetail.snapshot_id.in_(target_snapshot_q))
+            .where(_live_ad_filter())
             .group_by(AdDetail.advertiser_id)
         )
         cooccur_count_result = await db.execute(cooccur_count_q)
@@ -324,6 +346,9 @@ async def calculate_competitor_affinity(
         adv_obj = cand_advertisers.get(cid)
         if not adv_obj:
             continue
+        display_name = display_market_advertiser_name(adv_obj.name, adv_obj.brand_name)
+        if not display_name:
+            continue
 
         kw_sim = _jaccard(target_keyword_ids, cand_keywords.get(cid, set()))
         ch_sim = _jaccard(target_channels, cand_channels.get(cid, set()))
@@ -343,7 +368,7 @@ async def calculate_competitor_affinity(
         scores.append(
             CompetitorScore(
                 competitor_id=cid,
-                competitor_name=adv_obj.name,
+                competitor_name=display_name,
                 industry_id=adv_obj.industry_id,
                 affinity_score=round(affinity, 2),
                 keyword_overlap=round(kw_sim, 2),

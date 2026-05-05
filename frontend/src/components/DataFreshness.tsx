@@ -31,7 +31,6 @@ export function DataFreshness({
   return (
     <div className="flex items-center gap-2 text-xs text-gray-400">
       {label && <span>{label}</span>}
-      {lastRefresh && <span>{lastRefresh} 갱신</span>}
       <button
         onClick={onRefresh}
         disabled={isRefreshing}

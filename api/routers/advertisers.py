@@ -5,22 +5,39 @@ from datetime import datetime, timedelta, timezone
 
 _IMAGE_STORE_DIR = os.getenv("IMAGE_STORE_DIR", "stored_images")
 
+def _won(value) -> int:
+    return int(round(float(value or 0)))
+
+
 def _normalize_image_path(path: str) -> str | None:
     if not path:
         return None
-    p = path.replace("\\", "/")
+    p = str(path).replace("\\", "/").split("#", 1)[0].strip()
+    if p.startswith(("http://", "https://")):
+        return p
     if os.path.exists(p):
         return p
     if p.startswith("stored_images/"):
         resolved = os.path.join(_IMAGE_STORE_DIR, p[len("stored_images/"):])
         if os.path.exists(resolved):
             return p
+        return p
+    if p.startswith(("images/", "screenshots/")):
+        return p
+    return None
+
+
+def _first_image_path(*paths: str | None) -> str | None:
+    for path in paths:
+        normalized = _normalize_image_path(path)
+        if normalized:
+            return normalized
     return None
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from api.deps import get_current_user, require_admin
-from sqlalchemy import cast, func, or_, select, String
+from sqlalchemy import and_, cast, func, or_, select, String
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
@@ -47,6 +64,11 @@ from processor.channel_utils import (
     MEDIA_CATEGORIES,
     MEDIA_CATEGORY_KO,
     get_media_category as _channel_to_category,
+)
+from api.services.advertiser_names import (
+    clean_raw_advertiser_name,
+    display_advertiser_name,
+    display_campaign_advertiser_name,
 )
 
 router = APIRouter(
@@ -110,6 +132,7 @@ async def list_advertisers(
     search: str | None = None,
     limit: int = Query(default=5000, le=10000),
     offset: int = 0,
+    include_placeholders: bool = Query(default=False),
     db: AsyncSession = Depends(get_db),
 ):
     """광고주 목록 조회."""
@@ -123,6 +146,11 @@ async def list_advertisers(
     query = query.offset(offset).limit(limit)
     result = await db.execute(query)
     advertisers = result.scalars().all()
+    if not include_placeholders:
+        advertisers = [
+            a for a in advertisers
+            if display_advertiser_name(a.name, a.brand_name, fallback=None)
+        ]
 
     if not advertisers:
         return []
@@ -139,11 +167,11 @@ async def list_advertisers(
     return [
         {
             "id": a.id,
-            "name": a.name,
+            "name": display_advertiser_name(a.name, a.brand_name),
             "industry_id": a.industry_id,
             "brand_name": a.brand_name,
             "website": a.website,
-            "total_est_spend": round(spend_map.get(a.id, 0.0), 2),
+            "total_est_spend": _won(spend_map.get(a.id, 0.0)),
         }
         for a in advertisers
     ]
@@ -192,8 +220,9 @@ async def top_advertisers(
 
     result = await db.execute(query)
     return [
-        {"advertiser": row[0], "ad_count": row[1]}
+        {"advertiser": display_advertiser_name(row[0]), "ad_count": row[1]}
         for row in result.all()
+        if display_advertiser_name(row[0], fallback=None)
     ]
 
 
@@ -282,6 +311,8 @@ async def search_advertiser(
     )
     rows = (await db.execute(name_query)).scalars().all()
     for adv in rows:
+        if not display_advertiser_name(adv.name, adv.brand_name, fallback=None):
+            continue
         if adv.id not in seen_ids:
             seen_ids.add(adv.id)
             results.append({**_adv_to_dict(adv), "match_type": "exact"})
@@ -296,6 +327,8 @@ async def search_advertiser(
         )
         alias_rows = (await db.execute(alias_query)).scalars().all()
         for adv in alias_rows:
+            if not display_advertiser_name(adv.name, adv.brand_name, fallback=None):
+                continue
             if adv.id not in seen_ids:
                 seen_ids.add(adv.id)
                 results.append({**_adv_to_dict(adv), "match_type": "alias"})
@@ -309,6 +342,8 @@ async def search_advertiser(
         )
         children = (await db.execute(children_query)).scalars().all()
         for child in children:
+            if not display_advertiser_name(child.name, child.brand_name, fallback=None):
+                continue
             if child.id not in seen_ids:
                 seen_ids.add(child.id)
                 results.append({**_adv_to_dict(child), "match_type": "child"})
@@ -360,6 +395,7 @@ async def unified_search(
         result.advertisers = [
             AdvertiserSearchResult(**_adv_to_dict(a), match_type="exact")
             for a in adv_rows
+            if display_advertiser_name(a.name, a.brand_name, fallback=None)
         ]
 
     # 2) 업종 매칭 — 1에서 매칭된 광고주의 업종에 속한 다른 광고주
@@ -382,6 +418,7 @@ async def unified_search(
             result.industry_matches = [
                 AdvertiserSearchResult(**_adv_to_dict(a), match_type="industry")
                 for a in ind_rows
+                if display_advertiser_name(a.name, a.brand_name, fallback=None)
             ]
 
     # 3) 경쟁사 매칭 — 같은 키워드에 노출된 다른 광고주
@@ -405,10 +442,11 @@ async def unified_search(
             .limit(limit)
         )
         comp_rows = (await db.execute(comp_query)).all()
-        result.competitor_ads = [
-            {"advertiser": row[0], "ad_count": row[1]}
-            for row in comp_rows
-        ]
+        result.competitor_ads = []
+        for row in comp_rows:
+            name = clean_raw_advertiser_name(row[0])
+            if name:
+                result.competitor_ads.append({"advertiser": name, "ad_count": row[1]})
 
     # 4) 광고 텍스트 매칭
     if search_type in ("all",):
@@ -428,15 +466,20 @@ async def unified_search(
             .limit(min(limit, 20))
         )
         text_rows = (await db.execute(text_query)).all()
-        result.ad_text_matches = [
-            {
-                "advertiser": row[0],
+        result.ad_text_matches = []
+        for row in text_rows:
+            name = display_campaign_advertiser_name(
+                row[0],
+                url=row[2],
+                ad_text=row[1],
+                fallback=None,
+            )
+            result.ad_text_matches.append({
+                "advertiser": name,
                 "ad_text": (row[1] or "")[:100],
                 "url": row[2],
                 "channel": row[3],
-            }
-            for row in text_rows
-        ]
+            })
 
     # 5) 랜딩 분석 매칭 (extra_data JSON 검색)
     if search_type in ("all",):
@@ -456,15 +499,20 @@ async def unified_search(
                 .limit(min(limit, 20))
             )
             landing_rows = (await db.execute(landing_query)).all()
-            result.landing_matches = [
-                {
+            result.landing_matches = []
+            for row in landing_rows:
+                name = display_campaign_advertiser_name(
+                    row[1],
+                    url=row[2],
+                    extra_data=row[3],
+                    fallback=None,
+                )
+                result.landing_matches.append({
                     "ad_detail_id": row[0],
-                    "advertiser": row[1],
+                    "advertiser": name,
                     "url": row[2],
                     "landing_analysis": (row[3] or {}).get("landing_analysis"),
-                }
-                for row in landing_rows
-            ]
+                })
         except Exception:
             # extra_data JSON 검색이 지원되지 않는 경우 무시
             pass
@@ -569,7 +617,7 @@ async def media_breakdown(
             "channel": ch,
             "category": MEDIA_CATEGORY_KO.get(_channel_to_category(ch), _channel_to_category(ch)),
             "ad_count": channel_ad_counts.get(ch, 0),
-            "est_spend": round(channel_spend.get(ch, 0.0), 2),
+            "est_spend": _won(channel_spend.get(ch, 0.0)),
         })
 
     # aggregate by category
@@ -598,7 +646,7 @@ async def media_breakdown(
             "category_key": cat_key,
             "channels": sorted(set(d["channels"])),
             "ad_count": d["ad_count"],
-            "est_spend": round(d["est_spend"], 2),
+            "est_spend": _won(d["est_spend"]),
             "ratio": round(ratio, 4),
         })
 
@@ -610,6 +658,7 @@ async def media_breakdown(
             AdDetail.ad_text,
             AdDetail.ad_type,
             AdDetail.creative_image_path,
+            AdDetail.screenshot_path,
             AdDetail.url,
             AdDetail.brand,
             AdSnapshot.channel,
@@ -619,8 +668,10 @@ async def media_breakdown(
         .where(
             AdDetail.advertiser_id.in_(list(target_ids)),
             AdSnapshot.captured_at >= cutoff_utc,
-            AdDetail.creative_image_path.isnot(None),
-            AdDetail.creative_image_path != "",
+            or_(
+                and_(AdDetail.creative_image_path.isnot(None), AdDetail.creative_image_path != ""),
+                and_(AdDetail.screenshot_path.isnot(None), AdDetail.screenshot_path != ""),
+            ),
             or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected"),
         )
         .order_by(AdSnapshot.captured_at.desc())
@@ -628,30 +679,50 @@ async def media_breakdown(
     )
     recent_ads = []
     for row in gallery_result.all():
-        img_path = row[4]
-        img_path = _normalize_image_path(img_path)
+        img_path = _first_image_path(row[4], row[5])
+        if not img_path:
+            continue
+        display_name = (
+            display_campaign_advertiser_name(
+                row[1],
+                advertiser.brand_name,
+                website=advertiser.website,
+                url=row[6],
+                ad_text=row[2],
+                fallback=None,
+            )
+            or display_campaign_advertiser_name(
+                advertiser.name,
+                advertiser.brand_name,
+                website=advertiser.website,
+                url=row[6],
+                ad_text=row[2],
+                fallback=None,
+            )
+        )
         recent_ads.append({
             "id": row[0],
-            "advertiser_name_raw": row[1],
+            "advertiser_name_raw": display_name,
             "ad_text": row[2],
             "ad_type": row[3],
             "creative_image_path": img_path,
-            "url": row[5],
-            "brand": row[6],
-            "channel": row[7],
-            "captured_at": row[8].isoformat() if row[8] else None,
+            "screenshot_path": _normalize_image_path(row[5]),
+            "url": row[6],
+            "brand": row[7],
+            "channel": row[8],
+            "captured_at": row[9].isoformat() if row[9] else None,
         })
 
     return {
         "advertiser_id": advertiser.id,
-        "advertiser_name": advertiser.name,
+        "advertiser_name": display_advertiser_name(advertiser.name, advertiser.brand_name),
         "brand_name": advertiser.brand_name,
         "website": advertiser.website,
         "official_channels": advertiser.official_channels,
         "advertiser_type": advertiser.advertiser_type,
         "industry_name": industry_name,
         "total_ads": total_ads,
-        "total_est_spend": round(total_spend, 2),
+        "total_est_spend": _won(total_spend),
         "period_days": days,
         "categories": categories,
         "by_channel": by_channel,
@@ -672,6 +743,10 @@ async def get_brand_tree(db: AsyncSession = Depends(get_db)):
         .order_by(Advertiser.name)
     )
     all_advertisers = all_result.scalars().all()
+    all_advertisers = [
+        a for a in all_advertisers
+        if display_advertiser_name(a.name, a.brand_name, fallback=None)
+    ]
 
     # 광고주별 광고 수 집계 (최근 90일)
     cutoff = datetime.utcnow() - timedelta(days=90)
@@ -705,7 +780,7 @@ async def get_brand_tree(db: AsyncSession = Depends(get_db)):
         for child in kids:
             result.append(BrandTreeChild(
                 id=child.id,
-                name=child.name,
+                name=display_advertiser_name(child.name, child.brand_name),
                 advertiser_type=child.advertiser_type,
                 website=child.website,
                 brand_name=child.brand_name,
@@ -725,7 +800,7 @@ async def get_brand_tree(db: AsyncSession = Depends(get_db)):
         if adv.advertiser_type == "group":
             groups.append(BrandTreeGroup(
                 id=adv.id,
-                name=adv.name,
+                name=display_advertiser_name(adv.name, adv.brand_name),
                 advertiser_type=adv.advertiser_type,
                 website=adv.website,
                 children=_build_children(adv.id),
@@ -733,7 +808,7 @@ async def get_brand_tree(db: AsyncSession = Depends(get_db)):
         else:
             independents.append(BrandTreeChild(
                 id=adv.id,
-                name=adv.name,
+                name=display_advertiser_name(adv.name, adv.brand_name),
                 advertiser_type=adv.advertiser_type,
                 website=adv.website,
                 brand_name=adv.brand_name,
@@ -877,13 +952,13 @@ async def list_favorites(
             sort_order=fav.sort_order,
             created_at=fav.created_at,
             updated_at=fav.updated_at,
-            advertiser_name=row[1],
+            advertiser_name=display_advertiser_name(row[1], row[2]),
             brand_name=row[2],
             website=row[3],
             logo_url=row[4],
             industry_name=row[5],
             recent_ad_count=ad_counts.get(fav.advertiser_id, 0),
-            total_est_spend=round(spend_map.get(fav.advertiser_id, 0.0), 2),
+            total_est_spend=_won(spend_map.get(fav.advertiser_id, 0.0)),
         ))
 
     return favorites
@@ -943,7 +1018,7 @@ async def add_favorite(
         sort_order=fav.sort_order,
         created_at=fav.created_at,
         updated_at=fav.updated_at,
-        advertiser_name=advertiser.name,
+        advertiser_name=display_advertiser_name(advertiser.name, advertiser.brand_name),
         brand_name=advertiser.brand_name,
         website=advertiser.website,
         logo_url=advertiser.logo_url,
@@ -1022,7 +1097,7 @@ async def update_favorite(
         sort_order=fav.sort_order,
         created_at=fav.created_at,
         updated_at=fav.updated_at,
-        advertiser_name=advertiser.name if advertiser else None,
+        advertiser_name=display_advertiser_name(advertiser.name, advertiser.brand_name) if advertiser else None,
         brand_name=advertiser.brand_name if advertiser else None,
         website=advertiser.website if advertiser else None,
         logo_url=advertiser.logo_url if advertiser else None,
@@ -1052,7 +1127,7 @@ async def favorite_status(
 def _adv_to_dict(adv: Advertiser) -> dict:
     return {
         "id": adv.id,
-        "name": adv.name,
+        "name": display_advertiser_name(adv.name, adv.brand_name),
         "industry_id": adv.industry_id,
         "brand_name": adv.brand_name,
         "website": adv.website,
@@ -1100,7 +1175,7 @@ async def _build_tree(db: AsyncSession, adv: Advertiser, depth: int = 0) -> dict
     """재귀적으로 광고주 트리 구성 (최대 4단계)."""
     node = {
         "id": adv.id,
-        "name": adv.name,
+        "name": display_advertiser_name(adv.name, adv.brand_name),
         "industry_id": adv.industry_id,
         "brand_name": adv.brand_name,
         "website": adv.website,
@@ -1118,6 +1193,8 @@ async def _build_tree(db: AsyncSession, adv: Advertiser, depth: int = 0) -> dict
     )
     children = children_result.scalars().all()
     for child in children:
+        if not display_advertiser_name(child.name, child.brand_name, fallback=None):
+            continue
         child_node = await _build_tree(db, child, depth + 1)
         node["children"].append(child_node)
 
@@ -1289,7 +1366,7 @@ async def advertiser_spend_report(
     ):
         by_channel.append(ChannelSpendSummary(
             channel=ch,
-            est_spend=round(data["est_spend"], 2),
+            est_spend=_won(data["est_spend"]),
             ad_count=data["ad_count"] or data.get("spend_row_count", 0),
             position_distribution=data.get("position_distribution", {}),
             top_keywords=data["keywords"],
@@ -1297,7 +1374,7 @@ async def advertiser_spend_report(
         ))
 
     daily_trend = [
-        DailySpendPoint(date=d, spend=round(s, 2))
+        DailySpendPoint(date=d, spend=_won(s))
         for d, s in sorted(daily_data.items())
     ]
 
@@ -1337,7 +1414,7 @@ async def advertiser_spend_report(
 
     return AdvertiserSpendReport(
         advertiser=advertiser,
-        total_est_spend=round(total_spend, 2),
+        total_est_spend=_won(total_spend),
         period={
             "start": cutoff.strftime("%Y-%m-%d"),
             "end": end_date.strftime("%Y-%m-%d"),

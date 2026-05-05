@@ -331,7 +331,6 @@ export default function SOVPage() {
                   <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">노출수</th>
                   <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">SOV</th>
                   <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">포지션</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">최근 수집</th>
                 </tr>
               </thead>
               <tbody>
@@ -391,9 +390,6 @@ export default function SOVPage() {
                             </span>
                           ))}
                       </div>
-                    </td>
-                    <td className="py-3 px-4 text-right tabular-nums text-gray-500 text-xs">
-                      {a.last_seen ?? "-"}
                     </td>
                   </tr>
                 ))}

@@ -20,6 +20,7 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import and_, func, select, text
 
+from api.services.advertiser_quality import is_meta_signal_eligible_advertiser
 from database import async_session
 from database.models import (
     ActivityScore,
@@ -117,14 +118,17 @@ async def _calc_panel_calibration(
 async def _load_stealth_network_scores(session) -> dict[str, float]:
     """Load stealth surf contact rates per network → 0-100 score."""
     since = (datetime.now(UTC).replace(tzinfo=None) - timedelta(days=30)).isoformat()
-    q = text("""
-        SELECT json_extract(extra_data, '$.network') AS net, COUNT(*) AS cnt
-        FROM serpapi_ads
-        WHERE advertiser_name LIKE 'stealth_%' AND collected_at >= :since
-        GROUP BY net
-    """)
-    result = await session.execute(q, {"since": since})
-    rows = result.fetchall()
+    try:
+        q = text("""
+            SELECT json_extract(extra_data, '$.network') AS net, COUNT(*) AS cnt
+            FROM serpapi_ads
+            WHERE advertiser_name LIKE 'stealth_%' AND collected_at >= :since
+            GROUP BY net
+        """)
+        result = await session.execute(q, {"since": since})
+        rows = result.fetchall()
+    except Exception:
+        return {}
     ratios = {"gdn": 50, "naver": 6, "kakao": 6, "meta": 5}
     scores = {}
     for net, cnt in rows:
@@ -190,6 +194,36 @@ async def aggregate_meta_signals(
 
         result = await session.execute(adv_query)
         active_adv_ids = [r[0] for r in result.fetchall()]
+
+        if not active_adv_ids:
+            return {"processed": 0, "created": 0, "updated": 0}
+
+        adv_rows = (
+            await session.execute(
+                select(
+                    Advertiser.id,
+                    Advertiser.name,
+                    Advertiser.brand_name,
+                    Advertiser.advertiser_type,
+                    Advertiser.website,
+                    Advertiser.official_channels,
+                    Advertiser.smartstore_url,
+                ).where(Advertiser.id.in_(active_adv_ids))
+            )
+        ).all()
+        eligible_ids = {
+            row.id
+            for row in adv_rows
+            if is_meta_signal_eligible_advertiser(
+                name=row.name,
+                brand_name=row.brand_name,
+                advertiser_type=row.advertiser_type,
+                website=row.website,
+                official_channels=row.official_channels,
+                smartstore_url=row.smartstore_url,
+            )
+        }
+        active_adv_ids = [adv_id for adv_id in active_adv_ids if adv_id in eligible_ids]
 
         if not active_adv_ids:
             return {"processed": 0, "created": 0, "updated": 0}

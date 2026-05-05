@@ -86,6 +86,14 @@ interface EnrichedCampaign {
   total_est_spend: number;
   snapshot_count: number;
   status: string | null;
+  is_foreign?: boolean;
+}
+
+function formatPeriod(start: string | null | undefined, end: string | null | undefined): string {
+  const s = start?.slice(0, 10);
+  const e = end?.slice(0, 10);
+  if (s && e && s !== e) return `${s} ~ ${e}`;
+  return s || e || "-";
 }
 
 const OBJECTIVE_KO: Record<string, { label: string; color: string }> = {
@@ -102,14 +110,14 @@ const CHANNELS = [
   "kakao_da", "tiktok_ads",
 ];
 
-type SortKey = "advertiser_name" | "campaign_name" | "objective" | "total_est_spend" | "last_seen" | "snapshot_count" | "status";
+type SortKey = "advertiser_name" | "campaign_name" | "objective" | "total_est_spend" | "snapshot_count" | "status";
 
 function CampaignListTab() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [channel, setChannel] = useState("");
   const [activeFilter, setActiveFilter] = useState<string>("");
-  const [sortKey, setSortKey] = useState<SortKey>("last_seen");
+  const [sortKey, setSortKey] = useState<SortKey>("total_est_spend");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(0);
   const pageSize = 50;
@@ -141,7 +149,7 @@ function CampaignListTab() {
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) { setSortDir(sortDir === "asc" ? "desc" : "asc"); }
-    else { setSortKey(key); setSortDir(key === "total_est_spend" || key === "last_seen" || key === "snapshot_count" ? "desc" : "asc"); }
+    else { setSortKey(key); setSortDir(key === "total_est_spend" || key === "snapshot_count" ? "desc" : "asc"); }
     setPage(0);
   };
 
@@ -212,7 +220,7 @@ function CampaignListTab() {
                 {([
                   ["advertiser_name", "광고주", "text-left"], ["campaign_name", "캠페인명", "text-left"],
                   ["objective", "목적", "text-left"],
-                  ["total_est_spend", "추정 광고비", "text-right"], ["last_seen", "최근 활동", "text-right"],
+                  ["total_est_spend", "추정 광고비", "text-right"],
                   ["snapshot_count", "스냅샷", "text-right"], ["status", "상태", "text-center"],
                 ] as [SortKey, string, string][]).map(([key, label, align]) => (
                   <th key={key} onClick={() => handleSort(key)}
@@ -239,9 +247,14 @@ function CampaignListTab() {
                   return (
                     <tr key={c.id} className="border-b border-gray-50 hover:bg-adscope-50/30 transition-colors group">
                       <td className="py-3 px-4">
-                        <Link href={`/advertisers/${c.advertiser_id}`} className="text-sm font-medium text-adscope-600 hover:text-adscope-800 hover:underline">
-                          {c.advertiser_name || "-"}
-                        </Link>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <Link href={`/advertisers/${c.advertiser_id}`} className="text-sm font-medium text-adscope-600 hover:text-adscope-800 hover:underline">
+                            {c.advertiser_name || "-"}
+                          </Link>
+                          {c.is_foreign && (
+                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200 leading-none">해외</span>
+                          )}
+                        </div>
                       </td>
                       <td className="py-3 px-4">
                         <Link href={`/campaigns/${c.id}`} className="text-sm text-gray-900 hover:text-adscope-600 hover:underline font-medium">
@@ -254,7 +267,6 @@ function CampaignListTab() {
                         {obj ? <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${obj.color}`}>{obj.label}</span> : <span className="text-gray-300 text-xs">-</span>}
                       </td>
                       <td className="py-3 px-4 text-right tabular-nums"><span className="font-medium text-gray-900">{formatSpend(c.total_est_spend)}</span></td>
-                      <td className="py-3 px-4 text-right text-xs text-gray-500 tabular-nums">{c.last_seen ? c.last_seen.slice(0, 10) : "-"}</td>
                       <td className="py-3 px-4 text-right tabular-nums text-gray-600">{c.snapshot_count}</td>
                       <td className="py-3 px-4 text-center">
                         <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${c.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
@@ -355,8 +367,8 @@ function CampaignEffectTab() {
                         <td className="py-2 text-indigo-600 font-medium">{c.campaign_name}</td>
                         <td className="py-2 text-gray-600">{c.advertiser_name}</td>
                         <td className="py-2"><span className="px-2 py-0.5 bg-gray-100 rounded text-xs">{c.channel}</span></td>
-                        <td className="py-2 text-gray-500 text-xs">{c.first_seen?.slice(0, 10)} ~ {c.last_seen?.slice(0, 10)}</td>
-                        <td className="py-2 text-right">{(c.total_est_spend || 0).toLocaleString()}원</td>
+                        <td className="py-2 text-gray-500 text-xs">{formatPeriod(c.first_seen, c.last_seen)}</td>
+                        <td className="py-2 text-right">{formatWon(c.total_est_spend)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -372,7 +384,7 @@ function CampaignEffectTab() {
             <EffectKpi label="검색 리프트" value={formatLift(overview.lift?.query_lift_pct)} color={liftColor(overview.lift?.query_lift_pct)} />
             <EffectKpi label="소셜 리프트" value={formatLift(overview.lift?.social_lift_pct)} color={liftColor(overview.lift?.social_lift_pct)} />
             <EffectKpi label="매출 리프트" value={formatLift(overview.lift?.sales_lift_pct)} color={liftColor(overview.lift?.sales_lift_pct)} />
-            <EffectKpi label="추정 광고비" value={`${(overview.total_est_spend || 0).toLocaleString()}원`} />
+            <EffectKpi label="추정 광고비" value={formatWon(overview.total_est_spend)} />
           </div>
 
           <div className="bg-white rounded-xl p-6 shadow-sm border">
@@ -419,7 +431,6 @@ function CampaignEffectTab() {
                 <div className="flex justify-between"><dt className="text-gray-500">광고주</dt><dd><Link href={`/advertisers/${overview.advertiser_id}`} className="text-indigo-600 hover:underline">{overview.advertiser_name}</Link></dd></div>
                 <div className="flex justify-between"><dt className="text-gray-500">채널</dt><dd>{overview.channel}</dd></div>
                 <div className="flex justify-between"><dt className="text-gray-500">목표</dt><dd>{overview.objective || "-"}</dd></div>
-                <div className="flex justify-between"><dt className="text-gray-500">기간</dt><dd className="text-xs">{overview.first_seen?.slice(0, 10)} ~ {overview.last_seen?.slice(0, 10)}</dd></div>
                 <div className="flex justify-between"><dt className="text-gray-500">상태</dt><dd><span className={`px-2 py-0.5 rounded text-xs font-medium ${overview.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>{overview.status === "active" ? "진행중" : "완료"}</span></dd></div>
               </dl>
             </div>
@@ -441,8 +452,8 @@ function CampaignEffectTab() {
                         onClick={() => setSelectedCampaignId(c.campaign_id)}>
                         <td className="py-3 font-medium text-gray-900">{c.campaign_name}</td>
                         <td className="py-3"><span className="px-2 py-0.5 bg-gray-100 rounded text-xs">{c.channel}</span></td>
-                        <td className="py-3 text-xs text-gray-500">{c.first_seen?.slice(0, 10)} ~ {c.last_seen?.slice(0, 10)}</td>
-                        <td className="py-3 text-right">{(c.total_est_spend || 0).toLocaleString()}원</td>
+                        <td className="py-3 text-gray-500 text-xs">{formatPeriod(c.first_seen, c.last_seen)}</td>
+                        <td className="py-3 text-right">{formatWon(c.total_est_spend)}</td>
                         <td className={`py-3 text-right font-medium ${liftColor(c.query_lift_pct)}`}>{formatLift(c.query_lift_pct)}</td>
                         <td className={`py-3 text-right font-medium ${liftColor(c.social_lift_pct)}`}>{formatLift(c.social_lift_pct)}</td>
                         <td className={`py-3 text-right font-medium ${liftColor(c.sales_lift_pct)}`}>{formatLift(c.sales_lift_pct)}</td>
@@ -471,6 +482,10 @@ function EffectKpi({ label, value, color, small }: { label: string; value: strin
 function formatLift(v: number | null | undefined): string {
   if (v == null) return "-";
   return `${v > 0 ? "+" : ""}${v}%`;
+}
+function formatWon(v: number | null | undefined): string {
+  const won = Math.round(Number(v) || 0);
+  return won > 0 ? `${won.toLocaleString()}원` : "-";
 }
 function liftColor(v: number | null | undefined): string {
   if (v == null) return "text-gray-400";

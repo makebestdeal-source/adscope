@@ -189,7 +189,6 @@ GALLERY_AD_CHANNEL_GROUPS: dict[str, set[str]] = {
 
 GALLERY_SOCIAL_PLATFORM_GROUPS: dict[str, set[str]] = {
     "youtube": {"youtube"},
-    "youtube_ads": {"youtube"},
     "meta": {"meta", "instagram", "facebook"},
     "facebook": {"meta", "instagram", "facebook"},
     "instagram": {"meta", "instagram", "facebook"},
