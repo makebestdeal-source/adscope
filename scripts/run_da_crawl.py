@@ -57,7 +57,7 @@ FORCE_MOBILE_CHANNELS = {"naver_da", "kakao_da"}
 
 # 채널별 단일 키워드 타임아웃 (초)
 CHANNEL_TIMEOUT = {
-    "naver_da": 900,    # 18개 지면 서핑
+    "naver_da": 1200,   # 16개 지면 서핑 (반복 축소 후 ~600s, 여유 1200s)
     "kakao_da": 3000,   # 미디어 순회
 }
 

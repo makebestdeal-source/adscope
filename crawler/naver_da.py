@@ -32,22 +32,22 @@ from crawler.url_utils import extract_domain, is_tracking_url, resolve_redirect_
 # ── 모바일 고수익 지면: 페이지 reload 횟수 (GFP 로테이션 다양화) ──
 # 같은 URL을 reload할 때마다 GFP가 새 광고 로테이션을 서빙 → 띠배너 중복 없이 추가 수집
 _MOBILE_PAGE_REPEATS: dict[str, int] = {
-    "main":          8,   # m.naver.com 메인 (상단·중단 띠배너 최다)
-    "news":          7,   # 모바일 뉴스
-    "sports":        5,
-    "entertainment": 5,
-    "finance":       4,
-    "shopping":      4,
-    "blog":          3,
-    "cafe":          3,
-    "tv":            3,
-    "webtoon":       3,
-    "weather":       2,
-    "kin":           2,
-    "realestate":    2,
-    "chzzk":         2,
-    "auto":          2,
-    "movie":         2,
+    "main":          3,   # m.naver.com 메인 (상단·중단 띠배너 최다)
+    "news":          3,   # 모바일 뉴스
+    "sports":        2,
+    "entertainment": 2,
+    "finance":       2,
+    "shopping":      2,
+    "blog":          1,
+    "cafe":          1,
+    "tv":            1,
+    "webtoon":       1,
+    "weather":       1,
+    "kin":           1,
+    "realestate":    1,
+    "chzzk":         1,
+    "auto":          1,
+    "movie":         1,
 }
 
 # ── 네이버 광고 지면 정의 (네트워크 캡처 전용) ──
