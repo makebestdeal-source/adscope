@@ -190,8 +190,7 @@ def is_low_confidence_campaign_source_name(value: object | None) -> bool:
         return True
     if len(name) >= 12 and re.search(r"[\s\[\]|!?.,]", name):
         return True
-    # 영어 단독 단어(브랜드명)는 low confidence 아님 — 공백 포함 다단어 구문만 해당
-    return bool(re.fullmatch(r"[A-Za-z][A-Za-z .'-]{1,30}", name) and " " in name)
+    return bool(re.fullmatch(r"[A-Za-z][A-Za-z .'-]{1,30}", name))
 
 
 def _loads_extra(extra_data: object | None) -> dict:
