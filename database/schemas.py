@@ -462,6 +462,13 @@ class IndustryMarketMapOut(BaseModel):
     axis_labels: dict[str, str] = {}
 
 
+class SubcategoryBreakdown(BaseModel):
+    id: int | None
+    name: str
+    advertiser_count: int
+    ad_count: int
+
+
 # ── Persona Ranking ──
 class PersonaAdvertiserRankOut(BaseModel):
     persona_code: str

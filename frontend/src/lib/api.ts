@@ -557,6 +557,13 @@ export interface IndustryMarketMap {
   axis_labels: { x: string; y: string };
 }
 
+export interface SubcategoryBreakdown {
+  id: number | null;
+  name: string;
+  advertiser_count: number;
+  ad_count: number;
+}
+
 // ── Advertiser Profile ──
 
 export interface AdvertiserProfile extends Advertiser {
@@ -1047,14 +1054,25 @@ export const api = {
   getIndustries: () =>
     fetchApi<IndustryInfo[]>(`/industries`),
 
-  getIndustryLandscapeFull: (industryId: number, days = 30) =>
-    fetchApi<IndustryLandscape>(
-      `/industries/${industryId}/landscape?days=${days}`
-    ),
+  getIndustryLandscapeFull: (
+    industryId: number,
+    days = 30,
+    categoryId?: number | null,   // undefined=전체, null=미분류, number=소분류
+  ) => {
+    let url = `/industries/${industryId}/landscape?days=${days}`;
+    if (categoryId === null) url += "&unclassified=true";
+    else if (categoryId !== undefined) url += `&category_id=${categoryId}`;
+    return fetchApi<IndustryLandscape>(url);
+  },
 
   getIndustryMarketMap: (industryId: number, days = 30) =>
     fetchApi<IndustryMarketMap>(
       `/industries/${industryId}/market-map?days=${days}`
+    ),
+
+  getIndustrySubcategories: (industryId: number, days = 30) =>
+    fetchApi<SubcategoryBreakdown[]>(
+      `/industries/${industryId}/subcategories?days=${days}`
     ),
 
   // Brand Channel Monitoring

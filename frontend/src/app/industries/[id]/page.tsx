@@ -19,7 +19,7 @@ import {
   Legend,
 } from "recharts";
 import { formatSpend, formatChannel } from "@/lib/constants";
-import { api, IndustryLandscape, IndustryMarketMap, LandscapeAdvertiser } from "@/lib/api";
+import { api, IndustryLandscape, IndustryMarketMap, LandscapeAdvertiser, SubcategoryBreakdown } from "@/lib/api";
 
 // ── Color palette for SOV pie chart ──
 
@@ -47,16 +47,25 @@ export default function IndustryDetailPage() {
   const [days, setDays] = useState(30);
   const [sortKey, setSortKey] = useState<SortKey>("sov");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [selectedCatId, setSelectedCatId] = useState<number | null | undefined>(undefined); // undefined=전체
 
+  // selectedCatId: undefined=전체, null=미분류, number=소분류 id
+  const catQueryKey = selectedCatId === undefined ? "all" : selectedCatId === null ? "unclassified" : selectedCatId;
   const { data: landscape, isLoading } = useQuery({
-    queryKey: ["industryLandscape", industryId, days],
-    queryFn: () => api.getIndustryLandscapeFull(industryId, days),
+    queryKey: ["industryLandscape", industryId, days, catQueryKey],
+    queryFn: () => api.getIndustryLandscapeFull(industryId, days, selectedCatId),
     enabled: !!industryId,
   });
 
   const { data: marketMap } = useQuery({
     queryKey: ["industryMarketMap", industryId, days],
     queryFn: () => api.getIndustryMarketMap(industryId, days),
+    enabled: !!industryId,
+  });
+
+  const { data: subcategories } = useQuery({
+    queryKey: ["industrySubcategories", industryId, days],
+    queryFn: () => api.getIndustrySubcategories(industryId, days),
     enabled: !!industryId,
   });
 
@@ -312,7 +321,7 @@ export default function IndustryDetailPage() {
               <PieChart>
                 <Pie
                   data={sovPieData}
-                  cx="50%"
+                  cx="40%"
                   cy="50%"
                   innerRadius={55}
                   outerRadius={95}
@@ -320,7 +329,7 @@ export default function IndustryDetailPage() {
                   dataKey="value"
                   nameKey="name"
                   label={({ name, percent }) =>
-                    percent > 0.05 ? `${name} ${(percent * 100).toFixed(0)}%` : ""
+                    percent > 0.04 ? `${(percent * 100).toFixed(0)}%` : ""
                   }
                   labelLine={{ strokeWidth: 1 }}
                 >
@@ -346,7 +355,12 @@ export default function IndustryDetailPage() {
                   layout="vertical"
                   verticalAlign="middle"
                   align="right"
-                  wrapperStyle={{ fontSize: 11 }}
+                  wrapperStyle={{ fontSize: 11, lineHeight: "20px" }}
+                  formatter={(value, entry) => {
+                    const payload = (entry as { payload?: { value?: number } }).payload;
+                    const pct = payload?.value != null ? ` ${payload.value.toFixed(1)}%` : "";
+                    return `${value}${pct}`;
+                  }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -357,6 +371,38 @@ export default function IndustryDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Subcategory tabs */}
+      {subcategories && subcategories.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          <button
+            onClick={() => setSelectedCatId(undefined)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              selectedCatId === undefined
+                ? "bg-adscope-600 text-white"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            전체
+          </button>
+          {subcategories.map((cat) => (
+            <button
+              key={cat.id ?? "unclassified"}
+              onClick={() => setSelectedCatId(cat.id === null ? null : cat.id)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                selectedCatId === (cat.id === null ? null : cat.id)
+                  ? "bg-adscope-600 text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              {cat.name}
+              <span className="ml-1 opacity-70">
+                ({cat.advertiser_count}명 / {cat.ad_count}개)
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Advertiser table */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">

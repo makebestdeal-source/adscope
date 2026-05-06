@@ -24,7 +24,9 @@ from database.schemas import (
     IndustryMarketMapOut,
     IndustryOut,
     MarketMapPoint,
+    SubcategoryBreakdown,
 )
+from database.models import ProductCategory
 
 router = APIRouter(
     prefix="/api/industries",
@@ -92,9 +94,10 @@ async def list_industries(db: AsyncSession = Depends(get_db)):
 
 
 async def _build_landscape_advertisers(
-    db: AsyncSession, industry_id: int, days: int
+    db: AsyncSession, industry_id: int, days: int, category_id: int | None = -999
 ) -> list[IndustryAdvertiserOut]:
-    """Build advertiser landscape data for an industry within a time window."""
+    """Build advertiser landscape data for an industry within a time window.
+    category_id=-999(default)=전체, category_id=None=미분류, category_id=N=해당 카테고리."""
     cutoff = datetime.utcnow() - timedelta(days=days)
 
     # Fetch all advertisers in the industry
@@ -109,6 +112,18 @@ async def _build_landscape_advertisers(
     adv_ids = [a.id for a in advertisers]
 
     # Ad count and channels per advertiser (via ad_details -> ad_snapshots)
+    cat_filters = [
+        AdDetail.advertiser_id.in_(adv_ids),
+        AdSnapshot.captured_at >= cutoff,
+        or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected"),
+    ]
+    if category_id == -999:
+        pass  # 전체: 필터 없음
+    elif category_id is None:
+        cat_filters.append(AdDetail.product_category_id.is_(None))
+    else:
+        cat_filters.append(AdDetail.product_category_id == category_id)
+
     ad_stats = await db.execute(
         select(
             AdDetail.advertiser_id,
@@ -116,11 +131,7 @@ async def _build_landscape_advertisers(
             func.group_concat(AdSnapshot.channel.distinct()).label("channels"),
         )
         .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
-        .where(
-            AdDetail.advertiser_id.in_(adv_ids),
-            AdSnapshot.captured_at >= cutoff,
-            or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected"),
-        )
+        .where(*cat_filters)
         .group_by(AdDetail.advertiser_id)
     )
     ad_stats_map: dict[int, dict] = {}
@@ -136,11 +147,7 @@ async def _build_landscape_advertisers(
     total_ads_result = await db.execute(
         select(func.count(AdDetail.id))
         .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
-        .where(
-            AdDetail.advertiser_id.in_(adv_ids),
-            AdSnapshot.captured_at >= cutoff,
-            or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected"),
-        )
+        .where(*cat_filters)
     )
     total_ads = total_ads_result.scalar() or 0
 
@@ -195,13 +202,94 @@ async def _build_landscape_advertisers(
     return items
 
 
-@router.get("/{industry_id}/landscape", response_model=IndustryLandscapeOut)
-async def get_industry_landscape(
+@router.get("/{industry_id}/subcategories", response_model=list[SubcategoryBreakdown])
+async def get_industry_subcategories(
     industry_id: int,
     days: int = Query(default=30, le=365),
     db: AsyncSession = Depends(get_db),
 ):
-    """Industry landscape analysis: advertisers ranked by share-of-voice."""
+    """소분류별 광고주/광고 수 집계."""
+    cutoff = datetime.utcnow() - timedelta(days=days)
+
+    # 해당 업종의 product_categories
+    cat_result = await db.execute(
+        select(ProductCategory).where(ProductCategory.industry_id == industry_id)
+    )
+    categories = cat_result.scalars().all()
+
+    # 해당 업종 광고주 IDs
+    adv_result = await db.execute(
+        select(Advertiser.id).where(Advertiser.industry_id == industry_id)
+    )
+    adv_ids = [r[0] for r in adv_result.all()]
+
+    if not adv_ids:
+        return []
+
+    # 카테고리별 광고주/광고 수 (product_category_id 기준)
+    stats_result = await db.execute(
+        select(
+            AdDetail.product_category_id,
+            func.count(func.distinct(AdDetail.advertiser_id)).label("adv_cnt"),
+            func.count(AdDetail.id).label("ad_cnt"),
+        )
+        .join(AdSnapshot, AdDetail.snapshot_id == AdSnapshot.id)
+        .where(
+            AdDetail.advertiser_id.in_(adv_ids),
+            AdSnapshot.captured_at >= cutoff,
+            or_(AdDetail.verification_status.is_(None), AdDetail.verification_status != "rejected"),
+        )
+        .group_by(AdDetail.product_category_id)
+    )
+
+    cat_id_map = {c.id: c.name for c in categories}
+    classified: dict[int | None, dict] = {}
+    for row in stats_result.all():
+        classified[row.product_category_id] = {
+            "adv_cnt": row.adv_cnt,
+            "ad_cnt": row.ad_cnt,
+        }
+
+    items: list[SubcategoryBreakdown] = []
+    unclassified_adv = 0
+    unclassified_ad = 0
+
+    for cat in sorted(categories, key=lambda c: c.name):
+        stats = classified.get(cat.id, {"adv_cnt": 0, "ad_cnt": 0})
+        items.append(SubcategoryBreakdown(
+            id=cat.id,
+            name=cat.name,
+            advertiser_count=stats["adv_cnt"],
+            ad_count=stats["ad_cnt"],
+        ))
+
+    # 미분류: product_category_id가 None이거나 이 업종 외 카테고리인 경우
+    for cat_id, stats in classified.items():
+        if cat_id is None or cat_id not in cat_id_map:
+            unclassified_adv += stats["adv_cnt"]
+            unclassified_ad += stats["ad_cnt"]
+
+    if unclassified_adv > 0 or unclassified_ad > 0:
+        items.append(SubcategoryBreakdown(
+            id=None,
+            name="미분류",
+            advertiser_count=unclassified_adv,
+            ad_count=unclassified_ad,
+        ))
+
+    return items
+
+
+@router.get("/{industry_id}/landscape", response_model=IndustryLandscapeOut)
+async def get_industry_landscape(
+    industry_id: int,
+    days: int = Query(default=30, le=365),
+    category_id: int | None = Query(default=None, alias="category_id"),
+    unclassified: bool = Query(default=False),
+    db: AsyncSession = Depends(get_db),
+):
+    """Industry landscape analysis: advertisers ranked by share-of-voice.
+    category_id: 특정 소분류 필터. unclassified=true: 미분류만."""
     # Fetch industry
     ind_result = await db.execute(
         select(Industry).where(Industry.id == industry_id)
@@ -210,7 +298,15 @@ async def get_industry_landscape(
     if not industry:
         raise HTTPException(status_code=404, detail="Industry not found")
 
-    advertisers = await _build_landscape_advertisers(db, industry_id, days)
+    # category_id 파라미터 해석: 미전달=-999(전체), unclassified=None, 값=해당 카테고리
+    if unclassified:
+        eff_cat_id: int | None = None  # 미분류
+    elif category_id is not None:
+        eff_cat_id = category_id
+    else:
+        eff_cat_id = -999  # 전체
+
+    advertisers = await _build_landscape_advertisers(db, industry_id, days, eff_cat_id)
 
     # Revenue ranking (only those with annual_revenue)
     revenue_ranking = sorted(
