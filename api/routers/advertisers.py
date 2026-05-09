@@ -63,6 +63,7 @@ from database.schemas import (
 from processor.channel_utils import (
     MEDIA_CATEGORIES,
     MEDIA_CATEGORY_KO,
+    REPORT_KEYWORD_CHANNELS,
     get_media_category as _channel_to_category,
 )
 from api.services.advertiser_names import (
@@ -130,6 +131,7 @@ async def advertiser_summary_stats(
 async def list_advertisers(
     industry_id: int | None = None,
     search: str | None = None,
+    days: int = Query(default=30, ge=1, le=365),
     limit: int = Query(default=5000, le=10000),
     offset: int = 0,
     include_placeholders: bool = Query(default=False),
@@ -157,9 +159,11 @@ async def list_advertisers(
 
     # 광고주별 총 광고비 합산 (Campaign.total_est_spend)
     adv_ids = [a.id for a in advertisers]
+    cutoff = datetime.utcnow() - timedelta(days=days)
     spend_result = await db.execute(
         select(Campaign.advertiser_id, func.sum(Campaign.total_est_spend).label("total_spend"))
         .where(Campaign.advertiser_id.in_(adv_ids))
+        .where(Campaign.last_seen >= cutoff)
         .group_by(Campaign.advertiser_id)
     )
     spend_map = {row.advertiser_id: row.total_spend or 0.0 for row in spend_result.all()}
@@ -1307,6 +1311,7 @@ async def advertiser_spend_report(
         .where(
             AdDetail.advertiser_id.in_(list(target_ids)),
             AdSnapshot.captured_at >= cutoff,
+            AdSnapshot.channel.in_(list(REPORT_KEYWORD_CHANNELS)),
             Keyword.keyword.isnot(None),
             Keyword.keyword != "",
             or_(

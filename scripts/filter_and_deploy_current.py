@@ -30,6 +30,9 @@ from processor.data_quality_gate import (
 )
 from scripts.reject_invalid_labels import run_label_quality_repair
 from scripts.reject_unusable_creatives import run_rejection
+from scripts.repair_low_confidence_advertisers import run_repair as run_low_confidence_repair
+from scripts.repair_known_advertiser_taxonomy import run as run_known_taxonomy_repair
+from scripts.repair_taxonomy_consistency import run_repair as run_taxonomy_repair
 
 DB_PATH = ROOT / "adscope.db"
 
@@ -144,6 +147,27 @@ def _upload(gz_path: Path) -> requests.Response:
 async def run(args: argparse.Namespace) -> None:
     load_dotenv(ROOT / ".env")
     logger.info("filtering db={} days={}", DB_PATH, args.days)
+    repair_days = max(args.days, int(os.getenv("LOW_CONFIDENCE_REPAIR_DAYS", "120")))
+
+    low_confidence_stats = run_low_confidence_repair(
+        db_path=DB_PATH,
+        days=repair_days,
+        dry_run=False,
+    )
+    logger.info("low confidence advertiser repair stats={}", low_confidence_stats)
+
+    taxonomy_stats = run_taxonomy_repair(
+        db_path=DB_PATH,
+        days=repair_days,
+        dry_run=False,
+    )
+    logger.info("taxonomy consistency repair stats={}", taxonomy_stats)
+
+    known_taxonomy_stats = run_known_taxonomy_repair(
+        db_path=DB_PATH,
+        dry_run=False,
+    )
+    logger.info("known advertiser taxonomy repair stats={}", known_taxonomy_stats)
 
     label_stats = run_label_quality_repair(
         db_path=DB_PATH,
@@ -161,6 +185,32 @@ async def run(args: argparse.Namespace) -> None:
     if not args.skip_rebuild:
         stats = await rebuild_campaigns_and_spend(active_days=args.active_days)
         logger.info("campaign rebuild stats={}", stats)
+        post_rebuild_low_confidence_stats = run_low_confidence_repair(
+            db_path=DB_PATH,
+            days=repair_days,
+            dry_run=False,
+        )
+        logger.info(
+            "post-rebuild low confidence advertiser repair stats={}",
+            post_rebuild_low_confidence_stats,
+        )
+        post_rebuild_taxonomy_stats = run_taxonomy_repair(
+            db_path=DB_PATH,
+            days=repair_days,
+            dry_run=False,
+        )
+        logger.info(
+            "post-rebuild taxonomy consistency repair stats={}",
+            post_rebuild_taxonomy_stats,
+        )
+        post_rebuild_known_taxonomy_stats = run_known_taxonomy_repair(
+            db_path=DB_PATH,
+            dry_run=False,
+        )
+        logger.info(
+            "post-rebuild known advertiser taxonomy repair stats={}",
+            post_rebuild_known_taxonomy_stats,
+        )
 
     _check_quality(DB_PATH, args.days)
     snapshot, counts = _snapshot_db()

@@ -5,6 +5,7 @@ import { api, AdvertiserSearchResult, BrandTreeChild, BrandTreeGroup, FavoriteAd
 import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { isAuthenticated } from "@/lib/auth";
+import { PeriodSelector } from "@/components/PeriodSelector";
 
 function isForeignAdvertiser(name: string, website?: string | null): boolean {
   const cjk = /[\u4e00-\u9fff\u3040-\u30ff]/;
@@ -196,6 +197,7 @@ export default function AdvertisersPage() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "tree">("list");
+  const [days, setDays] = useState(30);
   const [sortKey, setSortKey] = useState<"name" | "brand" | "website" | "ad_count" | "total_est_spend">("total_est_spend");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -218,11 +220,11 @@ export default function AdvertisersPage() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const params: Record<string, string> = { limit: "5000" };
+  const params: Record<string, string> = { limit: "5000", days: String(days) };
   if (debouncedSearch) params.search = debouncedSearch;
 
   const { data: advertisers, isLoading } = useQuery({
-    queryKey: ["advertisers", debouncedSearch],
+    queryKey: ["advertisers", debouncedSearch, days],
     queryFn: () => api.getAdvertisers(params),
   });
 
@@ -238,8 +240,8 @@ export default function AdvertisersPage() {
   });
 
   const { data: topAdvertisers } = useQuery({
-    queryKey: ["topAdvertisers30"],
-    queryFn: () => api.getTopAdvertisers(30, 500),
+    queryKey: ["topAdvertisers", days],
+    queryFn: () => api.getTopAdvertisers(days, 500),
   });
 
   const { data: brandTree, isLoading: treeLoading } = useQuery({
@@ -384,7 +386,9 @@ export default function AdvertisersPage() {
             <p className="text-sm text-gray-500">등록된 광고주 목록 및 활동 현황</p>
           </div>
         </div>
-        <div className="flex items-center gap-2" />
+        <div className="flex items-center gap-2">
+          <PeriodSelector days={days} onDaysChange={setDays} showCustom={false} />
+        </div>
       </div>
 
       {/* 검색 */}
